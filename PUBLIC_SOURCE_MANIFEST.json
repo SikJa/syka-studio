@@ -946,6 +946,24 @@
       "kind": "text"
     },
     {
+      "path": "apps/desktop/syka-assets/download-en.svg",
+      "bytes": 2768,
+      "sha256": "9657e4964f0062e1bdc3fd395e85d2b644196eef3f8a90fa11ffee1f244d257b",
+      "kind": "text"
+    },
+    {
+      "path": "apps/desktop/syka-assets/download-es.svg",
+      "bytes": 2774,
+      "sha256": "7dec77dff199a83eccc6e9baa79f275ee747df0aecd01e5e411e310df4d767db",
+      "kind": "text"
+    },
+    {
+      "path": "apps/desktop/syka-assets/download-pt-BR.svg",
+      "bytes": 2766,
+      "sha256": "5b7b6927fd7c666c24e278fa7bfb39bce7a924aab5b9412d9d4ec2a1cbdb905a",
+      "kind": "text"
+    },
+    {
       "path": "apps/desktop/syka-assets/icon.ico",
       "bytes": 56465,
       "sha256": "51d8a7e8b733735aa01142930bab6a43b858e1fa4119ddc32a75966f802d6be8",
@@ -970,15 +988,21 @@
       "kind": "text"
     },
     {
-      "path": "apps/desktop/syka-assets/readme-orb.gif",
-      "bytes": 5368748,
-      "sha256": "9f3775608aa86df299dfaa4ceb253c83f5401976ee2d4a00eb33d809e3f595f0",
+      "path": "apps/desktop/syka-assets/readme-orb-dark.webp",
+      "bytes": 7799058,
+      "sha256": "5664ea6b04add8c741ab15c6571bb36cefb2926c8ea5c53c3f79f341c2cad194",
+      "kind": "media"
+    },
+    {
+      "path": "apps/desktop/syka-assets/readme-orb-light.webp",
+      "bytes": 7567194,
+      "sha256": "cfdac5e299f181578adfc92a696edaf2d94a181577810a2c10e2736bde124af5",
       "kind": "media"
     },
     {
       "path": "apps/desktop/syka-assets/README-orb.md",
-      "bytes": 715,
-      "sha256": "e617525e82358ba5cd17a5bd0682b474ee2fb785f674d6cf3e02d855045145b9",
+      "bytes": 1510,
+      "sha256": "598975a9f946518aa6f9b1f74ab95b835c522432bb42e8fbfd373171ead7c289",
       "kind": "text"
     },
     {
@@ -7127,8 +7151,8 @@
     },
     {
       "path": "CREDITS.md",
-      "bytes": 9083,
-      "sha256": "a16a1d32fe361fe4f6da1a0aa1e67dc5f901b189980758d4079a6a1663cd9d45",
+      "bytes": 9084,
+      "sha256": "d90ef1434b5fae53658ee69b486500a6c34ace7965567a384277ba4f0cc8b05a",
       "kind": "text"
     },
     {
@@ -28973,20 +28997,20 @@
     },
     {
       "path": "README.en.md",
-      "bytes": 7559,
-      "sha256": "c5798ee52fc9a6b340aee6ac11230919db8d71db54e0c28495f3187462b1d08c",
+      "bytes": 7770,
+      "sha256": "d3fc87a9837a061b80fed3285986b46b9043a13b3d83b5d9f6eaf814c48e6261",
       "kind": "text"
     },
     {
       "path": "README.md",
-      "bytes": 8050,
-      "sha256": "aeb3983c1d588955cbdb58fac33b05424e70276fffb93e2996b7aef67bdb683f",
+      "bytes": 8261,
+      "sha256": "f064af7562b9d288990cb8638a0ed69b7c5e6828e47390ded55787edaf7921f2",
       "kind": "text"
     },
     {
       "path": "README.pt-BR.md",
-      "bytes": 8178,
-      "sha256": "d8c90c194eddb5bf23138656d15c0899979e4d8f7a768849b9a6b55246570307",
+      "bytes": 8392,
+      "sha256": "bbf7bbd2aba4fea8ec093b740b44c7cd41760ae7a8005a888edac2b285a57b79",
       "kind": "text"
     },
     {
@@ -29206,6 +29230,18 @@
       "kind": "text"
     },
     {
+      "path": "scripts/render-readme-download.mjs",
+      "bytes": 3464,
+      "sha256": "381441361dcb9fb4444d75807d8f0d8d9049b635c6e7ccce2f62e8ef4b5c9523",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/render-readme-orb.mjs",
+      "bytes": 5281,
+      "sha256": "877efc9c96cd9fd124a809932370a483a86167d0abc0bf9ae556714595347b23",
+      "kind": "text"
+    },
+    {
       "path": "scripts/test-graphify-runtime.py",
       "bytes": 9466,
       "sha256": "c3fb038188ab1bfd45655cf82f5b9cdb92d29de3149308cb3658518eb7778b8d",
@@ -29236,5 +29272,5 @@
       "kind": "text"
     }
   ],
-  "manifestSha256": "455270a0f71d24256bcd34725f8c8148af2267864735fc97b80e8594d007e5b2"
+  "manifestSha256": "4503bf0560916c593b6b0ccc72bab3c083febd0b33d9bf8069c6208d048b8c4a"
 }

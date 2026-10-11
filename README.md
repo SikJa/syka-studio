@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="apps/desktop/syka-assets/readme-orb.gif" alt="Orbe original animado de Syka Studio" width="116" height="116" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="apps/desktop/syka-assets/readme-orb-dark.webp" />
+    <img src="apps/desktop/syka-assets/readme-orb-light.webp" alt="Orbe original animado de Syka Studio" width="116" height="116" />
+  </picture>
 </p>
 
 <h1 align="center">Syka Studio</h1>
@@ -7,7 +10,7 @@
 <p align="center"><b>Editá video. Trabajá con agentes. Conservá el control.</b></p>
 
 <p align="center">
-  <a href="https://github.com/SikJa/syka-studio/releases/download/v0.208.0/Syka-Studio-x64-Setup.exe"><kbd>⬇ Descargar última versión · Windows</kbd></a>
+  <a href="https://github.com/SikJa/syka-studio/releases/download/v0.208.0/Syka-Studio-x64-Setup.exe"><img src="apps/desktop/syka-assets/download-es.svg" alt="Descargar última versión · Windows" width="400" height="87" /></a>
 </p>
 
 <p align="center">

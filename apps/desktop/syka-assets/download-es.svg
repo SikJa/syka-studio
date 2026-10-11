@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="96" viewBox="0 0 440 96" role="img" aria-labelledby="title">
+<title id="title">Descargar última versión · Windows</title>
+<defs>
+  <linearGradient id="chrome" x1="0" y1="0" x2=".07" y2="1">
+    <stop stop-color="#fff"/><stop offset=".13" stop-color="#bdc4d0"/><stop offset=".3" stop-color="#737e8e"/>
+    <stop offset=".47" stop-color="#f7f9ff"/><stop offset=".52" stop-color="#e5eaf1"/><stop offset=".69" stop-color="#adb7c5"/><stop offset="1" stop-color="#eef3fa"/>
+  </linearGradient>
+  <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".48" stop-color="#8994a5"/><stop offset=".72" stop-color="#f9fbff"/><stop offset="1" stop-color="#687589"/></linearGradient>
+  <linearGradient id="wave"><stop stop-color="#1d2b42" stop-opacity=".38"/><stop offset=".48" stop-color="#fff" stop-opacity=".68"/><stop offset="1" stop-color="#223652" stop-opacity=".12"/></linearGradient>
+  <linearGradient id="glint"><stop stop-color="#fff" stop-opacity="0"/><stop offset=".48" stop-color="#fff" stop-opacity=".8"/><stop offset=".55" stop-color="#fff" stop-opacity=".28"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <filter id="soft"><feGaussianBlur stdDeviation="4"/></filter>
+  <clipPath id="panel"><rect x="8" y="8" width="424" height="80" rx="26"/></clipPath>
+</defs>
+<style>@media(prefers-reduced-motion:reduce){.moving-reflection{display:none}}</style>
+<rect x="8" y="8" width="424" height="80" rx="26" fill="url(#chrome)" stroke="url(#rim)" stroke-width="2"/>
+<g clip-path="url(#panel)">
+  <path d="M-35 86C46-28 114 118 232 28S366 92 484 3" fill="none" stroke="url(#wave)" stroke-width="29" filter="url(#soft)"/>
+  <path d="M-16 23C93 86 167-12 282 54S413 13 467 29" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="3" filter="url(#soft)"/>
+  <g class="moving-reflection">
+    <path d="M-160-18h95L3 114h-95Z" fill="url(#glint)">
+      <animateTransform attributeName="transform" type="translate" values="-40 0;650 0;650 0" keyTimes="0;.72;1" dur="7s" repeatCount="indefinite"/>
+    </path>
+  </g>
+</g>
+<rect x="11" y="11" width="418" height="74" rx="23" fill="none" stroke="#fff" stroke-opacity=".64"/>
+<path d="M33 11H407" stroke="#fff" stroke-opacity=".85" stroke-linecap="round"/>
+<circle cx="47" cy="48" r="22" fill="#131b27"/>
+<path d="M47 34v23m-8-8 8 8 8-8M37 63h20" fill="none" stroke="#f7faff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<g font-family="Segoe UI,Helvetica Neue,sans-serif" fill="#111a27">
+  <text x="84" y="44" font-size="23" font-weight="700">Descargar última versión</text>
+  <text x="85" y="65" font-size="13" font-weight="600" letter-spacing=".5">WINDOWS x64</text>
+</g>
+</svg>
