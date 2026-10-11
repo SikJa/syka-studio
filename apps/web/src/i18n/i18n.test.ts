@@ -131,7 +131,7 @@ describe('UI text lookup and source coverage', () => {
   it('keeps the Delete action separate from the keyboard key in all locales', async () => {
     const i18n = await import('./index');
     for (const [locale, action, key] of [
-      ['es', 'Eliminar', 'Supr'], ['en', 'Delete', 'Del'], ['pt-BR', 'Excluir', 'Delete'],
+      ['es', 'Delete', 'Supr'], ['en', 'Delete', 'Del'], ['pt-BR', 'Excluir', 'Delete'],
     ] as const) {
       i18n.setLocale(locale);
       expect(i18n.t('Delete')).toBe(action);
@@ -156,6 +156,14 @@ describe('UI text lookup and source coverage', () => {
       expect(i18n.t('Usá mis referencias y mi marca para crear tarjetas animadas con un estilo consistente.')).toBe(homePlaceholder);
       expect(i18n.t(draft)).toBe(draft);
       expect(draft).toEqual({ value: 'Mensaje al editor', command: 'Buscá en la web referencias para Mensaje al editor' });
+    }
+  });
+
+  it('preserves every authored UI phrase and existing product term verbatim in Spanish', async () => {
+    const i18n = await import('./index');
+    i18n.setLocale('es');
+    for (const phrase of [...sourcePhrases, 'Assets', 'Snapping', 'Syka Studio', 'Exportar', 'Deshacer']) {
+      expect(i18n.t(phrase)).toBe(phrase);
     }
   });
 });

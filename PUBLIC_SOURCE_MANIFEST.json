@@ -892,15 +892,33 @@
       "kind": "text"
     },
     {
+      "path": "apps/desktop/src/update-demo.test.ts",
+      "bytes": 3593,
+      "sha256": "011bf73bd77c618b01248480440b2eb5497089b68226ab3fee67ed7033dd6fa9",
+      "kind": "text"
+    },
+    {
+      "path": "apps/desktop/src/update-demo.ts",
+      "bytes": 2714,
+      "sha256": "31112eb54ccb3c7af568d76b9de16271567e18b1fcd286d5af84058229fe1e65",
+      "kind": "text"
+    },
+    {
       "path": "apps/desktop/src/update-types.ts",
-      "bytes": 617,
-      "sha256": "2e02b4fc676f0907ff24478ca7f9e382d3240d07187bcfcbcf9106f179a07200",
+      "bytes": 671,
+      "sha256": "b855c37e938ce9e025fc50d86ebc7dc87a110d1d490460727da2d2a074440704",
+      "kind": "text"
+    },
+    {
+      "path": "apps/desktop/src/updates.test.ts",
+      "bytes": 4924,
+      "sha256": "0470505abcb1e9b425843d733c2e61c70a6499b4e8451bd45d566d652a99d915",
       "kind": "text"
     },
     {
       "path": "apps/desktop/src/updates.ts",
-      "bytes": 4812,
-      "sha256": "423876e9ec63b7f3e20298066c4d54bdf32a12e4bffa5f966c4e40f8c84a349b",
+      "bytes": 6447,
+      "sha256": "512164ec8a39e11315983e7c811505c4aec31dee1ec921e24f8cc735941dfcaf",
       "kind": "text"
     },
     {
@@ -911,8 +929,8 @@
     },
     {
       "path": "apps/desktop/src/video-import/service.ts",
-      "bytes": 17890,
-      "sha256": "58c06811a33ff9ded3b3a2b5715ce0cec0e3df2a584c61aac0170a8b45b5f257",
+      "bytes": 17463,
+      "sha256": "957993182c8a3866c9f853ffbe916f723498207e1c95e45f0eb7edd6770f0a42",
       "kind": "text"
     },
     {
@@ -3953,8 +3971,8 @@
     },
     {
       "path": "apps/web/src/components/dashboard/update-menu.tsx",
-      "bytes": 4398,
-      "sha256": "0371a49d572687a7dc2fc9d98f211f415fb1f09146c7ba7491afc17fdf2feaf5",
+      "bytes": 5595,
+      "sha256": "152a7380f521204c5b59240bde96708739ff363c830f2a23a1f7715391582f1b",
       "kind": "text"
     },
     {
@@ -6196,15 +6214,27 @@
       "kind": "text"
     },
     {
+      "path": "apps/web/src/i18n/dictionary.test.ts",
+      "bytes": 1922,
+      "sha256": "de26581144359ce3216988ffc6f5e1cfef0cc0c9971ec6c191f2b0314e0c5532",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/i18n/dictionary.ts",
+      "bytes": 941,
+      "sha256": "7f3ed320f4573694e6fc8ff3bbd5d13a14f8513ad41f17feed115546eb2b7be9",
+      "kind": "text"
+    },
+    {
       "path": "apps/web/src/i18n/i18n.test.ts",
-      "bytes": 7605,
-      "sha256": "d1fab9c00bd311e81439ee7236fa92c0b22092893b94eedfea9f162c2fcdf1c2",
+      "bytes": 7938,
+      "sha256": "c9f01953b929165ce05b72a1dc6d91e207ed858a4e44b3ffabc61eda3483f8cb",
       "kind": "text"
     },
     {
       "path": "apps/web/src/i18n/index.ts",
       "bytes": 2172,
-      "sha256": "4ce1693aba4cb2c5337fff2d8e0a031a11c35e04749b0625e7f92a101b77525d",
+      "sha256": "4836888f408556e5004dddc1042c9a211bdd0e74611972a382d9f9089cf1d204",
       "kind": "text"
     },
     {
@@ -6239,8 +6269,8 @@
     },
     {
       "path": "apps/web/src/i18n/translations.ts",
-      "bytes": 10850,
-      "sha256": "d1c0bfec540e7da4013193311a93bd2f1d09d28fad74605ea773e59f36d0d2a0",
+      "bytes": 11788,
+      "sha256": "6e13961c3f09e1c018ccd2f12d5afaa2739e9044b26b31e905df83c49f833508",
       "kind": "text"
     },
     {
@@ -7541,8 +7571,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "bytes": 7966,
-      "sha256": "dc2199a45fb301ce61c3f1b17f98751f2baf310e0e483c5f99440edc04d78570",
+      "bytes": 9002,
+      "sha256": "c768acf7d53e5a08e3cb162e58990c3254c87562ec7967bd0b2691cbd1386461",
       "kind": "text"
     },
     {
@@ -26465,8 +26495,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1764,
-      "sha256": "3ab5d1db13b834d15edaf403b50bea1d53f706be12e49a8093de6e1a94c600cc",
+      "bytes": 1823,
+      "sha256": "acae6ccc6092c6e670a2381ce412d1163723a65d3f04a8e11176ec42c88ef5e4",
       "kind": "text"
     },
     {
@@ -26771,8 +26801,8 @@
     },
     {
       "path": "packages/agent-chat/src/host/reference-video.ts",
-      "bytes": 19131,
-      "sha256": "45658c195a5f91c8d1cec679dd4780086839c3dd3fc484baf94e04e0c6c5431b",
+      "bytes": 18575,
+      "sha256": "7b66b4547b1ab0188499120215b0d77a4a23551b1dfa88c2ef896a152323b4c8",
       "kind": "text"
     },
     {
@@ -26833,6 +26863,12 @@
       "path": "packages/agent-chat/src/host/user-questions.ts",
       "bytes": 4783,
       "sha256": "7b5d8aab165f64185de3af1d54f0240a7367fa62714cfdd8ae970c785c59ae69",
+      "kind": "text"
+    },
+    {
+      "path": "packages/agent-chat/src/host/video-download-error.ts",
+      "bytes": 2119,
+      "sha256": "074c1fbc483a0a2cde42fcd2554c36e5b400ef09395a685eed360c09b8a32293",
       "kind": "text"
     },
     {
@@ -27187,6 +27223,12 @@
       "path": "packages/agent-chat/test/transcript-tools.test.ts",
       "bytes": 3879,
       "sha256": "caf6e8ee41b35482b29646a6e91dd83b6aeaabaf447344f867f92150838832e3",
+      "kind": "text"
+    },
+    {
+      "path": "packages/agent-chat/test/video-download-error.test.ts",
+      "bytes": 1703,
+      "sha256": "145b4cd6051f0d9478be817943bb15e0097626c2d4cd4040491740cb267d1076",
       "kind": "text"
     },
     {
@@ -29128,6 +29170,12 @@
       "kind": "text"
     },
     {
+      "path": "scripts/preview-updates.mjs",
+      "bytes": 4204,
+      "sha256": "2a28fe2fcbf588cb048a9428f30f750ab3789000a4ed75b93c2af95feb4045b2",
+      "kind": "text"
+    },
+    {
       "path": "scripts/refresh-graphify.ps1",
       "bytes": 547,
       "sha256": "6ce1308ff6f258a03041784619a76094ff7f06cd1207f3b3e4fc0864b18e7903",
@@ -29170,5 +29218,5 @@
       "kind": "text"
     }
   ],
-  "manifestSha256": "108e25951eb231292659cfcf57cb3b1a36f698ba0aa99b875bcc4e05231ebeba"
+  "manifestSha256": "b501b318d84376d0730156231ead3fd1c31b3e1d1b0523b076d61306142e4320"
 }

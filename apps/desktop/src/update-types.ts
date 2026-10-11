@@ -10,5 +10,6 @@ export type UpdateState = {
   releaseUrl?: string;
   checkedAt?: string;
   message?: string;
+  simulation?: 'preview' | 'complete';
 };
-export type UpdateRequest = { action: 'status' | 'check' | 'download' | 'install' | 'notes'; locale?: 'es' | 'en' | 'pt-BR' };
+export type UpdateRequest = { action: 'status' | 'check' | 'download' | 'install' | 'notes' | 'demo-reset'; locale?: 'es' | 'en' | 'pt-BR' };

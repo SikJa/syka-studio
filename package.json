@@ -31,7 +31,8 @@
     "setup:background": "npm install --prefix .runtime/background-removal hyperframes@0.8.140 onnxruntime-node@1.21.1 --save-exact --no-audit --no-fund",
     "build:installer": "node scripts/build-windows.mjs",
     "test:i18n": "node --test scripts/lib/ui-i18n.test.mjs",
-    "test:tools": "node --test scripts/lib/toolchain.test.mjs"
+    "test:tools": "node --test scripts/lib/toolchain.test.mjs",
+    "preview:updates": "node scripts/preview-updates.mjs"
   },
   "devDependencies": {
     "patch-package": "^8.0.1",

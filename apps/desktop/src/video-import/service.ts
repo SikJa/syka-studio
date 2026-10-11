@@ -4,6 +4,7 @@ import { copyFile, mkdir, realpath, readdir, rename, rm, stat, unlink, writeFile
 import { constants } from 'node:fs';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { killTree } from '../../../../packages/agent-chat/src/host/env';
+import { videoDownloadError } from '../../../../packages/agent-chat/src/host/video-download-error';
 import { addStorageJobOwner, createStorageJob, finishStorageJob, settleStorageOwners } from '../../../../packages/agent-chat/src/host/storage-ledger';
 import { validateVideoRange, youtubeUrl, type VideoImportJob, type VideoImportMetadata, type VideoImportRange, type VideoImportResult } from './types';
 
@@ -89,10 +90,7 @@ export class VideoImportService {
   private fail(item: Internal, error: unknown): void {
     item.job.state = item.cancelled ? 'cancelled' : 'error';
     const raw = error instanceof Error ? error.message : String(error);
-    const message = /sign in|confirm.*bot|cookies|private|members.only|age.restricted/i.test(raw) ? 'YouTube pide iniciar sesión o restringe este video. Importá un archivo local; no usamos tus cookies automáticamente.'
-      : /403|forbidden/i.test(raw) ? 'YouTube rechazó la descarga (403). Actualizá yt-dlp o probá otro video público.'
-      : /requested format.*not available/i.test(raw) ? 'Este video no ofrece una pista compatible para editar en Syka. Probá otro enlace o importá un archivo local.'
-      : raw.replace(/https?:\/\/\S+/g, '[enlace]').slice(-700);
+    const message = videoDownloadError(raw, 700);
     item.job.message = item.cancelled ? 'Importación cancelada' : 'No se pudo importar el video';
     if (!item.cancelled) item.job.error = message;
     if (!item.cancelled && item.projectDir) this.finished(item);

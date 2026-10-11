@@ -4,6 +4,20 @@ El repositorio de distribución es [SikJa/syka-studio](https://github.com/SikJa/
 
 El recorrido es **código revisado → versión y commit → tag local → push explícito del tag → build de Windows → draft beta → revisión → publicación manual**. Cambiar código o subir un commit no ofrece una actualización a las instalaciones existentes. Hace falta publicar una nueva versión con todos sus archivos de actualización.
 
+## Probar la interfaz de actualización
+
+Desde un checkout de desarrollo con las dependencias instaladas:
+
+```powershell
+npm run preview:updates
+```
+
+Abre una ventana de Syka con un perfil separado en `.runtime/update-demo`, sin usar tus proyectos ni tu sesión habitual. Permite probar **actualización disponible → descargar → reiniciar e instalar → repetir simulación**. Los datos de versión y la descarga son simulados; al confirmar se reinicia solamente esa ventana de prueba. No instala un paquete ni publica una release.
+
+El comando compila el código de la aplicación y usa los puertos locales 5198 y 6295. No compila un instalador. La simulación está restringida al arranque de desarrollo y a ese perfil; no puede activarse en una instalación de distribución.
+
+El recorrido de interfaz, la confirmación con **Después** y el reinicio de esa ventana se verificaron localmente. Una actualización real entre dos versiones instaladas sigue pendiente. La beta `v0.208.0` publicada no se ofrece por el canal estable.
+
 ## Build local
 
 Requisitos: Windows x64, Node.js 24, npm, Rust/Cargo con el toolchain `x86_64-pc-windows-msvc`, las herramientas de compilación C++ de Visual Studio y el SDK de Windows. Los cuatro `package.json` de raíz/desktop/CLI/web y sus entradas del lockfile deben tener la misma versión.

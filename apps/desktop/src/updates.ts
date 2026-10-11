@@ -10,6 +10,9 @@ import { MAIN_CHANNELS } from './main-channels';
 import { mainBridge } from './main-manager';
 import { UpdateController, validUpdateRepo } from './update-controller';
 import { isAgentChatBusy } from './agent-chat';
+import { createUpdateDemo } from './update-demo';
+import type { UpdateState } from './update-types';
+import { isPackagedBuild } from './app-mode';
 
 export function registerUpdates(window: () => BrowserWindow | null, filesBusy: () => boolean): () => void {
   let repo = '';
@@ -17,12 +20,17 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
     const config = JSON.parse(readFileSync(join(app.getAppPath(), 'release.config.json'), 'utf8'));
     if (typeof config.repository === 'string' && validUpdateRepo(config.repository)) repo = config.repository;
   } catch { /* An unconfigured build never queries upstream Diffusion. */ }
-  const enabled = app.isPackaged && process.platform === 'win32' && !!repo
+  const enabled = isPackagedBuild() && process.platform === 'win32' && !!repo
     && existsSync(resolve(process.execPath, '..', '..', 'Update.exe'));
-  const controller = new UpdateController({
-    version: app.getVersion(), repo, enabled, driver: autoUpdater,
-    changed: state => mainBridge.emit(window(), MAIN_CHANNELS.SYKA_UPDATES_CHANGED, state),
+  const demoOptions = { packaged: isPackagedBuild(), defaultApp: !!process.defaultApp, appPath: app.getAppPath(), version: app.getVersion(), env: process.env,
+    restart: () => { app.relaunch(); app.quit(); } };
+  let demo = createUpdateDemo(demoOptions);
+  const decorate = (state: UpdateState): UpdateState => demo ? { ...state, simulation: demo.applied ? 'complete' : 'preview' } : state;
+  const makeController = () => new UpdateController({
+    version: demo?.currentVersion ?? app.getVersion(), repo, enabled: enabled || !!demo, driver: demo?.driver ?? autoUpdater,
+    changed: state => mainBridge.emit(window(), MAIN_CHANNELS.SYKA_UPDATES_CHANGED, decorate(state)),
     loadRelease: async () => {
+      if (demo) return demo.loadRelease();
       const response = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, {
         headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'Syka-Studio-Updater' },
         signal: AbortSignal.timeout(15_000), redirect: 'error',
@@ -43,13 +51,22 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
       return JSON.parse(Buffer.concat(parts).toString('utf8'));
     },
   });
+  let controller = makeController();
   mainBridge.handle(MAIN_CHANNELS.SYKA_UPDATES, async request => {
-    if (!request || !['status', 'check', 'download', 'install', 'notes'].includes(request.action)) throw Error('Solicitud de actualización inválida.');
-    if (request.action === 'check') return controller.check();
-    if (request.action === 'download') return controller.download();
+    if (!request || !['status', 'check', 'download', 'install', 'notes', 'demo-reset'].includes(request.action)) throw Error('Solicitud de actualización inválida.');
+    if (request.action === 'demo-reset') {
+      if (!demo) throw Error('La simulación no está habilitada.');
+      // Re-arm the fake release without a second restart immediately after
+      // startup. Only the explicit install action restarts this test window.
+      controller.stop(); demo.stop(); demo.reset();
+      demo = createUpdateDemo(demoOptions); controller = makeController();
+      return decorate(await controller.check());
+    }
+    if (request.action === 'check') return decorate(await controller.check());
+    if (request.action === 'download') return decorate(controller.download());
     if (request.action === 'notes') {
       const url = controller.snapshot().releaseUrl;
-      if (url) await shell.openExternal(url);
+      if (url && !demo) await shell.openExternal(url);
     }
     if (request.action === 'install') {
       if (controller.snapshot().phase !== 'ready') throw Error('La actualización todavía no está lista.');
@@ -59,7 +76,10 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
         : request.locale === 'pt-BR'
           ? ['Atualizar Syka Studio', 'Reiniciar o Syka para instalar a atualização?', 'Salve suas alterações antes de continuar. Seus projetos e preferências são mantidos.', 'Reiniciar e instalar', 'Depois']
           : ['Actualizar Syka Studio', '¿Reiniciar Syka para instalar la actualización?', 'Guardá tus cambios antes de continuar. Tus proyectos y preferencias se conservan.', 'Reiniciar e instalar', 'Después'];
-      const options = { type: 'question' as const, title: text[0], message: text[1], detail: text[2],
+      const demoDetail = request.locale === 'en' ? 'Local simulation: only this test window restarts. No update is installed.'
+        : request.locale === 'pt-BR' ? 'Simulação local: apenas esta janela de teste reinicia. Nenhuma atualização é instalada.'
+          : 'Simulación local: solo se reinicia esta ventana de prueba. No se instala una actualización.';
+      const options = { type: 'question' as const, title: text[0], message: text[1], detail: demo ? demoDetail : text[2],
         buttons: [text[3], text[4]], defaultId: 1, cancelId: 1 };
       const target = window();
       const answer = target ? await dialog.showMessageBox(target, options) : await dialog.showMessageBox(options);
@@ -68,10 +88,10 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
         controller.install();
       }
     }
-    return controller.snapshot();
+    return decorate(controller.snapshot());
   });
-  const initial = enabled ? setTimeout(() => void controller.check(), process.argv.includes('--squirrel-firstrun') ? 60_000 : 30_000) : undefined;
+  const initial = enabled || demo ? setTimeout(() => void controller.check(), demo ? 1500 : process.argv.includes('--squirrel-firstrun') ? 60_000 : 30_000) : undefined;
   const interval = enabled ? setInterval(() => void controller.check(), 6 * 60 * 60_000) : undefined;
   initial?.unref(); interval?.unref();
-  return () => { clearTimeout(initial); clearInterval(interval); controller.stop(); };
+  return () => { clearTimeout(initial); clearInterval(interval); controller.stop(); demo?.stop(); };
 }

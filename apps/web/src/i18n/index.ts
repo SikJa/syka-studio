@@ -3,8 +3,9 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 import { createSignal } from 'solid-js';
-import { translations } from './translations';
+import { sourceTranslations, supplementalTranslations } from './translations';
 import { sourcePhrases } from './source-phrases';
+import { uiDictionary } from './dictionary';
 
 export type Locale = 'es' | 'en' | 'pt-BR';
 export const LOCALE_KEY = 'syka.settings.language.v1';
@@ -27,19 +28,18 @@ export function setLocale(next: Locale): void {
 }
 if (typeof document !== 'undefined') document.documentElement.lang = language();
 
-const dictionary = new Map<string, readonly [string, string, string]>();
 // A source phrase has one meaning. Cross-language aliases would confuse e.g.
 // English "Delete" with a Portuguese keyboard-label translation of "Del".
-for (let i = 0; i < sourcePhrases.length; i++) dictionary.set(sourcePhrases[i], translations[i]);
-for (const row of translations.slice(sourcePhrases.length)) {
-  for (const phrase of row.slice(0, 2)) if (!dictionary.has(phrase)) dictionary.set(phrase, row);
-}
+const dictionary = uiDictionary(sourcePhrases, sourceTranslations, supplementalTranslations);
 /** Only UI-owned text is passed here. Project/chat/media content is untouched. */
 export function t<T>(value: T): T {
   if (typeof value !== 'string') return value;
   const current = language();
+  // Spanish is the existing interface, including its authored product terms.
+  // Localization must not rename those controls or rewrite their copy.
+  if (current === 'es') return value;
   const row = dictionary.get(value.trim().replace(/\s+/g, ' '));
   if (!row) return value;
-  const translated = row[current === 'en' ? 1 : current === 'pt-BR' ? 2 : 0];
+  const translated = row[current === 'en' ? 1 : 2];
   return value.replace(value.trim(), translated) as T;
 }

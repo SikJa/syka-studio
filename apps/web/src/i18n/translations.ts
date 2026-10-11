@@ -3,9 +3,13 @@ import { translations1 } from './translations-1';
 import { translations2 } from './translations-2';
 import { translations3 } from './translations-3';
 import { translationsTour } from './translations-tour';
-export const translations: readonly (readonly [string, string, string])[] = [
+// Only these reviewed rows correspond positionally to source-phrases.ts.
+// New UI copy belongs in supplementalTranslations and cannot move that mapping.
+export const sourceTranslations: readonly (readonly [string, string, string])[] = [
   ...translations1,
   ...translations2,
+];
+export const supplementalTranslations: readonly (readonly [string, string, string])[] = [
   ['Inicio', 'Home', 'Início'], ['Proyectos', 'Projects', 'Projetos'], ['Publicaciones', 'Publishing', 'Publicações'],
   ['Configuración', 'Settings', 'Configurações'], ['Perfil', 'Profile', 'Perfil'], ['General', 'General', 'Geral'],
   ['Apariencia', 'Appearance', 'Aparência'], ['Idioma', 'Language', 'Idioma'], ['Idioma de la interfaz', 'Interface language', 'Idioma da interface'],
@@ -91,4 +95,9 @@ export const translations: readonly (readonly [string, string, string])[] = [
   ['Señalar componentes para el agente', 'Point out components to the agent', 'Indicar componentes para o agente'],
   ['Sumar un componente a la referencia', 'Add a component to the reference', 'Adicionar um componente à referência'],
   ['Lienzo / rectángulo / texto', 'Canvas / rectangle / text', 'Tela / retângulo / texto'],
+  ['Simulación local', 'Local simulation', 'Simulação local'],
+  ['La ventana se reinició y la actualización simulada terminó.', 'The window restarted and the simulated update finished.', 'A janela reiniciou e a atualização simulada terminou.'],
+  ['Probá el aviso, la descarga y el reinicio. Esta prueba no instala una versión real.', 'Try the notification, download and restart. This test does not install a real version.', 'Teste o aviso, o download e a reinicialização. Este teste não instala uma versão real.'],
+  ['Repetir simulación', 'Repeat simulation', 'Repetir simulação'],
 ];
+export const translations = [...sourceTranslations, ...supplementalTranslations];
