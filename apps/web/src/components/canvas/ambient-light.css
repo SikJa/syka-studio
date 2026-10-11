@@ -1,0 +1,5 @@
+.syka-ambient-light{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity 400ms cubic-bezier(.22,1,.36,1);overflow:hidden}
+.syka-ambient-light[hidden]{display:none}
+.syka-ambient-light[data-ready=true]{opacity:1}
+.syka-ambient-light canvas{width:100%;height:100%;opacity:.36;filter:blur(72px) saturate(1.4);transform:scale(1.18)}
+@media(prefers-reduced-motion:reduce){.syka-ambient-light{transition:none}}

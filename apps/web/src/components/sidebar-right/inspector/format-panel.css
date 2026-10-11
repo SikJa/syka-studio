@@ -1,0 +1,73 @@
+:root {
+  --acc-expand: 250ms;
+  --acc-collapse: 250ms;
+  --acc-chevron: 250ms;
+  --acc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* grid-template-rows 0fr → 1fr gives a clean height animation
+   with no JS measurement; the inner element clips overflow. */
+.t-acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--acc-collapse) var(--acc-ease);
+}
+.t-acc[data-open="true"] .t-acc-panel {
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--acc-expand) var(--acc-ease);
+}
+.t-acc-panel-inner {
+  overflow: hidden;
+  opacity: 0;
+  filter: blur(2px);
+  transition:
+    opacity var(--acc-collapse) var(--acc-ease),
+    filter var(--acc-collapse) var(--acc-ease);
+}
+.t-acc[data-open="true"] .t-acc-panel-inner {
+  opacity: 1;
+  filter: blur(0);
+  transition:
+    opacity var(--acc-expand) var(--acc-ease),
+    filter var(--acc-expand) var(--acc-ease);
+}
+/* Flip the chevron vertically to turn the "v" into a "^".
+   scaleY(-1) about the centre passes through a flat line at
+   the midpoint (same look as a `d:` path morph) but animates
+   in every browser, unlike CSS `d:` morphing (Chromium only).
+   The chevron path is symmetric about the 16x16 viewBox
+   centre, so the flip lands exactly on the "^"; non-scaling
+   -stroke keeps the stroke width constant through the flip. */
+.t-acc-chevron {
+  display: inline-flex;
+  transform: scaleY(1);
+  transform-origin: center;
+  transition: transform var(--acc-chevron) var(--acc-ease);
+}
+.t-acc-chevron path { vector-effect: non-scaling-stroke; }
+.t-acc[data-open="true"] .t-acc-chevron {
+  transform: scaleY(-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-acc-panel, .t-acc-panel-inner, .t-acc-chevron {
+    transition: none !important;
+  }
+}
+.syka-format { color: var(--foreground); font-size: 12px; }
+.format-head { display:flex; align-items:center; justify-content:space-between; width:100%; text-align:left; border:1px solid var(--border); border-radius:12px; padding:10px 12px; background:var(--secondary); }
+.format-head small { display:block; color:var(--muted-foreground); margin-top:3px; font-size:10px; }
+.format-body { display:flex; flex-direction:column; gap:10px; padding-top:12px; }
+.format-note { font-size:11px; line-height:1.5; color:var(--muted-foreground); }
+.format-pills { display:flex; flex-wrap:wrap; gap:4px; }
+.format-pills button, .format-action { border:1px solid var(--border); border-radius:9px; padding:6px 9px; background:var(--secondary); }
+.format-pills button[aria-pressed=true], .format-action { background:color-mix(in srgb, #528bff 18%, var(--secondary)); border-color:#528bff88; }
+.syka-format button:focus-visible, .syka-format input:focus-visible { outline:2px solid #79a5ff; outline-offset:2px; }
+.syka-format button:disabled { opacity:.4; }
+.format-measures { display:flex; align-items:center; gap:8px; }
+.format-measures label { min-width:0; flex:1; }
+.format-measures input { display:block; width:100%; background:var(--secondary); border:1px solid var(--border); padding:6px; border-radius:8px; }
+.format-review { display:flex; flex-direction:column; gap:9px; }
+.format-diagram { position:relative; overflow:hidden; width:100%; max-height:180px; border:1px solid var(--border); background:#111722; border-radius:8px; }
+.format-safe { position:absolute; left:7%; top:10%; width:86%; height:75%; border:1px dashed #b9cced; z-index:1; }
+.format-box { position:absolute; border:1px solid #679cff; background:#528bff22; }

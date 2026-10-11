@@ -1,0 +1,210 @@
+{
+  "post-2103273003555402193": {
+    "visualReview": "sampled_frames_reviewed",
+    "analysisFile": "references/analyses/shape-morph.md",
+    "observations": [
+      "0.00s: botón negro centrado",
+      "2.55s: player en el mismo centro",
+      "7.64–11.45s: gráfico y command palette"
+    ],
+    "transferable": "Un objeto central cambia de forma; los hijos tienen sus propios tiempos",
+    "nativeAdaptation": [
+      "native geometry/keyframes",
+      "html driven by scene time"
+    ],
+    "capabilityGaps": [
+      "Exact spring coefficients unverified",
+      "Loop pixel equality not verified",
+      "DOM children are editable in source, not individual native inspector nodes"
+    ],
+    "tags": [
+      "anchor-morph",
+      "ui-demo",
+      "data-story",
+      "audio-sync",
+      "native-seek-contract",
+      "export-spec"
+    ]
+  },
+  "post-2103835273813496100": {
+    "visualReview": "sampled_frames_reviewed",
+    "analysisFile": "references/analyses/develop.md",
+    "observations": [
+      "5.28s: grid de fotos",
+      "13.19–15.83s: lock screen, teléfono y navegador",
+      "18.47–23.74s: producto y print en pared"
+    ],
+    "transferable": "El mismo hero pasa de foto a pantalla, web y print",
+    "nativeAdaptation": [
+      "native image/text/masks",
+      "html driven by scene time"
+    ],
+    "capabilityGaps": [
+      "Prompt requests 2D while repo category is 3D",
+      "Hosted duration ~29s versus nominal 54 beats / 120BPM = 27s",
+      "Glass/displacement and six-blade iris not natively validated"
+    ],
+    "tags": [
+      "saas-launch",
+      "anchor-morph",
+      "ui-demo",
+      "gallery",
+      "audio-sync",
+      "native-seek-contract",
+      "export-spec"
+    ]
+  },
+  "post-2103495232637882858": {
+    "visualReview": "sampled_frames_reviewed",
+    "analysisFile": "references/analyses/motion-principles.md",
+    "observations": [
+      "2.72s: heading condensado y punto azul",
+      "5.44s: SNAP contrasta con easing",
+      "6.80–8.16s: curva y marcas explican spacing"
+    ],
+    "transferable": "Asignar a cada efecto el significado del beat",
+    "nativeAdaptation": [
+      "native text/keyframes",
+      "surface if many elements are meaningful"
+    ],
+    "capabilityGaps": [
+      "Short prompt does not recover the detailed creative process",
+      "45ms stagger appears as a label, not a measured interval",
+      "Hosted video is 30fps"
+    ],
+    "tags": [
+      "kinetic-type",
+      "motion-principles",
+      "explainer",
+      "audio-sync",
+      "export-spec"
+    ]
+  },
+  "post-2104401208958230764": {
+    "visualReview": "sampled_frames_reviewed",
+    "analysisFile": "references/analyses/frame-by-frame.md",
+    "observations": [
+      "1.09–2.18s: headers y cursores equivalentes",
+      "5.45–7.63s: documentos y tarjetas en dos columnas",
+      "9.81–11.80s: finales alineados"
+    ],
+    "transferable": "Conservar posiciones, ritmo y función; reemplazar marca y contenido",
+    "nativeAdaptation": [
+      "native text/image/keyframes"
+    ],
+    "capabilityGaps": [
+      "Two columns are published original/remake, neither generated in Syka",
+      "Website-only prompt not retained",
+      "Visual correspondence is sampled, not measured replica equivalence"
+    ],
+    "tags": [
+      "saas-launch",
+      "ui-demo",
+      "anchor-morph",
+      "reference-correspondence",
+      "audio-sync"
+    ]
+  },
+  "post-2102554209166000267": {
+    "visualReview": "sampled_frames_reviewed",
+    "analysisFile": "references/analyses/hooklab.md",
+    "observations": [
+      "3.64s: campo y botón antes del resultado",
+      "5.45s: muro de clips",
+      "12.73s: teléfono y panel de campaña"
+    ],
+    "transferable": "Ordenar promesa, interacción, selección y resultado con medios propios",
+    "nativeAdaptation": [
+      "native image/video/text",
+      "html or surface for validated carousel"
+    ],
+    "capabilityGaps": [
+      "3D reflections and temporal blur require separate validation",
+      "Published performance metrics are not product truth",
+      "Media rights not granted for production"
+    ]
+  },
+  "post-2103801834930606193": {
+    "visualReview": "sampled_frames_reviewed",
+    "analysisFile": "references/analyses/spotify.md",
+    "observations": [
+      "1.64s: UI compacta dentro de un escenario negro",
+      "3.27s: player debajo de una lista",
+      "14.73–17.80s: covers convergen y cierran en logo"
+    ],
+    "transferable": "Persistir player y cover al cambiar de lista, detalle y colección",
+    "nativeAdaptation": [
+      "native text/image/keyframes",
+      "html driven by scene time"
+    ],
+    "capabilityGaps": [
+      "Hosted gallery file is 30fps although prompt asks for 60fps",
+      "Temporal subframe blur not reproduced",
+      "Audio timing and original model unverified"
+    ],
+    "tags": [
+      "saas-launch",
+      "ui-demo",
+      "anchor-morph",
+      "gallery",
+      "kinetic-type",
+      "audio-sync",
+      "native-seek-contract",
+      "export-spec"
+    ]
+  },
+  "post-2103458245213929495": {
+    "visualReview": "sampled_frames_reviewed",
+    "analysisFile": "references/analyses/build-the-floor.md",
+    "observations": [
+      "1.82s: oración serif bajo WAIT",
+      "9.09–12.73s: VOICE como soporte",
+      "14.55–16.36s: conclusión sobre estructura previa"
+    ],
+    "transferable": "Palabras con roles construyen el apoyo de la frase final",
+    "nativeAdaptation": [
+      "native text/rect/keyframes"
+    ],
+    "capabilityGaps": [
+      "No audio stream in the hosted file",
+      "Glyph path deformation requires separate implementation",
+      "Exact loop equality not verified"
+    ],
+    "tags": [
+      "kinetic-type",
+      "spoken-word",
+      "anchor-morph",
+      "native-seek-contract",
+      "export-spec"
+    ]
+  },
+  "post-2104139720829636937": {
+    "visualReview": "sampled_frames_reviewed",
+    "analysisFile": "references/analyses/taxtello.md",
+    "observations": [
+      "3.82s: promesa junto al panel",
+      "5.10–7.65s: recibo y filas en detalle",
+      "10.19–13.82s: gauge y cierre"
+    ],
+    "transferable": "Seleccionar una relación de producto verificable y mostrar su confirmación",
+    "nativeAdaptation": [
+      "native UI assets/text",
+      "html driven by scene time"
+    ],
+    "capabilityGaps": [
+      "Completeness conflict: repo says original post only, website shows a long brief",
+      "Iteration history is an author claim",
+      "Remotion is not the Syka renderer"
+    ],
+    "tags": [
+      "saas-launch",
+      "ui-demo",
+      "anchor-morph",
+      "data-story",
+      "kinetic-type",
+      "audio-sync",
+      "native-seek-contract",
+      "export-spec"
+    ]
+  }
+}

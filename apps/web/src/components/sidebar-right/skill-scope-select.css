@@ -1,0 +1,11 @@
+/* Transitions.dev dropdown timing, using Kobalte's mounted/open states. */
+:root {
+  --dropdown-open-dur: 250ms;
+  --dropdown-close-dur: 150ms;
+  --dropdown-pre-scale: .97;
+  --dropdown-closing-scale: .99;
+  --dropdown-ease: cubic-bezier(.22,1,.36,1);
+}
+.syka-scope-menu[data-expanded] {--tw-enter-scale:var(--dropdown-pre-scale);animation-duration:var(--dropdown-open-dur);animation-timing-function:var(--dropdown-ease);}
+.syka-scope-menu[data-closed] {--tw-exit-scale:var(--dropdown-closing-scale);animation-duration:var(--dropdown-close-dur);animation-timing-function:var(--dropdown-ease);}
+@media(prefers-reduced-motion:reduce) {.syka-scope-menu {animation:none!important;}}

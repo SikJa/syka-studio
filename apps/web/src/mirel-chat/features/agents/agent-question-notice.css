@@ -1,0 +1,178 @@
+/* transitions-dev snippets, scoped to the native question notice. */
+
+.syka-question-notice {
+  --badge-slide-dur: 260ms;
+  --badge-pop-dur: 500ms;
+  --badge-pop-close-dur: 180ms;
+  --badge-fade-dur: 400ms;
+  --badge-fade-close-dur: 180ms;
+  --badge-blur: 2px;
+  --badge-offset-x: -8.2px;
+  --badge-offset-y: 12.4px;
+  --badge-slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --badge-pop-ease: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --badge-close-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes t-badge-slide-in {
+  from { transform: translate(var(--badge-offset-x), var(--badge-offset-y)); }
+  to   { transform: translate(0, 0); }
+}
+
+/* .t-badge is the absolutely-positioned wrapper for the dot.
+   Adjust top/right (or left/bottom) to anchor it on your trigger. */
+.t-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  pointer-events: none;
+  will-change: transform;
+}
+.t-badge[data-open="true"] {
+  animation: t-badge-slide-in var(--badge-slide-dur) var(--badge-slide-ease);
+}
+
+.t-badge-dot {
+  display: block;
+  transform-origin: center;
+  transform: scale(1);
+  opacity: 1;
+  filter: blur(0);
+  transition:
+    transform var(--badge-pop-dur)  var(--badge-pop-ease),
+    opacity   var(--badge-fade-dur) var(--badge-pop-ease),
+    filter    var(--badge-pop-dur)  var(--badge-pop-ease);
+  will-change: transform, opacity, filter;
+}
+.t-badge[data-open="false"] .t-badge-dot {
+  transform: scale(0);
+  opacity: 0;
+  filter: blur(var(--badge-blur));
+  transition:
+    transform var(--badge-pop-close-dur)  var(--badge-close-ease),
+    opacity   var(--badge-fade-close-dur) var(--badge-close-ease),
+    filter    var(--badge-pop-close-dur)  var(--badge-close-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-badge, .t-badge-dot { animation: none !important; transition: none !important; }
+}
+
+.syka-question-notice {
+  --modal-open-dur: 250ms;
+  --modal-close-dur: 150ms;
+  --modal-scale: 0.96;
+  --modal-scale-close: 0.96;
+  --modal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.t-modal {
+  transform-origin: center;
+  transform: scale(var(--modal-scale));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--modal-open-dur) var(--modal-ease),
+    opacity   var(--modal-open-dur) var(--modal-ease);
+  will-change: transform, opacity;
+}
+.t-modal.is-open {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.t-modal.is-closing {
+  transform: scale(var(--modal-scale-close));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--modal-close-dur) var(--modal-ease),
+    opacity   var(--modal-close-dur) var(--modal-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-modal { transition: none !important; }
+}
+
+.syka-question-notice {
+  --stagger-dur: 500ms;
+  --stagger-distance: 12px;
+  --stagger-stagger: 40ms;
+  --stagger-blur: 3px;
+  --stagger-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Lines start translated down + blurred + invisible; .is-shown
+   on the parent flips them to their resting state. The second
+   line's transition-delay holds it back by --stagger-stagger
+   so the eye lands on the headline first. */
+.t-stagger-line {
+  display: block;
+  opacity: 0;
+  transform: translateY(var(--stagger-distance));
+  filter: blur(var(--stagger-blur));
+  transition:
+    opacity   var(--stagger-dur) var(--stagger-ease),
+    transform var(--stagger-dur) var(--stagger-ease),
+    filter    var(--stagger-dur) var(--stagger-ease);
+  will-change: transform, opacity, filter;
+}
+.t-stagger-line--2 { transition-delay: var(--stagger-stagger); }
+
+.t-stagger.is-shown .t-stagger-line {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+/* Exit decouples from the stagger: same fade for every line,
+   no Y return, no blur — so the disappearance reads as a
+   single quiet fade instead of a reverse reveal. */
+.t-stagger.is-hiding .t-stagger-line {
+  opacity: 0;
+  transform: translateY(0);
+  filter: blur(0);
+  transition:
+    opacity 200ms ease,
+    transform 0s linear,
+    filter 0s linear;
+  transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-stagger-line { transition: none !important; }
+}
+
+.syka-question-slot{display:flex;flex:1 1 0;min-height:0;min-width:0;justify-content:center;align-items:center;width:100%;container-type:size;container-name:chat-question}
+.syka-question-notice{--modal-open-dur:340ms!important;--modal-close-dur:180ms!important;--modal-scale:.84!important;--modal-scale-close:.96!important;--stagger-dur:280ms!important;--stagger-distance:6px!important;--stagger-blur:1.2px!important;--stagger-stagger:45ms!important;--question-orb-size:clamp(48px,22cqh,72px);position:relative;display:flex;flex:0 0 auto;flex-direction:column;align-items:center;justify-content:safe center;gap:12px;min-width:0;width:100%;max-height:100%;padding:12px 16px;overflow:auto;overscroll-behavior:contain;background:var(--color-background);color:var(--color-foreground);font-family:inherit}
+.syka-question-orb{position:relative;width:var(--question-orb-size);height:var(--question-orb-size);flex:0 0 var(--question-orb-size);filter:blur(1.5px);transition:transform var(--modal-open-dur) var(--modal-ease),opacity var(--modal-open-dur) var(--modal-ease),filter var(--modal-open-dur) var(--modal-ease)}
+.syka-question-orb.is-open{filter:blur(0)}.syka-question-orb.is-closing{filter:blur(.75px)}
+.syka-question-orb .agent-identity-orb,.syka-question-orb canvas{width:var(--question-orb-size)!important;height:var(--question-orb-size)!important}
+.syka-question-orb .t-badge{top:2px;right:-2px;z-index:4}.syka-question-orb .t-badge-dot{display:grid;place-items:center;width:17px;height:17px;border:3px solid var(--color-background);border-radius:50%;background:#d5c4a3;color:#28251f;font-size:8px;font-weight:650}
+.syka-question-content{display:flex;flex:0 0 auto;flex-direction:column;align-items:center;gap:14px;min-width:0;width:100%}.syka-question-content h2{max-width:380px;margin:0;font-family:inherit;font-size:16px;font-weight:400;letter-spacing:normal;line-height:1.4;text-align:center;text-wrap:balance;overflow-wrap:anywhere}
+.syka-question-progress{font-size:10px;color:var(--color-muted-foreground)}.syka-question-options{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:100%}
+.syka-question-observation{max-width:380px;margin:0;color:var(--color-muted-foreground);font-size:12px;line-height:1.45;text-align:center;overflow-wrap:anywhere}
+.syka-question-recommendation{width:100%;max-width:380px;min-width:0;padding:10px 12px;border:1px solid var(--border-input);border-radius:10px;background:var(--input);font-size:12px;line-height:1.45;text-align:left;overflow-wrap:anywhere}
+.syka-question-recommendation strong{font-weight:550}.syka-question-recommendation p{margin:4px 0 0;color:var(--color-muted-foreground)}
+.syka-question-options .syka-question-choice[data-recommended=true]{border-color:color-mix(in srgb,var(--primary) 45%,var(--border-input))}
+.syka-question-options .syka-question-choice{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:30px;height:auto;max-width:100%;padding:6px 9px;border:1px solid var(--border-input);border-radius:9px;background:var(--color-background);color:var(--color-foreground);white-space:normal;font-family:inherit;font-size:12px;font-weight:450;line-height:1.35;text-align:center;box-shadow:none;transition:background 150ms ease,border-color 150ms ease}
+.syka-question-choice>span{display:inline-flex;align-items:center;gap:5px;min-width:0;padding:0;white-space:normal;overflow-wrap:anywhere}.syka-question-choice>svg{flex-shrink:0;width:14px;height:14px;stroke-width:1.75}.syka-question-choice[data-tone="0"]>svg{color:#cd9ea9}.syka-question-choice[data-tone="1"]>svg{color:#8caecd}.syka-question-choice[data-tone="2"]>svg{color:#cab384}
+.syka-question-options .syka-question-choice:hover{background:var(--input);border-color:color-mix(in srgb,var(--color-foreground) 20%,transparent)}.syka-question-options .syka-question-choice[aria-pressed=true]{border-color:color-mix(in srgb,var(--color-foreground) 30%,transparent);background:var(--accent)}.syka-question-check{width:10px;height:10px;color:var(--color-muted-foreground)}
+.syka-question-cancel{position:absolute;top:4px;right:10px;display:grid;place-items:center;padding:4px;color:var(--color-muted-foreground);background:none;border:0;border-radius:5px}.syka-question-cancel:hover{background:var(--input)}
+/* Keep the transcript mounted, but give the active question its space. The
+   composer and its references must never shrink underneath the panel edge. */
+.syka-agent-chat[data-question-open=true] .syka-chat-transcript{display:none}
+.syka-agent-chat[data-question-open=true] .syka-mirel-composer{flex-shrink:0}
+@container chat-question (max-height:250px){.syka-question-notice{gap:8px;padding-block:8px}.syka-question-content{gap:10px}.syka-question-content h2{font-size:15px}}
+@container chat-question (max-height:220px){
+  .syka-question-notice{--question-orb-size:40px;display:grid;grid-template-columns:40px minmax(0,1fr);align-items:start;gap:10px 8px}
+  .syka-question-orb{grid-column:1;grid-row:1;margin-top:2px}
+  .syka-question-content{display:contents}
+  .syka-question-content h2{grid-column:2;grid-row:1;padding-right:14px;font-size:14px;text-align:left;text-wrap:pretty}
+  .syka-question-progress{grid-column:1/-1}
+  .syka-question-observation,.syka-question-recommendation{grid-column:1/-1;justify-self:center}
+  .syka-question-options{grid-column:1/-1;justify-self:center}
+}
+.syka-agent-chat .syka-chat-identity .syka-header-orb{transition:transform 160ms cubic-bezier(.22,1,.36,1),opacity 140ms ease,filter 140ms ease}
+.syka-agent-chat[data-question-open=true] .syka-chat-identity .syka-header-orb{transform:scale(.58);opacity:0;filter:blur(1.5px)}
+.syka-agent-chat[data-question-open=true] .syka-chat-identity,.syka-agent-chat[data-question-open=true] .syka-chat-history>.flex.h-12{pointer-events:none}
+@media(prefers-reduced-motion:reduce){.syka-question-orb,.syka-agent-chat .syka-chat-identity .syka-header-orb{transition:none!important;filter:none!important}}

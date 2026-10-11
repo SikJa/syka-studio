@@ -1,0 +1,34 @@
+/* Transitions.dev panel reveal, scoped to the voluntary editor tour. */
+.syka-tour-card,.syka-tour-invitation {
+  --panel-open-dur:400ms; --panel-close-dur:350ms; --panel-translate-y:12px; --panel-blur:2px; --panel-ease:cubic-bezier(.22,1,.36,1);
+  width:312px; max-width:calc(100vw - 24px); padding:17px; border:1px solid var(--color-border-strong); border-radius:20px;
+  background:var(--color-background); color:var(--color-foreground); box-shadow:0 18px 64px #0004,0 2px 8px #0002;
+  font-size:12px; line-height:1.5; -webkit-app-region:no-drag;
+}
+.syka-tour-position { position:fixed; left:0; top:0; z-index:210; pointer-events:none; transition:transform 250ms cubic-bezier(.22,1,.36,1); }
+.syka-tour-card { outline:none; }
+.syka-tour-card.t-panel-slide,.syka-tour-invitation.t-panel-slide { opacity:0; transform:translateY(var(--panel-translate-y)); filter:blur(var(--panel-blur)); pointer-events:none; transition:transform var(--panel-close-dur) var(--panel-ease),opacity var(--panel-close-dur) var(--panel-ease),filter var(--panel-close-dur) var(--panel-ease); }
+.syka-tour-card.t-panel-slide[data-open=true],.syka-tour-invitation.t-panel-slide[data-open=true] { opacity:1; transform:translateY(0); filter:blur(0); pointer-events:auto; transition-duration:var(--panel-open-dur); }
+@starting-style { .syka-tour-card.t-panel-slide[data-open=true],.syka-tour-invitation.t-panel-slide[data-open=true] { opacity:0; transform:translateY(var(--panel-translate-y)); filter:blur(var(--panel-blur)); } }
+.syka-tour-invitation { position:fixed; right:20px; bottom:20px; z-index:210; }
+.syka-tour-card header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.syka-tour-card header>span { color:var(--color-muted-foreground); font-size:9px; letter-spacing:.07em; }
+.syka-tour-card header b { font-weight:500; letter-spacing:0; margin-left:10px; }
+.syka-tour-card h2,.syka-tour-invitation strong { display:block; margin:0 0 8px; font-size:15px; font-weight:550; letter-spacing:-.02em; }
+.syka-tour-card p,.syka-tour-invitation p { margin:0; color:var(--color-muted-foreground); }
+.syka-tour-card button,.syka-tour-invitation button { border:1px solid var(--color-border); border-radius:10px; min-height:30px; padding:5px 10px; background:transparent; color:var(--color-foreground); font:inherit; cursor:pointer; }
+.syka-tour-card button:hover,.syka-tour-invitation button:hover { background:var(--color-accent); }
+.syka-tour-card button:disabled { opacity:.35; cursor:default; }
+.syka-tour-card button:focus-visible,.syka-tour-invitation button:focus-visible { outline:2px solid var(--color-primary); outline-offset:3px; }
+.syka-tour-card header button { width:28px; height:28px; min-height:0; border:0; padding:5px; color:var(--color-muted-foreground); }
+.syka-tour-card header svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; }
+.syka-tour-card footer,.syka-tour-invitation>div { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:18px; }
+.syka-tour-card footer>div { display:flex; gap:6px; }
+.syka-tour-card .syka-tour-skip { border-color:transparent; padding-left:0; color:var(--color-muted-foreground); }
+.syka-tour-card .syka-tour-primary,.syka-tour-invitation .syka-tour-primary { background:var(--color-primary); border-color:var(--color-primary); color:var(--color-primary-foreground); }
+.syka-tour-shortcut,.syka-tour-muted { display:block; margin-top:12px; color:var(--color-muted-foreground); font-size:10px; }
+.syka-tour-shortcut { padding:6px 8px; border-radius:7px; background:var(--color-input); }
+.syka-tour-spotlight { position:fixed; left:0; top:0; z-index:205; border:2px solid color-mix(in srgb,var(--color-primary) 85%,transparent); border-radius:12px; box-shadow:0 0 0 4px color-mix(in srgb,var(--color-primary) 10%,transparent),0 0 0 9999px #0003; pointer-events:none; transition:transform 250ms cubic-bezier(.22,1,.36,1),width 250ms cubic-bezier(.22,1,.36,1),height 250ms cubic-bezier(.22,1,.36,1),opacity 150ms ease-out; }
+.syka-tour-spotlight[data-open=false] { opacity:0; }
+@media(prefers-reduced-motion:reduce) { .syka-tour-card.t-panel-slide,.syka-tour-invitation.t-panel-slide,.syka-tour-position,.syka-tour-spotlight { transition:none!important; filter:none!important; } }
+[data-syka-motion=reduced] .syka-tour-card.t-panel-slide,[data-syka-motion=reduced] .syka-tour-invitation.t-panel-slide,[data-syka-motion=reduced] .syka-tour-position,[data-syka-motion=reduced] .syka-tour-spotlight { transition:none!important; filter:none!important; }

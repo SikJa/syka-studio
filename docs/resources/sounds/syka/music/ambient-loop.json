@@ -1,0 +1,22 @@
+{
+  "duration": 24,
+  "rate": 48000,
+  "channels": 2,
+  "frames": 1152000,
+  "peakDb": -8.999999811573272,
+  "rmsDb": -22.283392847396875,
+  "clippedSamples": 0,
+  "kind": "music",
+  "mood": "ambient",
+  "bpm": 80,
+  "bars": 8,
+  "seed": 29,
+  "loop": true,
+  "license": "MIT",
+  "generator": "Syka audio-studio",
+  "stems": [
+    "ambient-loop-harmony.wav",
+    "ambient-loop-melody.wav",
+    "ambient-loop-bass.wav"
+  ]
+}

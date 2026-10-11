@@ -1,0 +1,23 @@
+{
+  "duration": 16.551729166666668,
+  "rate": 48000,
+  "channels": 2,
+  "frames": 794483,
+  "peakDb": -8.999999811573272,
+  "rmsDb": -22.86426083383629,
+  "clippedSamples": 0,
+  "kind": "music",
+  "mood": "pulse",
+  "bpm": 116,
+  "bars": 8,
+  "seed": 29,
+  "loop": true,
+  "license": "MIT",
+  "generator": "Syka audio-studio",
+  "stems": [
+    "pulse-loop-harmony.wav",
+    "pulse-loop-melody.wav",
+    "pulse-loop-bass.wav",
+    "pulse-loop-drums.wav"
+  ]
+}

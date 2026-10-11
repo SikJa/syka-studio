@@ -1,0 +1,18 @@
+[package]
+name = "syka-screen-recorder"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+cpal = "0.16"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+image = { version = "0.25", default-features = false, features = ["png"] }
+windows = { version = "0.61", features = ["Win32_Foundation", "Win32_Graphics_Gdi", "Win32_Graphics_Dwm", "Win32_UI_HiDpi", "Win32_UI_WindowsAndMessaging"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true

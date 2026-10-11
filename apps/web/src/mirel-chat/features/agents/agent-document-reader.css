@@ -1,0 +1,95 @@
+:root {
+  --modal-open-dur: 250ms;
+  --modal-close-dur: 150ms;
+  --modal-scale: 0.96;
+  --modal-scale-close: 0.96;
+  --modal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+.t-modal {
+  transform-origin: center;
+  transform: scale(var(--modal-scale));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--modal-open-dur) var(--modal-ease),
+    opacity   var(--modal-open-dur) var(--modal-ease);
+  will-change: transform, opacity;
+}
+.t-modal.is-open {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.t-modal.is-closing {
+  transform: scale(var(--modal-scale-close));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--modal-close-dur) var(--modal-ease),
+    opacity   var(--modal-close-dur) var(--modal-ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  .t-modal { transition: none !important; }
+}
+.syka-document-reader {
+  --document-titlebar:var(--titlebar-height,0px);
+  --foreground:#efefef; --muted-foreground:#858585; --ring:#bbb;
+  --bg:#111; --text:#efefef; --text-soft:#bbb; --muted:#888; --line:#ffffff14;
+  --surface:#181818; --surface-hover:#222; --agent-accent:#ccc;
+  width:min(1060px,calc(100vw - 48px)); height:min(820px,calc(100dvh - var(--document-titlebar) - 48px));
+  inset:var(--document-titlebar) 0 0;
+  max-width:none; max-height:none; margin:auto; padding:0; overflow:hidden;
+  border:1px solid #ffffff0d; border-radius:26px; background:#111; color:#efefef;
+  box-shadow:0 28px 110px #0008; font-family:Inter,system-ui,sans-serif;
+}
+.syka-document-reader[open] { display:flex; flex-direction:column; }
+.syka-document-reader::backdrop { background:rgb(0 0 0 / .55); backdrop-filter:blur(8px); }
+.syka-document-toolbar { min-height:60px; padding:12px 20px 12px 25px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.syka-document-toolbar>span { display:flex; gap:8px; align-items:center; color:#858585; font-size:11px; }
+.syka-document-toolbar i { width:2px; height:2px; border-radius:50%; background:#777; }
+.syka-document-toolbar>div { display:flex; gap:4px; }
+.syka-document-toolbar :is(button,a) { display:grid; place-items:center; width:30px; height:30px; border:0; border-radius:9px; color:#aaa; background:transparent; cursor:pointer; }
+.syka-document-toolbar :is(button,a):hover { background:#ffffff0b; color:#fff; }
+.syka-document-toolbar :is(button,a) svg { width:15px; height:15px; stroke-width:1.5; }
+.syka-document-reader :is(button,a,[tabindex]):focus-visible { outline:2px solid #b9c4d8; outline-offset:3px; }
+.syka-document-layout { display:grid; grid-template-columns:144px minmax(0,1fr); min-height:0; flex:1; }
+.syka-document-minimap { min-height:0; padding-block:18px; overflow:hidden; }
+.syka-document-minimap nav>div { max-height:100%; overflow:auto; scrollbar-width:none; padding:4px; }
+.syka-document-scroll { overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#ffffff24 transparent; }
+.syka-document-content { max-width:790px; padding:30px 70px 80px 18px; margin-inline:auto; overflow-wrap:anywhere; }
+.syka-document-eyebrow { margin:0 0 12px; font-size:10px; letter-spacing:.075em; color:#777; }
+.syka-document-content h1 { margin:0 0 34px; color:#f0f0f0; font-size:clamp(25px,3vw,38px); font-weight:650; letter-spacing:-.035em; line-height:1.18; text-wrap:balance; }
+.syka-document-content .agent-rich-text { gap:22px; font-size:15px; line-height:1.8; color:#aaa; }
+.syka-document-block { scroll-margin-top:28px; min-width:0; }
+.syka-document-content .agent-rich-text :is(h2,h3,h4) { color:#e5e5e5; font-weight:600; }
+.syka-document-content .agent-rich-text h2 { font-size:25px; line-height:1.3; padding-top:8px; }
+.syka-document-content .agent-rich-text h3 { font-size:20px; line-height:1.4; padding-top:8px; }
+.syka-document-content .agent-rich-text h4 { font-size:17px; line-height:1.4; }
+.syka-document-content .agent-rich-text p { line-height:1.85; }
+.syka-document-content .agent-rich-text table { font-size:13px; }
+.syka-document-content .agent-rich-text th { font-size:11px; }
+.syka-document-content .agent-rich-text blockquote { font-size:15px; border-radius:0 10px 10px 0; }
+.syka-document-content .agent-rich-text pre { font-size:13px; }
+.syka-document-footer { display:flex; justify-content:space-between; gap:20px; align-items:center; min-height:38px; padding:8px 25px; color:#707070; font-size:10px; }
+.syka-document-footer>span:first-child { overflow-wrap:anywhere; }
+.syka-document-reader[data-reduced=true] { transition:none!important; transform:none!important; }
+.syka-document-card { display:flex; flex-direction:column; align-items:stretch; gap:10px; width:100%; padding:15px 16px; text-align:left; color:var(--text,#eee); border:1px solid #ffffff12; border-radius:14px; background:rgb(255 255 255 / .025); cursor:pointer; }
+.syka-document-card:hover { background:rgb(255 255 255 / .045); border-color:#ffffff20; }
+.syka-document-card>span { display:flex; gap:7px; align-items:center; color:var(--muted,#888); font-size:10px; }
+.syka-document-card strong { font-size:14px; line-height:1.45; font-weight:550; overflow-wrap:anywhere; }
+.syka-document-card small { font-size:11px; color:var(--muted,#888); line-height:1.6; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.syka-document-card small { font-family:inherit; }
+.syka-document-card em { display:flex; gap:5px; align-items:center; font-size:11px; font-style:normal; color:var(--text-soft,#bbb); }
+.syka-document-open { display:flex; align-items:center; gap:5px; padding:3px 0; border:0; background:transparent; color:var(--muted,#888); font-size:10px; cursor:pointer; }
+.syka-document-open:hover { color:var(--text,#eee); }
+.syka-local-artifact-error { font-size:11px; color:var(--muted,#999); overflow-wrap:anywhere; }
+@media (max-width:640px) {
+  .syka-document-reader { width:calc(100vw - 16px); height:calc(100dvh - var(--document-titlebar) - 16px); border-radius:18px; }
+  .syka-document-layout { grid-template-columns:62px minmax(0,1fr); }
+  .syka-document-minimap nav>div { margin-inline:10px; }
+  .syka-document-content { padding:22px 22px 56px 8px; }
+  .syka-document-toolbar { padding-inline:17px; }
+  .syka-document-toolbar>span { font-size:10px; gap:6px; }
+  .syka-document-content .agent-rich-text { font-size:14px; }
+  .syka-document-minimap nav button { width:42px; }
+}

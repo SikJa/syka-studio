@@ -1,0 +1,8 @@
+/* transitions.dev modal: keep the dialog's centering transform intact. */
+.syka-motion-preview{--modal-open-dur:250ms;--modal-close-dur:150ms;--modal-scale:.96;--modal-ease:cubic-bezier(.22,1,.36,1);transform-origin:center}
+.syka-motion-preview[data-expanded]{animation:syka-motion-open var(--modal-open-dur) var(--modal-ease)}
+.syka-motion-preview[data-closed]{animation:syka-motion-close var(--modal-close-dur) var(--modal-ease)}
+@keyframes syka-motion-open{from{opacity:0;scale:var(--modal-scale)}to{opacity:1;scale:1}}
+@keyframes syka-motion-close{from{opacity:1;scale:1}to{opacity:0;scale:var(--modal-scale)}}
+@media(prefers-reduced-motion:reduce){.syka-motion-preview{animation:none!important}}
+[data-syka-motion=reduced] .syka-motion-preview{animation:none!important}

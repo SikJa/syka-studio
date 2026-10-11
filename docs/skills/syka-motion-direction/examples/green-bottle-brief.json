@@ -1,0 +1,62 @@
+{
+  "brief": {
+    "purpose": "Presentar una botella verde ficticia como objeto de diseño; el público debe recordar su silueta y el cierre VERDE. SIMPLE., sin promesas de desempeño ni sustentabilidad.",
+    "audience": "Personas que miran reels en móvil y valoran objetos de diseño sobrio; demo hipotética, sin segmentación comercial comprobada.",
+    "useCase": "product-launch",
+    "language": "español",
+    "delivery": { "width": 1080, "height": 1920, "durationSeconds": 15, "fps": 30, "destination": "Reel vertical; proyecto editable, sin export solicitado en esta demo" },
+    "copy": ["VERDE. SIMPLE."],
+    "direction": "La luz descubre la forma: una botella opaca verde bosque se revela, se acerca a un detalle del hombro, recupera su silueta completa y cierra junto a dos palabras. Ilustración original 2.5D, no foto de producto real. Fondo crema con textura casi imperceptible, sombra amplia y una sola banda de luz que conecta los planos. La sofisticación viene del encuadre, la materialidad sugerida y las pausas; no de llenar la escena de partículas o tarjetas.",
+    "typography": {
+      "families": ["Inter"],
+      "hierarchy": "Copy en dos líneas, VERDE. / SIMPLE., 112 px semibold, interlineado 1.0 y tracking -0.02em; comprobar la familia realmente disponible antes de construir. No agregar subtítulos pequeños ni claims.",
+      "layout": "Botella centrada en x=540, base visual cerca de y=1370, altura aproximada 930 px al principio y cierre. En el plano final pasa a x=700 y el copy ocupa x=120..570, y=600..900. No superponer letras a la silueta. Reencuadrar el detalle sin destruir la identidad del objeto.",
+      "palette": ["#244B36", "#F2EFE6", "#171D18", "#C5D2BB"],
+      "safeArea": "120 px laterales, 180 px arriba y 300 px abajo como márgenes de trabajo de esta demo; revisar overlays reales del destino y ajustar, no tratarlos como regla universal."
+    },
+    "motion": {
+      "grammar": "Entradas de 0.5–0.7 s con aceleración/desaceleración suave; escala y luz coordinadas, holds estables y salida final de 0.4 s. El cambio de encuadre comunica un detalle, no un rebote. Mover como máximo un foco principal por vez. Música sostiene las fases sin obligar a cortar en cada beat.",
+      "continuity": "Conservar bottle-main durante los 15 s: misma geometría, color y sombra. Compartir posición/escala/iluminación en las costuras 3, 7 y 10 s. La cámara 2.5D se deriva de tiempo absoluto y no simula una rotación 3D inexistente. Los grupos reveal-beat, detail-beat, hero-beat y closing-beat representan ventanas temporales con esos límites para anclar los eventos."
+    },
+    "audio": {
+      "mode": "music+sfx",
+      "voice": "Sin voz, según la respuesta hipotética de esta demo.",
+      "selection": "Dirección delegada: base electrónica cálida con textura aireada, pulso discreto y cierre de frase; 100–110 BPM es una orientación creativa, todavía no un tempo medido. Buscar en la biblioteca incluida o sintetizar localmente una propuesta original. Tres acentos suaves: aire al revelar, toque opaco al recuperar el plano general y nota corta en el cierre. Archivos aún no seleccionados ni escuchados.",
+      "mix": "La música ocupa el fondo y los acentos marcan acciones principales. Reservar espacio entre cues y evitar que cada ajuste de luz haga ruido. Fade de entrada aproximado 0.35 s; sostener la cola del acento final y fade musical de 14.4 a 15 s sin corte abrupto. Ajustar niveles por escucha comparable y medir el mix real con syka_audio_analyze; no imponer un LUFS universal ni sumar el mix completo junto con todos sus stems."
+    },
+    "references": [
+      { "id": "stack-charlie947-motion-graphics-skills", "source": "docs/skills/syka-motion-references/references/repo-studies/charlie947-motion-graphics-skills.md", "roles": ["story", "technical"], "observation": "El estudio documental separa hechos, copy, tarea y salida; el complemento reference-to-motion distingue movimiento de apariencia.", "apply": "Resolver el pedido ambiguo antes de elegir imagen o motion, declarar las delegaciones y asignar una función a cada referencia.", "avoid": "No reducir este superprompt a 300 palabras ni importar el renderer upstream.", "evidence": "written-study" },
+      { "id": "syka-native-editorial", "source": "docs/skills/syka-editorial-motion/references/visual-profiles.md", "roles": ["look", "movement", "technical"], "observation": "La familia de producto conserva un objeto protagonista y reserva la anotación para información que realmente necesita explicar.", "apply": "Mantener la botella como ancla, separar copy y producto y sostener el hold de lectura. Usar fases derivadas del reloj absoluto.", "avoid": "No convertir los cuatro beats en cuatro tarjetas ni trasladar la paleta del ejemplo de callout.", "evidence": "written-study" },
+      { "id": "stack-whaleyxbt-claude-motion", "source": "docs/skills/syka-motion-references/references/repo-studies/whaleyxbt-claude-motion.md", "roles": ["audio", "movement"], "observation": "El estudio documental usa beats con nombres y un plan compartido para sonido y revisión, con lectura a 360 px.", "apply": "Vincular acentos y cuadros de revisión al mismo ID nativo, medir ataques del asset antes de colocarlo y escuchar la pieza completa.", "avoid": "No copiar su música, presets visuales o cifras de mastering, ni afirmar que se escuchó el audio upstream.", "evidence": "written-study" }
+    ],
+    "assets": [],
+    "constraints": [
+      "Esta es una demo de prompt: no hay botella, logo, WAV ni modelo 3D producidos o inspeccionados todavía. Crear una ilustración propia durante producción; conservar su fuente y recursos relativos.",
+      "La botella es ficticia y opaca. No inventar marca, métricas, propiedades del material, beneficio ecológico ni instrucciones tomadas de las referencias.",
+      "El copy VERDE. SIMPLE. debe ser texto editable y conservarse exactamente, incluida puntuación. Comprobar carga de Inter y legibilidad a 360 px.",
+      "No asignar assetCuePointSeconds ni BPM comprobado antes de medir un archivo real; el soundtrack es una dirección delegada pendiente de selección y escucha.",
+      "La pieza tiene un cierre deliberado y no es loop: no forzar continuidad entre 15 y 0 s. Los cambios de encuadre 3/7/10 s deben conservar el objeto y no producir flashes.",
+      "Revisar máscara/reflejo en el acercamiento y la separación del copy a 12.35 s. Probar seek directo, desde antes y desde después al mismo instante; un análisis de MP4 no verifica ese comportamiento.",
+      "Esta demo no autoriza exportar/publicar ni contratar un proveedor. Conservar el motor Diffusion y edición por grupos/capas."
+    ]
+  },
+  "consultation": [
+    { "question": "[DEMO HIPOTÉTICA] ¿Imagen fija o motion, para qué público/destino y en qué duración/formato?", "answer": "[DEMO HIPOTÉTICA] Motion de producto para reel, 15 segundos vertical, para gente que aprecia diseño simple; resolución y fps delegados.", "fields": ["purpose", "audience", "useCase", "delivery"] },
+    { "question": "[DEMO HIPOTÉTICA] ¿Producto/marca reales o inventados, copy exacto, tono y referencias?", "answer": "[DEMO HIPOTÉTICA] Inventá una botella verde, sin marca ni beneficios falsos. Copy VERDE. SIMPLE. Sobrio; delego dirección visual y tipografía.", "fields": ["copy", "direction", "typography", "motion", "references", "assets"] },
+    { "question": "[DEMO HIPOTÉTICA] ¿Música, efectos, ambos o silencio; voz o referencia sonora?", "answer": "[DEMO HIPOTÉTICA] Música y un par de efectos, sin voz. Delego selección y mezcla.", "fields": ["audio"] }
+  ],
+  "beats": [
+    { "id": "reveal", "start": 0, "end": 3, "purpose": "Reconocer la silueta", "copy": [], "layout": "Botella completa centrada; fondo crema y sombra amplia; sin copy.", "entry": "0–0.7 s: revelar con banda de luz, opacidad y ajuste vertical de 24 px; asentarse sin rebote.", "holdStart": 0.7, "holdEnd": 2.4, "exit": "2.4–3 s: empezar acercamiento al hombro; la botella no desaparece.", "bridge": "Compartir exactamente posición, escala y luz al entrar en detail.", "review": ["Silueta inequívoca a 0.7 s", "No flash de máscara a 0/0.7/3 s", "Acento coincide con asentamiento, no con inicio del WAV"] },
+    { "id": "detail", "start": 3, "end": 7, "purpose": "Mostrar la curva y el acabado sugerido", "copy": [], "layout": "Detalle del hombro sobre el mismo producto, escala aproximada 1.35 con encuadre ajustado.", "entry": "3–3.6 s: terminar acercamiento heredado y desplazar luz lateralmente.", "holdStart": 3.6, "holdEnd": 6.3, "exit": "6.3–7 s: iniciar retorno hacia la silueta completa.", "bridge": "Transferir estado continuo a hero; conservar textura y dirección de luz.", "review": ["Sin recorte accidental de bordes", "No fingir rotación de una foto", "Detalle útil reconocible al tamaño móvil"] },
+    { "id": "hero", "start": 7, "end": 10, "purpose": "Recuperar la forma completa", "copy": [], "layout": "Plano general, botella cercana a x=700 para liberar el espacio del cierre.", "entry": "7–7.5 s: terminar salida del detalle y asentarse en nueva composición.", "holdStart": 7.5, "holdEnd": 9.5, "exit": "9.5–10 s: la luz baja de intensidad preparando la tipografía.", "bridge": "La botella conserva su estado; el cierre agrega texto en el espacio libre.", "review": ["Continuidad a 7 s con cuadros vecinos", "Sombras no saltan", "Acento sonoro principal a 7.5 s"] },
+    { "id": "closing", "start": 10, "end": 15, "purpose": "Recordar la frase y cerrar", "copy": ["VERDE. SIMPLE."], "layout": "Copy en dos líneas a la izquierda; producto a la derecha, ambos dentro del área segura.", "entry": "10–10.55 s: entrada de texto con 16 px verticales y opacidad; stagger entre líneas de 80 ms, sin desplazar palabras en el hold.", "holdStart": 10.55, "holdEnd": 14.6, "exit": "14.6–15 s: fade coordinado de escena; la música empieza su fade a 14.4 s.", "bridge": "Cierre deliberado, sin obligación de loop y con colas sonoras resueltas.", "review": ["Leer VERDE. SIMPLE. a 360 px a 12.35 s", "Texto y botella no colisionan", "Escuchar cola final y comprobar último cuadro"] }
+  ],
+  "events": [
+    { "id": "bottle-arrival", "beat": "reveal", "at": "holdStart", "kind": "visual", "description": "La silueta se asienta y termina la entrada.", "element": "reveal-beat" },
+    { "id": "reveal-sound", "beat": "reveal", "at": "holdStart", "kind": "sfx", "description": "Aire corto al asentarse; seleccionar y medir asset antes de fijar su inicio.", "element": "reveal-beat" },
+    { "id": "hero-accent", "beat": "hero", "at": "holdStart", "kind": "sfx", "description": "Toque opaco al recuperar el plano general; ataque del asset pendiente.", "element": "hero-beat" },
+    { "id": "closing-note", "beat": "closing", "at": "holdStart", "offsetSeconds": 1.8, "kind": "sfx", "description": "Nota corta con decay que llega completo al cierre, sin competir con la lectura.", "element": "closing-beat" },
+    { "id": "reading-hold", "beat": "closing", "at": "holdStart", "offsetSeconds": 1.8, "kind": "review", "description": "Revisar separación, jerarquía y lectura del copy en el máximo hold.", "element": "closing-beat" },
+    { "id": "music-fade", "beat": "closing", "at": "end", "offsetSeconds": -0.6, "kind": "music", "description": "Comenzar fade de la base seleccionada; nivel inicial pendiente de escucha.", "element": "closing-beat" }
+  ]
+}

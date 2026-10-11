@@ -1,0 +1,33 @@
+.agent-identity-orb { position:relative; display:grid; flex:0 0 auto; place-items:center; color:var(--text); }
+.agent-identity-orb canvas { position:relative; z-index:2; display:block; }
+.agent-identity-orb-sidebar { width:18px; height:18px; }
+.agent-identity-orb-sidebar canvas { width:18px !important; height:18px !important; }
+.agent-identity-orb-header { width:28px; height:28px; }
+.agent-identity-orb-header canvas { width:28px !important; height:28px !important; }
+.agent-identity-orb-message { width:22px; height:22px; }
+.agent-identity-orb-message canvas { width:22px !important; height:22px !important; }
+.agent-identity-orb-hero { width:156px; height:156px; }
+.agent-identity-orb-hero canvas { width:104px !important; height:104px !important; }
+.agent-identity-orb-modal { width:56px; height:56px; }
+.agent-identity-orb-modal canvas { width:52px !important; height:52px !important; }
+
+.agent-response-orb-slot { position:relative; display:grid; width:22px; height:22px; flex:0 0 22px; place-items:center; }
+.agent-response-orb-static { position:relative; display:block; width:16px; height:16px; opacity:.72; }
+.agent-response-orb-static::before,
+.agent-response-orb-static::after,
+.agent-response-orb-static > i { position:absolute; border-radius:999px; background:currentColor; content:""; }
+.agent-response-orb-static::before { inset:4px; opacity:.78; }
+.agent-response-orb-static::after { inset:1px 7px; opacity:.42; }
+.agent-response-orb-static > i { width:2px; height:2px; opacity:.58; }
+.agent-response-orb-static > i:nth-child(1) { top:1px; left:4px; }
+.agent-response-orb-static > i:nth-child(2) { top:7px; right:1px; }
+.agent-response-orb-static > i:nth-child(3) { bottom:1px; left:3px; }
+.agent-response-orb-slot[data-orb-state="shaping"] { color:#d9b995; transform:rotate(-10deg); }
+.agent-response-orb-slot[data-orb-state="weaving"] { color:#c6ad83; transform:rotate(18deg); }
+.agent-response-orb-slot[data-orb-state="composing"] { color:var(--color-foreground, #e8e8ec); }
+.agent-response-orb-slot[data-orb-state="listening"] { color:#9db8ae; transform:scaleX(.82); }
+.agent-response-orb-slot[data-orb-state="solving"] { color:#a9b3c5; transform:rotate(90deg) scale(.92); }
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-identity-orb-message canvas { animation:none !important; }
+}

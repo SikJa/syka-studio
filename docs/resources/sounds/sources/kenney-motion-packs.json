@@ -1,0 +1,248 @@
+{
+  "version": 1,
+  "researchSource": "https://github.com/Bodila51/opus-sound-layer",
+  "researchCommit": "52ac266a24b7dfd3cd06a28c34d5af360a8d7586",
+  "selectionLicense": "MIT; see docs/licenses/LICENSE.opus-sound-layer.txt",
+  "packs": [
+    {
+      "id": "impact",
+      "name": "Kenney (kenney.nl), Impact Sounds",
+      "url": "https://kenney.nl/assets/impact-sounds",
+      "archiveUrl": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "sha256": "029d734af1582474edf3a694d1b0cebc97c1c152f2f39fa34d4c2bafc5de77f8",
+      "zip": "impact.zip",
+      "license": "CC0-1.0",
+      "map": [
+        [
+          "^footstep",
+          "skip",
+          []
+        ],
+        [
+          "^impactBell",
+          "hit",
+          [
+            "bell",
+            "metal",
+            "tonal"
+          ]
+        ],
+        [
+          "^impactPunch",
+          "tap",
+          [
+            "punch",
+            "body",
+            "heavy"
+          ]
+        ],
+        [
+          "^impactSoft",
+          "thump",
+          [
+            "soft"
+          ]
+        ],
+        [
+          "heavy",
+          "tap",
+          [
+            "heavy"
+          ]
+        ],
+        [
+          "^impact",
+          "tap",
+          []
+        ]
+      ]
+    },
+    {
+      "id": "scifi",
+      "name": "Kenney (kenney.nl), Sci-fi Sounds",
+      "url": "https://kenney.nl/assets/sci-fi-sounds",
+      "archiveUrl": "https://kenney.nl/media/pages/assets/sci-fi-sounds/6b296f9ecf-1677589334/kenney_sci-fi-sounds.zip",
+      "sha256": "119340f351a5098ad814f78719438c0da355a9ce8a4c8a3af6a8d48aa3d49e04",
+      "zip": "scifi.zip",
+      "license": "CC0-1.0",
+      "map": [
+        [
+          "^(engine|spaceEngine|thruster|slime|preview)",
+          "skip",
+          []
+        ],
+        [
+          "^computerNoise",
+          "glitch",
+          [
+            "computer",
+            "data"
+          ]
+        ],
+        [
+          "^door",
+          "transition",
+          [
+            "scifi",
+            "door",
+            "hydraulic"
+          ]
+        ],
+        [
+          "^lowFrequency",
+          "boom",
+          [
+            "explosion",
+            "low"
+          ]
+        ],
+        [
+          "^explosion",
+          "hit",
+          [
+            "explosion",
+            "crunch"
+          ]
+        ],
+        [
+          "^impactMetal",
+          "hit",
+          [
+            "metal",
+            "scifi"
+          ]
+        ],
+        [
+          "^(laser|forceField)",
+          "zap",
+          [
+            "scifi"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "casino",
+      "name": "Kenney (kenney.nl), Casino Audio",
+      "url": "https://kenney.nl/assets/casino-audio",
+      "archiveUrl": "https://kenney.nl/media/pages/assets/casino-audio/2472606a04-1721639069/kenney_casino-audio.zip",
+      "sha256": "f36250766ac5bc378c13708ddf12a23a8e54a3251f8d482c7536e51b5dbafa18",
+      "zip": "casino.zip",
+      "license": "CC0-1.0",
+      "map": [
+        [
+          "^preview",
+          "skip",
+          []
+        ],
+        [
+          "^card-(slide|shove)",
+          "swish",
+          [
+            "card",
+            "slide"
+          ]
+        ],
+        [
+          "^card",
+          "paper",
+          [
+            "card"
+          ]
+        ],
+        [
+          "^cards",
+          "paper",
+          [
+            "card",
+            "pack"
+          ]
+        ],
+        [
+          "^chip",
+          "tap",
+          [
+            "chip",
+            "plastic"
+          ]
+        ],
+        [
+          "^(dice|die)",
+          "tap",
+          [
+            "dice",
+            "plastic"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "rpg",
+      "name": "Kenney (kenney.nl), RPG Audio",
+      "url": "https://kenney.nl/assets/rpg-audio",
+      "archiveUrl": "https://kenney.nl/media/pages/assets/rpg-audio/8e99002d76-1677590336/kenney_rpg-audio.zip",
+      "sha256": "6dbeaf8544da958d8f2adcb4a4a4b76c1ade34a05f8ab9edccd327da7375f38b",
+      "zip": "rpg.zip",
+      "license": "CC0-1.0",
+      "map": [
+        [
+          "^(preview|footstep|creak|door)",
+          "skip",
+          []
+        ],
+        [
+          "^book",
+          "paper",
+          [
+            "book"
+          ]
+        ],
+        [
+          "^(cloth|clothBelt)",
+          "swish",
+          [
+            "cloth"
+          ]
+        ],
+        [
+          "^(drawKnife|knifeSlice)",
+          "swish",
+          [
+            "blade",
+            "metal"
+          ]
+        ],
+        [
+          "^metal(Click|Latch)",
+          "click",
+          [
+            "metal",
+            "latch"
+          ]
+        ],
+        [
+          "^metalPot",
+          "tap",
+          [
+            "metal",
+            "pot"
+          ]
+        ],
+        [
+          "^(handleCoins|chop|beltHandle|handleSmallLeather)",
+          "tap",
+          [
+            "object"
+          ]
+        ],
+        [
+          "^dropLeather",
+          "thump",
+          [
+            "leather"
+          ]
+        ]
+      ]
+    }
+  ]
+}

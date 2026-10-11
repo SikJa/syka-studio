@@ -1,0 +1,13 @@
+.syka-update-trigger{position:relative;display:grid;place-items:center;width:28px;height:28px;border-radius:8px;color:var(--muted-foreground);transition:background-color 150ms ease,color 150ms ease}
+.syka-update-trigger:hover,.syka-update-trigger:focus-visible{background:var(--accent);color:var(--foreground)}
+.syka-update-trigger:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.syka-update-trigger[data-attention=true]{color:var(--primary)}
+.syka-update-dot{position:absolute;right:2px;top:2px;width:5px;height:5px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 2px var(--sidebar)}
+.syka-update-popover{width:min(296px,calc(100vw - 24px));padding:16px;border-radius:12px}
+.syka-update-details{display:flex;flex-direction:column;gap:8px;min-width:0;overflow-wrap:anywhere}
+.syka-update-progress{height:3px;width:100%;border-radius:4px;background:var(--accent);overflow:hidden}
+.syka-update-progress::after{content:"";display:block;width:35%;height:100%;background:var(--primary);animation:syka-update-download 1.6s ease-in-out infinite}
+@keyframes syka-update-download{from{transform:translateX(-110%)}to{transform:translateX(390%)}}
+@media(prefers-reduced-motion:reduce){.syka-update-trigger{transition:none}.syka-update-progress::after{animation:none;width:100%;opacity:.6}}
+[data-syka-motion=reduced] .syka-update-trigger{transition:none}
+[data-syka-motion=reduced] .syka-update-progress::after{animation:none;width:100%;opacity:.6}

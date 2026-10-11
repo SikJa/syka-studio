@@ -1,0 +1,47 @@
+.syka-image-generation { --resize-dur:300ms; --resize-ease:cubic-bezier(.22,1,.36,1); width:100%; max-width:600px; min-width:0; margin:6px 0; }
+.syka-image-generation-preview { position:relative; z-index:1; overflow:hidden; border-radius:12px; background:rgb(4 4 5/.55); }
+.syka-image-generation-preview>[data-slot="grid-reveal"] { border-radius:0; }
+.syka-image-generation-preview>img { display:block; width:100%; height:100%; object-fit:contain; }
+/* A chat already mounted by the React/Solid bridge can retain the previous
+   nested toolbar during a CSS hot update. Keep that toolbar out of the crop. */
+.syka-image-generation-preview:has(>.syka-image-generation-actions) { overflow:visible; aspect-ratio:auto!important; background:transparent; }
+.syka-image-generation-preview:has(>.syka-image-generation-actions)>img { height:auto; border-radius:12px; }
+.syka-image-generation-status { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+.syka-image-generation-preview { position:relative; }
+.syka-image-generation-preview>.syka-image-generation-open { position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; border-radius:inherit; background:transparent; cursor:zoom-in; }
+.syka-image-generation-preview>.syka-image-generation-open:focus-visible { outline:2px solid #fff; outline-offset:-3px; }
+.syka-image-generation-actions-space { position:relative; width:152px; height:0; margin:-1px auto 0; }
+.syka-image-generation-actions-space[data-ready="true"] { height:29px; }
+.syka-image-generation .t-resize {
+  transition:
+    width var(--resize-dur) var(--resize-ease),
+    height var(--resize-dur) var(--resize-ease);
+  will-change:width,height;
+}
+.syka-image-generation-actions { position:relative; width:152px; height:30px; margin:-1px auto 0; transform-origin:50% 0; animation:syka-image-dock-reveal 300ms var(--resize-ease) both; }
+.syka-image-generation-actions-space>.syka-image-generation-actions { margin:0; }
+.syka-image-generation-actions:not(:has(>.syka-image-generation-arc>.syka-image-generation-fill))::before { content:''; position:absolute; inset:0; background:rgb(0 0 0/.68); pointer-events:none; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 152 30'%3E%3Cpath d='M0 0 C10.4 0 12.48 8 13.152 17.6 C13.54 23.2 13.7 29 22 29 H130 C138.3 29 138.46 23.2 138.848 17.6 C139.52 8 141.6 0 152 0 Z' fill='white'/%3E%3C/svg%3E") center/100% 100% no-repeat; }
+.syka-image-generation-arc { position:absolute; inset:0; width:152px; height:30px; pointer-events:none; overflow:visible; }
+.syka-image-generation-arc:not(:has(>.syka-image-generation-fill)) { display:none; }
+.syka-image-generation-fill { fill:rgb(0 0 0/.68); }
+.syka-image-generation-edge { fill:none; stroke:rgb(255 255 255/.18); stroke-width:.65; }
+.syka-image-generation-actions>a,.syka-image-generation-actions>button { position:absolute; top:2px; display:grid; place-items:center; width:24px; height:24px; padding:0; border:0; border-radius:6px; color:#cdcdcd; background:transparent; text-decoration:none; cursor:pointer; transition:color 150ms ease; animation:syka-image-controls-reveal 300ms var(--resize-ease) 60ms both; }
+.syka-image-generation-actions>a { left:33px; }
+.syka-image-generation-actions>button:nth-of-type(1) { left:64px; }
+.syka-image-generation-actions>button:nth-of-type(2) { left:95px; }
+.syka-image-generation-actions>a svg,.syka-image-generation-actions>button svg { width:14px; height:14px; stroke-width:1.3; }
+.syka-image-generation-actions button:disabled { opacity:.4; cursor:default; }
+.syka-image-generation-actions>a:hover,.syka-image-generation-actions>button:hover:not(:disabled) { color:#fff; }
+.syka-image-generation :is(button,a):focus-visible { outline:2px solid #fff; outline-offset:1px; }
+.syka-image-generation-error { display:flex; flex-direction:column; align-items:flex-start; gap:8px; padding:18px 12px; border-radius:12px; background:rgb(4 4 5/.55); color:var(--muted-foreground); font-size:12px; }
+.syka-image-generation-error>svg { width:22px; height:22px; }
+.syka-image-generation-error strong { color:var(--foreground); }
+.syka-image-generation-error p { overflow-wrap:anywhere; max-height:100px; overflow:auto; }
+@keyframes syka-image-controls-reveal { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
+@keyframes syka-image-dock-reveal { from { opacity:0; transform:scaleY(.72); } to { opacity:1; transform:scaleY(1); } }
+@media (prefers-reduced-motion:reduce) {
+  .syka-image-generation .t-resize { transition:none!important; }
+  .syka-image-generation-actions,.syka-image-generation-actions>a,.syka-image-generation-actions>button { transition:none; animation:none; }
+}
+[data-syka-motion="reduced"] .syka-image-generation .t-resize { transition:none!important; }
+[data-syka-motion="reduced"] .syka-image-generation-actions,[data-syka-motion="reduced"] .syka-image-generation-actions>a,[data-syka-motion="reduced"] .syka-image-generation-actions>button { transition:none; animation:none; }

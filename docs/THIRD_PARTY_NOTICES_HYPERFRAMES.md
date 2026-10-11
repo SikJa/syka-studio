@@ -1,0 +1,17 @@
+# HyperFrames: procedencia y redistribución
+
+Syka mantiene su runtime Diffusion. Las skills nativas agregadas/adaptadas son instrucciones originales que aplican procesos documentados por HyperFrames. Desde el 7 de octubre de 2026 se incluye además `hyperframes@0.8.140` como dependencia del worker de recorte local de personas: se invoca su pipeline sin modificar su código. No reemplaza el renderer Diffusion ni incorpora su Studio o todos sus proveedores. Se conservan las licencias y avisos del paquete distribuido y la licencia Apache en `licenses/hyperframes-APACHE-2.0.txt`. El adaptador, el panel y la conversión a secuencias PNG para Diffusion son código propio. El modelo descargado `u2net_human_seg` proviene de https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net_human_seg.onnx; ONNX Runtime es una dependencia independiente, con sus avisos incluidos en el paquete.
+
+Los 13 archivos de `skills/syka-visual-direction/references/frames/*.md` son copias sin cambios de plantillas `FRAME.md` públicas de `heygen-com/hyperframes/skills/hyperframes-creative/frame-presets`, checkout `5a77dbcea12bcc11f8480b2fc1242afca16e4135`. Se conservan como referencias de diseño; no se copiaron sus showcases HTML, medios ni archivos de fuentes. Los nombres de familias tipográficas no suministran sus licencias ni sus binarios. El código/texto upstream se publica bajo Apache-2.0; la copia de la licencia se distribuye en `licenses/hyperframes-APACHE-2.0.txt`. Fuente: https://github.com/heygen-com/hyperframes.
+
+Antes de adaptar y redistribuir un item del catálogo, conservar su licencia, autoría/avisos y NOTICE aplicable; revisar su manifest, dependencias, recursos y licencias particulares. Si se cambia un archivo derivado, señalar el cambio en ese archivo. No atribuir a Syka la autoría del original ni sugerir aval de HeyGen. Las futuras actualizaciones de los presets deben registrar su commit y conservar estos avisos.
+
+Apache-2.0 permite usar, modificar y distribuir el material cubierto, incluido uso comercial, sin obligar a publicar todo el código propio. No da una autorización general sobre marcas, demos privadas, videos de Inspirations, música, tipografías o servicios de HeyGen. Tampoco convierte una API paga en gratuita. Los recursos con otras licencias deben respetar sus propias condiciones. Esta entrega no redistribuye esa biblioteca multimedia ni acredita un permiso global para hacerlo.
+
+Texto oficial: https://www.apache.org/licenses/LICENSE-2.0.
+
+## Motions nativos agregados el 2026-10-06
+
+`resources/motions/OrbitFeature.tsx`, `CircleGallery.tsx` y `motion-time.ts` son implementaciones originales para el motor Diffusion, distribuidas con el código Syka bajo MPL-2.0. Se estudiaron la presentación y el ritmo de [Orbit Card](https://hyperframes.heygen.com/catalog/blocks/orbit-card) y [Circle Carousel 3](https://hyperframes.heygen.com/catalog/blocks/carousel-circle-3); código público consultado en commit `d94708e5312df021e1fdcac421f00ed3015f11bd`. No se copiaron su implementación HTML/GSAP/Three.js, curvas de Blender, bibliotecas ni fotografías de muestra. La órbita de Syka es una adaptación 2.5D, no una réplica del rig original. Los previews incluidos se renderizaron en Diffusion con ilustraciones SVG propias.
+
+`skills/syka-visual-direction/references/reference-to-edit.md` adapta criterios de proceso de las guías públicas de prompting, design y animation a las herramientas de Syka; es un texto original. Ni esas instrucciones ni consultar ejemplos constituyen entrenamiento de pesos de modelos.

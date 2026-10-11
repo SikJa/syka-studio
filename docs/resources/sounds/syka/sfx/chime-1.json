@@ -1,0 +1,16 @@
+{
+  "duration": 1.5,
+  "rate": 48000,
+  "channels": 2,
+  "frames": 72000,
+  "peakDb": -6.0000004906757844,
+  "rmsDb": -21.983019793504365,
+  "clippedSamples": 0,
+  "kind": "chime",
+  "seed": 173,
+  "variant": 0,
+  "loop": false,
+  "license": "MIT",
+  "generator": "Syka audio-studio",
+  "stems": []
+}

@@ -1,0 +1,36 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "useDefineForClassFields": true,
+    "erasableSyntaxOnly": false,
+    "lib": [
+      "es2024",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "types": [
+      "vite-plugin-solid-svg/types-component-solid",
+      "vite/client",
+      "@types/audioworklet",
+      "@types/wicg-file-system-access",
+      "@webgpu/types"
+    ],
+    "allowImportingTsExtensions": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@desktop/*": [
+        "../desktop/src/*"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "../desktop/src/ipc-channels.ts"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "duration": 0.8,
+  "rate": 48000,
+  "channels": 2,
+  "frames": 38400,
+  "peakDb": -6.0000004906757844,
+  "rmsDb": -18.757676341512408,
+  "clippedSamples": 0,
+  "kind": "success",
+  "seed": 226,
+  "variant": 1,
+  "loop": false,
+  "license": "MIT",
+  "generator": "Syka audio-studio",
+  "stems": []
+}

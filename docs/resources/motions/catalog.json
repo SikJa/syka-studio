@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "path": "OrbitFeature.mp4",
+      "posterPath": "OrbitFeature.png",
+      "brand": "Syka · Editorial",
+      "title": "Órbita",
+      "tags": ["orbit", "orbit-card", "tarjeta", "presentación", "feature", "3d", "idea"],
+      "duration": 8,
+      "license": "MPL-2.0 · implementación original Syka",
+      "url": "https://hyperframes.heygen.com/catalog/blocks/orbit-card",
+      "componentPath": "OrbitFeature.tsx",
+      "componentFiles": ["OrbitFeature.tsx", "motion-time.ts", "README.md"],
+      "usage": "Copiar componentFiles a components/. Import default OrbitFeature. Props: id,start,end,title,detail,label?,accent?,width?,height?,x?,y?. Una tarjeta 2.5D con esfera analítica; texto interno editable en props/fuente. No es el rig Blender original. No importar la muestra MP4."
+    },
+    {
+      "path": "CircleGallery.mp4",
+      "posterPath": "CircleGallery.png",
+      "brand": "Syka · Editorial",
+      "title": "Carrusel circular",
+      "tags": ["carousel", "carousel-circle-3", "carrusel", "colección", "galería", "imágenes", "referencias"],
+      "duration": 10,
+      "license": "MPL-2.0 · implementación original Syka",
+      "url": "https://hyperframes.heygen.com/catalog/blocks/carousel-circle-3",
+      "componentPath": "CircleGallery.tsx",
+      "componentFiles": ["CircleGallery.tsx", "motion-time.ts", "README.md"],
+      "usage": "Copiar componentFiles a components/. Import default CircleGallery. Props: id,start,end,images (3–12 rutas locales),title?,subtitle?,secondsPerCard?,fit?,accent?,width?,height?,x?,y?. Usar fit contain para capturas completas. Sustituir imágenes por material real. No importar la muestra MP4."
+    }
+  ]
+}

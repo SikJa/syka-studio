@@ -1,0 +1,11 @@
+.syka-projects-submenu { width: 300px; max-width: calc(100vw - 24px); max-height: min(420px, var(--kb-popper-content-available-height, 70vh)); gap: 2px; }
+.syka-project-menu-row { min-width: 0; gap: 8px; }
+.syka-project-menu-current { flex: 0 0 12px; width: 12px; text-align: center; }
+.syka-project-menu-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.syka-project-menu-activity { display: grid; place-items: center; flex: 0 0 16px; width: 16px; color: var(--syka-accent-text, var(--primary)); }
+.syka-project-activity-spinner { display: block; width: 13px; height: 13px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: syka-project-activity-spin 850ms linear infinite; }
+.syka-project-waiting-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.syka-project-unknown { color: var(--muted-foreground); }
+.syka-project-menu-message { padding: 8px; font-size: 12px; color: var(--muted-foreground); }
+@keyframes syka-project-activity-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .syka-project-activity-spinner { animation: none; } }

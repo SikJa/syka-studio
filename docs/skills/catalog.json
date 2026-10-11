@@ -1,0 +1,250 @@
+{
+  "version": 1,
+  "engine": "diffusion",
+  "count": 27,
+  "skills": [
+    {
+      "name": "editor.md",
+      "title": "Edit footage in Syka",
+      "category": "Edición y revisión",
+      "path": "skills/editor.md",
+      "description": "Default to one main composition: add all footage, captions, audio and motion graphics inside the existing active scene. Do not create a second scene or activate a demo just to fulfill an editing request. Additional independent compositions require an explicit user request. The editor shows a single composition by default and provides an optional overview.",
+      "sha256": "8eb4fd9de765de53c9d83a20092b3ac627fa78c6d9f3c731c969c56e6bbf3daf",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-camera-3d-captions",
+      "title": "Captions con profundidad",
+      "category": "Subtítulos",
+      "path": "skills/syka-camera-3d-captions/SKILL.md",
+      "description": "Adaptar Camera 3D Captions a Diffusion con texto nativo editable, proyección de profundidad y cámara determinista, sin instalar otro motor.",
+      "sha256": "d6713a418977780cd95efbf6ec9b28017cca1aeafeee967196b072f077fcb015",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-captions",
+      "title": "Captions legibles",
+      "category": "Subtítulos",
+      "path": "skills/syka-captions/SKILL.md",
+      "description": "Crear o corregir subtítulos editables en Syka con timestamps reales, frases legibles y sincronía tras cortes o cambios de velocidad.",
+      "sha256": "bff753ec0ed6a5efc9ba532de2acf8a942a9fdfa143dd9d472dc92b9cefe0299",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-content-package",
+      "title": "Contenido desde el chat que ya está abierto",
+      "category": "Entrega y publicación",
+      "path": "skills/syka-content-package/SKILL.md",
+      "description": "Acordar y recordar por chat el estilo de portadas y textos por red. Usar al configurar contenido, ante un pedido de derivados o al ofrecerlos después de un video terminado; conservar aceptación o rechazo sin crear otra pantalla.",
+      "sha256": "b4cb106f4d394ce7ef2f6cddc18b9088e7446e7ede11a2bd89c46fbc893d0967",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-design-import",
+      "title": "Diseño resuelto → composición nativa",
+      "category": "Edición y revisión",
+      "path": "skills/syka-design-import/SKILL.md",
+      "description": "Traducir un diseño, export de Figma, SVG o styleframe aportado por el usuario a capas y motion editables de Diffusion. Usar cuando la referencia tiene diseño resuelto; no implica una conexión autenticada con Figma.",
+      "sha256": "aa7761ccd783863a267dc1932b02ab3cff49e485ecd29e5e93b2a31849e60e7d",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-edit-review",
+      "title": "Revisión proporcional",
+      "category": "Edición y revisión",
+      "path": "skills/syka-edit-review/SKILL.md",
+      "description": "Comprobar calidad de una edición o export de Syka con revisión proporcional: cortes, captions, composición, audio y correspondencia con el pedido.",
+      "sha256": "8201a896107cb2b00b7ef42e40059fcb6c80937b71e74e4ae2141f260a7807a2",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-editing-basics",
+      "title": "Edición con Syka",
+      "category": "Edición y revisión",
+      "path": "skills/syka-editing-basics/SKILL.md",
+      "description": "Editar videos en Syka con montaje, recursos y comprobaciones proporcionales al pedido. Usar para una edición general o para coordinar captions, audio y motion.",
+      "sha256": "cda63194227cfff604e8c3e5421afe811a51bfdeeec3283e2f29c452601c0ef8",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-editing-recipe",
+      "title": "Una receta que el próximo chat pueda continuar",
+      "category": "Edición y revisión",
+      "path": "skills/syka-editing-recipe/SKILL.md",
+      "description": "Resolver y conservar una receta de edición con decisiones acordadas, referencias y revisión. Usar en una edición amplia o al convertir un resultado aprobado en una skill personal para reels, YouTube u otro uso.",
+      "sha256": "78e426a6f0ddc994de6e8040401d0af6120bd91337f0c28401f1394f0f684915",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-editorial-motion",
+      "title": "Motion editorial en Diffusion",
+      "category": "Dirección y motion",
+      "path": "skills/syka-editorial-motion/SKILL.md",
+      "description": "Crear tarjetas, comparaciones y callouts de calidad editorial sobre video real en Syka, con jerarquía tipográfica, espacio seguro y continuidad animada. Adaptar referencias HyperFrames al motor Diffusion; usar cuando un overlay se vea básico o se pida motion explicativo.",
+      "sha256": "21dae3942d45c5c5597d445a7b29d417f8a7b446bf40ebcb74b7f612b636145f",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-explainer-edit",
+      "title": "Explicaciones con footage real",
+      "category": "Edición y revisión",
+      "path": "skills/syka-explainer-edit/SKILL.md",
+      "description": "Editar una explicación grabada a cámara o en pantalla, coordinando montaje, voz, captions y gráficos que aclaren las ideas. Usar para talking-head, tutoriales y demos con footage real.",
+      "sha256": "0c1f471231d62d73b1adb81a05a4b929cb6fad57525ff217fb825312e37829af",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-faceless-explainer",
+      "title": "Explicar mediante imágenes",
+      "category": "Dirección y motion",
+      "path": "skills/syka-faceless-explainer/SKILL.md",
+      "description": "Crear una explicación sin hablante en pantalla con texto, diagramas y recursos reales en Diffusion. Usar para piezas explicativas narradas o sin voz; una demo grabada usa syka-explainer-edit.",
+      "sha256": "db5db6d7ab11e74c2e0cfae841718e8eecdab13472c7e524f1097806d57da49e",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-local-audio",
+      "title": "Música y diseño sonoro nativo",
+      "category": "Música y sonido",
+      "path": "skills/syka-local-audio/SKILL.md",
+      "description": "Diseñar música y SFX en Syka: elegir sonidos por material/ataque/brillo, alinear cues medidos, proponer volumen contra la base real y revisar el mix exportado con fingerprints. Usar al pedir audio o mejorar una mezcla; conserva Diffusion y edición nativa.",
+      "sha256": "710c26007d5e124ec70f5521c4935dececa3508b7e76596ec8343125bbed260b",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-media-use",
+      "title": "Recursos con una función en el relato",
+      "category": "Referencias y recursos",
+      "path": "skills/syka-media-use/SKILL.md",
+      "description": "Planear y resolver imágenes, logos, footage, música y SFX reales para una edición Syka. Usar cuando una idea necesita recursos visuales o sonoros, sin prometer proveedores no configurados.",
+      "sha256": "feec822a5fafcc659b2e4e8f0bcc6d2d4b04c1964ddad0361135b9beec791da8",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-motion-brief",
+      "title": "Del pedido al plan de producción",
+      "category": "Dirección y motion",
+      "path": "skills/syka-motion-brief/SKILL.md",
+      "description": "Consultar especificaciones de una animación y compilar un superprompt detallado, JSON portable, storyboard y eventos compartidos para Diffusion, con decisión de sonido para toda pieza.",
+      "sha256": "533f929a435c67ea8be3c75f959e51f7155df94446c37abf9beb932803290b47",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-motion-direction",
+      "title": "Dirección de motion",
+      "category": "Dirección y motion",
+      "path": "skills/syka-motion-direction/SKILL.md",
+      "description": "Diseñar la dirección visual y el storyboard de un lanzamiento SaaS, explicador o motion en Syka; convertir referencias en escenas conectadas, tipografía legible, sonido intencional y componentes editables.",
+      "sha256": "7c95c3ec3eaff5b1587cadc4a0186df5d87e8eeea6a524954e26480c9e72c966",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-motion-reels",
+      "title": "Motion para reels",
+      "category": "Dirección y motion",
+      "path": "skills/syka-motion-reels/SKILL.md",
+      "description": "Crear reels y motion vertical en Diffusion con composición para móvil, ritmo, lectura y sonido decidido con el usuario.",
+      "sha256": "4ae87686237af0d1a8e72b0a45150d9d0e838a62c66ab3d8a57b88ffc703a926",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-motion-reference",
+      "title": "Referencia a motion editable",
+      "category": "Referencias y recursos",
+      "path": "skills/syka-motion-reference/SKILL.md",
+      "description": "Analizar videos, capturas y secuencias de frames para reconstruir un motion editable en Syka y convertir un ejemplo aprobado en componente reutilizable.",
+      "sha256": "d62a26c612a482e98854ecf7537f4f66eb6c8b7b10645c088ecb40d905dc4f7e",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-motion-references",
+      "title": "Referencias que dirigen una pieza",
+      "category": "Referencias y recursos",
+      "path": "skills/syka-motion-references/SKILL.md",
+      "description": "Aplicar el conocimiento de motion incluido en Syka: reglas de tipografía, composición, tarjetas y continuidad, estudios escritos y prompts atribuidos para piezas Diffusion editables. Funciona sin descargar videos ni conectar un archivo de investigación.",
+      "sha256": "f2bfe48125cd537be6b282da710d1d98616e44af56dbaaaebc5a834d08ccef49",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-motion-storyboard",
+      "title": "Storyboard que se puede construir",
+      "category": "Dirección y motion",
+      "path": "skills/syka-motion-storyboard/SKILL.md",
+      "description": "Organizar historia, composición, continuidad y plan sonoro en un storyboard de Syka antes de construir motion nativo.",
+      "sha256": "888915e66323cbca5de23f8d2ed8d89ce6ffc3ddd66f25a6f4368cd6c1d9c83a",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-motion-transitions",
+      "title": "Transiciones fluidas en el reloj de Syka",
+      "category": "Dirección y motion",
+      "path": "skills/syka-motion-transitions/SKILL.md",
+      "description": "Adaptar la fluidez de transitions-dev a títulos, paneles y escenas de video de Syka mediante keyframes nativos o timelines pausados; mantener scrubbing, export y movimiento entre escenas coherentes.",
+      "sha256": "df53441817f72a49e0702b8f057ead27c0f1fc18227cabcaee6365d07c4e70f6",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-motion-typography",
+      "title": "Tipografía que conduce la animación",
+      "category": "Dirección y motion",
+      "path": "skills/syka-motion-typography/SKILL.md",
+      "description": "Diseñar texto y captions legibles en Syka con fuentes reales, jerarquía, composición, holds y entradas/salidas editables.",
+      "sha256": "26c7a22827350d45a91400417987b31a80d4f2c3afcca6d94d2fa05dbbe6dca6",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-music-video",
+      "title": "Música como estructura",
+      "category": "Música y sonido",
+      "path": "skills/syka-music-video/SKILL.md",
+      "description": "Crear en Syka un montaje, lyric video o motion guiado por una canción o música existente, con beats verificables y recursos editables. Usar cuando la música determina el ritmo.",
+      "sha256": "4da093904d930ae0f5a170ac5520208c569dda93414008097fbc9a5ce64ef036",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-pr-to-video",
+      "title": "Explicar un cambio, no inventar un lanzamiento",
+      "category": "Dirección y motion",
+      "path": "skills/syka-pr-to-video/SKILL.md",
+      "description": "Crear una explicación visual de una PR o cambio de código en Syka a partir de su diff real, con antes/después y evidencia verificable.",
+      "sha256": "e81e162d3ab5ac8cb952ed21d25349c0877fd06cdc151efba13d14ddef076dec",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-slideshow",
+      "title": "Presentación y video son entregables distintos",
+      "category": "Dirección y motion",
+      "path": "skills/syka-slideshow/SKILL.md",
+      "description": "Diseñar una presentación por diapositivas o convertirla en video editable dentro de Syka, conservando marca, ritmo de lectura y revelados por idea.",
+      "sha256": "ab5174eb928f84c18653e9fece0b5fe6aa3d03d7f463147d35ab160f0657dede",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-video-references",
+      "title": "Referencias de video en Syka",
+      "category": "Referencias y recursos",
+      "path": "skills/syka-video-references/SKILL.md",
+      "description": "Analyze a local video or a public Instagram, TikTok, X or YouTube link as an editorial reference, with specific intent, timestamped visual evidence, optional audio and bounded temporary downloads.",
+      "sha256": "063c77ec4d66108fbf37c680e55568fd5b17e9abdbb1f625c02a4e2e9355f9bd",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-visual-direction",
+      "title": "Dirección que se puede ejecutar y corregir",
+      "category": "Dirección y motion",
+      "path": "skills/syka-visual-direction/SKILL.md",
+      "description": "Resolver la dirección visual de una edición Syka a partir de marca, referencias o un preset, y convertirla en beats y componentes nativos editables. Usar para diseñar o mejorar tarjetas, diagramas, motions y piezas con varias escenas.",
+      "sha256": "44131fea633ff643aee59bbb917ee37934b1c8047386c870e92a6ab8b66358e5",
+      "delivery": "bundled"
+    },
+    {
+      "name": "watch.md",
+      "title": "Watch footage in Syka",
+      "category": "Edición y revisión",
+      "path": "skills/watch.md",
+      "description": "Inspect only the evidence needed for the user's question. Syka's media analysis tools work without a Diffusion account. The source of each conclusion must be explicit.",
+      "sha256": "5197770a498e262d3bb5fe84b0f84d5bd2f363397904e6e2cb9fe32e49a83839",
+      "delivery": "bundled"
+    }
+  ]
+}

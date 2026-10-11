@@ -1,0 +1,17 @@
+.syka-sent-attachments{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:100%}
+.syka-sent-attachment{max-width:100%;border:1px solid var(--color-border);border-radius:10px;color:var(--color-muted-foreground);font-size:11px;padding:4px 7px;cursor:pointer;transition:transform 150ms ease-out}
+.syka-sent-attachment span{display:block;white-space:normal;overflow-wrap:anywhere;text-align:left;max-width:250px}
+.syka-sent-attachment[data-image=true]{width:78px;height:64px;padding:0;background:var(--color-card);overflow:hidden}
+.syka-sent-attachment img{width:100%;height:100%;object-fit:contain}
+.syka-sent-attachment:hover{transform:translateY(-2px)}
+.syka-sent-image-dialog{position:fixed;inset:var(--titlebar-height,0px) 0 0;margin:auto;max-width:min(960px,94vw);max-height:calc(100dvh - var(--titlebar-height,0px) - 48px);padding:34px 16px 12px;border:1px solid var(--color-border);border-radius:18px;background:var(--color-card);color:var(--color-foreground)}
+.syka-sent-image-dialog::backdrop{background:#000a;backdrop-filter:blur(6px)}
+.syka-sent-image-dialog>button{position:absolute;right:10px;top:6px;width:28px;height:28px;font-size:24px;border-radius:50%;cursor:pointer;line-height:1}
+.syka-sent-image-dialog img{display:block;max-height:min(75vh,calc(100dvh - var(--titlebar-height,0px) - 120px));max-width:100%;object-fit:contain;margin:auto;border-radius:10px}
+.syka-sent-image-dialog p{font-size:11px;overflow-wrap:anywhere;margin-top:8px}
+.syka-sent-image-dialog.t-modal{--modal-open-dur:250ms;--modal-close-dur:150ms;--modal-scale:.96;--modal-scale-close:.96;--modal-ease:cubic-bezier(.22,1,.36,1);transform:scale(var(--modal-scale));opacity:0;transition:transform var(--modal-open-dur) var(--modal-ease),opacity var(--modal-open-dur) var(--modal-ease)}
+.syka-sent-image-dialog.t-modal.is-open{transform:scale(1);opacity:1}
+.syka-sent-image-dialog.t-modal.is-closing{transform:scale(var(--modal-scale-close));opacity:0;transition-duration:var(--modal-close-dur)}
+@media(prefers-reduced-motion:reduce){.syka-sent-image-dialog.t-modal{transition:none}}
+[data-motion=reduced] .syka-sent-image-dialog.t-modal{transition:none}
+@media(prefers-reduced-motion:reduce){.syka-sent-attachment{transition:none}}

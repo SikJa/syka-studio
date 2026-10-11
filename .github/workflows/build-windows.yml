@@ -1,0 +1,73 @@
+name: Build Windows
+
+# An unsigned Syka Windows installer on demand, with verified release assets
+# uploaded as a workflow artifact for testing (see apps/desktop/WINDOWS.md).
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: syka-build-windows-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  make-windows:
+    if: github.repository == 'SikJa/syka-studio'
+    runs-on: windows-latest
+    timeout-minutes: 75
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Keep build caches and temporary files in the checkout
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $buildRuntime = Join-Path $env:GITHUB_WORKSPACE '.runtime/windows-build'
+          foreach ($folder in 'tmp', 'npm-cache', 'electron-cache', 'electron-builder-cache', 'cargo') {
+            New-Item -ItemType Directory -Force -Path (Join-Path $buildRuntime $folder) | Out-Null
+          }
+          "npm_config_cache=$(Join-Path $buildRuntime 'npm-cache')" >> $env:GITHUB_ENV
+          "ELECTRON_CACHE=$(Join-Path $buildRuntime 'electron-cache')" >> $env:GITHUB_ENV
+          "ELECTRON_BUILDER_CACHE=$(Join-Path $buildRuntime 'electron-builder-cache')" >> $env:GITHUB_ENV
+          "CARGO_HOME=$(Join-Path $buildRuntime 'cargo')" >> $env:GITHUB_ENV
+          "CARGO_TARGET_DIR=$(Join-Path $env:GITHUB_WORKSPACE '.runtime/screen-recorder-target')" >> $env:GITHUB_ENV
+          "TEMP=$(Join-Path $buildRuntime 'tmp')" >> $env:GITHUB_ENV
+          "TMP=$(Join-Path $buildRuntime 'tmp')" >> $env:GITHUB_ENV
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          architecture: x64
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Provide local web build defaults
+        run: |
+          if (Test-Path -LiteralPath 'apps/web/.env.example') {
+            Copy-Item -LiteralPath 'apps/web/.env.example' -Destination 'apps/web/.env'
+          }
+
+      - name: Windows x64 native screen recorder
+        run: npm run build:native --workspace=@diffusionstudio/desktop
+
+      - name: Build and verify the unsigned Windows installer
+        run: npm run build:installer -- --unsigned
+
+      - name: Upload the verified Syka Windows bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: syka-windows-x64-${{ github.run_id }}-${{ github.run_attempt }}
+          path: apps/desktop/out/make
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14

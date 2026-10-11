@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Returning to Diffusion Studio…</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+        background: #0a0a0a;
+        color: #fafafa;
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      .card { text-align: center; max-width: 22rem; padding: 2rem; }
+      h1 { font-size: 1.125rem; font-weight: 600; margin: 0 0 0.5rem; }
+      p { color: #a3a3a3; margin: 0.5rem 0; font-size: 0.875rem; }
+      a { color: #5b9dff; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Returning you to Diffusion Studio…</h1>
+      <p>You can close this tab.</p>
+      <p><small>Nothing happening? <a id="link" href="#">Open the app</a>.</small></p>
+    </div>
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var target = "diffusion://checkout/callback?" + params.toString();
+        var link = document.getElementById("link");
+        if (link) link.setAttribute("href", target);
+        window.location.replace(target);
+      })();
+    </script>
+  </body>
+</html>

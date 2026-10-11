@@ -1,0 +1,11 @@
+.syka-resource-menu { min-width:0; }
+.syka-resource-menu > .syka-resource-card { width:100%; }
+/* Transitions.dev menu recipe, retaining Kobalte's presence and keyboard handling. */
+.syka-reference-menu { --dropdown-open-dur:250ms; --dropdown-close-dur:150ms; --dropdown-pre-scale:.97; }
+/* Kobalte retains the portal for animationend, including the closing phase. */
+.syka-reference-menu[data-expanded] { animation:syka-reference-menu-in var(--dropdown-open-dur) var(--dropdown-ease,cubic-bezier(.22,1,.36,1)) both!important; }
+.syka-reference-menu[data-closed] { pointer-events:none; animation:syka-reference-menu-out var(--dropdown-close-dur) var(--dropdown-ease,cubic-bezier(.22,1,.36,1)) both!important; }
+@keyframes syka-reference-menu-in { from { opacity:0; transform:scale(.97); } to { opacity:1; transform:scale(1); } }
+@keyframes syka-reference-menu-out { from { opacity:1; transform:scale(1); } to { opacity:0; transform:scale(.99); } }
+@media(prefers-reduced-motion:reduce) { .syka-reference-menu { animation:none!important; transition:none!important; } }
+[data-syka-motion=reduced] .syka-reference-menu { animation:none!important; transition:none!important; }

@@ -1,0 +1,22 @@
+/* BoardUI semantic tokens are mapped locally; the editor's theme is unchanged. */
+.syka-social-root { display: inline-flex; min-width: 0; width: 100%; }
+.syka-social-root .syka-social-button {
+  height: 36px;
+  min-height: 36px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--secondary);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 450;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+  transition: background-color 150ms, border-color 150ms, transform 150ms;
+}
+.syka-social-root .syka-social-button:hover:not(:disabled) { background: var(--secondary-hover); border-color: var(--muted-foreground); }
+.syka-social-root .syka-social-button:active:not(:disabled) { background: var(--secondary-pressing); transform: translateY(1px); }
+.syka-social-root .syka-social-button:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; box-shadow: none; }
+.syka-social-root .syka-social-button:disabled { opacity: .5; }
+.syka-social-button img { width: 18px; height: 18px; object-fit: contain; }
+@media (prefers-reduced-motion: reduce) { .syka-social-root .syka-social-button { transition: none; transform: none; } }
+[data-syka-motion="reduced"] .syka-social-root .syka-social-button { transition: none; transform: none; }

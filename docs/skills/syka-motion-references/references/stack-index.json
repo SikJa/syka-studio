@@ -1,0 +1,3842 @@
+{
+  "schemaVersion": 1,
+  "snapshot": "2026-10-10",
+  "counts": {
+    "repoStudies": 23,
+    "galleryCandidates": 178,
+    "galleryAlreadyKnown": 80,
+    "addedGalleryMetadata": 98,
+    "nativeCaptionRoute": 1
+  },
+  "entries": [
+    {
+      "id": "stack-bodila51-opus-sound-layer",
+      "kind": "skill",
+      "title": "Bodila51/opus-sound-layer · Familia sonora, cues y QA",
+      "author": "Bodila51",
+      "sources": ["https://github.com/Bodila51/opus-sound-layer"],
+      "patterns": [],
+      "useCases": ["audio", "reel", "storyboard", "product-launch", "typography", "captions", "ui-motion", "general"],
+      "category": null,
+      "searchText": "Bodila51 opus-sound-layer sound design audio sonido musica SFX foley material vidrio papel metal ataque brillo centroid cola cues cut move land appear peak velocity balance masking bandas QA fingerprints LUFS true peak Kenney CC0 portable Diffusion",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-and-code-study",
+        "scope": "README/PROMPT y tres scripts completos; pruebas aisladas de QA/Kit y adaptación nativa propia. Sin CLI completa ni evaluación perceptual upstream.",
+        "upstreamExecuted": false,
+        "isolatedFunctionProbes": true,
+        "mediaWatched": false,
+        "commit": "52ac266a24b7dfd3cd06a28c34d5af360a8d7586"
+      },
+      "bundledTextPath": "references/repo-studies/bodila51-opus-sound-layer.md",
+      "bundledTextSource": "https://github.com/Bodila51/opus-sound-layer",
+      "bundledTextLicense": "Original Syka study; upstream code MIT, assets independently licensed",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "Código MIT. Muestras Kenney incorporadas CC0 con licencias y hashes. Freesound no se incorpora en lote."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-whaleyxbt-claude-motion",
+      "kind": "skill",
+      "title": "whaleyxbt/claude-motion · Proceso, timing y sonido",
+      "author": "whaleyxbt",
+      "sources": [
+        "https://github.com/whaleyxbt/claude-motion"
+      ],
+      "patterns": [],
+      "useCases": [
+        "storyboard",
+        "audio",
+        "typography",
+        "general"
+      ],
+      "category": null,
+      "searchText": "whaleyxbt/claude-motion Proceso, timing y sonido Beats con nombres en un timeline compartido; audio y revisión consumen el mismo plan. Revisión por beat, transición y lectura a 360 px. Usar identificadores de eventos sobre la composición nativa y extender syka_motion_review; aprovechar el generador de audio que ya existe. storyboard audio typography general",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "Documentación principal completa y lectura parcial del mezclador.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/whaleyxbt-claude-motion.md",
+      "bundledTextSource": "https://github.com/whaleyxbt/claude-motion",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT en LICENSE; recursos de terceros conservan sus condiciones."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-howseen-ai-claude-motion-design",
+      "kind": "skill",
+      "title": "howseen-ai/claude-motion-design · Continuidad y revisión",
+      "author": "howseen-ai",
+      "sources": [
+        "https://github.com/howseen-ai/claude-motion-design"
+      ],
+      "patterns": [],
+      "useCases": [
+        "storyboard",
+        "general",
+        "audio"
+      ],
+      "category": null,
+      "searchText": "howseen-ai/claude-motion-design Continuidad y revisión seek(t) determinista, continuidad de objetos, detección de flashes, seam de posición y velocidad, SFX alineados por su pico y drops medidos. Extraer criterios de continuidad y elegir muestras alrededor de eventos; conservar el reloj de Diffusion. storyboard general audio",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README y secciones principales de la skill; no ejecución del pipeline.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/howseen-ai-claude-motion-design.md",
+      "bundledTextSource": "https://github.com/howseen-ai/claude-motion-design",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-charlie947-motion-graphics-skills",
+      "kind": "skill",
+      "title": "charlie947/motion-graphics-skills · Brief y prompt de producción",
+      "author": "charlie947",
+      "sources": [
+        "https://github.com/charlie947/motion-graphics-skills"
+      ],
+      "patterns": [],
+      "useCases": [
+        "product-launch",
+        "typography",
+        "explainer",
+        "data",
+        "storyboard"
+      ],
+      "category": null,
+      "searchText": "charlie947/motion-graphics-skills Brief y prompt de producción motion-brief-writer separa contexto de marca, hechos, copy, tarea, salida y ejemplos. Snapshot 2026-10-10: catorce módulos, reference-to-motion separa movimiento de apariencia. Roles movement look story audio technical. Completar los seis bloques existentes de production-prompt.md con hechos, parámetros, referencias concretas y criterios de revisión. product-launch typography explainer data storyboard",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "Skill de brief completa, README principal y complemento reference-to-motion en snapshot 2026-10-10.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/charlie947-motion-graphics-skills.md",
+      "bundledTextSource": "https://github.com/charlie947/motion-graphics-skills",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-haidrrrry-claude-remotion-skill",
+      "kind": "skill",
+      "title": "haidrrrry/claude-remotion-skill · Patrones y revisión de video",
+      "author": "haidrrrry",
+      "sources": [
+        "https://github.com/haidrrrry/claude-remotion-skill"
+      ],
+      "patterns": [],
+      "useCases": [
+        "reel",
+        "captions",
+        "audio"
+      ],
+      "category": null,
+      "searchText": "haidrrrry/claude-remotion-skill Patrones y revisión de video Tokens compartidos, entradas/salidas, lectura móvil, inspección del render y corrección de layout. Conservar principios y reescribir patrones como componentes editables de Diffusion. reel captions audio",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README y skill principal; patrones no ejecutados.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/haidrrrry-claude-remotion-skill.md",
+      "bundledTextSource": "https://github.com/haidrrrry/claude-remotion-skill",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-t3knobox-klik-anim-skill-creation",
+      "kind": "skill",
+      "title": "t3knobox/klik-anim-skill-creation · Orquestación y estado",
+      "author": "t3knobox",
+      "sources": [
+        "https://github.com/t3knobox/klik-anim-skill-creation"
+      ],
+      "patterns": [],
+      "useCases": [
+        "storyboard",
+        "general"
+      ],
+      "category": null,
+      "searchText": "t3knobox/klik-anim-skill-creation Orquestación y estado Distingue datos, estilo visible, plan y progreso. Storyboard con frames reales y una referencia cargada por etapa. Vincular decisiones y evidencia en la receta actual; mantener estado verificable entre sesiones y resolver estética con imágenes. storyboard general",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "Método principal completo; árbol de las tres familias de skills.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/t3knobox-klik-anim-skill-creation.md",
+      "bundledTextSource": "https://github.com/t3knobox/klik-anim-skill-creation",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "Sin archivo de licencia identificado; no copiar el paquete como skill incluida sin resolver ese permiso."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-Sunwood-ai-labs-hyperframes-motion-reel-skill",
+      "kind": "skill",
+      "title": "Sunwood-ai-labs/hyperframes-motion-reel-skill · Blueprint de showreel",
+      "author": "Sunwood-ai-labs",
+      "sources": [
+        "https://github.com/Sunwood-ai-labs/hyperframes-motion-reel-skill"
+      ],
+      "patterns": [],
+      "useCases": [
+        "reel",
+        "audio"
+      ],
+      "category": null,
+      "searchText": "Sunwood-ai-labs/hyperframes-motion-reel-skill Blueprint de showreel Parámetros centralizados, capas HTML/Canvas, beats calculados y audio procedural como parte del encargo. Referencia de organización de un reel musical; parametrizar BPM y FPS del proyecto real. reel audio",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README y parámetros/dirección/contrato técnico de la skill.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/Sunwood-ai-labs-hyperframes-motion-reel-skill.md",
+      "bundledTextSource": "https://github.com/Sunwood-ai-labs/hyperframes-motion-reel-skill",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT para la skill; revisar dependencias por separado."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-AbubakrChan-product-launch-motion",
+      "kind": "skill",
+      "title": "AbubakrChan/product-launch-motion · Dirección, voz y sonido",
+      "author": "AbubakrChan",
+      "sources": [
+        "https://github.com/AbubakrChan/product-launch-motion"
+      ],
+      "patterns": [],
+      "useCases": [
+        "product-launch",
+        "brand",
+        "audio"
+      ],
+      "category": null,
+      "searchText": "AbubakrChan/product-launch-motion Dirección, voz y sonido Cues desde palabras medidas; tiempos locales resueltos al ensamblar; audibilidad del asset y del archivo entregado; diseño a partir del producto. Anclar cues a la edición real, utilizar cuePoint cuando exista y guardar evidencia del momento de ataque y de la mezcla. product-launch brand audio",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "Documentación seleccionada y lectura estática de tres scripts; no ejecución ni escucha.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/AbubakrChan-product-launch-motion.md",
+      "bundledTextSource": "https://github.com/AbubakrChan/product-launch-motion",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-cth9191-animate",
+      "kind": "skill",
+      "title": "cth9191/animate · Gramática narrativa y estilos",
+      "author": "cth9191",
+      "sources": [
+        "https://github.com/cth9191/animate"
+      ],
+      "patterns": [],
+      "useCases": [
+        "storyboard",
+        "explainer",
+        "general"
+      ],
+      "category": null,
+      "searchText": "cth9191/animate Gramática narrativa y estilos Separa formato narrativo, reloj, medio visual y tema; siete estilos y paquetes reutilizables, con ejemplos y revisión. Crear perfiles de lenguaje visual para los componentes nativos: editorial, papel, técnico, etc.; elegirlos por la idea. storyboard explainer general",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "Gramática/craft y secciones principales de la skill; no renders.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/cth9191-animate.md",
+      "bundledTextSource": "https://github.com/cth9191/animate",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT del kit; medios de referencia de terceros no incluidos en ese permiso."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-iart-ai-motion-design-skills",
+      "kind": "skill",
+      "title": "iart-ai/motion-design-skills · Composición, color y montaje",
+      "author": "iart-ai",
+      "sources": [
+        "https://github.com/iart-ai/motion-design-skills"
+      ],
+      "patterns": [],
+      "useCases": [
+        "typography",
+        "brand",
+        "data",
+        "general"
+      ],
+      "category": null,
+      "searchText": "iart-ai/motion-design-skills Composición, color y montaje Nueve módulos; composición con foco, safe areas, adaptación de aspecto, continuidad de movimiento y color perceptual. Complementar reglas de diseño, lectura y composición. Validar color contra el pipeline real de Syka. typography brand data general",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README y partes relevantes de tres módulos.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/iart-ai-motion-design-skills.md",
+      "bundledTextSource": "https://github.com/iart-ai/motion-design-skills",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-nateherkai-hyperframes-student-kit",
+      "kind": "skill",
+      "title": "nateherkai/hyperframes-student-kit · Biblioteca de componentes",
+      "author": "nateherkai",
+      "sources": [
+        "https://github.com/nateherkai/hyperframes-student-kit"
+      ],
+      "patterns": [],
+      "useCases": [
+        "storyboard",
+        "typography",
+        "product-launch",
+        "data",
+        "general"
+      ],
+      "category": null,
+      "searchText": "nateherkai/hyperframes-student-kit Biblioteca de componentes 406 tarjetas declaradas draft, slots, límites de texto, tokens y catálogo. El árbol actual tiene 15 skills por carpeta espejo. Descriptores de componentes con props, dependencias portables, ejemplos y estado de revisión; no 406 videos obligatorios. storyboard typography product-launch data general",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README, contrato de biblioteca y permisos; no revisión de las 406 tarjetas.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/nateherkai-hyperframes-student-kit.md",
+      "bundledTextSource": "https://github.com/nateherkai/hyperframes-student-kit",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT y permiso del teaching kit; marca AIS y terceros excluidos explícitamente."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-heygen-com-hyperframes",
+      "kind": "skill",
+      "title": "heygen-com/hyperframes · Motor de HTML a video",
+      "author": "heygen-com",
+      "sources": [
+        "https://github.com/heygen-com/hyperframes"
+      ],
+      "patterns": [],
+      "useCases": [
+        "rendering",
+        "general"
+      ],
+      "category": null,
+      "searchText": "heygen-com/hyperframes Motor de HTML a video Arquitectura y contratos de composición/render HTML, CLI y skills. Consultar patrones de contrato y revisión cuando corresponda; adaptar a Diffusion. rendering general",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README, metadatos y árbol; no auditoría completa del motor.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/heygen-com-hyperframes.md",
+      "bundledTextSource": "https://github.com/heygen-com/hyperframes",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "Apache-2.0 del proyecto; activos y dependencias aparte."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-remotion-dev-remotion",
+      "kind": "skill",
+      "title": "remotion-dev/remotion · Motor React de video",
+      "author": "remotion-dev",
+      "sources": [
+        "https://github.com/remotion-dev/remotion"
+      ],
+      "patterns": [],
+      "useCases": [
+        "rendering",
+        "general"
+      ],
+      "category": null,
+      "searchText": "remotion-dev/remotion Motor React de video Modelos de composición por frame y edición/render basados en React. Consultar problemas técnicos puntuales; mantener Diffusion como motor canónico. rendering general",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README, licencia y árbol; no auditoría del monorepo.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/remotion-dev-remotion.md",
+      "bundledTextSource": "https://github.com/remotion-dev/remotion",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "Licencia Remotion propia leída en LICENSE.md; condiciones distintas según uso y entidad."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-remotion-dev-skills",
+      "kind": "skill",
+      "title": "remotion-dev/skills · Guías oficiales de Remotion",
+      "author": "remotion-dev",
+      "sources": [
+        "https://github.com/remotion-dev/skills"
+      ],
+      "patterns": [],
+      "useCases": [
+        "rendering",
+        "captions",
+        "typography"
+      ],
+      "category": null,
+      "searchText": "remotion-dev/skills Guías oficiales de Remotion Timing por FPS, contenido editable, carga de medios y animación derivada del frame. Usar como referencia de conceptos; traducir al contrato nativo y a la versión instalada cuando se trabaje con Remotion. rendering captions typography",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README y guía principal de markup; APIs no probadas.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/remotion-dev-skills.md",
+      "bundledTextSource": "https://github.com/remotion-dev/skills",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "Sin archivo de licencia identificado en este snapshot; no asumir MIT del paquete."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-greensock-GSAP",
+      "kind": "skill",
+      "title": "greensock/GSAP · Librería de animación",
+      "author": "greensock",
+      "sources": [
+        "https://github.com/greensock/GSAP"
+      ],
+      "patterns": [],
+      "useCases": [
+        "ui-motion",
+        "general"
+      ],
+      "category": null,
+      "searchText": "greensock/GSAP Librería de animación Secuencias, labels, easings y control del playhead. Usar donde el proyecto ya lo permita; para video, timeline pausado conducido por el reloj nativo. ui-motion general",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README, package y árbol; sin benchmark ni revisión completa del código.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/greensock-GSAP.md",
+      "bundledTextSource": "https://github.com/greensock/GSAP",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "package.json enlaza la Standard no-charge license de GSAP; no es una declaración MIT."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-LottieFiles-motion-design-skill",
+      "kind": "skill",
+      "title": "LottieFiles/motion-design-skill · Principios de movimiento",
+      "author": "LottieFiles",
+      "sources": [
+        "https://github.com/LottieFiles/motion-design-skill"
+      ],
+      "patterns": [],
+      "useCases": [
+        "ui-motion",
+        "typography",
+        "general"
+      ],
+      "category": null,
+      "searchText": "LottieFiles/motion-design-skill Principios de movimiento Propósito, jerarquía, duración de estados, entradas/salidas y coreografía según contexto. Complementar el movimiento del orbe, compositor y notificaciones con el estilo actual y reduced motion. ui-motion typography general",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "Skill principal completa y README.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/LottieFiles-motion-design-skill.md",
+      "bundledTextSource": "https://github.com/LottieFiles/motion-design-skill",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-frankxai-awesome-motion-design-agent-skills",
+      "kind": "skill",
+      "title": "frankxai/awesome-motion-design-agent-skills · Mapa de herramientas y rúbricas",
+      "author": "frankxai",
+      "sources": [
+        "https://github.com/frankxai/awesome-motion-design-agent-skills"
+      ],
+      "patterns": [],
+      "useCases": [
+        "general",
+        "ui-motion"
+      ],
+      "category": null,
+      "searchText": "frankxai/awesome-motion-design-agent-skills Mapa de herramientas y rúbricas Directores, inventario de capacidades y criterios de propósito, jerarquía, marca, accesibilidad y rendimiento. Seleccionar criterios de revisión con evidencia observable y separar capacidades disponibles de propuestas. general ui-motion",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README, estructura y rúbrica completa; sin validar cada repo enlazado.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/frankxai-awesome-motion-design-agent-skills.md",
+      "bundledTextSource": "https://github.com/frankxai/awesome-motion-design-agent-skills",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "CC0-1.0 del repositorio; enlaces externos tienen condiciones propias."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-Barty-Bart-motion-graphics",
+      "kind": "skill",
+      "title": "Barty-Bart/motion-graphics · B-roll desde transcripción",
+      "author": "Barty-Bart",
+      "sources": [
+        "https://github.com/Barty-Bart/motion-graphics"
+      ],
+      "patterns": [],
+      "useCases": [
+        "captions",
+        "reel",
+        "explainer"
+      ],
+      "category": null,
+      "searchText": "Barty-Bart/motion-graphics B-roll desde transcripción Gráficos derivados de palabras reales, continuidad de UI y comparación de referencia/resultados; overlays transparentes. Mejorar planes de escenas y gráficos nativos sobre footage; conectar con el mapa de edición existente. captions reel explainer",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README y licencia; no render de overlays ni prueba de SAM2.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/Barty-Bart-motion-graphics.md",
+      "bundledTextSource": "https://github.com/Barty-Bart/motion-graphics",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT; Geist/Geist Mono OFL y paths de Lucide ISC separados."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-199-biotechnologies-motion-dev-animations-skill",
+      "kind": "skill",
+      "title": "199-biotechnologies/motion-dev-animations-skill · Movimiento web interactivo",
+      "author": "199-biotechnologies",
+      "sources": [
+        "https://github.com/199-biotechnologies/motion-dev-animations-skill"
+      ],
+      "patterns": [],
+      "useCases": [
+        "ui-motion"
+      ],
+      "category": null,
+      "searchText": "199-biotechnologies/motion-dev-animations-skill Movimiento web interactivo Patrones de entrada, gestures, layout y reduced motion; carga progresiva de ejemplos. Consultar para paneles y chat; preferir documentación oficial de la versión que use la app. ui-motion",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README y secciones principales; sin prueba de rendimiento.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/199-biotechnologies-motion-dev-animations-skill.md",
+      "bundledTextSource": "https://github.com/199-biotechnologies/motion-dev-animations-skill",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-motiondivision-motion",
+      "kind": "skill",
+      "title": "motiondivision/motion · Librería Motion",
+      "author": "motiondivision",
+      "sources": [
+        "https://github.com/motiondivision/motion"
+      ],
+      "patterns": [],
+      "useCases": [
+        "ui-motion"
+      ],
+      "category": null,
+      "searchText": "motiondivision/motion Librería Motion Animación de interfaz, layout, gestures y springs. Resolver interacción y estados del chat con las capacidades ya presentes; respetar accesibilidad. ui-motion",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README, licencia y árbol; sin auditoría de código completa.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/motiondivision-motion.md",
+      "bundledTextSource": "https://github.com/motiondivision/motion",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-airbnb-lottie-web",
+      "kind": "skill",
+      "title": "airbnb/lottie-web · Reproductor Lottie",
+      "author": "airbnb",
+      "sources": [
+        "https://github.com/airbnb/lottie-web"
+      ],
+      "patterns": [],
+      "useCases": [
+        "ui-motion"
+      ],
+      "category": null,
+      "searchText": "airbnb/lottie-web Reproductor Lottie Reproducción SVG/Canvas/HTML de animaciones exportadas a JSON. Considerar soporte de assets Lottie como trabajo separado si un caso real lo requiere. ui-motion",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README y metadatos de licencia; importador no probado.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/airbnb-lottie-web.md",
+      "bundledTextSource": "https://github.com/airbnb/lottie-web",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-mikenevermiss-motionpromptgallery",
+      "kind": "skill",
+      "title": "mikenevermiss/motionpromptgallery · Prompts y piezas con procedencia",
+      "author": "mikenevermiss",
+      "sources": [
+        "https://github.com/mikenevermiss/motionpromptgallery"
+      ],
+      "patterns": [],
+      "useCases": [
+        "general",
+        "storyboard",
+        "typography"
+      ],
+      "category": null,
+      "searchText": "mikenevermiss/motionpromptgallery Prompts y piezas con procedencia 178 fichas, 122 con video y 47 con código; etiquetas, autores, fuentes, stack y ejemplos detallados de briefs. Evaluar 98 fichas cuyo source URL no coincide con el catálogo actual; deduplicar y guardar patrones propios con referencias trazables. general storyboard typography",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "Todos los metadatos procesados, seis prompts extensos leídos y validación de ingreso inspeccionada; videos no descargados ni vistos aquí.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/mikenevermiss-motionpromptgallery.md",
+      "bundledTextSource": "https://github.com/mikenevermiss/motionpromptgallery",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT solo del sitio; CONTENT-NOTICE.md excluye expresamente el contenido de la galería."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-greensock-gsap-skills",
+      "kind": "skill",
+      "title": "greensock/gsap-skills · Guías oficiales GSAP",
+      "author": "greensock",
+      "sources": [
+        "https://github.com/greensock/gsap-skills"
+      ],
+      "patterns": [],
+      "useCases": [
+        "ui-motion"
+      ],
+      "category": null,
+      "searchText": "greensock/gsap-skills Guías oficiales GSAP Ocho módulos de API, timeline, plugins, React, frameworks y performance; labels y posiciones relativas. Referencia oficial cargada solo para un problema concreto; labels pueden informar eventos del plan común. ui-motion",
+      "promptStatus": "syka_written_repository_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "README y módulo de timeline completo; otros módulos inventariados.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/greensock-gsap-skills.md",
+      "bundledTextSource": "https://github.com/greensock/gsap-skills",
+      "bundledTextLicense": "Original Syka study; upstream license assessment in study",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "MIT de las skills; GSAP conserva su licencia propia."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "gallery-astra-openai-abyssal-bioluminescent-ecosystem",
+      "kind": "video",
+      "title": "Abyssal",
+      "author": "VB Srivastav (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/abyssal-bioluminescent-ecosystem"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Abyssal Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-below-the-surface",
+      "kind": "video",
+      "title": "Below the Surface",
+      "author": "Katia Gil Guzman (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/below-the-surface"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Below the Surface Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-courtyard-house",
+      "kind": "video",
+      "title": "Courtyard House",
+      "author": "Katia Gil Guzman (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/courtyard-house"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Courtyard House Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-hollowflux",
+      "kind": "video",
+      "title": "Hollowflux",
+      "author": "Thomas Ricouard (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/hollowflux"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Hollowflux Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-impossible-kinetic-architecture",
+      "kind": "video",
+      "title": "Clockwork Observatory",
+      "author": "VB Srivastav (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/impossible-kinetic-architecture"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Clockwork Observatory Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-little-ritual",
+      "kind": "video",
+      "title": "Little Ritual",
+      "author": "Jeff Wang (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/little-ritual"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Little Ritual Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-living-cell-cross-section",
+      "kind": "video",
+      "title": "Living Cell",
+      "author": "VB Srivastav (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/living-cell-cross-section"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Living Cell Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-nightjar-listening-room",
+      "kind": "video",
+      "title": "Nightjar Listening Room",
+      "author": "Katia Gil Guzman (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/nightjar-listening-room"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Nightjar Listening Room Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-physics-museum",
+      "kind": "video",
+      "title": "Physics museum",
+      "author": "Katia Gil Guzman (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/physics-museum"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Physics museum Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-stop-motion-desk",
+      "kind": "video",
+      "title": "Stop-Motion Desk",
+      "author": "Katia Gil Guzman (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/stop-motion-desk"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Stop-Motion Desk Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-sunwake",
+      "kind": "video",
+      "title": "Sunwake",
+      "author": "Thomas Ricouard (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/sunwake"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Sunwake Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-tidal-house",
+      "kind": "video",
+      "title": "Tidal House",
+      "author": "Katia Gil Guzman (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/tidal-house"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Tidal House Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-tidegarden",
+      "kind": "video",
+      "title": "Tidegarden",
+      "author": "Eric Provencher (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/tidegarden"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Tidegarden Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-type-field",
+      "kind": "video",
+      "title": "Type Field",
+      "author": "Katia Gil Guzman (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/type-field"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Type Field Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-velocity-loop",
+      "kind": "video",
+      "title": "Velocity Loop",
+      "author": "VB Srivastav (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/velocity-loop"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Velocity Loop Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-openai-void-explorer",
+      "kind": "video",
+      "title": "Void Explorer",
+      "author": "Thomas Ricouard (OpenAI)",
+      "sources": [
+        "https://developers.openai.com/showcase/void-explorer"
+      ],
+      "patterns": [
+        "official showcase",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "Void Explorer Codex · single-file web (HTML/WebGL) official showcase 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-lux-high-speed-parkour-motion-previz",
+      "kind": "video",
+      "title": "High-speed parkour motion previz",
+      "author": "かし子🍩",
+      "sources": [
+        "https://x.com/Kashiko_AIart/status/2096096560690209130"
+      ],
+      "patterns": [
+        "video",
+        "remotion"
+      ],
+      "category": null,
+      "searchText": "High-speed parkour motion previz Remotion + WebGL (TypeScript) video remotion",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-lux-adcar-tv-one-shot-launch-video",
+      "kind": "video",
+      "title": "AdCar TV one-shot launch video",
+      "author": "Dan ⚡️",
+      "sources": [
+        "https://x.com/d4m1n/status/2096258259459964963"
+      ],
+      "patterns": [
+        "video",
+        "remotion"
+      ],
+      "category": null,
+      "searchText": "AdCar TV one-shot launch video Remotion + ffmpeg + Qwen 3 TTS video remotion",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "product-launch",
+        "rendering"
+      ]
+    },
+    {
+      "id": "gallery-astra-lux-t-cells-a-5-minute-explainer-from-one-line",
+      "kind": "video",
+      "title": "T cells: a 5-minute explainer from one line",
+      "author": "Derya Unutmaz, MD",
+      "sources": [
+        "https://x.com/DeryaTR_/status/2095659170661904804"
+      ],
+      "patterns": [
+        "video",
+        "remotion"
+      ],
+      "category": null,
+      "searchText": "T cells: a 5-minute explainer from one line Remotion plugin + Imagegen + HeyGen video remotion",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "explainer"
+      ]
+    },
+    {
+      "id": "gallery-astra-lux-atomik-33-second-launch-film",
+      "kind": "skill",
+      "title": "Atomik 33-second launch film",
+      "author": "Tejas",
+      "sources": [
+        "https://x.com/makwanatejas170/status/2096555742597988400"
+      ],
+      "patterns": [
+        "video",
+        "remotion"
+      ],
+      "category": null,
+      "searchText": "Atomik 33-second launch film Remotion / HyperFrames + motion-flavor skill video remotion",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "product-launch"
+      ]
+    },
+    {
+      "id": "gallery-astra-lux-ultra-high-speed-sprint-control-mp4",
+      "kind": "video",
+      "title": "Ultra-high-speed sprint control MP4",
+      "author": "かし子🍩",
+      "sources": [
+        "https://x.com/Kashiko_AIart/status/2094182215894831283"
+      ],
+      "patterns": [
+        "video",
+        "remotion"
+      ],
+      "category": null,
+      "searchText": "Ultra-high-speed sprint control MP4 Remotion video remotion",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-lux-side-scrolling-chase-with-a-frame-table",
+      "kind": "video",
+      "title": "Side-scrolling chase with a frame table",
+      "author": "かし子🍩",
+      "sources": [
+        "https://x.com/Kashiko_AIart/status/2093692302745383041"
+      ],
+      "patterns": [
+        "video",
+        "remotion"
+      ],
+      "category": null,
+      "searchText": "Side-scrolling chase with a frame table Remotion video remotion",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-lux-30-camera-compositions-reference-sheet",
+      "kind": "video",
+      "title": "30 camera compositions reference sheet",
+      "author": "かし子🍩",
+      "sources": [
+        "https://x.com/Kashiko_AIart/status/2093575541916061984"
+      ],
+      "patterns": [
+        "video",
+        "remotion"
+      ],
+      "category": null,
+      "searchText": "30 camera compositions reference sheet Remotion + HTML/CSS/SVG video remotion",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-astra-lux-changelog-video",
+      "kind": "video",
+      "title": "Changelog highlight video (no skill installed)",
+      "author": "leon7hao",
+      "sources": [
+        "https://x.com/leon7hao/status/2096844989900914865"
+      ],
+      "patterns": [
+        "video",
+        "short brief"
+      ],
+      "category": null,
+      "searchText": "Changelog highlight video (no skill installed) Remotion (Codex, GPT-6 Astra medium) video short brief",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-cmp-2104994617573970308",
+      "kind": "video",
+      "title": "The Watermelon Test (rubber bands, Three.js)",
+      "author": "Vib3Coded",
+      "sources": [
+        "https://x.com/vib3coded/status/2104994617573970308"
+      ],
+      "patterns": [
+        "comparison"
+      ],
+      "category": null,
+      "searchText": "The Watermelon Test (rubber bands, Three.js) Three.js comparison",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-cmp-2104466170275324190",
+      "kind": "video",
+      "title": "Octo Jelly: squishable gummy octopus (WebGPU)",
+      "author": "Vib3Coded",
+      "sources": [
+        "https://x.com/vib3coded/status/2104466170275324190"
+      ],
+      "patterns": [
+        "comparison"
+      ],
+      "category": null,
+      "searchText": "Octo Jelly: squishable gummy octopus (WebGPU) ChatGPT-6 Astra + WebGPU comparison",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-cmp-2104651061336117614",
+      "kind": "video",
+      "title": "Jellyfish Jelly: squishable gummy jellyfish (WebGPU)",
+      "author": "Vib3Coded",
+      "sources": [
+        "https://x.com/vib3coded/status/2104651061336117614"
+      ],
+      "patterns": [
+        "comparison"
+      ],
+      "category": null,
+      "searchText": "Jellyfish Jelly: squishable gummy jellyfish (WebGPU) ChatGPT-6 Astra comparison",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-cmp-2103120423005425972",
+      "kind": "video",
+      "title": "Pixel-art cheetah run",
+      "author": "Harshith",
+      "sources": [
+        "https://x.com/HarshithLucky3/status/2103120423005425972"
+      ],
+      "patterns": [
+        "comparison"
+      ],
+      "category": null,
+      "searchText": "Pixel-art cheetah run GPT 6 Astra Max comparison",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2082832042702561372-kimi-k3",
+      "kind": "video",
+      "title": "3D destruction physics: trucks, canyon jump, anvil",
+      "author": "FHILY👑",
+      "sources": [
+        "https://x.com/Oluwaphilemon1/status/2082832042702561372"
+      ],
+      "patterns": [
+        "simulation",
+        "3d"
+      ],
+      "category": null,
+      "searchText": "3D destruction physics: trucks, canyon jump, anvil Three.js · single HTML file simulation 3d",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2082528683747873194-kimi-k3",
+      "kind": "video",
+      "title": "Cracking aquarium simulation",
+      "author": "Unsloth AI",
+      "sources": [
+        "https://x.com/UnslothAI/status/2082528683747873194"
+      ],
+      "patterns": [
+        "simulation",
+        "3d"
+      ],
+      "category": null,
+      "searchText": "Cracking aquarium simulation Three.js · single HTML file simulation 3d",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2082451081733591520-kimi-k3",
+      "kind": "video",
+      "title": "Explorable workstation room (“surprise me”)",
+      "author": "thehype.",
+      "sources": [
+        "https://x.com/thehypedotnews/status/2082451081733591520"
+      ],
+      "patterns": [
+        "3d",
+        "scene"
+      ],
+      "category": null,
+      "searchText": "Explorable workstation room (“surprise me”) Three.js · single HTML file 3d scene",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2080757148078768504-kimi-k3",
+      "kind": "video",
+      "title": "Procedural guns that fire and disassemble",
+      "author": "thehype.",
+      "sources": [
+        "https://x.com/thehypedotnews/status/2080757148078768504"
+      ],
+      "patterns": [
+        "3d",
+        "procedural"
+      ],
+      "category": null,
+      "searchText": "Procedural guns that fire and disassemble Three.js · single HTML file 3d procedural",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2079590483727442205-kimi-k3",
+      "kind": "video",
+      "title": "Gargantua black-hole geodesic raytracer (WebGL2)",
+      "author": "Harsh",
+      "sources": [
+        "https://x.com/devloper_hs/status/2079590483727442205"
+      ],
+      "patterns": [
+        "simulation",
+        "shader"
+      ],
+      "category": null,
+      "searchText": "Gargantua black-hole geodesic raytracer (WebGL2) Three.js · single HTML file simulation shader",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2079553757302710442-kimi-k3",
+      "kind": "video",
+      "title": "Voxel soccer goal animation",
+      "author": "Thành",
+      "sources": [
+        "https://x.com/Zmthanh/status/2079553757302710442"
+      ],
+      "patterns": [
+        "animation",
+        "3d"
+      ],
+      "category": null,
+      "searchText": "Voxel soccer goal animation Three.js · single HTML file animation 3d",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2080178541979664741-fable-5",
+      "kind": "video",
+      "title": "Procedural 3D cherry blossom tree",
+      "author": "zhod",
+      "sources": [
+        "https://x.com/zhodonx/status/2080178541979664741"
+      ],
+      "patterns": [
+        "3d",
+        "generative"
+      ],
+      "category": null,
+      "searchText": "Procedural 3D cherry blossom tree Three.js · single HTML file 3d generative",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2081200833656451322-fable-5",
+      "kind": "video",
+      "title": "Cinematic jungle helicopter flight",
+      "author": "Kirill",
+      "sources": [
+        "https://x.com/kirillk_web3/status/2081200833656451322"
+      ],
+      "patterns": [
+        "animation",
+        "3d"
+      ],
+      "category": null,
+      "searchText": "Cinematic jungle helicopter flight Three.js · single HTML file animation 3d",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2080834581247435102-fable-5",
+      "kind": "video",
+      "title": "Hand-drawn Japanese suburban street",
+      "author": "GMI Cloud",
+      "sources": [
+        "https://x.com/gmi_cloud/status/2080834581247435102"
+      ],
+      "patterns": [
+        "3d",
+        "scene"
+      ],
+      "category": null,
+      "searchText": "Hand-drawn Japanese suburban street Three.js · single HTML file 3d scene",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2080454415400493332-fable-5",
+      "kind": "video",
+      "title": "Maglev train in a glass vacuum tube",
+      "author": "Pixel",
+      "sources": [
+        "https://x.com/Pixel_Neuron/status/2080454415400493332"
+      ],
+      "patterns": [
+        "animation",
+        "3d"
+      ],
+      "category": null,
+      "searchText": "Maglev train in a glass vacuum tube Three.js · single HTML file animation 3d",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2081533777340506251-fable-5",
+      "kind": "video",
+      "title": "Infinite paper machine",
+      "author": "0xMarioNawfal",
+      "sources": [
+        "https://x.com/RoundtableSpace/status/2081533777340506251"
+      ],
+      "patterns": [
+        "animation",
+        "3d"
+      ],
+      "category": null,
+      "searchText": "Infinite paper machine Three.js · single HTML file animation 3d",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2079198084689723560-fable-5",
+      "kind": "video",
+      "title": "Voxel soccer goal animation",
+      "author": "Thành",
+      "sources": [
+        "https://x.com/Zmthanh/status/2079198084689723560"
+      ],
+      "patterns": [
+        "animation",
+        "3d"
+      ],
+      "category": null,
+      "searchText": "Voxel soccer goal animation Three.js · single HTML file animation 3d",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-h3d-2078806166122197132-fable-5",
+      "kind": "video",
+      "title": "Walk-through 3D airplane",
+      "author": "FHILY👑",
+      "sources": [
+        "https://x.com/Oluwaphilemon1/status/2078806166122197132"
+      ],
+      "patterns": [
+        "3d",
+        "scene"
+      ],
+      "category": null,
+      "searchText": "Walk-through 3D airplane Three.js · single HTML file 3d scene",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-fable5-plinius-event-horizon",
+      "kind": "video",
+      "title": "EVENT HORIZON — A Gravitational Light Study",
+      "author": "Pliny (elder-plinius)",
+      "sources": [
+        "https://github.com/elder-plinius/FABLE-SHOWCASE/tree/main/event-horizon"
+      ],
+      "patterns": [
+        "generative",
+        "single file",
+        "multi-agent"
+      ],
+      "category": null,
+      "searchText": "EVENT HORIZON — A Gravitational Light Study Claude Code · single index.html, zero dependencies generative single file multi-agent",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-fable5-plinius-synthwave",
+      "kind": "video",
+      "title": "SYNTHWAVE DRIVE — Neon Horizon, Infinite Miles",
+      "author": "Pliny (elder-plinius)",
+      "sources": [
+        "https://github.com/elder-plinius/FABLE-SHOWCASE/tree/main/synthwave"
+      ],
+      "patterns": [
+        "generative",
+        "single file",
+        "multi-agent"
+      ],
+      "category": null,
+      "searchText": "SYNTHWAVE DRIVE — Neon Horizon, Infinite Miles Claude Code · single index.html, zero dependencies generative single file multi-agent",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-fable5-scottstts-friends",
+      "kind": "video",
+      "title": "Monica’s apartment from Friends, first-person in Three.js",
+      "author": "scottstts",
+      "sources": [
+        "https://x.com/scottstts/status/2064464351906673029"
+      ],
+      "patterns": [
+        "3d",
+        "scene"
+      ],
+      "category": null,
+      "searchText": "Monica’s apartment from Friends, first-person in Three.js Three.js · single HTML file 3d scene",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-rush-kimi-k3",
+      "kind": "video",
+      "title": "Rolling the obelisk: 3D Egyptology physics explainer",
+      "author": "Terry Lurie",
+      "sources": [
+        "https://generative-ai.review/2026/07/kimi-k3-rush-test-vs-claude-fable/"
+      ],
+      "patterns": [
+        "3d",
+        "explainer",
+        "comparison"
+      ],
+      "category": null,
+      "searchText": "Rolling the obelisk: 3D Egyptology physics explainer Three.js (CDN) + CSS2DRenderer · single HTML file 3d explainer comparison",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "explainer",
+        "rendering"
+      ]
+    },
+    {
+      "id": "gallery-rush-claude-fable",
+      "kind": "video",
+      "title": "Rolling the obelisk: 3D Egyptology physics explainer",
+      "author": "Terry Lurie",
+      "sources": [
+        "https://generative-ai.review/2026/07/kimi-k3-rush-test-vs-claude-fable/"
+      ],
+      "patterns": [
+        "3d",
+        "explainer",
+        "comparison"
+      ],
+      "category": null,
+      "searchText": "Rolling the obelisk: 3D Egyptology physics explainer Three.js (CDN) + CSS2DRenderer · single HTML file 3d explainer comparison",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "explainer",
+        "rendering"
+      ]
+    },
+    {
+      "id": "gallery-kimi-ivanfioravanti-podracer",
+      "kind": "video",
+      "title": "Voxel pod-racer run",
+      "author": "Ivan Fioravanti",
+      "sources": [
+        "https://x.com/ivanfioravanti/status/2077763009657627055"
+      ],
+      "patterns": [
+        "3d",
+        "voxel"
+      ],
+      "category": null,
+      "searchText": "Voxel pod-racer run Voxel 3D · browser 3d voxel",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-kimi-manim-melting-space",
+      "kind": "video",
+      "title": "Melting Space: Ricci flow and the Poincaré conjecture",
+      "author": "HarleyCoops",
+      "sources": [
+        "https://github.com/HarleyCoops/KimiK3Manim"
+      ],
+      "patterns": [
+        "math",
+        "manim",
+        "3d",
+        "explainer"
+      ],
+      "category": null,
+      "searchText": "Melting Space: Ricci flow and the Poincaré conjecture Manim Community Edition (Python, LaTeX) math manim 3d explainer",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "explainer"
+      ]
+    },
+    {
+      "id": "gallery-kimi-manim-euler",
+      "kind": "skill",
+      "title": "Euler’s Identity, a 3.5-minute K3 swarm film",
+      "author": "HarleyCoops",
+      "sources": [
+        "https://github.com/HarleyCoops/KimiK3Manim"
+      ],
+      "patterns": [
+        "math",
+        "manim",
+        "skill"
+      ],
+      "category": null,
+      "searchText": "Euler’s Identity, a 3.5-minute K3 swarm film Manim Community Edition (Python, LaTeX) math manim skill",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "brand"
+      ]
+    },
+    {
+      "id": "gallery-kimi-manim-reverse-reasoning",
+      "kind": "skill",
+      "title": "Reverse Reasoning: a K3 protocol film",
+      "author": "HarleyCoops",
+      "sources": [
+        "https://github.com/HarleyCoops/KimiK3Manim"
+      ],
+      "patterns": [
+        "math",
+        "manim",
+        "skill"
+      ],
+      "category": null,
+      "searchText": "Reverse Reasoning: a K3 protocol film Manim Community Edition (Python, LaTeX) math manim skill",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-cc-kimi-k3-design-3d-portfolio-kimi-k3",
+      "kind": "video",
+      "title": "“Crafting Worlds in Motion” 3D designer portfolio",
+      "author": "Command Code",
+      "sources": [
+        "https://github.com/CommandCodeAI/slash-design-showcase/tree/main/kimi-k3-design/3d-portfolio"
+      ],
+      "patterns": [
+        "web",
+        "landing page",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "“Crafting Worlds in Motion” 3D designer portfolio Tailwind + Three.js/GSAP · single HTML (Command Code /design) web landing page one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-cc-kimi-k3-design-agency-kimi-k3",
+      "kind": "video",
+      "title": "NEON VOID: liquid-metal text studio site",
+      "author": "Command Code",
+      "sources": [
+        "https://github.com/CommandCodeAI/slash-design-showcase/tree/main/kimi-k3-design/agency"
+      ],
+      "patterns": [
+        "web",
+        "landing page",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "NEON VOID: liquid-metal text studio site Tailwind + Three.js/GSAP · single HTML (Command Code /design) web landing page one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "typography"
+      ]
+    },
+    {
+      "id": "gallery-cc-kimi-k3-design-scroll-experiment-kimi-k3",
+      "kind": "video",
+      "title": "Kael Thorn: scroll-driven dimension journey",
+      "author": "Command Code",
+      "sources": [
+        "https://github.com/CommandCodeAI/slash-design-showcase/tree/main/kimi-k3-design/scroll-experiment/kimi-k3"
+      ],
+      "patterns": [
+        "web",
+        "landing page",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Kael Thorn: scroll-driven dimension journey Tailwind + Three.js/GSAP · single HTML (Command Code /design) web landing page one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-cc-kimi-k3-design-product-kimi-k3",
+      "kind": "video",
+      "title": "NEXUS Audio: 3D earbuds product page",
+      "author": "Command Code",
+      "sources": [
+        "https://github.com/CommandCodeAI/slash-design-showcase/tree/main/kimi-k3-design/product"
+      ],
+      "patterns": [
+        "web",
+        "landing page",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "NEXUS Audio: 3D earbuds product page Tailwind + Three.js/GSAP · single HTML (Command Code /design) web landing page one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "product-launch"
+      ]
+    },
+    {
+      "id": "gallery-cc-kimi-k3-design-creative-portfolio-kimi-k3",
+      "kind": "video",
+      "title": "Awwwards-style creative portfolio",
+      "author": "Command Code",
+      "sources": [
+        "https://github.com/CommandCodeAI/slash-design-showcase/tree/main/kimi-k3-design/creative-portfolio/kimi-k3"
+      ],
+      "patterns": [
+        "web",
+        "landing page",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Awwwards-style creative portfolio Tailwind + Three.js/GSAP · single HTML (Command Code /design) web landing page one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-cc-kimi-k3-design-creative-portfolio-fable-5",
+      "kind": "video",
+      "title": "Awwwards-style creative portfolio",
+      "author": "Command Code",
+      "sources": [
+        "https://github.com/CommandCodeAI/slash-design-showcase/tree/main/kimi-k3-design/creative-portfolio/fable-5"
+      ],
+      "patterns": [
+        "web",
+        "landing page",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Awwwards-style creative portfolio Tailwind + Three.js/GSAP · single HTML (Command Code /design) web landing page one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-cc-kimi-k3-design-story-telling-kimi-k3",
+      "kind": "video",
+      "title": "Cinematic scroll-driven storytelling page",
+      "author": "Command Code",
+      "sources": [
+        "https://github.com/CommandCodeAI/slash-design-showcase/tree/main/kimi-k3-design/story-telling/kimi-k3"
+      ],
+      "patterns": [
+        "web",
+        "landing page",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Cinematic scroll-driven storytelling page Tailwind + Three.js/GSAP · single HTML (Command Code /design) web landing page one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "storyboard"
+      ]
+    },
+    {
+      "id": "gallery-cc-kimi-k3-design-story-telling-fable-5",
+      "kind": "video",
+      "title": "Cinematic scroll-driven storytelling page",
+      "author": "Command Code",
+      "sources": [
+        "https://github.com/CommandCodeAI/slash-design-showcase/tree/main/kimi-k3-design/story-telling/fable-5"
+      ],
+      "patterns": [
+        "web",
+        "landing page",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Cinematic scroll-driven storytelling page Tailwind + Three.js/GSAP · single HTML (Command Code /design) web landing page one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "storyboard"
+      ]
+    },
+    {
+      "id": "gallery-cc-kimi-k3-design-photography-fable-5",
+      "kind": "video",
+      "title": "Elena Voss: 3D floating-frame photography portfolio",
+      "author": "Command Code",
+      "sources": [
+        "https://github.com/CommandCodeAI/slash-design-showcase/tree/main/kimi-k3-design/photography/fable-5"
+      ],
+      "patterns": [
+        "web",
+        "landing page",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Elena Voss: 3D floating-frame photography portfolio Tailwind + Three.js/GSAP · single HTML (Command Code /design) web landing page one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-cc-kimi-k3-design-photography-kimi-k3",
+      "kind": "video",
+      "title": "Elena Voss: 3D floating-frame photography portfolio",
+      "author": "Command Code",
+      "sources": [
+        "https://github.com/CommandCodeAI/slash-design-showcase/tree/main/kimi-k3-design/photography/kimi-k3"
+      ],
+      "patterns": [
+        "web",
+        "landing page",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Elena Voss: 3D floating-frame photography portfolio Tailwind + Three.js/GSAP · single HTML (Command Code /design) web landing page one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2101055500599054437",
+      "kind": "video",
+      "title": "Galaxy flythrough from real orbital physics",
+      "author": "Argona",
+      "sources": [
+        "https://x.com/Argona0x/status/2101055500599054437"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "simulation",
+        "particles",
+        "video",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Galaxy flythrough from real orbital physics Codex (ChatGPT app), GPT-6 Astra reasoning high; custom renderer, 1,800 frames at 60 fps motion 3d simulation particles video one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "rendering"
+      ]
+    },
+    {
+      "id": "gallery-x-2097153139795468365",
+      "kind": "video",
+      "title": "Exploded-view animation of a Japanese flower shop",
+      "author": "KANA｜東京AI映像",
+      "sources": [
+        "https://x.com/KanaWorks_AI/status/2097153139795468365"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "blender",
+        "video"
+      ],
+      "category": null,
+      "searchText": "Exploded-view animation of a Japanese flower shop Blender via Blender MCP motion 3d blender video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2096612394281603144",
+      "kind": "video",
+      "title": "Dieline-to-box folding carton animation",
+      "author": "Salma",
+      "sources": [
+        "https://x.com/Salmaaboukarr/status/2096612394281603144"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "blender",
+        "video"
+      ],
+      "category": null,
+      "searchText": "Dieline-to-box folding carton animation Blender motion 3d blender video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2096562462674079868",
+      "kind": "video",
+      "title": "Nuclear blast simulation over a 3D city",
+      "author": "Ashish Thakur",
+      "sources": [
+        "https://x.com/ashishthakur___/status/2096562462674079868"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "simulation",
+        "particles",
+        "video"
+      ],
+      "category": null,
+      "searchText": "Nuclear blast simulation over a 3D city  motion 3d simulation particles video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2097900087901106244",
+      "kind": "video",
+      "title": "Wordless 3D cat short: one treat button",
+      "author": "AI実践ラボ",
+      "sources": [
+        "https://x.com/boboga777/status/2097900087901106244"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "animation",
+        "audio",
+        "video"
+      ],
+      "category": null,
+      "searchText": "Wordless 3D cat short: one treat button Codex motion 3d animation audio video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2098697876155076820",
+      "kind": "video",
+      "title": "禅境·古寺: 64-second Zen temple build-process video",
+      "author": "火山哥🕊️",
+      "sources": [
+        "https://x.com/huoshan007/status/2098697876155076820"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "threejs",
+        "video"
+      ],
+      "category": null,
+      "searchText": "禅境·古寺: 64-second Zen temple build-process video Three.js + FFmpeg motion 3d threejs video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "rendering"
+      ]
+    },
+    {
+      "id": "gallery-x-2095898303019856230",
+      "kind": "video",
+      "title": "Looping cyberpunk bedroom over a rainy neon city",
+      "author": "Coin Shot ☁️",
+      "sources": [
+        "https://x.com/CoinSh0t/status/2095898303019856230"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "blender",
+        "video"
+      ],
+      "category": null,
+      "searchText": "Looping cyberpunk bedroom over a rainy neon city Blender motion 3d blender video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2102276620124062065",
+      "kind": "video",
+      "title": "Tokyo Tower day-and-night 3D film",
+      "author": "Wafffle",
+      "sources": [
+        "https://x.com/wafffle_dev/status/2102276620124062065"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "blender",
+        "video"
+      ],
+      "category": null,
+      "searchText": "Tokyo Tower day-and-night 3D film Codex × Blender motion 3d blender video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2096744577332068549",
+      "kind": "video",
+      "title": "One-shot 30-second promo video for an Astra-built game",
+      "author": "Rohan Varma",
+      "sources": [
+        "https://x.com/TheRohanVarma/status/2096744577332068549"
+      ],
+      "patterns": [
+        "motion",
+        "video",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "One-shot 30-second promo video for an Astra-built game Codex motion video one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "product-launch"
+      ]
+    },
+    {
+      "id": "gallery-x-2096040448477515874",
+      "kind": "video",
+      "title": "Abiogenesis to multicellular life in raw WebGL",
+      "author": "Yume_X",
+      "sources": [
+        "https://x.com/yume_arasaki/status/2096040448477515874"
+      ],
+      "patterns": [
+        "motion",
+        "webgl",
+        "shader",
+        "simulation",
+        "single file",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Abiogenesis to multicellular life in raw WebGL Single HTML file, raw WebGL + GLSL motion webgl shader simulation single file one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2096213850383331489",
+      "kind": "video",
+      "title": "3D pelican riding a bicycle",
+      "author": "AI Builder Club",
+      "sources": [
+        "https://x.com/aibuilderclub_/status/2096213850383331489"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "webgl"
+      ],
+      "category": null,
+      "searchText": "3D pelican riding a bicycle Browser 3D (WebGL) motion 3d webgl",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2096925943575330908",
+      "kind": "video",
+      "title": "Shot-by-shot iPhone 17 Pro commercial recreation",
+      "author": "ChatCut",
+      "sources": [
+        "https://x.com/chatcutapp/status/2096925943575330908"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "blender",
+        "video"
+      ],
+      "category": null,
+      "searchText": "Shot-by-shot iPhone 17 Pro commercial recreation Blender + ChatCut motion 3d blender video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2106824464092770455",
+      "kind": "video",
+      "title": "38-second fictional game trailer built entirely in code",
+      "author": "Paruchh",
+      "sources": [
+        "https://x.com/theparuchh/status/2106824464092770455"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "blender",
+        "audio",
+        "video",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "38-second fictional game trailer built entirely in code Blender (headless bpy) + Python audio synthesis + ffmpeg motion 3d blender audio video one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "rendering"
+      ]
+    },
+    {
+      "id": "gallery-x-2103187935759655167",
+      "kind": "video",
+      "title": "Northbound: Viking longship journey through a fjord",
+      "author": "Vib3Coded",
+      "sources": [
+        "https://x.com/vib3coded/status/2103187935759655167"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "threejs",
+        "webgl",
+        "shader",
+        "single file"
+      ],
+      "category": null,
+      "searchText": "Northbound: Viking longship journey through a fjord Three.js + WebGL, single HTML file motion 3d threejs webgl shader single file",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2096971051334857181",
+      "kind": "video",
+      "title": "Interactive Chinese courtyard with koi, fireflies and day/night",
+      "author": "Larus Canus",
+      "sources": [
+        "https://x.com/MrLarus/status/2096971051334857181"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "blender",
+        "threejs"
+      ],
+      "category": null,
+      "searchText": "Interactive Chinese courtyard with koi, fireflies and day/night Blender (Python, GLB export) + Three.js motion 3d blender threejs",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "rendering"
+      ]
+    },
+    {
+      "id": "gallery-x-2077880380900937865",
+      "kind": "video",
+      "title": "Recursive pelican-on-a-bicycle looping animation",
+      "author": "1LittleCoder💻",
+      "sources": [
+        "https://x.com/1littlecoder/status/2077880380900937865"
+      ],
+      "patterns": [
+        "motion",
+        "animation",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Recursive pelican-on-a-bicycle looping animation  motion animation one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2077857190707429411",
+      "kind": "video",
+      "title": "Animated personal website with cursor reactions",
+      "author": "ns",
+      "sources": [
+        "https://x.com/nicky_sap/status/2077857190707429411"
+      ],
+      "patterns": [
+        "motion",
+        "web",
+        "landing page"
+      ],
+      "category": null,
+      "searchText": "Animated personal website with cursor reactions Kimi (free tier, Max reasoning) motion web landing page",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2078508824752017757",
+      "kind": "video",
+      "title": "Cinematic 3D human scalp explorer",
+      "author": "Mia",
+      "sources": [
+        "https://x.com/MiaAI_lab/status/2078508824752017757"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "threejs",
+        "gsap",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Cinematic 3D human scalp explorer React + Three.js + React Three Fiber + GSAP motion 3d threejs gsap one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2064477582930989357",
+      "kind": "video",
+      "title": "Solar system orrery that predicts eclipses",
+      "author": "テツメモ｜AI図解×検証｜Newsletter",
+      "sources": [
+        "https://x.com/tetumemo/status/2064477582930989357"
+      ],
+      "patterns": [
+        "motion",
+        "simulation",
+        "physics",
+        "canvas"
+      ],
+      "category": null,
+      "searchText": "Solar system orrery that predicts eclipses React artifact (Claude), requestAnimationFrame motion simulation physics canvas",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-open-sea-realtime-webgpu-ocean-kimi",
+      "kind": "video",
+      "title": "Open Sea — realtime WebGPU ocean",
+      "author": "Kimi (Moonshot AI)",
+      "sources": [
+        "https://www.kimi.ai/showcases/websites/open-sea-webgpu-ocean"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "threejs",
+        "shader",
+        "official showcase"
+      ],
+      "category": null,
+      "searchText": "Open Sea — realtime WebGPU ocean WebGPU + Three.js TSL, single static page motion 3d threejs shader official showcase",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-walking-strandbeest-threejs-fresh-resolution182",
+      "kind": "video",
+      "title": "Walking Theo Jansen Strandbeest in Three.js",
+      "author": "Fresh-Resolution182",
+      "sources": [
+        "https://www.reddit.com/r/ClaudeCode/comments/1v26jmi/kimi_k3_oneshot_a_walking_theo_jansen_strandbeest/"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "threejs",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Walking Theo Jansen Strandbeest in Three.js Three.js motion 3d threejs one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-tortoise-and-the-hare-animation-ayarseus",
+      "kind": "video",
+      "title": "The Tortoise and the Hare animation",
+      "author": "ayarseus",
+      "sources": [
+        "https://www.reddit.com/r/kimi/comments/1uyb1sn/k3_is_really_good_at_animations/"
+      ],
+      "patterns": [
+        "motion",
+        "animation",
+        "one-shot",
+        "short brief"
+      ],
+      "category": null,
+      "searchText": "The Tortoise and the Hare animation  motion animation one-shot short brief",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-ciudad-de-las-artes-3d-scene-edunavajas",
+      "kind": "video",
+      "title": "Ciudad de las Artes y las Ciencias: navigable 3D scene with day/night",
+      "author": "Eduardo Navajas",
+      "sources": [
+        "https://edunavajas.com/blog/kimi-k3"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "threejs",
+        "scene"
+      ],
+      "category": null,
+      "searchText": "Ciudad de las Artes y las Ciencias: navigable 3D scene with day/night Three.js (Kimi web app, Max mode) motion 3d threejs scene",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-x-2077841331037094042",
+      "kind": "video",
+      "title": "\"Enter the K\": Kimi K3 launch site as a scroll-driven type film",
+      "author": "JUMPERZ",
+      "sources": [
+        "https://x.com/jumperz/status/2077841331037094042"
+      ],
+      "patterns": [
+        "motion",
+        "web",
+        "scroll",
+        "typography",
+        "one-shot",
+        "video"
+      ],
+      "category": null,
+      "searchText": "\"Enter the K\": Kimi K3 launch site as a scroll-driven type film Next.js + React + TypeScript + GSAP ScrollTrigger + Lenis motion web scroll typography one-shot video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "typography",
+        "product-launch"
+      ]
+    },
+    {
+      "id": "gallery-x-2077783731691995348",
+      "kind": "video",
+      "title": "Drowned Spires: neo-gothic storm-city shader",
+      "author": "Ethan Mollick",
+      "sources": [
+        "https://x.com/emollick/status/2077783731691995348"
+      ],
+      "patterns": [
+        "motion",
+        "shader",
+        "3d",
+        "procedural",
+        "video"
+      ],
+      "category": null,
+      "searchText": "Drowned Spires: neo-gothic storm-city shader GLSL fragment shader for twigl.app motion shader 3d procedural video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-gargantua-black-hole-raytracer-kimi-showcase",
+      "kind": "video",
+      "title": "GARGANTUA: real-time Schwarzschild black-hole raytracer",
+      "author": "Kimi (Moonshot AI)",
+      "sources": [
+        "https://www.kimi.ai/showcases/agent-swarm/gargantua-black-hole-raytracer"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "shader",
+        "simulation",
+        "official showcase",
+        "video"
+      ],
+      "category": null,
+      "searchText": "GARGANTUA: real-time Schwarzschild black-hole raytracer WebGL raytracer, single static page (Kimi Agent Swarm) motion 3d shader simulation official showcase video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-attention-residuals-animated-explainer-kimi-showcase",
+      "kind": "video",
+      "title": "Attention Residuals: Kimi paper as an animated explainer",
+      "author": "Kimi (Moonshot AI)",
+      "sources": [
+        "https://www.kimi.ai/showcases/deep-research/attention-residuals-interactive-demo"
+      ],
+      "patterns": [
+        "motion",
+        "explainer",
+        "diagram",
+        "official showcase"
+      ],
+      "category": null,
+      "searchText": "Attention Residuals: Kimi paper as an animated explainer Single self-contained HTML file + KaTeX motion explainer diagram official showcase",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "explainer"
+      ]
+    },
+    {
+      "id": "gallery-game-of-thrones-s1-map-animation-wshuyi",
+      "kind": "video",
+      "title": "《权力的游戏》S1: animated Westeros power map",
+      "author": "玉树芝兰",
+      "sources": [
+        "https://sspai.com/post/112544"
+      ],
+      "patterns": [
+        "motion",
+        "map",
+        "animation",
+        "data viz",
+        "video"
+      ],
+      "category": null,
+      "searchText": "《权力的游戏》S1: animated Westeros power map Kimi Code + K3 Max · single 31 KB HTML file motion map animation data viz video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "data"
+      ]
+    },
+    {
+      "id": "gallery-house-of-the-dragon-map-animation-wshuyi",
+      "kind": "video",
+      "title": "《龙之家族》S1–S3E04: animated Dance of the Dragons map",
+      "author": "玉树芝兰",
+      "sources": [
+        "https://sspai.com/post/112544"
+      ],
+      "patterns": [
+        "motion",
+        "map",
+        "animation",
+        "data viz",
+        "video"
+      ],
+      "category": null,
+      "searchText": "《龙之家族》S1–S3E04: animated Dance of the Dragons map Kimi Code + K3 Max · single HTML file motion map animation data viz video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "data"
+      ]
+    },
+    {
+      "id": "gallery-element-bender-kimi-k3-sulat",
+      "kind": "video",
+      "title": "Element Bender: 30-second cinematic elemental VFX animation",
+      "author": "Sulat",
+      "sources": [
+        "https://element-bender.k3.demos.sulat.com/"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "vfx",
+        "particles",
+        "animation",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Element Bender: 30-second cinematic elemental VFX animation WebGL / Three.js-style particle VFX, single static page motion 3d vfx particles animation one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-meteor-city-impact-kimi-k3-sulat",
+      "kind": "video",
+      "title": "Meteor City Impact: cinematic procedural meteor strike",
+      "author": "Sulat",
+      "sources": [
+        "https://meteor-city-impact.k3.demos.sulat.com/"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "simulation",
+        "vfx",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Meteor City Impact: cinematic procedural meteor strike Procedural 3D, single static page motion 3d simulation vfx one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-singularity-audio-visualizer-kimi-k3-sulat",
+      "kind": "video",
+      "title": "SINGULARITY: black-hole audio visualizer with code-generated EDM",
+      "author": "Sulat",
+      "sources": [
+        "https://singularity-audio-visualizer.k3.demos.sulat.com/"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "audio-reactive",
+        "shader",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "SINGULARITY: black-hole audio visualizer with code-generated EDM WebGL + Web Audio synthesis, static page motion 3d audio-reactive shader one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-kinetic-typography-journal-kimi-k3-sulat",
+      "kind": "video",
+      "title": "EM DASH: kinetic typography journal",
+      "author": "Sulat",
+      "sources": [
+        "https://kinetic-typography-journal.k3.demos.sulat.com/"
+      ],
+      "patterns": [
+        "motion",
+        "typography",
+        "web",
+        "scroll",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "EM DASH: kinetic typography journal Static web page (variable fonts) motion typography web scroll one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "typography"
+      ]
+    },
+    {
+      "id": "gallery-motion-scroll-story-kimi-k3-sulat",
+      "kind": "video",
+      "title": "PERIHELION: scroll-driven solar-sail story",
+      "author": "Sulat",
+      "sources": [
+        "https://motion-scroll-story.k3.demos.sulat.com/"
+      ],
+      "patterns": [
+        "motion",
+        "web",
+        "scroll",
+        "storytelling",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "PERIHELION: scroll-driven solar-sail story Static web page (canvas / CSS / SVG / WebGL) motion web scroll storytelling one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "storyboard"
+      ]
+    },
+    {
+      "id": "gallery-da-vinci-ornithopter-kimi-k3-sulat",
+      "kind": "video",
+      "title": "Da Vinci's ornithopter: working mechanism in a living manuscript",
+      "author": "Sulat",
+      "sources": [
+        "https://da-vinci-ornithopter.k3.demos.sulat.com/"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "mechanism",
+        "explainer",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Da Vinci's ornithopter: working mechanism in a living manuscript Interactive 3D, static page motion 3d mechanism explainer one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "explainer"
+      ]
+    },
+    {
+      "id": "gallery-3d-cherry-blossom-kimi-k3-sulat",
+      "kind": "video",
+      "title": "Voxel cherry-blossom diorama with drifting petals",
+      "author": "Sulat",
+      "sources": [
+        "https://3d-cherry-blossom.k3.demos.sulat.com/"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "voxel",
+        "threejs",
+        "ambient",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "Voxel cherry-blossom diorama with drifting petals Three.js voxel diorama motion 3d voxel threejs ambient one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "gallery-hamburger-assembly-kimi-k3-sulat",
+      "kind": "video",
+      "title": "The Perfect Hamburger: slow-motion commercial assembly",
+      "author": "Sulat",
+      "sources": [
+        "https://hamburger-assembly.k3.demos.sulat.com/"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "product shot",
+        "animation",
+        "one-shot"
+      ],
+      "category": null,
+      "searchText": "The Perfect Hamburger: slow-motion commercial assembly Interactive 3D, static page motion 3d product shot animation one-shot",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "product-launch"
+      ]
+    },
+    {
+      "id": "gallery-x-2097534290112188602",
+      "kind": "video",
+      "title": "Backrooms VHS run, rendered in Blender",
+      "author": "CHRIS FIRST",
+      "sources": [
+        "https://x.com/chrisfirst/status/2097534290112188602"
+      ],
+      "patterns": [
+        "motion",
+        "3d",
+        "blender",
+        "found footage",
+        "audio",
+        "video"
+      ],
+      "category": null,
+      "searchText": "Backrooms VHS run, rendered in Blender Blender (ChatGPT, GPT-6 Astra) motion 3d blender found footage audio video",
+      "promptStatus": "upstream_prompt_not_bundled",
+      "sourceRole": "attributed_gallery_metadata",
+      "reviewed": false,
+      "ownAnalysis": null,
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "note": "Gallery MIT covers site code; prompts and videos have separate provenance. No upstream media or prompt text bundled here."
+      },
+      "media": [],
+      "textPath": null,
+      "useCases": [
+        "general"
+      ]
+    },
+    {
+      "id": "stack-camera-3d-captions",
+      "kind": "skill",
+      "title": "Camera 3D Captions · native editable projection",
+      "author": "heygen-com",
+      "sources": [
+        "https://github.com/heygen-com/hyperframes-community-skills/tree/master/skills/camera-3d-captions"
+      ],
+      "patterns": [
+        "typography",
+        "threeD"
+      ],
+      "useCases": [
+        "camera-3d-captions",
+        "captions",
+        "typography"
+      ],
+      "category": null,
+      "searchText": "camera 3d captions subtitulos perspectiva tipografia projection native editable camera-3d-captions",
+      "promptStatus": "syka_native_adaptation",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "native_method_adaptation",
+        "skill": "syka-camera-3d-captions",
+        "limitations": "Projected native text; no true 3D renderer, automatic occlusion or ring glyph layout."
+      },
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false
+      },
+      "media": [],
+      "textPath": null
+    }
+  ]
+}

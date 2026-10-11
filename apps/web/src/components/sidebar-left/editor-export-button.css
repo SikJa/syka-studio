@@ -1,0 +1,45 @@
+.syka-editor-header-content { display: flex; height: 100%; min-width: 0; align-items: center; gap: 12px; padding-inline: 12px; }
+.syka-editor-header-name { display: flex; flex: 1; min-width: 0; justify-content: center; overflow: hidden; -webkit-app-region: no-drag; }
+.syka-header-export {
+  --export-surface: color-mix(in srgb, var(--primary) 5%, var(--background));
+  --export-metal: color-mix(in srgb, var(--primary) 52%, #9299a8);
+  position: relative; isolation: isolate; overflow: hidden;
+  display: inline-flex; height: 28px; flex-shrink: 0; align-items: center; justify-content: center; gap: 6px; padding: 0 11px;
+  border: 0; border-radius: 10px; color: var(--foreground); background: var(--border);
+  font-size: 11px; font-weight: 600; cursor: pointer; -webkit-app-region: no-drag;
+  transition: transform var(--duration-quick, 150ms) var(--ease-smooth-out, cubic-bezier(.22, 1, .36, 1)), box-shadow var(--duration-fast, 250ms) var(--ease-smooth-out, cubic-bezier(.22, 1, .36, 1));
+}
+/* The moving reflection is behind an opaque inset: only the 1px metal rim
+   moves. No canvas, pointer loop, text shimmer or animation in the export path. */
+.syka-header-export::after {
+  content: ''; position: absolute; z-index: -2; width: 180px; height: 180px; pointer-events: none;
+  background: conic-gradient(from 28deg, #4c5260 0deg, var(--export-metal) 48deg, #f5f8ff 73deg, #626977 100deg, var(--export-metal) 158deg, #dfe8f4 184deg, #525864 220deg, var(--export-metal) 288deg, #f5f8ff 312deg, #4c5260 360deg);
+  opacity: .72; animation: syka-export-metal-turn 12s linear infinite;
+  transition: opacity var(--duration-fast, 250ms) var(--ease-out, ease-out);
+}
+.syka-header-export::before {
+  content: ''; position: absolute; z-index: -1; inset: 1px; pointer-events: none; border-radius: 9px;
+  background: var(--export-surface); box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 6%, transparent);
+}
+.syka-header-export > * { position: relative; }
+@keyframes syka-export-metal-turn { to { transform: rotate(360deg); } }
+.syka-header-export svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.syka-header-export:hover:not(:disabled) { box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 18%, transparent); }
+.syka-header-export:hover:not(:disabled)::after, .syka-header-export:focus-visible::after { opacity: 1; }
+.syka-header-export:active:not(:disabled) { transform: scale(.97); }
+.syka-header-export:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.syka-header-export:disabled { opacity: .5; cursor: default; }
+.syka-header-export:disabled::after { animation-play-state: paused; }
+.syka-editor-export-platform { position: fixed; top: 6px; right: 16px; z-index: 30; }
+@media (max-width: 1000px) { .syka-editor-header-content { gap: 6px; padding-inline: 8px; } .syka-header-export { gap: 5px; padding-inline: 8px; } }
+@media (prefers-reduced-motion: reduce) {
+  .syka-header-export, .syka-header-export::after { transition: none; animation: none; }
+  .syka-header-export:active:not(:disabled) { transform: none; }
+}
+[data-motion="reduced"] .syka-header-export, [data-motion="reduced"] .syka-header-export::after,
+[data-syka-motion="reduced"] .syka-header-export, [data-syka-motion="reduced"] .syka-header-export::after { transition: none; animation: none; }
+[data-motion="reduced"] .syka-header-export:active:not(:disabled), [data-syka-motion="reduced"] .syka-header-export:active:not(:disabled) { transform: none; }
+@media (forced-colors: active) {
+  .syka-header-export { border: 1px solid ButtonText; color: ButtonText; background: ButtonFace; }
+  .syka-header-export::before, .syka-header-export::after { display: none; }
+}

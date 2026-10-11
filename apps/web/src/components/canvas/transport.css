@@ -1,0 +1,85 @@
+/* Origin-aware dropdown motion from transitions-dev, scoped to transport. */
+.syka-canvas-preview { container-type: inline-size; }
+.syka-preview-surface { position: absolute; inset: 26px 0 calc(var(--syka-preview-dock-height, 40px) + 20px); }
+.syka-canvas-dock {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 10;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 5px 6px;
+  width: max-content; max-width: calc(100% - 20px); min-height: 40px; padding: 5px 7px;
+  background: var(--color-background); border: 1px solid var(--color-border-strong); border-radius: 13px;
+  box-shadow: 0 4px 18px #0002;
+}
+.syka-canvas-transport, .syka-playback-buttons, .syka-canvas-tools { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
+.syka-canvas-transport { flex-wrap: wrap; justify-content: center; max-width: 100%; }
+.syka-canvas-tools { border-left: 1px solid var(--color-border); padding-left: 6px; }
+.syka-preview-icon { width: 21px; height: 21px; flex-shrink: 0; }
+.syka-canvas-dock button { flex-shrink: 0; border-radius: 8px; transition: background-color 150ms cubic-bezier(.22,1,.36,1), color 150ms ease-out; }
+.syka-preview-play { border-radius: 7px; margin: 0 2px; }
+.syka-preview-active { color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 12%, transparent); }
+.syka-preview-time { flex: 0 0 auto; font-size: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; padding: 0 5px; }
+.syka-preview-duration { color: var(--color-muted-foreground); }
+.syka-preview-speed { height: 28px; min-width: 50px; gap: 2px; padding: 0 6px; font-size: 11px; font-variant-numeric: tabular-nums; }
+.syka-preview-speed .syka-preview-icon { width: 13px; height: 13px; }
+.syka-transport-menu-note { padding: 7px 8px 3px; font-size: 10px; color: var(--color-muted-foreground); border-top: 1px solid var(--color-border); }
+.syka-shortcuts-menu { width: 340px; max-width: calc(100vw - 24px); padding: 12px; font-size: 11px; }
+.syka-shortcuts-menu strong { display: block; margin-bottom: 8px; }
+.syka-shortcuts-menu > div { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; }
+.syka-shortcuts-menu kbd { color: var(--color-muted-foreground); white-space: nowrap; font-size: 10px; }
+.syka-canvas-preview.is-fullscreen { background: var(--syka-preview-stage-background,#161616); }
+.is-fullscreen .syka-preview-surface { pointer-events: none; top: 0; bottom: calc(var(--syka-fullscreen-composer-height,50px) + var(--syka-preview-dock-height,40px) + 44px); }
+.is-fullscreen .syka-canvas-dock { background: #101114; bottom: calc(var(--syka-fullscreen-composer-height,50px) + 40px); }
+.syka-fullscreen-chat { display: none; }
+.is-fullscreen .syka-fullscreen-chat { display: flex; position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); width: min(860px, calc(100% - 32px)); z-index: 30; }
+@container (max-width: 650px) {
+  .syka-canvas-dock button { max-width: 26px; }
+  .syka-canvas-dock .syka-preview-speed { min-width: 44px; max-width: none; padding-inline: 3px; }
+  .syka-canvas-dock .syka-preview-icon { width: 19px; height: 19px; }
+  .syka-preview-speed .syka-preview-icon { width: 13px; height: 13px; }
+}
+@container (max-width: 520px) {
+  .syka-canvas-dock { column-gap: 4px; }
+  .syka-canvas-transport { display: contents; }
+  .syka-canvas-tools { border-left: 0; padding-left: 0; }
+}
+.syka-preview-caption { position: absolute; top: 10px; left: 16px; z-index: 5; max-width: calc(100% - 32px); display: flex; align-items: center; gap: 9px; font-size: 11px; }
+.syka-preview-caption > span { font-size: 10px; color: var(--color-muted-foreground); }
+.syka-preview-caption strong { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.syka-preview-volume { width: 210px; padding: 12px; }
+.syka-canvas-dock {padding-top:18px;}
+.syka-preview-seek {position:absolute;left:14px;right:14px;top:2px;height:16px;display:flex;align-items:center;}
+.syka-preview-seek input {appearance:none;display:block;width:100%;height:16px;margin:0;cursor:pointer;background:transparent;accent-color:var(--color-primary);}
+.syka-preview-seek input::-webkit-slider-runnable-track {height:3px;background:var(--color-border-strong);border-radius:3px;}
+.syka-preview-seek input::-webkit-slider-thumb {appearance:none;width:10px;height:10px;margin-top:-3.5px;border-radius:50%;background:var(--color-primary);}
+.syka-preview-seek input::-moz-range-track {height:3px;background:var(--color-border-strong);border-radius:3px;}
+.syka-preview-seek input::-moz-range-thumb {width:10px;height:10px;border:0;border-radius:50%;background:var(--color-primary);}
+.syka-preview-seek input:disabled {cursor:default;opacity:.4;}
+.syka-preview-seek input:focus-visible {outline:2px solid var(--color-primary);outline-offset:3px;border-radius:8px;}
+.syka-preview-volume > div { display: flex; justify-content: space-between; font-size: 11px; }
+.syka-preview-volume input { width: 100%; margin: 14px 0 7px; accent-color: var(--color-primary); }
+.syka-transport-tooltip { --animate-duration: 150ms; transform-origin: bottom; }
+@media (prefers-reduced-motion: reduce) { .syka-transport-tooltip { animation: none !important; } .syka-canvas-dock button { transition: none; } }
+.syka-speed-menu {
+  --dropdown-open-dur: 250ms;
+  --dropdown-close-dur: 150ms;
+  --dropdown-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: var(--kb-menu-content-transform-origin, bottom center);
+}
+.syka-speed-menu[data-expanded] {
+  animation: syka-speed-open var(--dropdown-open-dur) var(--dropdown-ease);
+}
+.syka-speed-menu[data-closed] {
+  animation: syka-speed-close var(--dropdown-close-dur) var(--dropdown-ease);
+}
+@keyframes syka-speed-open {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes syka-speed-close {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.99); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .syka-speed-menu { animation: none !important; transition: none !important; }
+}
+[data-motion="reduced"] .syka-transport-tooltip,
+[data-motion="reduced"] .syka-speed-menu { animation: none !important; transition: none !important; }
+[data-motion="reduced"] .syka-canvas-dock button { transition: none; }

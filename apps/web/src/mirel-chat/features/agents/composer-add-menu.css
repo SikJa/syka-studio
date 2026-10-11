@@ -1,0 +1,43 @@
+.syka-composer-add-menu{position:fixed;z-index:10025;width:min(312px,calc(100vw - 16px));max-height:calc(100dvh - 16px);box-sizing:border-box;display:flex;flex-direction:column;padding:6px;background:var(--color-popover,#171717);color:var(--color-popover-foreground,var(--color-foreground,#eee));border:1px solid var(--color-border,#333);border-radius:14px;box-shadow:0 14px 42px #0005;transform-origin:bottom left;transform:scale(var(--dropdown-pre-scale,.97));opacity:0;pointer-events:none;transition:transform var(--dropdown-open-dur,250ms) var(--dropdown-ease,cubic-bezier(.22,1,.36,1)),opacity var(--dropdown-open-dur,250ms) var(--dropdown-ease,cubic-bezier(.22,1,.36,1));font-family:var(--font-body,Inter,sans-serif);}
+.syka-composer-add-menu[data-origin=top-left]{transform-origin:top left;}.syka-composer-add-menu.is-open{opacity:1;transform:scale(1);pointer-events:auto;}.syka-composer-add-menu.is-closing{opacity:0;transform:scale(var(--dropdown-closing-scale,.99));pointer-events:none;transition-duration:var(--dropdown-close-dur,150ms);}
+.syka-composer-add-scroll{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--color-border,#444) transparent;max-height:min(520px,calc(100dvh - 82px));}
+.syka-composer-add-scroll>small{display:block;padding:8px 10px 5px;color:var(--color-muted-foreground,#909090);font-size:11px;font-weight:400;}.syka-composer-add-scroll>.syka-composer-add-section{padding-top:11px;margin-top:5px;border-top:1px solid var(--color-border,#333);}
+.syka-composer-add-scroll button{display:flex;align-items:center;gap:10px;width:100%;min-height:33px;padding:7px 10px;background:transparent;border:0;border-radius:8px;color:inherit;text-align:left;font:inherit;font-size:12px;font-weight:450;cursor:pointer;transition:background-color 120ms;}
+.syka-composer-add-scroll button:hover,.syka-composer-add-scroll button:focus-visible{background:var(--color-accent,#292929);outline:none;}.syka-composer-add-scroll button:focus-visible{box-shadow:inset 0 0 0 1px var(--color-border,#555);}.syka-composer-add-scroll button:disabled{opacity:.45;cursor:not-allowed;}
+.syka-composer-add-scroll button>svg,.syka-composer-add-icon{width:16px;height:16px;flex:0 0 16px;display:grid;place-items:center;color:var(--color-muted-foreground,#b2b2b2);}.syka-composer-add-icon.has-accent{color:#85b6aa;}.syka-composer-add-scroll button>span:not(.syka-composer-add-icon){flex:1;min-width:0;}.syka-composer-add-scroll kbd{font:inherit;font-size:10px;color:var(--color-muted-foreground,#999);white-space:nowrap;}
+.syka-composer-add-help{font-size:11px;line-height:1.5;color:var(--color-muted-foreground,#aaa);border-top:1px solid var(--color-border,#333);padding:10px 10px 5px;margin:6px 0 0;min-height:36px;box-sizing:border-box;}
+@media(prefers-reduced-motion:reduce){.syka-composer-add-menu{transition:none!important;}}
+[data-syka-motion=reduced] .syka-composer-add-menu{transition:none!important;}
+
+/* Transition.dev dropdown contract; the root tokens are already installed. */
+.t-dropdown {
+  transform-origin: top left;
+  transform: scale(var(--dropdown-pre-scale));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--dropdown-open-dur) var(--dropdown-ease),
+    opacity   var(--dropdown-open-dur) var(--dropdown-ease);
+  will-change: transform, opacity;
+}
+.t-dropdown[data-origin="top-right"]     { transform-origin: top right; }
+.t-dropdown[data-origin="top-center"]    { transform-origin: top center; }
+.t-dropdown[data-origin="bottom-left"]   { transform-origin: bottom left; }
+.t-dropdown[data-origin="bottom-center"] { transform-origin: bottom center; }
+.t-dropdown[data-origin="bottom-right"]  { transform-origin: bottom right; }
+.t-dropdown.is-open {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.t-dropdown.is-closing {
+  transform: scale(var(--dropdown-closing-scale));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--dropdown-close-dur) var(--dropdown-ease),
+    opacity   var(--dropdown-close-dur) var(--dropdown-ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  .t-dropdown { transition: none !important; }
+}

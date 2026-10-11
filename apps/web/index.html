@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/syka.svg" />
+    <script>
+      (function () {
+        try {
+          var apply = function (mode) {
+            var resolved =
+              mode === "system"
+                ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                  ? "dark"
+                  : "light"
+                : mode;
+            var root = document.documentElement;
+            root.style.colorScheme = resolved;
+            root.dataset.kbTheme = resolved;
+            return mode;
+          };
+          var stored = localStorage.getItem("kb-color-mode");
+          if (stored) apply(stored);
+          else localStorage.setItem("kb-color-mode", apply("dark"));
+        } catch (e) {}
+
+        if (window.desktop) {
+          document.documentElement.dataset.platform = window.desktop.platform;
+          if (window.desktop.platform === "darwin") {
+            document.documentElement.dataset.boot = "1";
+          }
+        }
+      })();
+    </script>
+    <style>
+      #boot-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+      }
+
+      html[data-boot="1"] #boot-splash {
+        display: flex;
+      }
+
+      #boot-splash svg {
+        width: 48px;
+        height: 48px;
+      }
+    </style>
+    <link href="/src/index.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Syka Studio</title>
+    <meta name="description" content="The video editor built on an infinite canvas. Create and edit videos with design-tool freedom and export up to 4K. Multi-track timeline, AI-powered workflows, and full creative control. Built for creators and professionals." />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Syka Studio — The creative platform for video and motion graphics." />
+    <meta property="og:description" content="The video editor built on an infinite canvas. Create and edit videos with design-tool freedom and export up to 4K. Multi-track timeline, AI-powered workflows, and full creative control. Built for creators and professionals." />
+    <meta property="og:image" content="/syka.svg" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Syka Studio — The creative platform for video and motion graphics." />
+    <meta name="twitter:description" content="The video editor built on an infinite canvas. Create and edit videos with design-tool freedom and export up to 4K. Multi-track timeline, AI-powered workflows, and full creative control. Built for creators and professionals." />
+    <meta name="twitter:image" content="/syka.svg" />
+  </head>
+  <body>
+    <div id="boot-splash" aria-hidden="true">
+      <svg width="48" height="48" viewBox="0 0 48 48" aria-label="Syka Studio"><path fill="#00a3ff" d="M7 8h34v8H15v5h26v19H7v-8h26v-5H7z"/></svg>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>

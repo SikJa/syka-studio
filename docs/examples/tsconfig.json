@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "@diffusionstudio/jsx",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "types": ["@webgpu/types"]
+  },
+  "include": ["*.tsx"]
+}

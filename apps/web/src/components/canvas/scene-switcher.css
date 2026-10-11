@@ -1,0 +1,83 @@
+/* Menu dropdown snippet from transitions-dev, retained verbatim. */
+.t-dropdown {
+  transform-origin: top left;
+  transform: scale(var(--dropdown-pre-scale));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--dropdown-open-dur) var(--dropdown-ease),
+    opacity   var(--dropdown-open-dur) var(--dropdown-ease);
+  will-change: transform, opacity;
+}
+.t-dropdown[data-origin="top-right"]     { transform-origin: top right; }
+.t-dropdown[data-origin="top-center"]    { transform-origin: top center; }
+.t-dropdown[data-origin="bottom-left"]   { transform-origin: bottom left; }
+.t-dropdown[data-origin="bottom-center"] { transform-origin: bottom center; }
+.t-dropdown[data-origin="bottom-right"]  { transform-origin: bottom right; }
+
+.t-dropdown.is-open {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.t-dropdown.is-closing {
+  transform: scale(var(--dropdown-closing-scale));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--dropdown-close-dur) var(--dropdown-ease),
+    opacity   var(--dropdown-close-dur) var(--dropdown-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-dropdown { transition: none !important; }
+}
+
+.syka-scene-switcher {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-background);
+  box-shadow: 0 4px 16px #0003;
+  font-size: 12px;
+}
+.syka-scene-trigger, .syka-scene-overview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  outline: none;
+}
+.syka-scene-trigger { max-width: 260px; }
+.syka-scene-overview { flex-shrink: 0; color: var(--color-muted-foreground); }
+.syka-scene-trigger:hover, .syka-scene-overview:hover { background: var(--color-accent); color: var(--color-foreground); }
+.syka-scene-trigger:focus-visible, .syka-scene-overview:focus-visible { box-shadow: 0 0 0 2px var(--color-primary); }
+.syka-scene-overview[aria-pressed="true"] { background: color-mix(in srgb, var(--color-primary) 15%, transparent); color: var(--color-primary); }
+.syka-scene-badge { font-size: 10px; color: var(--color-muted-foreground); border: 1px solid var(--color-border); border-radius: 4px; padding: 1px 4px; }
+.syka-scene-chevron { transition: transform var(--dropdown-open-dur) var(--dropdown-ease); }
+.syka-scene-chevron.is-expanded { transform: rotate(180deg); }
+.syka-scene-menu { z-index: 10000; width: 300px; max-width: calc(100vw - 24px); padding: 5px; background: var(--color-popover); color: var(--color-popover-foreground); border: 1px solid var(--color-border); border-radius: 12px; box-shadow: 0 12px 36px #0006; outline: none; }
+.syka-scene-menu:not(.is-open):not(.is-closing) { visibility: hidden; }
+/* Kobalte keeps the closed menu's positioner mounted for the exit motion. */
+[data-popper-positioner]:has(> .syka-scene-menu[aria-hidden="true"]),
+[data-popper-positioner] > .syka-scene-menu[aria-hidden="true"] { pointer-events: none !important; }
+.syka-scene-menu-heading { padding: 7px 9px; font-size: 10px; color: var(--color-muted-foreground); letter-spacing: .06em; text-transform: uppercase; }
+.syka-scene-option { display: flex; align-items: center; gap: 9px; min-height: 36px; padding: 6px 9px; border-radius: 7px; font-size: 12px; cursor: pointer; outline: none; }
+.syka-scene-option[data-highlighted] { background: var(--color-accent); }
+.syka-scene-option[data-checked] { background: color-mix(in srgb, var(--color-primary) 12%, transparent); }
+.syka-scene-option-kind { font-size: 10px; color: var(--color-muted-foreground); }
+.syka-scene-check { width: 16px; color: var(--color-primary); }
+@media (max-width: 900px) { .syka-scene-badge { display: none; } .syka-scene-trigger { max-width: 190px; } .syka-scene-overview { padding: 0 7px; gap: 5px; } }
+@media (prefers-reduced-motion: reduce) { .syka-scene-chevron { transition: none; } }

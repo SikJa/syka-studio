@@ -1,0 +1,27 @@
+{
+  "name": "@diffusionstudio/cli",
+  "private": true,
+  "version": "0.208.0",
+  "license": "MPL-2.0",
+  "bin": {
+    "diffusion": "./dist/index.js",
+    "dapi": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --outfile=dist/index.js && node -e \"process.platform !== 'win32' && require('node:fs').chmodSync('dist/index.js', 0o755)\"",
+    "check": "tsc --noEmit",
+    "link": "npm run build && node scripts/dev-link.mjs",
+    "unlink": "node scripts/dev-link.mjs --remove"
+  },
+  "dependencies": {
+    "@diffusionstudio/dapi": "*",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "commander": "^14.0.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "esbuild": "^0.28.1",
+    "typescript": "~5.9.3"
+  }
+}

@@ -1,0 +1,10 @@
+.syka-home-intro {display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;}
+.syka-home-orb {display:grid;place-items:center;width:72px;height:72px;}
+.syka-home-orb .agent-identity-orb-hero {width:72px;height:72px;}
+.syka-home-orb .agent-identity-orb-hero canvas {width:64px !important;height:64px !important;}
+.syka-home-heading {max-width:680px;overflow-wrap:anywhere;text-wrap:balance;font-size:clamp(22px,2vw,26px);line-height:1.4;}
+.syka-home-intro > * {opacity:1;translate:0 0;filter:blur(0);transition:opacity 400ms cubic-bezier(.22,1,.36,1),translate 400ms cubic-bezier(.22,1,.36,1),filter 400ms cubic-bezier(.22,1,.36,1);}
+.syka-home-intro > h1 {transition-delay:70ms;}
+@starting-style {.syka-home-intro > * {opacity:0;translate:0 8px;filter:blur(3px);}}
+[data-syka-motion="reduced"] .syka-home-intro > * {transition:none;}
+@media(prefers-reduced-motion:reduce){.syka-home-intro > * {transition:none;}}

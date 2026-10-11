@@ -1,0 +1,111 @@
+:root {
+  --acc-expand: 250ms;
+  --acc-collapse: 250ms;
+  --acc-chevron: 250ms;
+  --acc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* grid-template-rows 0fr → 1fr gives a clean height animation
+   with no JS measurement; the inner element clips overflow. */
+.t-acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--acc-collapse) var(--acc-ease);
+}
+.t-acc[data-open="true"] .t-acc-panel {
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--acc-expand) var(--acc-ease);
+}
+.t-acc-panel-inner {
+  overflow: hidden;
+  opacity: 0;
+  filter: blur(2px);
+  transition:
+    opacity var(--acc-collapse) var(--acc-ease),
+    filter var(--acc-collapse) var(--acc-ease);
+}
+.t-acc[data-open="true"] .t-acc-panel-inner {
+  opacity: 1;
+  filter: blur(0);
+  transition:
+    opacity var(--acc-expand) var(--acc-ease),
+    filter var(--acc-expand) var(--acc-ease);
+}
+/* Flip the chevron vertically to turn the "v" into a "^".
+   scaleY(-1) about the centre passes through a flat line at
+   the midpoint (same look as a `d:` path morph) but animates
+   in every browser, unlike CSS `d:` morphing (Chromium only).
+   The chevron path is symmetric about the 16x16 viewBox
+   centre, so the flip lands exactly on the "^"; non-scaling
+   -stroke keeps the stroke width constant through the flip. */
+.t-acc-chevron {
+  display: inline-flex;
+  transform: scaleY(1);
+  transform-origin: center;
+  transition: transform var(--acc-chevron) var(--acc-ease);
+}
+.t-acc-chevron path { vector-effect: non-scaling-stroke; }
+.t-acc[data-open="true"] .t-acc-chevron {
+  transform: scaleY(-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-acc-panel, .t-acc-panel-inner, .t-acc-chevron {
+    transition: none !important;
+  }
+}
+
+.syka-onboarding { color: var(--foreground); font-size: 12px; line-height: 1.6; min-width: 0; }
+.syka-onboarding h2 { font-size: 20px; font-weight: 550; letter-spacing: -.035em; margin: 3px 0; }
+.syka-onboarding h3 { font-size: 13px; font-weight: 550; }
+.syka-onboarding p, .syka-onboarding small { color: var(--muted-foreground); }
+.syka-onboarding small { display: block; font-size: 11px; }
+.syka-onboarding button { border: 1px solid var(--border); border-radius: 9px; padding: 7px 12px; cursor: pointer; font: inherit; background: var(--accent); color: var(--foreground); }
+.syka-onboarding button:hover:not(:disabled) { background: var(--secondary); }
+.syka-onboarding button:disabled { opacity: .45; cursor: default; }
+.syka-onboarding :is(button,input,textarea,a):focus-visible { outline: 2px solid #5c9eff; outline-offset: 3px; }
+.syka-onboarding a { color: #7db1ff; text-underline-offset: 3px; }
+.syka-setup-intro, .syka-kit-section > header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 0; }
+.syka-eyebrow { font-size: 10px; letter-spacing: .14em; color: #7db1ff; font-weight: 600; }
+.syka-setup-intro { border-bottom: 1px solid var(--border); }
+.syka-onboarding .t-acc-head { display: flex; justify-content: space-between; align-items: center; gap: 15px; width: 100%; background: transparent; border: 0; padding: 16px 0; text-align: left; }
+.syka-guide { border-bottom: 1px solid var(--border); }
+.syka-guide-content { padding: 0 0 18px; display: grid; gap: 12px; }
+.syka-service { border-left: 2px solid #3488ff; padding-left: 15px; }
+.syka-service p { margin: 8px 0; max-width: 680px; }
+.syka-state { display: inline-block; margin-left: 12px; color: var(--muted-foreground); font-size: 11px; }
+.syka-kit-section { padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.syka-kit-layout { display: grid; grid-template-columns: 175px minmax(0,1fr); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; min-height: 240px; }
+.syka-kit-layout nav { padding: 10px; border-right: 1px solid var(--border); background: color-mix(in srgb, var(--accent) 35%, transparent); }
+.syka-onboarding .syka-kit-choice { display: flex; align-items: center; gap: 10px; text-align: left; width: 100%; margin-bottom: 5px; border-color: transparent; background: transparent; overflow-wrap: anywhere; }
+.syka-onboarding .syka-kit-choice[aria-pressed=true] { border-color: #3488ff66; background: #3488ff15; }
+.syka-swatch { width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0; border: 1px solid #ffffff22; }
+.syka-empty { padding: 12px; }
+.syka-kit-placeholder { display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 30px; gap: 9px; }
+.syka-brand-mark { font-size: 42px; letter-spacing: -.08em; line-height: 1.2; }
+.syka-brand-mark span { color: #3488ff; font-size: 20px; margin-left: 8px; }
+.syka-kit-editor { padding: 22px; min-width: 0; }
+.syka-onboarding fieldset { display: grid; gap: 16px; border: 0; min-width: 0; padding: 0; }
+.syka-onboarding label { display: grid; gap: 6px; font-size: 11px; }
+.syka-onboarding :is(input:not([type=checkbox]),textarea) { width: 100%; min-width: 0; border: 1px solid var(--border); background: var(--background); border-radius: 8px; padding: 9px 11px; color: var(--foreground); font: inherit; font-size: 12px; }
+.syka-onboarding textarea { min-height: 78px; resize: vertical; }
+.syka-field-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.syka-palette { display: flex; gap: 5px; flex-wrap: wrap; }
+.syka-palette span { width: 28px; height: 12px; border-radius: 3px; border: 1px solid #ffffff22; }
+.syka-onboarding .syka-font-preview { font-size: 24px; color: var(--foreground); }
+.syka-onboarding .syka-checkbox { display: flex; align-items: center; gap: 8px; }
+.syka-checkbox input { accent-color: #3488ff; }
+.syka-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.syka-onboarding .syka-primary { background: #2d75de; border-color: #4888e4; color: white; }
+.syka-assets-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--border); padding-top: 18px; }
+.syka-assets { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 12px; }
+.syka-assets figure { border: 1px solid var(--border); border-radius: 10px; padding: 10px; min-width: 0; }
+.syka-assets img { width: 100%; height: 85px; object-fit: contain; background: #ffffff0a; border-radius: 5px; }
+.syka-assets figcaption { overflow-wrap: anywhere; padding: 8px 0; font-size: 11px; }
+.syka-kit-footnote { margin: 12px 0; }
+.syka-delete, .syka-error { border: 1px solid #e8857755; color: #ffa99d; padding: 12px; border-radius: 10px; }
+.syka-delete button { margin: 8px 8px 0 0; }
+.syka-preference { display: grid; gap: 7px; padding: 12px 0; }
+.syka-feedback { padding: 12px 0; color: #a5c8ff !important; }
+.syka-preview-label { border: 1px dashed #3488ff; padding: 8px; }
+@media (max-width: 700px) { .syka-kit-layout { grid-template-columns: 1fr; } .syka-kit-layout nav { border-right: 0; border-bottom: 1px solid var(--border); } .syka-field-pair { grid-template-columns: 1fr; } .syka-kit-editor { padding: 16px; } .syka-setup-intro, .syka-kit-section > header { align-items: flex-start; flex-direction: column; gap: 12px; } }

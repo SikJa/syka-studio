@@ -1,0 +1,20 @@
+.syka-agent-menu {
+  --surface:#171717;--surface-hover:#292929;--text:var(--color-foreground,#f2f2f2);--text-soft:var(--color-muted-foreground,#aaa);--line:#333;
+  position:fixed;z-index:10020;width:min(224px,calc(100vw - 16px));max-height:calc(100dvh - 16px);overflow:auto;
+  box-sizing:border-box;padding:5px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);box-shadow:0 12px 36px #0008;font-family:Inter,sans-serif;
+  transform-origin:top right;animation:syka-menu-in var(--dropdown-open-dur,250ms) var(--dropdown-ease,cubic-bezier(.22,1,.36,1));
+}
+.syka-agent-menu button {display:flex;align-items:center;gap:8px;width:100%;min-height:32px;padding:8px;border:0;border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:11px;text-align:left;cursor:pointer;}
+.syka-agent-menu button>span{flex:1;min-width:0;overflow-wrap:anywhere;}
+.syka-agent-menu button:hover,.syka-agent-menu button:focus-visible,.syka-agent-menu button[aria-pressed=true]{background:var(--surface-hover);outline:none;}
+.syka-agent-menu button:disabled{opacity:.45;cursor:not-allowed;}
+.syka-agent-menu>i{display:block;height:1px;margin:4px;background:var(--line);}
+.syka-agent-menu .agent-project-move{padding:6px 4px;gap:5px;}
+.syka-agent-menu .agent-project-choice{background:#222;border:1px solid var(--line);justify-content:space-between;}
+.syka-agent-menu .agent-project-options{max-height:160px;overflow:auto;padding:3px;border:1px solid var(--line);border-radius:7px;margin-top:4px;}
+.syka-agent-menu .agent-menu-options{padding:3px 0 3px 9px;border-left:1px solid var(--line);margin:2px 7px 4px;}
+.agent-menu-trigger{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;padding:4px;border:0;border-radius:6px;background:transparent;color:var(--text);cursor:pointer;}
+.agent-menu-trigger:hover,.agent-menu-trigger[aria-expanded=true]{background:var(--surface-hover,#292929);}
+.agent-menu-trigger:focus-visible{outline:1px solid var(--color-primary,#008dff);}
+@keyframes syka-menu-in{from{opacity:0;transform:scale(var(--dropdown-pre-scale,.97));}to{opacity:1;transform:scale(1);}}
+@media(prefers-reduced-motion:reduce){.syka-agent-menu{animation:none;}}

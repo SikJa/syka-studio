@@ -1,0 +1,5 @@
+.syka-brand-orb { position: relative; display: inline-grid; place-items: center; }
+.syka-brand-orb-live { position: absolute; inset: 0; display: grid; place-items: center; }
+.syka-brand-orb .agent-identity-orb-header { width: 24px; height: 24px; }
+.syka-brand-orb .agent-identity-orb-header canvas { width: 24px !important; height: 24px !important; }
+/* ThinkingOrb itself observes prefers-reduced-motion and paints a stable frame. */

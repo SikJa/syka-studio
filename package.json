@@ -1,0 +1,40 @@
+{
+  "name": "@diffusionstudio/editor",
+  "version": "0.208.0",
+  "private": true,
+  "license": "MPL-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev:syka",
+    "dev:web_v1": "npm run dev --workspace=@diffusionstudio/web",
+    "dev:desktop": "node scripts/dev-syka.mjs",
+    "build": "npm run build --workspace=@diffusionstudio/web",
+    "build:web_v1": "npm run build --workspace=@diffusionstudio/web",
+    "build:desktop": "npm run build --workspace=@diffusionstudio/desktop",
+    "make": "npm run make --workspace=@diffusionstudio/desktop",
+    "release": "node scripts/release.mjs",
+    "postinstall": "patch-package",
+    "lint": "npm run lint --workspaces --if-present",
+    "check": "npm run check --workspaces --if-present",
+    "test": "vitest run",
+    "test:content": "node --test packages/content-package/core.test.mjs packages/content-package/social.test.mjs packages/content-package/chat-memory.test.mjs packages/content-package/preview/server.test.mjs",
+    "test:distribution": "node --test scripts/lib/staging-path.test.mjs scripts/lib/distribution-layout.test.mjs scripts/branded-electron.test.mjs",
+    "check:distribution": "node scripts/check-distribution.mjs",
+    "dev:syka": "node scripts/dev-syka.mjs",
+    "setup:background": "npm install --prefix .runtime/background-removal hyperframes@0.8.140 onnxruntime-node@1.21.1 --save-exact --no-audit --no-fund",
+    "build:installer": "node scripts/build-windows.mjs",
+    "test:i18n": "node --test scripts/lib/ui-i18n.test.mjs",
+    "test:tools": "node --test scripts/lib/toolchain.test.mjs"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.1",
+    "vitest": "^4.0.0"
+  }
+}
