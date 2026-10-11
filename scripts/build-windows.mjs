@@ -25,6 +25,13 @@ const PACKAGES = ['package.json', 'apps/desktop/package.json', 'apps/cli/package
 const VERSION = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 const readJson = path => JSON.parse(readFileSync(path, 'utf8'));
 
+export function releaseAssetName(source, version) {
+  const name = basename(source);
+  if (!name.endsWith('.zip')) return name;
+  if (!VERSION.test(version)) throw Error('Invalid release version.');
+  return `Syka-Studio-win32-x64-${version}.zip`;
+}
+
 export function parseBuildArgs(args) {
   const supported = ['--unsigned', '--preflight-only', '--verify-only', '--help'];
   for (const arg of args) if (!supported.includes(arg)) throw Error(`Unknown option: ${arg}. Use --help.`);
@@ -158,7 +165,8 @@ export async function verifyAssetBundle(directory, version) {
     if (!squirrel.includes(name)) throw Error(`Package is not part of RELEASES: ${name}`);
   }
   for (const name of names.filter(name => name.endsWith('.zip'))) {
-    if (!name.includes(version)) throw Error(`ZIP does not match release version ${version}: ${name}`);
+    const expected = releaseAssetName(name, version);
+    if (name !== expected) throw Error(`Public ZIP asset must be named ${expected}: ${name}`);
     signature(file(directory, name), 'PK');
   }
   return [...names, 'SHA256SUMS'];
@@ -220,7 +228,7 @@ async function verifyPackagedBuild(root, version, startedAt, stageAssets) {
   }
   const names = [];
   for (const source of assets) {
-    const name = basename(source), target = join(makeDir, name);
+    const name = releaseAssetName(source, version), target = join(makeDir, name);
     if (names.includes(name)) throw Error(`Duplicate release asset: ${name}`);
     if (existsSync(target) && !lstatSync(target).isFile()) throw Error(`Release output is not a regular file: ${name}`);
     copyFileSync(source, target); names.push(name);

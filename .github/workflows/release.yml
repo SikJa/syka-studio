@@ -80,7 +80,7 @@ jobs:
             apps/desktop/out/make/Syka-Studio-x64-Setup.exe
             apps/desktop/out/make/RELEASES
             apps/desktop/out/make/*.nupkg
-            apps/desktop/out/make/*.zip
+            apps/desktop/out/make/Syka-Studio-win32-x64-*.zip
             apps/desktop/out/make/SHA256SUMS
           if-no-files-found: error
           compression-level: 0

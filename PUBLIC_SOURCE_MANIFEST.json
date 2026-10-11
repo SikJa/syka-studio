@@ -11,8 +11,8 @@
     },
     {
       "path": ".github/workflows/release.yml",
-      "bytes": 7312,
-      "sha256": "9e7b7df4bc19fc03206474321f6d67ffc77c03f94cc8c912a1105440929b705b",
+      "bytes": 7334,
+      "sha256": "932ba0191f56cba5a2fde5d4820eb304991c27ff67e69c014c48208044dc8100",
       "kind": "text"
     },
     {
@@ -28949,8 +28949,14 @@
     },
     {
       "path": "scripts/build-windows.mjs",
-      "bytes": 14065,
-      "sha256": "d17fdab5ba456f8977bab126fbb6a20e0d29ef97d599b5c631b95ee3a9d7760c",
+      "bytes": 14378,
+      "sha256": "f276be86b81437cea1becdd269dcf7da7bc1f1b19487ed2ee39e1078e7485db0",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/build-windows.test.mjs",
+      "bytes": 3521,
+      "sha256": "17f0d3f725288e2426b32355931d6eb329f2f9da14630b0e1064c209dbbee4a8",
       "kind": "text"
     },
     {
@@ -29164,5 +29170,5 @@
       "kind": "text"
     }
   ],
-  "manifestSha256": "193f2264061ee5eb4f85cb5af2f7ae297696acec7c5373de83f7cf6f07e4c61d"
+  "manifestSha256": "108e25951eb231292659cfcf57cb3b1a36f698ba0aa99b875bcc4e05231ebeba"
 }
