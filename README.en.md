@@ -1,10 +1,14 @@
 <p align="center">
-  <img src="apps/desktop/syka-assets/icon.png" alt="Syka Studio orb" width="116" />
+  <img src="apps/desktop/syka-assets/readme-orb.gif" alt="Original animated Syka Studio orb" width="116" height="116" />
 </p>
 
 <h1 align="center">Syka Studio</h1>
 
 <p align="center"><b>Edit video. Work with agents. Stay in control.</b></p>
+
+<p align="center">
+  <a href="https://github.com/SikJa/syka-studio/releases/download/v0.208.0/Syka-Studio-x64-Setup.exe"><kbd>⬇ Download latest version · Windows</kbd></a>
+</p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/code-MPL--2.0-blue" alt="MPL-2.0 code" /></a>

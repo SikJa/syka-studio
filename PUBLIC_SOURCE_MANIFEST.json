@@ -964,6 +964,24 @@
       "kind": "text"
     },
     {
+      "path": "apps/desktop/syka-assets/LICENSE.thinking-orbs.txt",
+      "bytes": 1070,
+      "sha256": "915a283980628a0ca9e7b423ebafc6f3a0fa1e630ff17d34e59034808d92011c",
+      "kind": "text"
+    },
+    {
+      "path": "apps/desktop/syka-assets/readme-orb.gif",
+      "bytes": 5368748,
+      "sha256": "9f3775608aa86df299dfaa4ceb253c83f5401976ee2d4a00eb33d809e3f595f0",
+      "kind": "media"
+    },
+    {
+      "path": "apps/desktop/syka-assets/README-orb.md",
+      "bytes": 715,
+      "sha256": "e617525e82358ba5cd17a5bd0682b474ee2fb785f674d6cf3e02d855045145b9",
+      "kind": "text"
+    },
+    {
       "path": "apps/desktop/test/agent-skill-storage.test.ts",
       "bytes": 2984,
       "sha256": "9e8768bbcaf03a7c9e0ddb1aa99070a0b15baa5ee40d4f59d9436ee753270694",
@@ -7109,8 +7127,8 @@
     },
     {
       "path": "CREDITS.md",
-      "bytes": 8761,
-      "sha256": "b1819ad31699135c2d172535ec3722d6a87405ca1f255ab74dc45b00c4f22433",
+      "bytes": 9083,
+      "sha256": "a16a1d32fe361fe4f6da1a0aa1e67dc5f901b189980758d4079a6a1663cd9d45",
       "kind": "text"
     },
     {
@@ -7571,8 +7589,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "bytes": 9002,
-      "sha256": "c768acf7d53e5a08e3cb162e58990c3254c87562ec7967bd0b2691cbd1386461",
+      "bytes": 9506,
+      "sha256": "29a8c194cca5c2bd38756c971e7ef5d5595e76abc777a07ba581c90e1aefb781",
       "kind": "text"
     },
     {
@@ -28955,20 +28973,20 @@
     },
     {
       "path": "README.en.md",
-      "bytes": 7341,
-      "sha256": "0cb7fc9b799d3f6fe9ff471ef79336f4be158209e0cb32f26b736f7abff0cde5",
+      "bytes": 7559,
+      "sha256": "c5798ee52fc9a6b340aee6ac11230919db8d71db54e0c28495f3187462b1d08c",
       "kind": "text"
     },
     {
       "path": "README.md",
-      "bytes": 7951,
-      "sha256": "d2d3d3a8ea7fd33baf7eb6792d9781e09625a33b1a3ecd5dc6dbc2838bf7c774",
+      "bytes": 8050,
+      "sha256": "aeb3983c1d588955cbdb58fac33b05424e70276fffb93e2996b7aef67bdb683f",
       "kind": "text"
     },
     {
       "path": "README.pt-BR.md",
-      "bytes": 7962,
-      "sha256": "823008318aae363d16888f29c395f97b67e2b6a0c867437884890831930f362a",
+      "bytes": 8178,
+      "sha256": "d8c90c194eddb5bf23138656d15c0899979e4d8f7a768849b9a6b55246570307",
       "kind": "text"
     },
     {
@@ -29218,5 +29236,5 @@
       "kind": "text"
     }
   ],
-  "manifestSha256": "b501b318d84376d0730156231ead3fd1c31b3e1d1b0523b076d61306142e4320"
+  "manifestSha256": "455270a0f71d24256bcd34725f8c8148af2267864735fc97b80e8594d007e5b2"
 }
