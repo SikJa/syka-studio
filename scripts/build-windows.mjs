@@ -14,6 +14,7 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'nod
 import { fileURLToPath } from 'node:url';
 import { checkDistributionLayout } from './lib/distribution-layout.mjs';
 import { npm } from './lib/npm.mjs';
+import { verifyWindowsSignatures } from './lib/windows-signatures.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const GIB = 1024n ** 3n;
@@ -178,7 +179,12 @@ function buildEnvironment(options, root) {
   delete env.SKIP_SIGN;
   if (options.unsigned) env.SKIP_SIGN = '1';
   else {
-    for (const name of ['WINDOWS_SIGNTOOL_PATH', 'WINDOWS_SIGN_DLIB', 'WINDOWS_SIGN_METADATA']) {
+    if (!env.WINDOWS_SIGN_PUBLISHER?.trim()) throw Error('Signing requires WINDOWS_SIGN_PUBLISHER: the verified certificate Subject.');
+    const storeCertificate = env.WINDOWS_SIGN_CERT_SHA1;
+    if (storeCertificate && !/^[a-fA-F0-9]{40}$/.test(storeCertificate)) throw Error('WINDOWS_SIGN_CERT_SHA1 must be a 40-digit certificate thumbprint.');
+    if (storeCertificate && (env.WINDOWS_SIGN_DLIB || env.WINDOWS_SIGN_METADATA)) throw Error('Choose certificate-store or Artifact Signing; do not combine signing identities.');
+    const required = storeCertificate ? ['WINDOWS_SIGNTOOL_PATH'] : ['WINDOWS_SIGNTOOL_PATH', 'WINDOWS_SIGN_DLIB', 'WINDOWS_SIGN_METADATA'];
+    for (const name of required) {
       if (!env[name] || !statSync(env[name], { throwIfNoEntry: false })?.isFile()) {
         throw Error(`Signing requires ${name}. Use --unsigned explicitly for a local beta build.`);
       }
@@ -266,6 +272,10 @@ export async function buildWindows(args = process.argv.slice(2), root = ROOT) {
     npm(['run', 'make', '--workspace=@diffusionstudio/desktop', '--', '--platform=win32', '--arch=x64'], { cwd: root, env, windowsHide: true });
   }
   const result = await verifyPackagedBuild(root, version, startedAt, !options.verifyOnly);
+  if (!options.unsigned) {
+    const signatures = verifyWindowsSignatures(root, join(root, 'apps/desktop/out/Syka Studio-win32-x64'), join(result.makeDir, SETUP_ASSET), join(result.makeDir, `SykaStudio-${version}-full.nupkg`), process.env.WINDOWS_SIGN_PUBLISHER);
+    console.log(`Authenticode: ${signatures.verifiedFiles} trusted, timestamped files verified for ${signatures.publisher}.`);
+  }
   console.log(`Verified Windows ${version}: ${result.makeDir}\n${result.assets.map(name => `- ${name}`).join('\n')}\nNo application was installed or published. Test installation and updates on another PC before publishing.`);
   return result;
 }

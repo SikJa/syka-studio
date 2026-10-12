@@ -1,4 +1,4 @@
-name: Windows release draft
+name: Signed Windows release draft
 
 on:
   push:
@@ -16,10 +16,31 @@ jobs:
     if: github.repository == 'SikJa/syka-studio'
     runs-on: windows-latest
     timeout-minutes: 75
+    environment: windows-signing
+    permissions:
+      contents: read
+      id-token: write
     defaults:
       run:
         shell: pwsh
     steps:
+      - name: Require the verified signing identity before building
+        env:
+          SIGNING_ENABLED: ${{ vars.WINDOWS_SIGNING_ENABLED }}
+          WINDOWS_SIGN_PUBLISHER: ${{ vars.WINDOWS_SIGN_PUBLISHER }}
+          AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          SIGNING_ENDPOINT: ${{ vars.WINDOWS_SIGN_ENDPOINT }}
+          SIGNING_ACCOUNT: ${{ vars.WINDOWS_SIGN_ACCOUNT }}
+          SIGNING_PROFILE: ${{ vars.WINDOWS_SIGN_PROFILE }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:SIGNING_ENABLED -ne 'true') { throw 'Windows public signing is not configured. This workflow will not produce an unsigned release.' }
+          foreach ($name in @('WINDOWS_SIGN_PUBLISHER','AZURE_CLIENT_ID','AZURE_TENANT_ID','AZURE_SUBSCRIPTION_ID','SIGNING_ENDPOINT','SIGNING_ACCOUNT','SIGNING_PROFILE')) {
+            if (-not [Environment]::GetEnvironmentVariable($name)) { throw "Missing signing setting: $name" }
+          }
+
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
@@ -46,6 +67,45 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
+      - name: Authenticate the signing identity with Azure OIDC
+        uses: Azure/login@935127ca5bb3c4b02c9c2c10060028383878f33f # v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Prepare the Microsoft signing client and metadata
+        env:
+          WINDOWS_SIGN_PUBLISHER: ${{ vars.WINDOWS_SIGN_PUBLISHER }}
+          SIGNING_ENDPOINT: ${{ vars.WINDOWS_SIGN_ENDPOINT }}
+          SIGNING_ACCOUNT: ${{ vars.WINDOWS_SIGN_ACCOUNT }}
+          SIGNING_PROFILE: ${{ vars.WINDOWS_SIGN_PROFILE }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $endpointUri = [Uri]$env:SIGNING_ENDPOINT
+          if ($endpointUri.Scheme -ne 'https' -or $endpointUri.Host -notmatch '^[a-z0-9-]+\.codesigning\.azure\.net$') { throw 'Use the HTTPS endpoint of the Artifact Signing account.' }
+          $signingRoot = Join-Path $env:GITHUB_WORKSPACE '.runtime/windows-signing'
+          New-Item -ItemType Directory -Force -Path $signingRoot | Out-Null
+          nuget install Microsoft.ArtifactSigning.Client -Version 1.0.146 -Source https://api.nuget.org/v3/index.json -OutputDirectory $signingRoot -NonInteractive
+          if ($LASTEXITCODE -ne 0) { throw 'Microsoft signing client installation failed.' }
+          $dlib = Get-ChildItem -LiteralPath $signingRoot -Recurse -Filter Azure.CodeSigning.Dlib.dll | Where-Object { $_.Directory.Name -eq 'x64' } | Select-Object -First 1
+          $sdkRoot = Join-Path ${env:ProgramFiles(x86)} 'Windows Kits/10/bin'
+          $sdk = Get-ChildItem -LiteralPath $sdkRoot -Directory | Where-Object { $_.Name -match '^10\.0\.' } | Sort-Object { [Version]$_.Name } -Descending | Select-Object -First 1
+          $signTool = Join-Path $sdk.FullName 'x64/signtool.exe'
+          if (-not $dlib -or -not (Test-Path -LiteralPath $signTool -PathType Leaf)) { throw 'Missing x64 Microsoft signing client or Windows SDK SignTool.' }
+          if ((Get-AuthenticodeSignature -LiteralPath $dlib.FullName).Status -ne 'Valid') { throw 'Untrusted signing client.' }
+          $metadataPath = Join-Path $signingRoot 'metadata.json'
+          @{
+            Endpoint = $env:SIGNING_ENDPOINT
+            CodeSigningAccountName = $env:SIGNING_ACCOUNT
+            CertificateProfileName = $env:SIGNING_PROFILE
+            ExcludeCredentials = @('EnvironmentCredential','WorkloadIdentityCredential','ManagedIdentityCredential','SharedTokenCacheCredential','VisualStudioCredential','VisualStudioCodeCredential','AzurePowerShellCredential','AzureDeveloperCliCredential','InteractiveBrowserCredential')
+          } | ConvertTo-Json -Depth 3 | Set-Content -LiteralPath $metadataPath -Encoding utf8
+          "WINDOWS_SIGNTOOL_PATH=$signTool" >> $env:GITHUB_ENV
+          "WINDOWS_SIGN_DLIB=$($dlib.FullName)" >> $env:GITHUB_ENV
+          "WINDOWS_SIGN_METADATA=$metadataPath" >> $env:GITHUB_ENV
+          "WINDOWS_SIGN_PUBLISHER=$env:WINDOWS_SIGN_PUBLISHER" >> $env:GITHUB_ENV
+
       - name: Check versions against the pushed tag
         run: |
           $ErrorActionPreference = 'Stop'
@@ -67,10 +127,8 @@ jobs:
       - name: Windows x64 native screen recorder
         run: npm run build:native --workspace=@diffusionstudio/desktop
 
-      # Until certificate provisioning is implemented, unsigned is explicit.
-      # The matching publication job always creates a prerelease draft.
-      - name: Build and verify the unsigned Windows beta
-        run: npm run build:installer -- --unsigned
+      - name: Build and verify the signed Windows beta
+        run: npm run build:installer
 
       - name: Upload the verified Windows release bundle
         uses: actions/upload-artifact@v7
@@ -143,7 +201,7 @@ jobs:
           NODE
           else
             cat > .runtime/release-notes.md <<'NOTES'
-          Beta de Syka Studio para Windows x64, sin firma de código.
+          Beta de Syka Studio para Windows x64 con firma Authenticode y sello de tiempo verificados.
 
           Instalador: `Syka-Studio-x64-Setup.exe`.
           Incluye `RELEASES`, el paquete completo `.nupkg` y `SHA256SUMS`.

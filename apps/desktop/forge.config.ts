@@ -11,7 +11,6 @@ import { arch } from 'node:os';
 import { dirname, join } from 'node:path';
 
 import type { ForgeConfig } from '@electron-forge/shared-types';
-import type { MakerSquirrelConfig } from '@electron-forge/maker-squirrel';
 
 const { version } = JSON.parse(readFileSync(join(__dirname, '..', '..', 'package.json'), 'utf8'));
 
@@ -96,22 +95,25 @@ function windowsSign() {
   const {
     WINDOWS_SIGNTOOL_PATH: signToolPath,
     WINDOWS_SIGN_DLIB: dlib,
-    WINDOWS_SIGN_METADATA: metadata
+    WINDOWS_SIGN_METADATA: metadata,
+    WINDOWS_SIGN_CERT_SHA1: certificateThumbprint
   } = process.env;
 
-  if (!signToolPath || !dlib || !metadata) {
+  if (!signToolPath || (!certificateThumbprint && (!dlib || !metadata))) {
     throw new Error(
-      'Windows signing needs WINDOWS_SIGNTOOL_PATH, WINDOWS_SIGN_DLIB and WINDOWS_SIGN_METADATA; set SKIP_SIGN=1 for an unsigned build.',
+      'Configure Artifact Signing or a certificate-store signing identity; unsigned builds are local QA only.',
     );
   }
 
   return {
     signToolPath,
     automaticallySelectCertificate: false,
-    signWithParams: ['/dlib', dlib, '/dmdf', metadata],
-    timestampServer: 'http://timestamp.acs.microsoft.com',
+    signWithParams: certificateThumbprint ? ['/sha1', certificateThumbprint, '/s', 'My'] : ['/dlib', dlib!, '/dmdf', metadata!],
+    timestampServer: process.env.WINDOWS_TIMESTAMP_SERVER || (certificateThumbprint ? 'http://timestamp.digicert.com' : 'http://timestamp.acs.microsoft.com'),
+    description: 'Syka Studio',
+    website: 'https://github.com/SikJa/syka-studio',
     hashes: ['sha256'],
-  } as unknown as MakerSquirrelConfig;
+  } as NonNullable<ForgeConfig['packagerConfig']>['windowsSign'];
 }
 
 function ensure7zip() {

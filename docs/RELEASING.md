@@ -26,8 +26,8 @@ Desde la raíz del repo:
 
 ```powershell
 npm ci --no-audit --no-fund
-npm run build:installer -- --unsigned --preflight-only
-npm run build:installer -- --unsigned
+npm run build:installer -- --preflight-only
+npm run build:installer
 ```
 
 El preflight exige al menos **10 GiB libres** en el disco del checkout. La validación final exige que queden **2 GiB de reserva**. El comando falla si no hay espacio; no elimina archivos para hacer lugar. Las cachés de npm, Electron y Cargo y los temporales de la compilación se ubican en `.runtime/windows-build`; el target nativo de Rust está en `.runtime/screen-recorder-target`.
@@ -40,7 +40,9 @@ El preflight exige al menos **10 GiB libres** en el disco del checkout. La valid
 npm run build:installer
 ```
 
-La firma requiere `WINDOWS_SIGNTOOL_PATH`, `WINDOWS_SIGN_DLIB` y `WINDOWS_SIGN_METADATA` apuntando a la configuración existente de Artifact Signing. El flujo actual de GitHub no provisiona un certificado: produce una **beta sin firma**. Que los archivos pasen los checks de distribución y hashes no prueba por sí solo la confianza de Authenticode en otro equipo.
+La firma requiere una identidad pública validada y `WINDOWS_SIGN_PUBLISHER`. Admite Artifact Signing o un certificado con token/HSM en el almacén de Windows. Ver [WINDOWS-SIGNING.md](WINDOWS-SIGNING.md) para las variables y el entorno de GitHub. El workflow no provisiona certificados ni contrata servicios: falla si falta la identidad de firma. El build exige firmas Authenticode válidas y selladas, además de los hashes de distribución.
+
+`--unsigned` está disponible solamente para QA local. La entrega pública solicitada debe estar firmada; no publicar esa compilación local como si resolviera la confianza de Windows.
 
 Para revisar una compilación existente sin volver a compilar:
 
@@ -101,11 +103,11 @@ El push sólo envía el tag de la versión actual y exige que coincida con HEAD.
 
 ## GitHub Actions y revisión del draft
 
-El workflow `.github/workflows/release.yml` tiene un build de Windows independiente de Mac. Usa Node 24, `npm ci`, Cargo para el grabador nativo y `build:installer -- --unsigned`. Comprueba los números de versión contra el tag, valida la distribución y sube el conjunto como artefacto durante 14 días.
+El workflow `.github/workflows/release.yml` tiene un build de Windows independiente de Mac. Usa Node 24, `npm ci`, Cargo para el grabador nativo y `build:installer` con Artifact Signing autenticado por OIDC. Exige el entorno `windows-signing`, comprueba los números de versión contra el tag, las firmas y la distribución, y sube el conjunto como artefacto durante 14 días. Hasta provisionar la identidad pública no se debe crear el tag de publicación.
 
 El job de build tiene permiso de lectura del repo. Sólo `draft-windows` tiene `contents: write`: descarga el artefacto de ese mismo run, vuelve a verificar los hashes y el feed y crea un **draft prerelease** mediante [GitHub CLI](https://cli.github.com/manual/gh_release_create). No publica un release estable. Una repetición puede reemplazar archivos del mismo draft beta; un release publicado o un draft estable existente queda bloqueado.
 
-Antes de promover una versión a estable, probá el instalador en otro Windows x64: arranque, preparación de herramientas, importación, exportación, grabación y actualización desde una versión anterior cuando exista. Verificá la firma si corresponde y revisá las notas y el conjunto de archivos del draft en [Releases](https://github.com/SikJa/syka-studio/releases). La beta inicial puede publicarse con la instalación en otra PC y el upgrade entre dos versiones claramente documentados como pendientes; esa publicación no certifica esos recorridos ni habilita una actualización estable.
+Antes de promover una versión a estable, probá el instalador en otro Windows x64: arranque, preparación de herramientas, importación, exportación, grabación y actualización desde una versión anterior cuando exista. Verificá la firma y revisá las notas y el conjunto de archivos del draft en [Releases](https://github.com/SikJa/syka-studio/releases). La beta histórica v0.208.0 salió sin firma; la entrega nueva requiere la identidad de firma pública solicitada. Una prueba pendiente debe quedar documentada y no certifica ese recorrido.
 
 La publicación de esta beta se hace manualmente desde el draft, manteniendo **Set as a pre-release**. El canal estable de Syka consulta `releases/latest`: **los drafts y las prereleases no notifican una actualización estable**. Para ofrecer una actualización estable hay que preparar y revisar una versión estable publicada con Setup, RELEASES y nupkg; el flujo de firma debe configurarse antes de convertir el pipeline en uno de releases estables. No se promociona automáticamente esta beta sin firma.
 

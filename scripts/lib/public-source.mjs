@@ -19,7 +19,7 @@ export const PUBLIC_DOC_ENTRIES = [
   'INSTRUCTIONS.md', 'SKILLS_INCLUDED.md', 'SERVICE_MAP_SYKA.md', 'THIRD_PARTY_NOTICES_HYPERFRAMES.md',
   'licenses', 'reference', 'skills', 'guides', 'examples', 'resources',
 ];
-const PUBLIC_DOC_FILES = new Set(['INSTALLATION_PREPARATION.md', 'LICENSING_BOUNDARIES.md', 'RELEASING.md']);
+const PUBLIC_DOC_FILES = new Set(['INSTALLATION_PREPARATION.md', 'LICENSING_BOUNDARIES.md', 'RELEASING.md', 'WINDOWS-SIGNING.md']);
 const DENIED_PARTS = new Set([
   '.git', '.runtime', 'node_modules', 'dist', 'out', 'build', 'target', 'coverage',
   '__pycache__', '.cache', 'cache', 'output', 'outputs', '.codex', '.agents', '.claude',
@@ -48,7 +48,12 @@ const issue = (path, line, type, severity = 'error') => ({ path, line, type, sev
 const VERIFIED_TEST_FIXTURES = [
   { path: 'packages/agent-chat/test/codex-policy.test.ts', line: 30, type: 'credential-like-assignment', sha256: '4d0d5ccff9441f3228d2ec1f661e6ca49f55acc26f6d0fac75f94bddb4c3525a' },
   { path: 'packages/agent-chat/test/external-harnesses.test.ts', line: 23, type: 'credential-like-assignment', sha256: '20bc67ce10c00359e596a28c26d5f0ac46da952e8b7d14499447132615c817e2' },
+  { path: 'packages/agent-chat/test/external-harnesses.test.ts', line: 23, type: 'credential-like-assignment', sha256: '401873f0ee3f334567b7635a9aa400afc9ef73421ff2c4b97566d3ca0e3ebb03' },
   { path: 'apps/desktop/src/syka-groq.test.ts', line: 29, type: 'groq-key', sha256: 'ed0e1b40a3025cb887487ffae811f91ad91ea2d22bc4e190f72b7aa507a976f6' },
+  { path: 'apps/desktop/src/syka-groq.test.ts', line: 29, type: 'groq-key', sha256: '865b036cfcfda110dcf8a6ef6253e2fdd33701a3e95d944466ec189489124310' },
+  { path: 'packages/agent-chat/test/hermes-login.test.py', line: 74, type: 'credential-like-assignment', sha256: '77acd97841d2005466a93fd8ba4f0422cda00095b8d8e6a5d375d1af1a95da3e' },
+  { path: 'packages/agent-chat/test/hermes-login.test.py', line: 96, type: 'credential-like-assignment', sha256: '77acd97841d2005466a93fd8ba4f0422cda00095b8d8e6a5d375d1af1a95da3e' },
+  { path: 'packages/agent-chat/test/hermes-login.test.ts', line: 18, type: 'credential-like-assignment', sha256: 'fb947152368339701098f2c8bb55790dd813832ae034a46857f83b604c78e117' },
 ];
 
 /** Deliberate public-source allowlist. Never interpret .gitignore as publication permission. */

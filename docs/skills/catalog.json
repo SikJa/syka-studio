@@ -18,7 +18,7 @@
       "category": "Subtítulos",
       "path": "skills/syka-camera-3d-captions/SKILL.md",
       "description": "Adaptar Camera 3D Captions a Diffusion con texto nativo editable, proyección de profundidad y cámara determinista, sin instalar otro motor.",
-      "sha256": "d6713a418977780cd95efbf6ec9b28017cca1aeafeee967196b072f077fcb015",
+      "sha256": "8d4554f8f77f4aac904d7e270e6b49aafc391caa90c6a21d726a4d5a7273a0bb",
       "delivery": "bundled"
     },
     {
@@ -45,7 +45,7 @@
       "category": "Edición y revisión",
       "path": "skills/syka-design-import/SKILL.md",
       "description": "Traducir un diseño, export de Figma, SVG o styleframe aportado por el usuario a capas y motion editables de Diffusion. Usar cuando la referencia tiene diseño resuelto; no implica una conexión autenticada con Figma.",
-      "sha256": "aa7761ccd783863a267dc1932b02ab3cff49e485ecd29e5e93b2a31849e60e7d",
+      "sha256": "e3ff20fc784ebf59dd3c6239a052f61ccdebdc05c794c570b0626d4aa41eab24",
       "delivery": "bundled"
     },
     {
@@ -72,7 +72,7 @@
       "category": "Edición y revisión",
       "path": "skills/syka-editing-recipe/SKILL.md",
       "description": "Resolver y conservar una receta de edición con decisiones acordadas, referencias y revisión. Usar en una edición amplia o al convertir un resultado aprobado en una skill personal para reels, YouTube u otro uso.",
-      "sha256": "78e426a6f0ddc994de6e8040401d0af6120bd91337f0c28401f1394f0f684915",
+      "sha256": "9df6290b0e8c6106f8e573e30b338401cb8e276371a6380aa666ac8247bc3b75",
       "delivery": "bundled"
     },
     {
@@ -81,7 +81,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-editorial-motion/SKILL.md",
       "description": "Crear tarjetas, comparaciones y callouts de calidad editorial sobre video real en Syka, con jerarquía tipográfica, espacio seguro y continuidad animada. Adaptar referencias HyperFrames al motor Diffusion; usar cuando un overlay se vea básico o se pida motion explicativo.",
-      "sha256": "21dae3942d45c5c5597d445a7b29d417f8a7b446bf40ebcb74b7f612b636145f",
+      "sha256": "2ee6990726b142f0e3aa3a4175fbeaef234a0c3da03cb7609287c0a623ff0f8c",
       "delivery": "bundled"
     },
     {
@@ -90,7 +90,7 @@
       "category": "Edición y revisión",
       "path": "skills/syka-explainer-edit/SKILL.md",
       "description": "Editar una explicación grabada a cámara o en pantalla, coordinando montaje, voz, captions y gráficos que aclaren las ideas. Usar para talking-head, tutoriales y demos con footage real.",
-      "sha256": "0c1f471231d62d73b1adb81a05a4b929cb6fad57525ff217fb825312e37829af",
+      "sha256": "a534670b7d6418b0a988dd3dcec3df008dc98e060220e0736862b312d677933f",
       "delivery": "bundled"
     },
     {
@@ -99,7 +99,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-faceless-explainer/SKILL.md",
       "description": "Crear una explicación sin hablante en pantalla con texto, diagramas y recursos reales en Diffusion. Usar para piezas explicativas narradas o sin voz; una demo grabada usa syka-explainer-edit.",
-      "sha256": "db5db6d7ab11e74c2e0cfae841718e8eecdab13472c7e524f1097806d57da49e",
+      "sha256": "6cc53ed3825c07635101fbe622878cce5d307d9e0f92c6da94e7f03d09110f34",
       "delivery": "bundled"
     },
     {
@@ -117,7 +117,7 @@
       "category": "Referencias y recursos",
       "path": "skills/syka-media-use/SKILL.md",
       "description": "Planear y resolver imágenes, logos, footage, música y SFX reales para una edición Syka. Usar cuando una idea necesita recursos visuales o sonoros, sin prometer proveedores no configurados.",
-      "sha256": "feec822a5fafcc659b2e4e8f0bcc6d2d4b04c1964ddad0361135b9beec791da8",
+      "sha256": "11a11c6fc804f3fdfff76b9d989071acd522790459045460880d5f5c2adebb39",
       "delivery": "bundled"
     },
     {
@@ -126,7 +126,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-motion-brief/SKILL.md",
       "description": "Consultar especificaciones de una animación y compilar un superprompt detallado, JSON portable, storyboard y eventos compartidos para Diffusion, con decisión de sonido para toda pieza.",
-      "sha256": "533f929a435c67ea8be3c75f959e51f7155df94446c37abf9beb932803290b47",
+      "sha256": "c8e7f2f5f8596ac9386f59c2b7ec2d35a6a94ccd3543f27c3e12cc1b727d1262",
       "delivery": "bundled"
     },
     {
@@ -135,7 +135,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-motion-direction/SKILL.md",
       "description": "Diseñar la dirección visual y el storyboard de un lanzamiento SaaS, explicador o motion en Syka; convertir referencias en escenas conectadas, tipografía legible, sonido intencional y componentes editables.",
-      "sha256": "7c95c3ec3eaff5b1587cadc4a0186df5d87e8eeea6a524954e26480c9e72c966",
+      "sha256": "e330ed45678487c3709b4eb6774889f69f1d6ebdf7e81aecd4fd4aaf3483014a",
       "delivery": "bundled"
     },
     {
@@ -144,7 +144,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-motion-reels/SKILL.md",
       "description": "Crear reels y motion vertical en Diffusion con composición para móvil, ritmo, lectura y sonido decidido con el usuario.",
-      "sha256": "4ae87686237af0d1a8e72b0a45150d9d0e838a62c66ab3d8a57b88ffc703a926",
+      "sha256": "9b16642c351a2e366e1f71913cd0494f44d1e2c1aba4ad690b07a8b7f7c02c53",
       "delivery": "bundled"
     },
     {
@@ -162,7 +162,7 @@
       "category": "Referencias y recursos",
       "path": "skills/syka-motion-references/SKILL.md",
       "description": "Aplicar el conocimiento de motion incluido en Syka: reglas de tipografía, composición, tarjetas y continuidad, estudios escritos y prompts atribuidos para piezas Diffusion editables. Funciona sin descargar videos ni conectar un archivo de investigación.",
-      "sha256": "f2bfe48125cd537be6b282da710d1d98616e44af56dbaaaebc5a834d08ccef49",
+      "sha256": "45754c7906b8a1e05d0bdcd25e449c96f729ea228b0daea0ea4fb0f704bd21db",
       "delivery": "bundled"
     },
     {
@@ -171,7 +171,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-motion-storyboard/SKILL.md",
       "description": "Organizar historia, composición, continuidad y plan sonoro en un storyboard de Syka antes de construir motion nativo.",
-      "sha256": "888915e66323cbca5de23f8d2ed8d89ce6ffc3ddd66f25a6f4368cd6c1d9c83a",
+      "sha256": "06b39c709d3f6018c42dd15abfefc3c7b7d508e849520ec183279c1bf03e32e5",
       "delivery": "bundled"
     },
     {
@@ -189,7 +189,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-motion-typography/SKILL.md",
       "description": "Diseñar texto y captions legibles en Syka con fuentes reales, jerarquía, composición, holds y entradas/salidas editables.",
-      "sha256": "26c7a22827350d45a91400417987b31a80d4f2c3afcca6d94d2fa05dbbe6dca6",
+      "sha256": "2252c36bbbe0fc2204eeff4f73c3b20beecdb4092ffa37a5fb6608e4cc774c2c",
       "delivery": "bundled"
     },
     {
@@ -198,7 +198,7 @@
       "category": "Música y sonido",
       "path": "skills/syka-music-video/SKILL.md",
       "description": "Crear en Syka un montaje, lyric video o motion guiado por una canción o música existente, con beats verificables y recursos editables. Usar cuando la música determina el ritmo.",
-      "sha256": "4da093904d930ae0f5a170ac5520208c569dda93414008097fbc9a5ce64ef036",
+      "sha256": "a7e8c808ce28294bca809e2496837ff9f9349f4e4272b03d0a0e47f29f0a708b",
       "delivery": "bundled"
     },
     {
@@ -207,7 +207,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-pr-to-video/SKILL.md",
       "description": "Crear una explicación visual de una PR o cambio de código en Syka a partir de su diff real, con antes/después y evidencia verificable.",
-      "sha256": "e81e162d3ab5ac8cb952ed21d25349c0877fd06cdc151efba13d14ddef076dec",
+      "sha256": "e6af4abe5bc59e88be4b64fd78fc187d6dff80788e63c7f581ca8a717e875b6f",
       "delivery": "bundled"
     },
     {
@@ -216,7 +216,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-slideshow/SKILL.md",
       "description": "Diseñar una presentación por diapositivas o convertirla en video editable dentro de Syka, conservando marca, ritmo de lectura y revelados por idea.",
-      "sha256": "ab5174eb928f84c18653e9fece0b5fe6aa3d03d7f463147d35ab160f0657dede",
+      "sha256": "ab851c2e3621e83ea31a6e68c7e2c1868489b8d21b65c75f48853b75236a26cf",
       "delivery": "bundled"
     },
     {
@@ -225,7 +225,7 @@
       "category": "Referencias y recursos",
       "path": "skills/syka-video-references/SKILL.md",
       "description": "Analyze a local video or a public Instagram, TikTok, X or YouTube link as an editorial reference, with specific intent, timestamped visual evidence, optional audio and bounded temporary downloads.",
-      "sha256": "063c77ec4d66108fbf37c680e55568fd5b17e9abdbb1f625c02a4e2e9355f9bd",
+      "sha256": "74b32cafa7745350cd93977547b1cbef09d39127ceae9ae57ccc2c5a01e98e29",
       "delivery": "bundled"
     },
     {
@@ -243,7 +243,7 @@
       "category": "Edición y revisión",
       "path": "skills/watch.md",
       "description": "Inspect only the evidence needed for the user's question. Syka's media analysis tools work without a Diffusion account. The source of each conclusion must be explicit.",
-      "sha256": "5197770a498e262d3bb5fe84b0f84d5bd2f363397904e6e2cb9fe32e49a83839",
+      "sha256": "c5caaa72884355bdaa86f241b19bd3eb6b5f0ddadddd08879c9d54249c2473ab",
       "delivery": "bundled"
     }
   ]
