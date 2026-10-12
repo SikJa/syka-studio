@@ -10,7 +10,7 @@
 <p align="center"><b>Edit video. Work with agents. Stay in control.</b></p>
 
 <p align="center">
-  <a href="https://github.com/SikJa/syka-studio/releases/download/v0.208.0/Syka-Studio-x64-Setup.exe"><img src="apps/desktop/syka-assets/download-en.svg" alt="Download latest version · Windows" width="400" height="87" /></a>
+  <a href="https://github.com/SikJa/syka-studio/releases/download/v0.208.1/Syka-Studio-x64-Setup.exe"><img src="apps/desktop/syka-assets/download-en.svg" alt="Download latest version · Windows" width="400" height="87" /></a>
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@ The engine, timeline, and editable projects come from Diffusion. Syka adds its w
 
 ## Installation
 
-**Initial version: 0.208.0 for Windows x64.** This is a beta with an **unsigned installer**; Windows may display a security warning. This command downloads a compatible public installer and checks its SHA-256: it uses the latest stable release if available, or a published beta if no stable release exists, never a draft. If no compatible release has been published, it explains why and does not install anything.
+**Current version: 0.208.1 for Windows x64.** This beta includes the new connectors and an **unsigned installer**; Windows may display a security warning. The beta is installed manually and is not offered through the app's stable update channel. This command downloads a compatible public installer and checks its SHA-256: it uses the latest stable release if available, or a published beta if no stable release exists, never a draft. If no compatible release has been published, it explains why and does not install anything.
 
 Open PowerShell and copy:
 

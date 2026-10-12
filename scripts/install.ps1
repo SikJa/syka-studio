@@ -27,10 +27,10 @@ function Get-SykaPublicRelease {
     return $sykaLatest
   }
 
-  # GitHub /latest excludes prereleases. The first unsigned beta can still be
+  # GitHub /latest excludes prereleases. Published betas can still be
   # installed explicitly through this bootstrap; the app's stable updater is separate.
   try {
-    $sykaPublicReleases = @(Invoke-RestMethod -Uri "$sykaApi/releases?per_page=100" -Headers $sykaHeaders)
+    $sykaPublicReleases = Invoke-RestMethod -Uri "$sykaApi/releases?per_page=100" -Headers $sykaHeaders
   } catch {
     $sykaStatus = $null
     if ($null -ne $_.Exception.Response) {
