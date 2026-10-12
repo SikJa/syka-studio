@@ -8,7 +8,7 @@ import { AssistantMark } from '@/components/ui/assistant-mark';
 import { OfficialLink } from './syka-onboarding-settings';
 import { Switch, SwitchControl, SwitchInput, SwitchThumb } from '@/components/ui/switch';
 import { modelVisibility, pickerHarnesses, setHarnessVisible, setHermesProviderVisible, setModelsVisible } from '@/agent-chat/store';
-import { harnessVisible, hermesProvider, hermesProviderGroups } from '@/agent-chat/model-visibility';
+import { harnessVisible, hermesProvider, hermesProviderGroups, modelVisible } from '@/agent-chat/model-visibility';
 import './provider-settings.css';
 
 const STATUS = { ready: 'Listo para editar', 'signed-out': 'Conectá tu cuenta', 'not-installed': 'Sin conectar', checking: 'Comprobando…', error: 'Revisar instalación' };
@@ -30,7 +30,6 @@ function VisibilitySwitch(props: { label: string; checked: boolean; onChange(val
   </Switch>;
 }
 function ModelVisibilitySettings() {
-  const groups = () => hermesProviderGroups(chatState.harnesses.find(h => h.id === 'hermes')?.models ?? []);
   const count = () => pickerHarnesses().filter(h => h.status === 'ready').reduce((n, h) => n + h.models.length, 0);
   return <DashboardSurfaceSection title="Modelos visibles" description="Elegí qué querés ver en el selector del chat. Se guarda en este equipo; no desconecta cuentas ni cambia los chats existentes.">
     <div class="syka-model-visibility-grid"><For each={HARNESS_IDS.filter(id => id !== 'muse')}>{id =>
@@ -40,17 +39,6 @@ function ModelVisibilitySettings() {
         <VisibilitySwitch label={`Mostrar ${PROVIDER_NAMES[id]} en el selector`} checked={harnessVisible(id, modelVisibility())} onChange={value => setHarnessVisible(id, value)} />
       </div>
     }</For></div>
-    <Show when={groups().length > 0}><details class="syka-hermes-provider-visibility" open>
-      <summary>Proveedores de Hermes <span>{groups().length}</span></summary>
-      <p>Podés usar Hermes y ocultar catálogos completos, como OpenRouter.</p>
-      <div class="syka-model-visibility-grid"><For each={groups()}>{group =>
-        <div class="syka-model-visibility-row" data-hermes-provider={group.id}>
-          <span>{group.label}<small>{group.count} {group.count === 1 ? 'modelo' : 'modelos'}</small></span>
-          <VisibilitySwitch label={`Mostrar ${group.label} en Hermes`} checked={modelVisibility().hermesProviders[group.id] !== false} onChange={value => setHermesProviderVisible(group.id, value)} />
-        </div>
-      }</For></div>
-      <Show when={!harnessVisible('hermes', modelVisibility())}><p>Hermes está oculto. Estas preferencias se conservan para cuando lo vuelvas a mostrar.</p></Show>
-    </details></Show>
     <div class="syka-model-catalogs" aria-label="Elegir modelos visibles por proveedor"><For each={HARNESS_IDS.filter(id=>id!=='muse')}>{id=><Show when={chatState.harnesses.find(h=>h.id===id)?.models.length}><ProviderModelVisibility info={chatState.harnesses.find(h=>h.id===id)!}/></Show>}</For></div>
     <p class="syka-model-footnote" role="status">{count()} modelos visibles en el selector. Mostrar un catálogo no confirma que tenga sesión o cuota disponible.</p>
     <Show when={count() === 0}><p class="syka-model-footnote">Para iniciar un chat nuevo, mostrale al menos un proveedor conectado al selector.</p></Show>
@@ -58,12 +46,22 @@ function ModelVisibilitySettings() {
 }
 function ProviderModelVisibility(props:{info:HarnessInfo}){
   const [open,setOpen]=createSignal(false),[query,setQuery]=createSignal('');
+  const groups = () => props.info.id === 'hermes' ? hermesProviderGroups(props.info.models) : [];
   const name=()=>PROVIDER_NAMES[props.info.id];
   const enabled=(id:string)=>modelVisibility().models?.[props.info.id]?.[id]!==false;
   const matching=()=>props.info.models.filter(m=>(m.label+' '+m.id).toLocaleLowerCase().includes(query().trim().toLocaleLowerCase()));
   return <details class="syka-provider-model-visibility" data-model-catalog={props.info.id} onToggle={event=>setOpen(event.currentTarget.open)}>
-    <summary><span class="syka-model-visibility-logo" aria-hidden="true" innerHTML={PROVIDER_LOGOS[props.info.id]}/><strong>{name()}</strong><span>{props.info.models.filter(m=>enabled(m.id)).length} / {props.info.models.length} modelos</span></summary>
+    <summary><span class="syka-model-visibility-logo" aria-hidden="true" innerHTML={PROVIDER_LOGOS[props.info.id]}/><strong>{name()}</strong><span>{props.info.models.filter(m=>modelVisible(props.info.id,m,modelVisibility())).length} / {props.info.models.length} modelos</span></summary>
     <Show when={open()}><div class="syka-provider-model-content">
+      <Show when={groups().length > 0}><section class="syka-hermes-provider-visibility" aria-label="Proveedores de Hermes">
+        <p>Podés usar Hermes y ocultar catálogos completos, como OpenRouter.</p>
+        <div class="syka-model-visibility-grid"><For each={groups()}>{group =>
+          <div class="syka-model-visibility-row" data-hermes-provider={group.id}>
+            <span>{group.label}<small>{group.count} {group.count === 1 ? 'modelo' : 'modelos'}</small></span>
+            <VisibilitySwitch label={`Mostrar ${group.label} en Hermes`} checked={modelVisibility().hermesProviders[group.id] !== false} onChange={value => setHermesProviderVisible(group.id, value)} />
+          </div>
+        }</For></div>
+      </section></Show>
       <p>Elegí los modelos que querés ver en el chat. Los que ocultes siguen disponibles en sus conversaciones actuales.</p>
       <Show when={!harnessVisible(props.info.id,modelVisibility())}><p>Este proveedor está oculto. Podés preparar su lista antes de volver a mostrarlo.</p></Show>
       <div class="syka-model-list-controls"><input type="search" placeholder="Buscar un modelo…" aria-label={`Buscar modelos en ${name()}`} value={query()} onInput={event=>setQuery(event.currentTarget.value)}/><button type="button" aria-label={`Mostrar todos los modelos de ${name()}`} onClick={()=>setModelsVisible(props.info.id,props.info.models.map(m=>m.id),true)}>Mostrar todos</button><button type="button" aria-label={`Ocultar todos los modelos de ${name()}`} onClick={()=>setModelsVisible(props.info.id,props.info.models.map(m=>m.id),false)}>Ocultar todos</button></div>

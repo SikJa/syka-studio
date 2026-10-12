@@ -3761,8 +3761,8 @@
     },
     {
       "path": "apps/web/src/components/canvas/toolbar.tsx",
-      "bytes": 9935,
-      "sha256": "8a3dd7cd2963b6313437ddd6747fe60c4ceaff34c4062f1b112a35ba6f9d2a65",
+      "bytes": 9967,
+      "sha256": "9bd9520ed57e273f44619380eccd82a8f1f8ace7b04ff77a633a0612f8d26627",
       "kind": "text"
     },
     {
@@ -3923,14 +3923,14 @@
     },
     {
       "path": "apps/web/src/components/dashboard/provider-settings.css",
-      "bytes": 5809,
-      "sha256": "4a3f506b992a5e4ee3fcc383ad6e97d253396f2f01e68cbfcd567166a64fe517",
+      "bytes": 5794,
+      "sha256": "7443f7ba0930861e116e23e91e17e0482e3f6593b6bd524d58ced7d54ed73cc3",
       "kind": "text"
     },
     {
       "path": "apps/web/src/components/dashboard/provider-settings.tsx",
-      "bytes": 11543,
-      "sha256": "b7202f010e0cc27062cc4f5e855cadf3bfe1bfd6059c4393024f7639e099ca75",
+      "bytes": 11385,
+      "sha256": "5e34ae35bb23fa42fc5feb9b2fb1be0592ebeac7bd31a950dfdb707842a56611",
       "kind": "text"
     },
     {
@@ -5273,8 +5273,8 @@
     },
     {
       "path": "apps/web/src/components/ui/switch.tsx",
-      "bytes": 5737,
-      "sha256": "70dc9792ec86d5fa061cf90a2426c9ffd2b2c3162f9a626f87c3ea0917806c94",
+      "bytes": 5732,
+      "sha256": "d5b78525778f1ec261f66cbb0df22be123346ef609afe5920dfc688fc64b273f",
       "kind": "text"
     },
     {
@@ -29272,5 +29272,5 @@
       "kind": "text"
     }
   ],
-  "manifestSha256": "4503bf0560916c593b6b0ccc72bab3c083febd0b33d9bf8069c6208d048b8c4a"
+  "manifestSha256": "6a35dec5dcce92d1b82f7dbd0dc45df55941dd840a8505a65793391073330e65"
 }

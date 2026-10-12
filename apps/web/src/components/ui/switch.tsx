@@ -75,7 +75,7 @@ export const switchThumbVariants = cva({
   variants: {
     variant: {
       default:
-        "size-4 bg-background dark:bg-foreground data-[checked]:translate-x-[calc(100%-2px)] dark:data-[checked]:bg-primary-foreground",
+        "size-4 bg-background dark:bg-foreground data-[checked]:translate-x-[calc(100%-2px)] data-[checked]:bg-primary-foreground",
       compact:
         "size-2.5 bg-muted-foreground data-[checked]:bg-primary-foreground data-[checked]:translate-x-full",
     },

@@ -94,7 +94,7 @@ export function Toolbar(props: { fullscreen: boolean; onFullscreen: () => void; 
             <TooltipTrigger
               as={Button}
               size="icon-square"
-              class={cursorTool() ? 'text-foreground' : 'text-muted-foreground'}
+              class={cursorTool() ? 'text-primary-foreground' : 'text-muted-foreground'}
               variant={cursorTool() ? 'default' : 'ghost'}
               aria-label={(cursorTool() ?? CURSOR_TOOLS[0]!).label}
               onClick={() => handleToolChange(cursorTool()?.tool ?? ToolType.MOVE)}
@@ -147,7 +147,7 @@ export function Toolbar(props: { fullscreen: boolean; onFullscreen: () => void; 
             variant={selectedTool() === ToolType.SCENE ? 'default' : 'ghost'}
             aria-label="Crear lienzo"
             onClick={() => handleToolChange(ToolType.SCENE)}
-            class={selectedTool() === ToolType.SCENE ? 'text-foreground' : 'text-muted-foreground'}
+            class={selectedTool() === ToolType.SCENE ? 'text-primary-foreground' : 'text-muted-foreground'}
           >
             <PreviewIcon name="frame" />
           </TooltipTrigger>
@@ -160,7 +160,7 @@ export function Toolbar(props: { fullscreen: boolean; onFullscreen: () => void; 
             variant={selectedTool() === ToolType.RECT ? 'default' : 'ghost'}
             aria-label="Rectángulo"
             onClick={() => handleToolChange(ToolType.RECT)}
-            class={selectedTool() === ToolType.RECT ? 'text-foreground' : 'text-muted-foreground'}
+            class={selectedTool() === ToolType.RECT ? 'text-primary-foreground' : 'text-muted-foreground'}
           >
             <PreviewIcon name="rectangle" />
           </TooltipTrigger>
@@ -173,7 +173,7 @@ export function Toolbar(props: { fullscreen: boolean; onFullscreen: () => void; 
             variant={selectedTool() === ToolType.TEXT ? 'default' : 'ghost'}
             aria-label="Texto"
             onClick={() => handleToolChange(ToolType.TEXT)}
-            class={selectedTool() === ToolType.TEXT ? 'text-foreground' : 'text-muted-foreground'}
+            class={selectedTool() === ToolType.TEXT ? 'text-primary-foreground' : 'text-muted-foreground'}
           >
             <PreviewIcon name="text" />
           </TooltipTrigger>

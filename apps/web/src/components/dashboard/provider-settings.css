@@ -31,19 +31,19 @@
 .syka-model-visibility-row small {display:block;margin-top:3px;font-size:10px;color:var(--muted-foreground);}
 .syka-model-visibility-logo {display:grid;place-items:center;flex:0 0 22px;width:22px;height:22px;}
 .syka-model-visibility-logo svg {width:20px;height:20px;}
-.syka-hermes-provider-visibility {margin-top:16px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;}
-.syka-hermes-provider-visibility summary {cursor:pointer;font-size:12px;font-weight:550;}
-.syka-hermes-provider-visibility summary > span {margin-left:6px;color:var(--muted-foreground);font-size:10px;}
-.syka-hermes-provider-visibility p {font-size:11px;line-height:1.5;color:var(--muted-foreground);margin-top:8px;}
+.syka-hermes-provider-visibility {padding:0 0 12px;margin-bottom:14px;border-bottom:1px solid var(--border);}
+.syka-hermes-provider-visibility p {font-size:11px;line-height:1.5;color:var(--muted-foreground);margin:0 0 4px;}
 @media(max-width:560px) {.syka-model-visibility-grid {grid-template-columns:minmax(0,1fr);}}
 .syka-model-catalogs{display:grid;gap:8px;margin-top:18px;}
 .syka-provider-model-visibility{border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-.syka-provider-model-visibility summary{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;font-size:12px;list-style:none;}
+.syka-provider-model-visibility>summary{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;font-size:12px;list-style:none;}
 .syka-provider-model-visibility summary::-webkit-details-marker{display:none;}
 .syka-provider-model-visibility summary strong{flex:1;font-weight:550;}
 .syka-provider-model-visibility summary>span:last-child{color:var(--muted-foreground);font-size:10px;}
 .syka-provider-model-visibility summary::after{content:'⌄';color:var(--muted-foreground);transition:transform 250ms cubic-bezier(.22,1,.36,1);}
 .syka-provider-model-visibility[open] summary::after{transform:rotate(180deg);}
+.syka-provider-model-visibility>summary:hover{background:var(--muted);}
+.syka-provider-model-visibility>summary:focus-visible{outline:2px solid var(--ring);outline-offset:-3px;border-radius:12px;}
 .syka-provider-model-content{padding:0 14px 12px;}
 .syka-provider-model-content>p,.syka-individual-model-list>p{font-size:11px;line-height:1.5;color:var(--muted-foreground);margin:0 0 10px;}
 .syka-model-list-controls{display:flex;gap:6px;align-items:center;margin:12px 0;flex-wrap:wrap;}
