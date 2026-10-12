@@ -9,7 +9,9 @@ createInterface({ input: process.stdin }).on('line', line => {
   if (message.method === 'initialize') result = { userAgent: 'codex/0.207.0' };
   if (message.method === 'account/read') result = { account: authenticated ? { type: 'chatgpt' } : null };
   if (message.method === 'account/login/start') {
-    result = { type: 'chatgpt', loginId: 'fixture-login', authUrl: mode === 'evil-url' ? 'https://evil.invalid/login' : 'https://auth.openai.com/authorize?state=fixture' };
+    result = message.params.type === 'chatgptDeviceCode'
+      ? { type: 'chatgptDeviceCode', loginId: 'fixture-login', verificationUrl: 'https://auth.openai.com/codex/device', userCode: mode === 'bad-code' ? 'not valid code' : 'ABCD-EFGH' }
+      : { type: 'chatgpt', loginId: 'fixture-login', authUrl: mode === 'evil-url' ? 'https://evil.invalid/login' : 'https://auth.openai.com/authorize?state=fixture' };
     if (mode !== 'wait') setTimeout(() => {
       authenticated = mode !== 'failed';
       send({ method: 'account/login/completed', params: { loginId: 'fixture-login', success: authenticated } });

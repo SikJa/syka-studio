@@ -43,4 +43,16 @@ describe('official browser login without opening a browser or calling a provider
     setTimeout(() => controller.abort(), 150);
     await expect(login).rejects.toThrow('cancelada');
   });
+  it('uses official device login and displays its verification URL and code', async () => {
+    const update = vi.fn();
+    await new CodexHarness().authenticate(env, 'chatgpt-device', new AbortController().signal, { update, requestCode: vi.fn() });
+    expect(state.browser).toEqual(['https://auth.openai.com/codex/device']);
+    expect(update).toHaveBeenCalledWith(expect.objectContaining({ phase: 'waiting', url: state.browser[0], userCode: 'ABCD-EFGH' }));
+    expect(update).toHaveBeenCalledWith(expect.objectContaining({ phase: 'verifying' }));
+  });
+  it('rejects malformed device codes before opening the browser', async () => {
+    state.mode = 'bad-code';
+    await expect(new CodexHarness().authenticate(env, 'chatgpt-device', new AbortController().signal)).rejects.toThrow();
+    expect(state.browser).toEqual([]);
+  });
 });

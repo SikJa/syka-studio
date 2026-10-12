@@ -4,12 +4,19 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {EventEmitter} from 'node:events';
 import {PassThrough} from 'node:stream';
-const calls=vi.hoisted(()=>({args:[] as string[][],mode:'normal'}));
+const calls=vi.hoisted(()=>({args:[] as string[][],mode:'normal',fullMetadataBytes:0}));
 vi.mock('node:child_process',()=>({spawn:vi.fn((binary:string,args:string[])=>{
  const child=Object.assign(new EventEmitter(),{stdout:new PassThrough(),stderr:new PassThrough(),pid:undefined,exitCode:null,kill:vi.fn()});
  calls.args.push(args);
  queueMicrotask(async()=>{try{
-  if(binary==='download'&&args.includes('--dump-single-json'))child.stdout.write(JSON.stringify({id:'test',duration:calls.mode==='long'?2000:2}));
+  if(binary==='download'&&(args.includes('--dump-single-json')||args.includes('--print'))){
+   const info:Record<string,unknown>={id:'test',title:'Una charla con ñandúes',duration:['long','huge'].includes(calls.mode)?43200:2};
+   if(calls.mode==='huge')info.formats=[{fragments:'x'.repeat(9*1024*1024)}];
+   calls.fullMetadataBytes=Buffer.byteLength(JSON.stringify(info));
+   if(calls.mode==='invalid-json')child.stdout.write('{"id":');
+   else if(calls.mode==='overflow-json')child.stdout.write('{"title":"'+'x'.repeat(9*1024*1024)+'"}');
+   else {const keys=args.includes('--print')?args[args.indexOf('--print')+1]!.match(/\{([^}]+)\}/)![1]!.split(','):Object.keys(info);const json=JSON.stringify(Object.fromEntries(keys.filter(k=>k in info).map(k=>[k,info[k]]))),bytes=Buffer.from(json),at=bytes.indexOf(Buffer.from('ñ'))+1;child.stdout.write(bytes.subarray(0,at));child.stdout.write(bytes.subarray(at));}
+  }
   else if(binary==='download'){const path=args[args.indexOf('--output')+1]!.replace('%(ext)s','mp4');await writeFile(path,'downloaded');}
   else if(binary==='probe')child.stdout.write(JSON.stringify({format:{duration:2},streams:[{codec_type:'video'},{codec_type:'audio'}]}));
   else if(binary==='ffmpeg'){if(calls.mode==='fail'){child.stderr.write('sample failed');child.emit('close',1);return;}await writeFile(args.at(-1)!,Buffer.from('fixture'))}
@@ -17,7 +24,7 @@ vi.mock('node:child_process',()=>({spawn:vi.fn((binary:string,args:string[])=>{
  }catch(e){child.emit('error',e)}});return child;
 })}));
 import {publicVideoUrl,ReferenceVideos,type ReferenceManifest} from '../src/host/reference-video';
-afterEach(()=>{calls.args=[];calls.mode='normal';vi.unstubAllEnvs()});
+afterEach(()=>{calls.args=[];calls.mode='normal';calls.fullMetadataBytes=0;vi.unstubAllEnvs()});
 describe('video reference lifecycle',()=>{
  it('accepts individual network links, drops tracking, and rejects lookalike/private/profile URLs',()=>{
   expect(publicVideoUrl('https://www.instagram.com/p/DeK6sw9CbIT/?mdxt=token')?.url).toBe('https://www.instagram.com/p/DeK6sw9CbIT/');
@@ -51,6 +58,23 @@ describe('video reference lifecycle',()=>{
   const download=calls.args.find(args=>args.includes('--output'))!;
   expect(download[download.indexOf('--download-sections')+1]).toBe('*30-50');
   await expect(access(join(root,'03 Assets reutilizables/Referencias',m.id,'download'))).rejects.toThrow();
+ });
+ it('inspects long archives with more than 8 MiB of raw metadata using compact JSON and only downloads the requested excerpt',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'syka-reference-large-json-')),service=new ReferenceVideos(root,{ytDlp:'download',ffmpeg:'ffmpeg',ffprobe:'probe',node:'node'});
+  calls.mode='huge';
+  const result=await service.call({action:'analyze',source:'https://youtu.be/BaW_jenozKc',focus:'Primera mirada',initialInspection:true,start:7200});
+  expect(calls.fullMetadataBytes).toBeGreaterThan(8*1024*1024);expect(result.images).toHaveLength(4);
+  const inspect=calls.args.find(a=>a.includes('--print'))!;expect(inspect).toContain('node:node');expect(inspect).not.toContain('--dump-single-json');
+  const download=calls.args.find(a=>a.includes('--output'))!;expect(download[download.indexOf('--download-sections')+1]).toBe('*7200-7220');
+  expect(download[download.indexOf('--format')+1]!.split('/')[0]).toContain('protocol^=m3u8');expect(download).toContain('ffmpeg_i:-rw_timeout 20000000');
+ });
+ it('explains invalid or oversized metadata without continuing to download or suggesting an account problem',async()=>{
+  for(const mode of ['invalid-json','overflow-json']){
+   const root=await mkdtemp(join(tmpdir(),'syka-reference-bad-json-')),service=new ReferenceVideos(root,{ytDlp:'download',ffmpeg:'ffmpeg',ffprobe:'probe'});
+   calls.mode=mode;await expect(service.call({action:'analyze',source:'https://youtu.be/BaW_jenozKc',focus:'Primera mirada',initialInspection:true})).rejects.toThrow(/metadatos|JSON/);
+   expect(await readdir(join(root,'03 Assets reutilizables/Referencias'))).toEqual([]);
+  }
+  expect(calls.args.filter(a=>a.includes('--output'))).toHaveLength(0);
  });
  it('clamps the initial excerpt to actual duration and leaves a local original intact',async()=>{
   const root=await mkdtemp(join(tmpdir(),'syka-reference-short-')),service=new ReferenceVideos(root,{ytDlp:'download',ffmpeg:'ffmpeg',ffprobe:'probe'});

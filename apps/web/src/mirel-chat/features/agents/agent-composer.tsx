@@ -104,6 +104,7 @@ export interface AgentComposerSuggestion {
 export interface AgentComposerContextUsage {
   usedTokens: number;
   maxTokens: number;
+  approximate?: boolean;
 }
 
 export interface AgentComposerVoiceControl {
@@ -146,7 +147,6 @@ export interface AgentComposerProps {
   selectedModelOption?: AgentComposerModelOption;
   onModelChange?: (modelId: string) => void;
   onConfigureProviders?: () => void;
-  unavailableProviders?: readonly { id: string; label: string; status: string; logoSvg?: string }[];
   efforts?: readonly AgentComposerEffortOption[];
   selectedEffortId?: string;
   onEffortChange?: (effortId: string) => void;
@@ -225,7 +225,6 @@ export function AgentComposer({
   selectedModelOption,
   onModelChange,
   onConfigureProviders,
-  unavailableProviders = [],
   efforts = EMPTY_EFFORTS,
   selectedEffortId,
   onEffortChange,
@@ -432,7 +431,6 @@ export function AgentComposer({
               </div>
             </>
           ) : null}
-          {unavailableProviders.length ? <div className="agent-composer-provider-statuses">{unavailableProviders.map(provider => <button key={provider.id} type="button" onClick={() => { setModelMenuOpen(false); onConfigureProviders?.(); }}><span className="syka-provider-model-icon" aria-hidden="true">{provider.logoSvg ? <span dangerouslySetInnerHTML={{__html:provider.logoSvg}}/> : provider.label.slice(0,1)}</span><span><strong>{provider.label}</strong><small>{provider.status}</small></span><ChevronRight size={12}/></button>)}</div> : null}
           </div>
           {efforts.length > 0 ? (
             <div className="agent-composer-effort" data-ultra={ultraMode}>
@@ -570,20 +568,20 @@ export function AgentComposer({
                 >
                   <Plus size={17} />
                 </button>
-        <button type="button" className="agent-composer-context" data-context-known={contextPercent !== null} data-context-dismissed={contextDetailsDismissed} aria-expanded={contextDetailsOpen} onMouseEnter={()=>setContextDetailsDismissed(false)} onFocus={()=>setContextDetailsDismissed(false)} onClick={()=>{setContextDetailsDismissed(contextDetailsOpen);setContextDetailsOpen(!contextDetailsOpen);}} onBlur={()=>{setContextDetailsOpen(false);setContextDetailsDismissed(false);}} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();setContextDetailsOpen(false);setContextDetailsDismissed(true);}}} aria-label={contextPercent === null ? "Uso de contexto no disponible" : `${contextPercent}% del contexto utilizado`}>
+        <button type="button" className="agent-composer-context" data-context-known={contextPercent !== null} data-context-dismissed={contextDetailsDismissed} aria-expanded={contextDetailsOpen} onMouseEnter={()=>setContextDetailsDismissed(false)} onFocus={()=>setContextDetailsDismissed(false)} onClick={()=>{setContextDetailsDismissed(contextDetailsOpen);setContextDetailsOpen(!contextDetailsOpen);}} onBlur={()=>{setContextDetailsOpen(false);setContextDetailsDismissed(false);}} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();setContextDetailsOpen(false);setContextDetailsDismissed(true);}}} aria-label={contextPercent === null ? "Uso de contexto no disponible" : `${contextUsage?.approximate ? 'Aproximadamente ' : ''}${contextPercent}% del contexto utilizado`}>
           <svg viewBox="0 0 22 22" aria-hidden="true">
             <circle cx="11" cy="11" r="8.5" pathLength="100" />
             {contextPercent !== null ? <circle className="agent-composer-context-value" cx="11" cy="11" r="8.5" pathLength="100" strokeDasharray={`${contextPercent} ${100 - contextPercent}`} /> : null}
           </svg>
           <strong>{contextPercent === null ? "—" : `${contextPercent}%`}</strong>
           <span className="agent-composer-context-popover" role="tooltip" data-open={contextDetailsOpen}>
-            <span><strong>Ventana de contexto</strong><em>{contextPercent === null ? "Sin datos del runtime" : `${contextPercent}% utilizado`}</em></span>
-            {contextUsage ? <>
+            <span><strong>Ventana de contexto</strong><em>{contextPercent === null ? "Sin datos del runtime" : `${contextUsage?.approximate ? '≈ ' : ''}${contextPercent}% utilizado`}</em></span>
+            {contextUsage && contextPercent !== null ? <>
               <i aria-hidden="true"><b style={{ width: `${contextPercent ?? 0}%` }} /></i>
-              <span><em>Usados</em><b>{formatTokens(contextUsage.usedTokens)}</b></span>
-              <span><em>Disponibles</em><b>{formatTokens(Math.max(0, contextUsage.maxTokens - contextUsage.usedTokens))}</b></span>
+              <span><em>Usados{contextUsage.approximate ? ' (estimados)' : ''}</em><b>{formatTokens(contextUsage.usedTokens)}</b></span>
+              <span><em>Disponibles{contextUsage.approximate ? ' (estimados)' : ''}</em><b>{formatTokens(Math.max(0, contextUsage.maxTokens - contextUsage.usedTokens))}</b></span>
               <span><em>Ventana total</em><b>{formatTokens(contextUsage.maxTokens)}</b></span>
-            </> : <span><em>Codex publica los datos al procesar el próximo mensaje.</em></span>}
+            </> : <span><em>El proveedor todavía no publicó la ventana de contexto.</em></span>}
           </span>
         </button>
                 {suggestions.length > 0 ? <button

@@ -16,6 +16,18 @@ export type ModelRef = { harness: HarnessId; model: string; effort?: string; fas
 
 export type HarnessStatus = "ready" | "not-installed" | "signed-out" | "error" | "checking";
 
+/** Ephemeral login state. Never stored with chats, credentials or account tokens. */
+export type ProviderAuthFlow = {
+  id: string;
+  phase: "preparing" | "waiting" | "verifying" | "connected" | "failed" | "cancelled";
+  message: string;
+  url?: string;
+  userCode?: string;
+  inputPrompt?: string;
+  options?: { id: string; label: string }[];
+  expiresAt?: number;
+};
+
 export type HarnessInfo = {
   supportsSteering?: boolean;
   id: HarnessId;
@@ -29,6 +41,7 @@ export type HarnessInfo = {
   defaultModel?: string;
   /** Official login methods advertised by the configured program; no tokens. */
   authMethods?: { id: string; label: string }[];
+  authFlow?: ProviderAuthFlow;
 };
 
 export type ChatStatus = "idle" | "running" | "waiting";
@@ -60,6 +73,14 @@ export type ProjectTokenUsage = {
   updatedAt: number;
   /** Old chats and providers without counters are not represented as zero use. */
   coverage: "partial";
+};
+
+/** Current context occupancy, separate from cumulative token accounting. */
+export type ContextUsage = {
+  usedTokens: number;
+  maxTokens: number;
+  /** Some runtimes estimate occupancy from history, prompts and tool schemas. */
+  approximate?: boolean;
 };
 
 export type ChatSummary = {
@@ -96,7 +117,7 @@ export type MessageQueue = { messages: QueuedMessage[]; paused: boolean };
 export type ChatEvent =
   | { type: "usage.reported"; usage: TokenUsageReport }
   | { type: "queue.updated"; queue: MessageQueue }
-  | { type: "context.updated"; usage: { usedTokens: number; maxTokens: number } }
+  | { type: "context.updated"; usage: ContextUsage }
   | { type: "turn.started"; turnId: string; model: string; user: Item }
   | { type: "item.started"; item: Item }
   /** Appends to an open assistant / reasoning item. */
@@ -137,7 +158,7 @@ export type RequestResponse = { answers: Record<string, string[]>; attachments?:
 
 export type ChatSnapshot = {
   queue?: MessageQueue;
-  contextUsage?: { usedTokens: number; maxTokens: number };
+  contextUsage?: ContextUsage;
   chat: ChatSummary;
   items: Item[];
   /** Events with `seq` at or below this are already in `items`. */
@@ -155,6 +176,9 @@ export type MethodMap = {
   "turn.steer": { params: { chatId: string; text: string; attachments?: string[] }; result: void };
   "harnesses.list": { params: { refresh?: boolean }; result: HarnessInfo[] };
   "harnesses.authenticate": { params: { harness: HarnessId; methodId: string }; result: void };
+  "harnesses.auth.respond": { params: { harness: HarnessId; flowId: string; code: string }; result: void };
+  "harnesses.auth.cancel": { params: { harness: HarnessId; flowId: string }; result: void };
+  "harnesses.auth.methods": { params: { harness: HarnessId }; result: NonNullable<HarnessInfo['authMethods']> };
   "harnesses.settings": { params: Record<string, never>; result: HarnessSettings };
   "harnesses.configure": { params: HarnessPathConfig; result: HarnessSettings };
   "chats.create": {params:{projectId:string;cwd:string;model:ModelRef;title?:string};result:ChatSummary};

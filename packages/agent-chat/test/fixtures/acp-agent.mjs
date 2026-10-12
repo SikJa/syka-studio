@@ -12,7 +12,7 @@ createInterface({ input: process.stdin }).on('line', async line => {
     send({ id: promptId, result: { stopReason: 'end_turn' } }); return;
   }
   switch (m.method) {
-    case 'initialize': result({ protocolVersion: mode === 'v2' ? 2 : 1, agentInfo: { name: mode === 'wrong-binary' ? 'wrong-agent' : agent + '-acp', version: '1.0' }, authMethods: [{ id: 'official-login', name: 'Official login' }], agentCapabilities: { loadSession: mode !== 'no-resume', mcpCapabilities: { http: mode !== 'no-http' }, promptCapabilities: { image: true } } }); break;
+    case 'initialize': result({ protocolVersion: mode === 'v2' ? 2 : 1, ...(mode === 'no-agent-info' ? {} : { agentInfo: mode === 'malformed-agent-info' ? {} : { name: mode === 'wrong-binary' ? 'wrong-agent' : agent + '-acp', version: '1.0' } }), authMethods: [{ id: 'official-login', name: 'Official login' }], agentCapabilities: { loadSession: mode !== 'no-resume', mcpCapabilities: { http: mode !== 'no-http' }, promptCapabilities: { image: true } } }); break;
     case 'authenticate': result({}); break;
     case 'session/new':
       if (mode === 'signed-out') send({ id: m.id, error: { code: -32000, message: 'Authentication required' } });

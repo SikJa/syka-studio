@@ -5,6 +5,7 @@ import { constants } from 'node:fs';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { killTree } from '../../../../packages/agent-chat/src/host/env';
 import { videoDownloadError } from '../../../../packages/agent-chat/src/host/video-download-error';
+import { parseVideoToolJson, VideoToolOutput, YTDLP_METADATA_ARGS, YTDLP_FFMPEG_NETWORK_ARGS, youtubeSectionFormat } from '../../../../packages/agent-chat/src/host/yt-dlp';
 import { addStorageJobOwner, createStorageJob, finishStorageJob, settleStorageOwners } from '../../../../packages/agent-chat/src/host/storage-ledger';
 import { validateVideoRange, youtubeUrl, type VideoImportJob, type VideoImportMetadata, type VideoImportRange, type VideoImportResult } from './types';
 
@@ -17,7 +18,7 @@ type Options = {
   integrate(result: VideoImportResult, metadata: VideoImportMetadata, seedTimeline: boolean): Promise<boolean>;
 };
 type Internal = { job: VideoImportJob; child?: ChildProcess; cancelled: boolean; task?: Promise<void>; stage?: string; projectDir?: string };
-const SAFE_BASE = ['--ignore-config', '--no-plugin-dirs', '--no-remote-components', '--no-playlist', '--no-warnings', '--no-cache-dir', '--socket-timeout', '20', '--retries', '2', '--fragment-retries', '2'];
+const SAFE_BASE = ['--encoding', 'utf-8', '--ignore-config', '--no-plugin-dirs', '--no-remote-components', '--no-playlist', '--no-warnings', '--no-cache-dir', '--socket-timeout', '20', '--retries', '2', '--fragment-retries', '2'];
 const terminal = new Set(['done', 'cancelled', 'error']);
 
 async function stopChild(child: ChildProcess): Promise<void> {
@@ -104,9 +105,9 @@ export class VideoImportService {
     try {
       const tool = this.options.ytDlp();
       if (!tool) throw Error('Falta yt-dlp. Instalalo y reiniciá Syka: Windows: winget install yt-dlp.yt-dlp · Mac: brew install yt-dlp ffmpeg.');
-      const output = await this.run(item, tool, [...this.downloaderBase(), '--skip-download', '--dump-single-json', '--', item.job.url], 90_000);
+      const output = await this.run(item, tool, [...this.downloaderBase(), ...YTDLP_METADATA_ARGS, '--', item.job.url], 90_000);
       this.check(item);
-      item.job.metadata = normalizeVideoMetadata(JSON.parse(output), item.job.url);
+      item.job.metadata = normalizeVideoMetadata(parseVideoToolJson(output, 'metadata'), item.job.url);
       item.job.state = 'ready'; item.job.message = 'Video listo para importar';
     } catch (error) { this.fail(item, error); }
   }
@@ -129,8 +130,9 @@ export class VideoImportService {
       const stage = await this.safeDir(this.options.runtimeDir, 'video-imports', item.job.id); item.stage = stage;
       await createStorageJob(this.options.runtimeDir, { id: item.job.id, kind: 'video-import', base: await realpath(this.options.runtimeDir), path: stage });
       const isRange = range.start > 0 || metadata.duration === null || range.end < metadata.duration - 0.05;
-      const args = [...this.downloaderBase(), '--newline', '--no-simulate', '--no-overwrites', '--max-filesize', '2G', '--concurrent-fragments', '1', '--ffmpeg-location', ffmpeg,
-        '-f', 'bv*[height<=1080][vcodec^=avc1]+ba[ext=m4a]/b[height<=1080][vcodec^=avc1][ext=mp4]', '--merge-output-format', 'mp4', '--remux-video', 'mp4',
+      const normalFormat = 'bv*[height<=1080][vcodec^=avc1]+ba[ext=m4a]/b[height<=1080][vcodec^=avc1][ext=mp4]';
+      const args = [...this.downloaderBase(), ...YTDLP_FFMPEG_NETWORK_ARGS, '--newline', '--no-simulate', '--no-overwrites', '--max-filesize', '2G', '--concurrent-fragments', '1', '--ffmpeg-location', ffmpeg,
+        '-f', isRange ? youtubeSectionFormat(normalFormat) : normalFormat, '--merge-output-format', 'mp4', '--remux-video', 'mp4',
         '--progress-template', 'download:SYKA_PROGRESS:%(progress._percent_str)s', '-o', join(stage, 'video.%(ext)s'),
         ...(isRange ? ['--download-sections', `*${range.start}-${range.end}`, '--force-keyframes-at-cuts'] : []), '--', item.job.url];
       item.job.message = isRange ? 'Descargando el intervalo elegido…' : 'Descargando el video…';
@@ -143,7 +145,7 @@ export class VideoImportService {
       const downloaded = join(stage, 'video.mp4');
       const info = await stat(downloaded);
       if (!info.isFile() || info.size < 100 || info.size > 2 * 1024 ** 3) throw Error('El archivo descargado está vacío o supera 2 GB. Elegí un tramo más corto.');
-      const data = JSON.parse(await this.run(item, probe, ['-v', 'error', '-show_streams', '-show_format', '-of', 'json', downloaded], 30_000));
+      const data = parseVideoToolJson(await this.run(item, probe, ['-v', 'error', '-show_streams', '-show_format', '-of', 'json', downloaded], 30_000), 'probe');
       const video = data.streams?.find((s: any) => s.codec_type === 'video');
       const audio = data.streams?.find((s: any) => s.codec_type === 'audio');
       const duration = Number(data.format?.duration);
@@ -190,7 +192,7 @@ export class VideoImportService {
     this.check(item);
     return new Promise((done, reject) => {
       const child = spawn(tool.command, [...(tool.prefix ?? []), ...args], { env: typeof this.options.env === 'function' ? this.options.env() : this.options.env, windowsHide: true, detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe'], shell: false });
-      item.child = child; let out = '', err = '', settled = false, timedOut = false;
+      item.child = child; const out = new VideoToolOutput(!onLine); let err = '', settled = false, timedOut = false;
       if (item.stage) void addStorageJobOwner(this.options.runtimeDir, item.job.id, child.pid).catch(() => {});
       let diskError = '', measuring = false;
       const quota = item.stage ? setInterval(async () => {
@@ -202,8 +204,9 @@ export class VideoImportService {
         finally { measuring = false; }
       }, 1000) : undefined;
       const timer = setTimeout(() => { timedOut = true; void stopChild(child); }, timeout);
-      const finish = (error?: Error) => { if (settled) return; settled = true; clearTimeout(timer); clearInterval(quota); if (item.child === child) item.child = undefined; error ? reject(error) : done(out); };
-      child.stdout.on('data', chunk => { const text = chunk.toString(); out = (out + text).slice(-8 * 1024 * 1024); onLine?.(text); });
+      const finish = (error?: Error) => { if (settled) return; settled = true; clearTimeout(timer); clearInterval(quota); if (item.child === child) item.child = undefined; if (error) { reject(error); return; } try { done(out.read()); } catch (error) { reject(error); } };
+      child.stdout.setEncoding('utf8'); child.stderr.setEncoding('utf8');
+      child.stdout.on('data', chunk => { const text = String(chunk); out.append(text); onLine?.(text); });
       child.stderr.on('data', chunk => { const text = chunk.toString(); err = (err + text).slice(-16_000); onLine?.(text); });
       child.on('error', e => finish(e));
       child.on('close', code => finish(item.cancelled ? Error('Importación cancelada') : diskError ? Error(diskError) : timedOut ? Error('La descarga tardó demasiado. Probá con un intervalo más corto.') : code !== 0 ? Error(err.trim() || `El descargador terminó con código ${code}.`) : undefined));

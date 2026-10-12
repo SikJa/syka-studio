@@ -22,6 +22,18 @@
 .syka-model-connect a:hover {background:var(--muted);}
 .syka-model-connect svg,.syka-model-login svg {width:16px;height:16px;}
 .syka-model-login {gap:8px;}
+.syka-provider-login {display:grid;gap:10px;margin-top:14px;padding:14px;border:1px solid var(--border);border-radius:10px;min-width:0;font-size:12px;}
+.syka-provider-login p {margin:0;line-height:1.5;overflow-wrap:anywhere;}
+.syka-provider-login>a {font-weight:550;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere;}
+.syka-provider-device-code {display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.syka-provider-device-code>span {color:var(--muted-foreground);font-size:11px;}
+.syka-provider-device-code>strong {font-family:monospace;font-size:20px;letter-spacing:2px;user-select:all;}
+.syka-provider-device-code button {padding:6px 9px;border:1px solid var(--border);border-radius:7px;cursor:pointer;}
+.syka-provider-login form {display:flex;align-items:end;gap:8px;flex-wrap:wrap;}
+.syka-provider-login label {display:grid;gap:7px;flex:1;min-width:160px;}
+.syka-provider-login input {padding:9px 11px;border:1px solid var(--border);background:var(--muted);border-radius:7px;min-width:0;}
+.syka-provider-login[data-auth-phase=failed] {border-color:var(--destructive);}
+.syka-provider-auth-methods {display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
 .syka-model-help {margin-top:10px;font-size:11px;color:var(--muted-foreground);cursor:pointer;text-align:left;text-decoration:underline;text-underline-offset:3px;}
 .syka-model-help:hover {color:var(--foreground);}
 .syka-model-help:focus-visible,.syka-model-connect a:focus-visible {outline:2px solid var(--ring);outline-offset:3px;border-radius:6px;}

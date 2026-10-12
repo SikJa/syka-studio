@@ -1,9 +1,9 @@
-import { createSignal, For, Show } from 'solid-js';
-import { HARNESS_IDS, HARNESS_LABELS, type HarnessId, type HarnessInfo } from '@diffusionstudio/agent-chat';
+import { createEffect, createSignal, For, Show } from 'solid-js';
+import { HARNESS_IDS, HARNESS_LABELS, type HarnessId, type HarnessInfo, type ProviderAuthFlow } from '@diffusionstudio/agent-chat';
 import { Button } from '@/components/ui/button';
 import { DashboardSurfaceSection } from './shared';
-import { authenticateHarness, chatState, currentModel, ensureConnected, refreshHarnesses, setStoredModel } from '@/agent-chat/store';
-import { PROVIDER_LOGOS, PROVIDER_NAMES, PROVIDER_NOTES, PROVIDER_GUIDES } from '@/agent-chat/provider-catalog';
+import { authenticateHarness, cancelProviderAuth, submitProviderAuthCode, providerAuthMethods, chatState, currentModel, ensureConnected, refreshHarnesses, setStoredModel } from '@/agent-chat/store';
+import { PROVIDER_LOGOS, PROVIDER_NAMES, PROVIDER_NOTES } from '@/agent-chat/provider-catalog';
 import { AssistantMark } from '@/components/ui/assistant-mark';
 import { OfficialLink } from './syka-onboarding-settings';
 import { Switch, SwitchControl, SwitchInput, SwitchThumb } from '@/components/ui/switch';
@@ -11,18 +11,19 @@ import { modelVisibility, pickerHarnesses, setHarnessVisible, setHermesProviderV
 import { harnessVisible, hermesProvider, hermesProviderGroups, modelVisible } from '@/agent-chat/model-visibility';
 import './provider-settings.css';
 
-const STATUS = { ready: 'Listo para editar', 'signed-out': 'Conectá tu cuenta', 'not-installed': 'Sin conectar', checking: 'Comprobando…', error: 'Revisar instalación' };
+const STATUS = { ready: 'Conexión disponible', 'signed-out': 'Conectá tu cuenta', 'not-installed': 'Sin conectar', checking: 'Comprobando…', error: 'Conexión pendiente' };
 const statusLabel = (id: HarnessId, status: keyof typeof STATUS) => id === 'opencode' && status === 'ready' ? 'Instalación detectada' : STATUS[status];
 export function ProviderSettings() {
   ensureConnected();
   return <>
-    <ModelVisibilitySettings />
     <DashboardSurfaceSection title="¿Con qué asistente querés editar?" description="Conectá tu cuenta una vez. Después elegís el modelo y trabajás desde el chat.">
     <div class="syka-model-connections"><For each={HARNESS_IDS.filter(id => id !== 'muse')}>{id => <ProviderRow id={id} />}</For>
       <Button variant="ghost" onClick={() => refreshHarnesses(true)}>Volver a comprobar conexiones</Button>
       <p class="syka-model-footnote">Groq transcribe audio y Zernio publica contenido: tienen sus propios apartados. Las capacidades de edición dependen del asistente conectado.</p>
     </div>
-  </DashboardSurfaceSection></>;
+  </DashboardSurfaceSection>
+    <ModelVisibilitySettings />
+  </>;
 }
 function VisibilitySwitch(props: { label: string; checked: boolean; onChange(value: boolean): void }) {
   return <Switch checked={props.checked} onChange={props.onChange}>
@@ -72,42 +73,73 @@ function ProviderModelVisibility(props:{info:HarnessInfo}){
 function ProviderRow(props: { id: HarnessId }) {
   const [expanded, setExpanded] = createSignal(false), [busy, setBusy] = createSignal(false), [error, setError] = createSignal('');
   const info = () => chatState.harnesses.find(h => h.id === props.id);
-  const login = () => info()?.authMethods?.[0];
-  const guide = () => PROVIDER_GUIDES[props.id];
-  const connect = async () => {
-    setError(''); setBusy(true); setExpanded(true);
-    try { if (login()) await authenticateHarness(props.id, login()!.id); }
-    catch { setError('No se pudo iniciar la conexión. Volvé a comprobarla y reintentá.'); }
+  const flow = () => info()?.authFlow;
+  const connecting = () => busy() || !!flow() && ['preparing', 'waiting', 'verifying'].includes(flow()!.phase);
+  const connect = async (methodId = 'connect') => {
+    setError(''); setBusy(true);
+    try { await authenticateHarness(props.id, methodId); }
+    catch (cause) { setError(cause instanceof Error ? cause.message : 'No se pudo iniciar la conexión. Reintentá.'); }
+    finally { setBusy(false); }
+  };
+  const accounts = async () => {
+    setError(''); setExpanded(true); setBusy(true);
+    try { const methods = await providerAuthMethods(props.id); if (!methods.length) setError('Este proveedor no anunció un login de navegador disponible para agregar otra cuenta.'); }
+    catch (cause) { setError(cause instanceof Error ? cause.message : 'No se pudieron comprobar los métodos de conexión.'); }
     finally { setBusy(false); }
   };
   return <article class="syka-model-card" data-provider={props.id}>
     <div class="syka-model-heading">
       <span class="syka-model-mark" aria-hidden="true" innerHTML={PROVIDER_LOGOS[props.id] ?? ''} />
       <div class="syka-model-title"><strong>{PROVIDER_NAMES[props.id]}</strong><span data-ready={info()?.status === 'ready'}>{statusLabel(props.id, info()?.status ?? 'not-installed')}</span></div>
-      <Show when={info()?.status === 'signed-out' && login()} fallback={
-        <Show when={info()?.status === 'ready' || info()?.status === 'checking'} fallback={<span class="syka-model-connect"><OfficialLink href={guide().url}><AssistantMark provider={props.id} class="size-4" />Configurar {PROVIDER_NAMES[props.id]}</OfficialLink></span>}>
-          <Button variant="secondary" aria-expanded={expanded()} disabled={info()?.status === 'checking'} onClick={() => setExpanded(!expanded())}>{info()?.status === 'checking' ? 'Comprobando…' : 'Elegir modelo'}</Button>
-        </Show>
+      <Show when={info()?.status === 'ready' && !connecting()} fallback={
+        <Button variant="secondary" class="syka-model-login" disabled={connecting()} onClick={() => void connect()}><AssistantMark provider={props.id} class="size-4" />{connecting() ? 'Conectando…' : `Conectar ${PROVIDER_NAMES[props.id]}`}</Button>
       }>
-        <Button variant="secondary" class="syka-model-login" disabled={busy()} onClick={() => void connect()}><AssistantMark provider={props.id} class="size-4" />{busy() ? 'Abriendo…' : `Conectar ${PROVIDER_NAMES[props.id]}`}</Button>
+        <Button variant="secondary" aria-expanded={expanded()} onClick={() => setExpanded(!expanded())}>Elegir modelo</Button>
       </Show>
     </div>
     <p>{PROVIDER_NOTES[props.id]}</p>
+    <Show when={flow()}>{value => <ProviderLoginPanel id={props.id} flow={value()} />}</Show>
+    <Show when={props.id === 'codex' && info()?.status !== 'ready'}><button type="button" class="syka-model-help" disabled={connecting()} onClick={() => void connect('chatgpt-device')}>Vincular con un código de ChatGPT</button></Show>
     <Show when={props.id === 'opencode' && info()?.detail}><p class="syka-model-footnote" role="status">{info()?.detail}</p></Show>
-    <Show when={props.id === 'opencode' && info()?.status === 'ready'}><details class="syka-model-guide"><summary>Conectar otra cuenta en OpenCode</summary><p>Abrí OpenCode y usá /connect. Se usa el mismo perfil de tu CLI; no necesitás otra cuenta para probar sus modelos gratuitos.</p><OfficialLink href="https://opencode.ai/docs/providers/">Conexiones de OpenCode · guía oficial</OfficialLink><Button variant="ghost" onClick={() => refreshHarnesses(true)}>Ya la conecté · comprobar</Button></details></Show>
-    <Show when={info()?.status !== 'ready' && info()?.status !== 'checking'}><button type="button" class="syka-model-help" aria-expanded={expanded()} onClick={() => setExpanded(!expanded())}>{expanded() ? 'Ocultar pasos' : 'Cómo conectarlo · paso a paso'}</button></Show>
-    <Show when={info()?.status === 'checking'}><p role="status">Completá la conexión en el navegador si ya la iniciaste.</p></Show>
+    <Show when={info()?.status !== 'ready' && !connecting()}><button type="button" class="syka-model-help" aria-expanded={expanded()} onClick={() => setExpanded(!expanded())}>{expanded() ? 'Ocultar detalles' : 'Detalles de la conexión'}</button></Show>
+    <Show when={info()?.status === 'checking' && !flow()}><p role="status">Comprobando la instalación y la sesión…</p></Show>
     <Show when={expanded()}><div class="syka-model-guide t-panel-slide" data-open="true">
       <Show when={info()?.status !== 'ready'}>
-        <ol><For each={guide().steps}>{step => <li>{step}</li>}</For></ol>
-        <OfficialLink href={guide().url}>{guide().linkLabel}</OfficialLink>
-        <Show when={guide().limitation}><p class="syka-model-limitation">{guide().limitation}</p></Show>
-        <Button variant="ghost" disabled={busy() || info()?.status === 'checking'} onClick={() => refreshHarnesses(true)}>Ya lo preparé · comprobar</Button>
+        <Show when={info()?.detail && !flow()}><p role="status">{info()?.detail}</p></Show>
+        <Show when={info()?.version}><p>Versión detectada: {info()!.version}</p></Show>
+        <Button variant="ghost" disabled={connecting()} onClick={() => refreshHarnesses(true)}>Volver a comprobar</Button>
       </Show>
       <Show when={info()?.status === 'ready'}><div class="syka-model-options" aria-label={`Modelos de ${HARNESS_LABELS[props.id]}`}>
         <For each={info()?.models}>{model => <button type="button" aria-pressed={currentModel()?.harness === props.id && currentModel()?.model === model.id} onClick={() => setStoredModel({ harness: props.id, model: model.id })}><span>{model.label}</span><span>{currentModel()?.harness === props.id && currentModel()?.model === model.id ? 'Elegido' : 'Elegir'}</span></button>}</For>
       </div></Show>
+      <Show when={info()?.status === 'ready' && props.id !== 'antigravity'}><Button variant="ghost" disabled={connecting()} onClick={() => void accounts()}>Conectar otra cuenta</Button><div class="syka-provider-auth-methods"><For each={info()?.authMethods}>{method => <Button variant="secondary" disabled={connecting()} onClick={() => void connect(method.id)}>{method.label}</Button>}</For></div></Show>
+      <Show when={info()?.status === 'ready' && props.id === 'antigravity'}><p class="syka-model-footnote">Usás la cuenta conectada en Antigravity. Para cambiarla, cambiá de cuenta en Antigravity y volvé a comprobar la conexión.</p><Button variant="ghost" disabled={connecting()} onClick={() => refreshHarnesses(true)}>Volver a comprobar</Button></Show>
     </div></Show>
     <Show when={error()}><p role="alert" class="text-destructive">{error()}</p></Show>
   </article>;
+}
+
+function ProviderLoginPanel(props: { id: HarnessId; flow: ProviderAuthFlow }) {
+  const [code, setCode] = createSignal(''), [error, setError] = createSignal(''), [sending, setSending] = createSignal(false);
+  const active = () => ['preparing', 'waiting', 'verifying'].includes(props.flow.phase);
+  let lastFlow: string | undefined;
+  createEffect(() => {
+    if (lastFlow !== props.flow.id || !props.flow.inputPrompt) setCode('');
+    lastFlow = props.flow.id;
+  });
+  const respond = async (event: SubmitEvent) => {
+    event.preventDefault(); setSending(true); setError('');
+    try { await submitProviderAuthCode(props.id, props.flow.id, code()); setCode(''); }
+    catch (cause) { setError(cause instanceof Error ? cause.message : 'No se pudo enviar el código.'); }
+    finally { setSending(false); }
+  };
+  return <div class="syka-provider-login" data-auth-phase={props.flow.phase}>
+    <p role={props.flow.phase === 'failed' ? 'alert' : 'status'}>{props.flow.message}</p>
+    <Show when={active() && props.flow.url}><OfficialLink href={props.flow.url!}>Abrir inicio de sesión oficial</OfficialLink></Show>
+    <Show when={active() && props.flow.userCode}><div class="syka-provider-device-code"><span>Código de vinculación</span><strong>{props.flow.userCode}</strong><button type="button" onClick={() => void navigator.clipboard.writeText(props.flow.userCode!).catch(() => setError('No se pudo copiar. Seleccioná el código para copiarlo.'))}>Copiar código</button></div></Show>
+    <Show when={active() && props.flow.inputPrompt && props.flow.options?.length}><div class="syka-provider-auth-methods" aria-label={props.flow.inputPrompt}><For each={props.flow.options}>{option => <Button variant="secondary" disabled={sending()} onClick={() => { setSending(true); void submitProviderAuthCode(props.id, props.flow.id, option.id).catch(cause => setError(cause instanceof Error ? cause.message : 'No se pudo elegir la cuenta.')).finally(() => setSending(false)); }}>{option.label}</Button>}</For></div></Show>
+    <Show when={active() && props.flow.inputPrompt && !props.flow.options?.length}><form onSubmit={event => void respond(event)}><label>{props.flow.inputPrompt}<input autocomplete="off" spellcheck={false} aria-label="Código de autorización" value={code()} onInput={event => setCode(event.currentTarget.value)} /></label><Button type="submit" variant="secondary" disabled={sending() || !code().trim()}>Verificar código</Button></form></Show>
+    <Show when={active()}><Button variant="ghost" onClick={() => void cancelProviderAuth(props.id, props.flow.id).catch(cause => setError(cause instanceof Error ? cause.message : 'No se pudo cancelar.'))}>Cancelar conexión</Button></Show>
+    <Show when={error()}><p role="alert">{error()}</p></Show>
+  </div>;
 }

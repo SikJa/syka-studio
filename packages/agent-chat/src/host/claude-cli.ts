@@ -12,6 +12,7 @@ import type { HarnessInfo, RequestResponse, Question } from "../protocol";
 import { startEditorToolBridge } from "./editor-tool-bridge";
 import { profileScope, advanceProfileScope } from "./harness-profile";
 import { ClaudeUsageTracker, claudeCumulativeUsage } from './claude-usage';
+import { runCliLogin } from './cli-login';
 
 export type ClaudeCliConfig = { id: "claude"; command: string; args?: string[]; profileDir: string };
 export function claudeEnvironment(config: ClaudeCliConfig, env: HostEnv): Record<string, string> {
@@ -55,16 +56,16 @@ export class ClaudeCliHarness implements Harness {
       const version = await output(this.config, ["--version"], env, signal);
       if (!/\d+\.\d+\.\d+.*Claude Code/i.test(version)) return { ...base, status: "error", detail: "El ejecutable configurado no se identifica como Claude Code. Revisá el path; no se ejecutó un turno." };
       this.cumulativeUsage = claudeCumulativeUsage(version);
-      const status = JSON.parse(await output(this.config, ["auth", "status", "--json"], env, signal));
+      const status = JSON.parse(await output(this.config, ["auth", "status"], env, signal));
       if (status.loggedIn !== true) return { ...base, status: "signed-out", authMethods: [{ id: "cli-login", label: "Login oficial de Claude Code" }], detail: "Conectá Claude Code en el perfil propio de Syka." };
-      return { ...base, status: "ready", version: version.trim(), models: [{ id: "__cli_default__", label: "Predeterminado de Claude Code" }], defaultModel: "__cli_default__", detail: "Modelo elegido por tu CLI. No se inventa un catálogo ni se acredita cuota por estar conectado." };
+      return { ...base, status: "ready", authMethods: [{ id: "cli-login", label: "Login oficial de Claude Code" }], version: version.trim(), models: [{ id: "__cli_default__", label: "Predeterminado de Claude Code" }], defaultModel: "__cli_default__", detail: "Modelo elegido por tu CLI. No se inventa un catálogo ni se acredita cuota por estar conectado." };
     } catch { return { ...base, status: "error", detail: "No se pudo verificar ejecutable y sesión de Claude Code. Revisá ruta, versión y perfil." }; }
   }
-  async authenticate(env: HostEnv, methodId: string, signal: AbortSignal) {
+  async authenticate(env: HostEnv, methodId: string, signal: AbortSignal, hooks?: import('./harness').AuthHooks) {
     if (methodId !== "cli-login") throw Error("Método no soportado");
     const probe = await this.probe(env, signal);
-    if (probe.status !== "signed-out") throw Error("Verificá el ejecutable de Claude antes de conectar la cuenta.");
-    await output(this.config, ["auth", "login"], env, signal, 180_000);
+    if (probe.status !== "signed-out" && probe.status !== "ready") throw Error("Verificá el ejecutable de Claude antes de conectar la cuenta.");
+    await runCliLogin({ provider: 'claude', command: this.config.command, args: [...(this.config.args ?? []), 'auth', 'login'], cwd: this.config.profileDir, env: claudeEnvironment(this.config, env), signal, hooks, verify: async () => (await this.probe(env, signal)).status === 'ready' });
     if ((await this.probe(env, signal)).status !== "ready") throw Error("El login de Claude Code no se completó.");
     await advanceProfileScope(this.config.profileDir);
   }

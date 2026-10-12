@@ -7,11 +7,11 @@
 // enough to run per delta — item lookups are by id from the end, where
 // the open items are.
 
-import type { ChatEvent, ChatSummary, Item, PendingRequest, MessageQueue } from "./protocol";
+import type { ChatEvent, ChatSummary, ContextUsage, Item, PendingRequest, MessageQueue } from "./protocol";
 
 export type Transcript = {
   queue?: MessageQueue;
-  contextUsage?: { usedTokens: number; maxTokens: number };
+  contextUsage?: ContextUsage;
   items: Item[];
   /** The question the harness is waiting on, if any. */
   pending: PendingRequest | null;

@@ -8,9 +8,9 @@
 // user's PATH. Children never see Electron's own variables.
 
 import { execFile, spawn } from "node:child_process";
-import { accessSync, constants, existsSync, readFileSync, statSync } from "node:fs";
+import { accessSync, constants, existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { homedir, userInfo } from "node:os";
-import { delimiter, dirname, join, resolve } from "node:path";
+import { delimiter, dirname, isAbsolute, join, resolve } from "node:path";
 
 import type { ChildProcess } from "node:child_process";
 
@@ -30,7 +30,9 @@ function stripElectron(env: NodeJS.ProcessEnv): Record<string, string> {
   for (const [key, value] of Object.entries(env)) {
     if (value === undefined) continue;
     if (key.startsWith("ELECTRON_") || key === "NODE_OPTIONS" || key === "ORIGINAL_XDG_CURRENT_DESKTOP") continue;
-    out[key] = value;
+    // Windows environment keys are case insensitive; GUI launchers often
+    // supply `Path`, while every resolver below reads `PATH`.
+    out[IS_WINDOWS ? key.toUpperCase() : key] = value;
   }
   return out;
 }
@@ -78,6 +80,8 @@ export function knownDirs(): string[] {
       local ? join(local, "Programs") : null,
       local ? join(local, "Programs", "OpenAI", "Codex", "bin") : null,
       local ? join(local, "OpenAI", "Codex", "bin") : null,
+      local ? join(local, "agy", "bin") : null,
+      local ? join(local, "cursor-agent") : null,
       join(home, ".local", "bin"),
     ];
     return dirs.filter((dir): dir is string => !!dir);
@@ -87,7 +91,7 @@ export function knownDirs(): string[] {
 
 /** Subscription-only children: no API keys, cloud endpoints, inherited plugins or Electron flags. */
 export function codexEnvironment(runtimeDir: string, source: Record<string, string>): Record<string, string> {
-  const allowed = new Set(["PATH", "PATHEXT", "SYSTEMROOT", "WINDIR", "COMSPEC", "USERPROFILE", "HOME", "HOMEDRIVE", "HOMEPATH", "APPDATA", "LOCALAPPDATA", "PROGRAMFILES", "PROGRAMFILES(X86)", "CODEX_HOME", "LANG", "LC_ALL", "SYKA_CODEX_PATH", "DIFFUSION_CODEX_PATH", "SYKA_BROWSER_PATH"]);
+  const allowed = new Set(["PATH", "PATHEXT", "SYSTEMROOT", "WINDIR", "COMSPEC", "USERPROFILE", "HOME", "HOMEDRIVE", "HOMEPATH", "APPDATA", "LOCALAPPDATA", "PROGRAMFILES", "PROGRAMFILES(X86)", "CODEX_HOME", "LANG", "LC_ALL", "SYKA_CODEX_PATH", "DIFFUSION_CODEX_PATH", "SYKA_CLAUDE_PATH", "DIFFUSION_CLAUDE_PATH", "SYKA_ANTIGRAVITY_PATH", "SYKA_GROK_PATH", "SYKA_CURSOR_PATH", "SYKA_OPENCODE_PATH", "SYKA_HERMES_PATH", "SYKA_BROWSER_PATH"]);
   const result: Record<string, string> = {};
   for (const [key, value] of Object.entries(source)) if (allowed.has(key.toUpperCase())) result[key.toUpperCase()] = value;
   const officialHome = result.CODEX_HOME ?? join(homedir(), ".codex");
@@ -157,9 +161,28 @@ export function which(name: string, host: HostEnv): string | null {
  * `DIFFUSION_CODEX_PATH`), else `which`.
  */
 export function resolveBinary(name: "claude" | "codex", host: HostEnv): string | null {
-  const override = (name === "codex" ? host.env.SYKA_CODEX_PATH : undefined) ?? host.env[`DIFFUSION_${name.toUpperCase()}_PATH`];
-  if (override && isExecutable(override)) return override;
-  return which(name, host);
+  const override = host.env[`SYKA_${name.toUpperCase()}_PATH`] ?? host.env[`DIFFUSION_${name.toUpperCase()}_PATH`];
+  // An explicit route identifies an installation/account. A broken route
+  // must be reported, never replaced by a different binary in PATH.
+  if (override !== undefined) return isAbsolute(override) && isExecutable(override) ? override : null;
+  const direct = which(name, host);
+  if (direct || name !== "codex" || !IS_WINDOWS) return direct;
+  // The official desktop app stores CLI builds under Codex/bin/<build id>.
+  // Inspect only the immediate build directories of its known bin roots.
+  const roots = [...new Set([...host.extraDirs, ...(host.env.PATH ?? "").split(delimiter)])]
+    .filter(dir => /[\\/]Codex[\\/]bin[\\/]?$/i.test(dir));
+  for (const root of roots) {
+    try {
+      const builds = readdirSync(root, { withFileTypes: true })
+        .filter(entry => entry.isDirectory() && !entry.isSymbolicLink()
+          && /^(?:[a-f0-9]{8,64}|(?:rust-v)?\d+\.\d+\.\d+(?:[-.][a-z0-9.-]+)?)$/i.test(entry.name))
+        .slice(0, 128)
+        .map(entry => ({ path: join(root, entry.name, "codex.exe"), modified: statSync(join(root, entry.name)).mtimeMs }))
+        .sort((a, b) => b.modified - a.modified);
+      for (const build of builds) if (isExecutable(build.path)) return build.path;
+    } catch { /* Missing/inaccessible install root; continue with the others. */ }
+  }
+  return null;
 }
 
 /**
@@ -222,10 +245,11 @@ export function quoteArg(arg: string): string {
  */
 export function runOnce(path: string, args: string[], host: HostEnv, timeoutMs = 10_000): Promise<string | null> {
   return new Promise((resolveOutput) => {
+    const shell = needsShell(path);
     const child = execFile(
-      needsShell(path) ? `"${path}"` : path,
-      args.map(quoteArg),
-      { timeout: timeoutMs, encoding: "utf8", env: host.env, windowsHide: true, shell: needsShell(path) },
+      shell ? `"${path}"` : path,
+      shell ? args.map(quoteArg) : args,
+      { timeout: timeoutMs, encoding: "utf8", env: host.env, windowsHide: true, shell },
       (error, stdout) => resolveOutput(error && !stdout.trim() ? null : stdout),
     );
     child.on("error", () => resolveOutput(null));

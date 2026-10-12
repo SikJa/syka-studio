@@ -1,7 +1,13 @@
 import { createInterface } from 'node:readline';
 const args=process.argv.slice(2);
 if(args.includes('--version')) { console.log('1.2.17'); process.exit(0); }
-if(args.includes('models')) { console.log('claude-opus-5-5-low\tClaude Opus 5.5 (Low)\nclaude-sonnet-5-5-medium\tClaude Sonnet 5.5 (Medium)'); process.exit(0); }
+if(args.includes('models')) {
+  if (process.env.SYKA_TEST_AGY_FAILURE) {
+    console.error(process.env.SYKA_TEST_AGY_FAILURE === 'auth' ? 'Authentication required. Run agy interactively to sign in.' : 'Network connection unavailable.');
+    process.exit(1);
+  }
+  console.log('claude-opus-5-5-low\tClaude Opus 5.5 (Low)\nclaude-sonnet-5-5-medium\tClaude Sonnet 5.5 (Medium)'); process.exit(0);
+}
 for await (const line of createInterface({input:process.stdin})) {
   const text=JSON.parse(line).message.content;
   console.log(JSON.stringify({event:'init',conversation_id:'fixture-session',init:{model:args[args.indexOf('--model')+1]}}));

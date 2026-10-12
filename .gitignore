@@ -53,3 +53,6 @@ scripts/__pycache__/
 docs/references/skillry/library-location.local.json
 docs/references/skillry/evidence/qa-runtime/
 docs/references/skillry/scripts/__pycache__/
+
+# Machine-local authenticated preview endpoint
+apps/web/qa/providers-live-endpoint.js

@@ -70,10 +70,10 @@ export function installedAcpHarness(id: 'hermes' | 'antigravity', profilesRoot: 
       if (delegate) return delegate.probe(env, signal);
       return { id, label: HARNESS_LABELS[id], status: 'not-installed', models: [], detail: id === 'hermes' ? 'No encontramos Hermes con un perfil configurado en este equipo.' : 'Falta el componente de conexión oficial de Antigravity. Instalar la aplicación visual no prepara esta conexión.' };
     },
-    async authenticate(env, methodId, signal) {
+    async authenticate(env, methodId, signal, hooks) {
       if (!delegate) throw Error('Comprobá la instalación antes de conectar.');
       if (!delegate.authenticate) throw Error('Usá la sesión oficial de Antigravity CLI y después comprobá la conexión.');
-      return delegate.authenticate(env, methodId, signal);
+      return delegate.authenticate(env, methodId, signal, hooks);
     },
     async open(options: OpenOptions) {
       if (!delegate) throw Error('El asistente instalado todavía no está disponible.');

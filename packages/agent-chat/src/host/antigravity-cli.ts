@@ -8,6 +8,7 @@ import { startEditorToolBridge } from './editor-tool-bridge';
 import { newItemId, truncateDetail, type Harness, type HarnessSession, type OpenOptions, type Emit, type ResumeCursor, type TurnOutcome } from './harness';
 import type { HarnessInfo, Item } from '../protocol';
 import { tokenCounts } from './token-usage';
+import { runCliLogin } from './cli-login';
 
 type Config = { command: string; args?: string[]; profileDir: string };
 const MAX_OUTPUT = 4_000_000;
@@ -24,16 +25,21 @@ export function parseAgyModels(output: string): HarnessInfo['models'] {
 function runOutput(config: Config, args: string[], env: HostEnv, signal: AbortSignal): Promise<string> {
   return new Promise((resolve, reject) => {
     const child = spawn(config.command, [...(config.args ?? []), ...args], {env:env.env, cwd:config.profileDir, stdio:'pipe', windowsHide:true, shell:false});
-    let output = '', settled = false;
+    let output = '', errors = '', settled = false;
     const stop = () => void killTree(child);
     const timer = setTimeout(stop, 20_000);
     const finish = (error?: Error) => { if (settled) return; settled=true; clearTimeout(timer); signal.removeEventListener('abort', stop); error ? reject(error) : resolve(output); };
     signal.addEventListener('abort', stop, {once:true});
     if (signal.aborted) stop();
-    child.stdin!.end(); child.stderr!.resume(); child.stdout!.setEncoding('utf8');
+    child.stdin!.end(); child.stderr!.setEncoding('utf8'); child.stdout!.setEncoding('utf8');
+    child.stderr!.on('data', chunk => { errors = (errors + chunk).slice(-16_000); });
     child.stdout!.on('data', chunk => { output += chunk; if (output.length > MAX_OUTPUT) stop(); });
     child.once('error', () => finish(Error('No se pudo ejecutar Antigravity CLI.')));
-    child.once('close', code => finish(code === 0 && !signal.aborted ? undefined : Error('No se pudo consultar la sesión de Antigravity CLI.')));
+    child.once('close', code => finish(code === 0 && !signal.aborted ? undefined : Error(
+      !signal.aborted && /not authenticated|sign[ -]?in|log[ -]?in|authentication required|unauthenticated/i.test(errors)
+        ? 'Antigravity necesita iniciar sesión con Google.'
+        : 'No se pudo consultar la sesión de Antigravity CLI.'
+    )));
   });
 }
 
@@ -75,9 +81,25 @@ export class AntigravityCliHarness implements Harness {
       const version = (await runOutput(this.config, ['--version'], env, signal)).trim();
       if (!/^\d+\.\d+\.\d+$/.test(version)) return {...base,status:'error',detail:'El ejecutable no se identifica como Antigravity CLI.'};
       this.models = parseAgyModels(await runOutput(this.config, ['models'], env, signal));
-      return this.models.length ? {...base, status:'ready', version, models:this.models, defaultModel:this.models[0]?.id, detail:'Conectado mediante la CLI oficial y tu sesión existente. Los modelos provienen de agy models.'}
-        : {...base,status:'signed-out',detail:'Abrí Antigravity CLI e iniciá sesión; después comprobá la conexión.'};
-    } catch { return {...base,status:'error',detail:'No se pudo consultar Antigravity CLI. Comprobá su instalación y sesión.'}; }
+      // The native CLI can initiate a first login, but changing a connected
+      // account requires purging the shared OS keyring via /logout. Do not
+      // advertise a second-account method that would affect other projects.
+      return this.models.length ? {...base, status:'ready', authMethods:[], version, models:this.models, defaultModel:this.models[0]?.id, detail:'Conectado mediante la CLI oficial y tu sesión existente. Los modelos provienen de agy models.'}
+        : {...base,status:'signed-out',authMethods:[{id:'google-browser',label:'Iniciar sesión con Google'}],detail:'Conectá tu cuenta de Google desde Syka.'};
+    } catch (error) {
+      const signedOut = error instanceof Error && /necesita iniciar sesión/.test(error.message);
+      return {...base,status:signedOut?'signed-out':'error',authMethods:[{id:'google-browser',label:'Iniciar sesión con Google'}],detail:signedOut?'Conectá tu cuenta de Google para comprobar los modelos de Antigravity.':'No se pudieron comprobar los modelos de Antigravity. Reintentá la comprobación o revisá la conexión.'};
+    }
+  }
+  async authenticate(env: HostEnv, methodId: string, signal: AbortSignal, hooks?: import('./harness').AuthHooks): Promise<void> {
+    if (methodId !== 'google-browser') throw Error('Método de conexión no soportado.');
+    // The official interactive CLI owns browser authorization and the OS keyring.
+    // Headless mode cannot initiate login; do not send a model prompt here.
+    await runCliLogin({ provider: 'antigravity', command: this.config.command, args: this.config.args ?? [], cwd: this.config.profileDir, env: env.env, signal, hooks, terminal: true, verify: async () => {
+      const status = (await this.probe(env, signal)).status;
+      if (status !== 'ready' && status !== 'signed-out') throw Error('No se pudo comprobar la sesión de Antigravity. Reintentá cuando vuelva la conexión.');
+      return status === 'ready';
+    } });
   }
   async open(options: OpenOptions): Promise<HarnessSession> {
     const profile = createHash('sha256').update(this.config.command + '\0' + (options.env.env.USERPROFILE ?? options.env.env.HOME ?? '')).digest('hex');

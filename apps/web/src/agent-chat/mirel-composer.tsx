@@ -5,15 +5,13 @@ import { createElement, Fragment } from 'react';
 import { BookOpen, FolderOpen, Globe2, ImagePlus, ListTodo, MousePointer2, Palette, PencilLine, Plug, Puzzle, Scan, Video } from 'lucide-react';
 import { toast } from 'somoto';
 import { useLocation } from '@solidjs/router';
-import { HARNESS_IDS, HARNESS_LABELS } from '@diffusionstudio/agent-chat';
-import { PROVIDER_LOGOS, modelLogo, modelRouteDescription } from './provider-catalog';
+import { modelLogo, modelRouteDescription } from './provider-catalog';
 import { AgentComposer, type AgentComposerProps } from '@/mirel-chat/features/agents/agent-composer';
 import { mainBridge } from '@/lib/ipc';
 import { MAIN_CHANNELS } from '@desktop/main-channels';
-import type { ModelRef, MessageQueue } from '@diffusionstudio/agent-chat';
+import type { ContextUsage, ModelRef, MessageQueue } from '@diffusionstudio/agent-chat';
 import { attachmentFromPath, createDropZone, mergeAttachments, type Attachment } from './attachments';
-import { chatState, ensureConnected, refreshHarnesses, pickerHarnesses, modelVisibility } from './store';
-import { harnessVisible } from './model-visibility';
+import { chatState, ensureConnected, refreshHarnesses, pickerHarnesses } from './store';
 import { prepareChatFiles } from './local-attachments';
 import './mirel-adapter.css';
 import './chat-panel-motion.css';
@@ -33,7 +31,7 @@ type ComposerProps = {
   ariaLabel?: string;
   chatKey: string;
   text: string;
-  contextUsage?: {usedTokens:number;maxTokens:number};
+  contextUsage?: ContextUsage;
   attachments: Attachment[];
   onText(text: string): void;
   onAttachments(attachments: Attachment[]): void;
@@ -152,10 +150,6 @@ export function Composer(props: ComposerProps) {
         models: modelOptions(), selectedModelId: ref ? `${ref.harness}:${ref.model}` : undefined,
         selectedModelOption: ref && model ? { id: `${ref.harness}:${ref.model}`, label: model.label, description:t(modelRouteDescription(ref.harness,ref.model)), routeLabel:ref.harness==='antigravity'?t('vía Antigravity'):undefined, logoSvg: modelLogo(ref.harness, ref.model) } : undefined,
         onConfigureProviders: () => openSettings('codex'),
-        unavailableProviders: HARNESS_IDS.filter(id => harnessVisible(id, modelVisibility()) && chatState.harnesses.find(h => h.id === id)?.status !== 'ready').map(id => {
-          const info = chatState.harnesses.find(h => h.id === id);
-          return { id, label: HARNESS_LABELS[id], logoSvg: PROVIDER_LOGOS[id], status: t(({'signed-out':'Conectar cuenta',checking:'Comprobando…',error:'Revisar conexión','not-installed':'Configurar'} as Record<string,string>)[info?.status ?? 'not-installed']) };
-        }),
         onModelChange: props.answering ? undefined : id => {
           const separator = id.indexOf(':');
           const harness = chatState.harnesses.find(h => h.id === id.slice(0, separator));

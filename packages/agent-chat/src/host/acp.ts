@@ -5,14 +5,17 @@ import { spawn } from "node:child_process";
 import { tokenCounts } from './token-usage';
 import { mkdir } from "node:fs/promises";
 import { isAbsolute, join, resolve } from "node:path";
-import { HARNESS_LABELS, type HarnessId, type HarnessInfo, type Item, type RequestResponse } from "../protocol";
+import { HARNESS_LABELS, type ContextUsage, type HarnessId, type HarnessInfo, type Item, type RequestResponse } from "../protocol";
 import { killTree, type HostEnv } from "./env";
 import { JsonRpcPeer, RpcError } from "./jsonrpc";
 import { startEditorToolBridge } from "./editor-tool-bridge";
 import { profileScope, advanceProfileScope } from "./harness-profile";
 import { acpMcpServers } from "./acp-mcp";
 import { installedOpenCodeEnvironment } from './opencode';
-import { newItemId, QuestionBox, truncateDetail, type Emit, type Harness, type HarnessSession, type OpenOptions, type ResumeCursor, type TurnOutcome } from "./harness";
+import { acpConfig, acpConfigValues, acpModels } from './acp-models';
+import { hermesAcpLaunch } from './hermes-acp-bridge';
+import { authenticateHermes, hermesAuthMethods, HERMES_LOGIN_METHODS } from './hermes-login';
+import { newItemId, QuestionBox, truncateDetail, type AuthHooks, type Emit, type Harness, type HarnessSession, type OpenOptions, type ResumeCursor, type TurnOutcome } from "./harness";
 
 export type AcpHarnessConfig = {
   id: Exclude<HarnessId, "codex" | "claude">;
@@ -60,6 +63,7 @@ class AcpProcess {
   constructor(config: AcpHarnessConfig, env: HostEnv, cwd: string) {
     if (!isAbsolute(config.command) || !isAbsolute(config.profileDir) || /\.(cmd|bat)$/i.test(config.command)) throw Error("Configurá un ejecutable absoluto; para Node usá node.exe y el entrypoint JS, sin shell.");
     const childEnv = config.id === 'opencode' ? { ...installedOpenCodeEnvironment(config.profileDir, env.env, config.openCodeAccount), ...(config.openCodeConfigDir ? { OPENCODE_CONFIG_DIR: config.openCodeConfigDir } : {}) } : acpEnvironment(config.profileDir, env.env, config.installedSession);
+    if (config.id === 'hermes') childEnv.PYTHONDONTWRITEBYTECODE = '1';
     this.child = spawn(config.command, config.args ?? [], { cwd, env: childEnv, windowsHide: true, stdio: "pipe", shell: false });
     this.peer = new JsonRpcPeer(this.child);
     this.peer.onClose = () => { this.exited = true; };
@@ -79,7 +83,9 @@ class AcpProcess {
 async function connect(config: AcpHarnessConfig, env: HostEnv, cwd: string, signal?: AbortSignal) {
   if (signal?.aborted) throw Error("ACP cancelado");
   await Promise.all([config.profileDir, join(config.profileDir, "tmp")].map(path => mkdir(path, { recursive: true })));
-  const process = new AcpProcess(config, env, cwd);
+  const launch = config.id === 'hermes' ? await hermesAcpLaunch(config.command, config.args ?? [], config.profileDir) : undefined;
+  if (signal?.aborted) throw Error("ACP cancelado");
+  const process = new AcpProcess(launch ? { ...config, ...launch } : config, env, cwd);
   const abort = () => { void process.close(); };
   signal?.addEventListener("abort", abort, { once: true });
   process.onDispose = () => signal?.removeEventListener("abort", abort);
@@ -88,18 +94,15 @@ async function connect(config: AcpHarnessConfig, env: HostEnv, cwd: string, sign
     const initialized = await process.request("initialize", { protocolVersion: 1, clientCapabilities: {}, clientInfo: { name: "syka-clips", version: "0.1.0" } });
     if (initialized.protocolVersion !== 1) throw Error("Versión ACP no compatible; se requiere v1.");
     const expected = { antigravity: /antigravity/i, hermes: /hermes/i, cursor: /cursor/i, grok: /grok/i, muse: /muse/i, opencode: /opencode/i }[config.id];
-    if (!expected.test(text(initialized.agentInfo?.name))) throw Error("El ejecutable ACP no se identifica como el proveedor configurado.");
+    // ACP v1 makes agentInfo optional; the official Cursor CLI omits it.
+    // The selected executable already establishes the route. If metadata is
+    // supplied, still reject a different provider or malformed identity.
+    if (initialized.agentInfo !== undefined && !expected.test(text(initialized.agentInfo?.name))) throw Error("El ejecutable ACP no se identifica como el proveedor configurado.");
     return { process, initialized };
   } catch (error) { await process.close(); throw error; }
 }
 
-function modelsOf(session: ObjectValue): HarnessInfo["models"] {
-  const legacy = object(session.models).availableModels;
-  if (Array.isArray(legacy)) return legacy.filter(m => typeof m?.modelId === "string").map(m => ({ id: m.modelId, label: text(m.name) || m.modelId }));
-  const config = Array.isArray(session.configOptions) ? session.configOptions.find(c => c?.category === "model") : undefined;
-  const options: ObjectValue[] = (Array.isArray(config?.options) ? config.options : []).flatMap((o: ObjectValue) => Array.isArray(o.options) ? o.options : [o]);
-  return options.filter(o => typeof o.value === "string").map(o => ({ id: o.value, label: text(o.name) || o.value }));
-}
+class AcpConfigurationError extends Error {}
 function loginMethods(init: ObjectValue): NonNullable<HarnessInfo["authMethods"]> {
   // Terminal-based authentication requires a terminal UI; do not pretend to support it.
   return (Array.isArray(init.authMethods) ? init.authMethods : []).filter(m => typeof m?.id === "string" && m.type !== "terminal" && !m._meta?.['terminal-auth'] && !/terminal/i.test(text(m.description)) && !/api[-_]?key|agent-platform/i.test(m.id) && !m._meta?.['api-key'])
@@ -120,19 +123,25 @@ export class AcpHarness implements Harness {
     signal.addEventListener("abort", abort, { once: true });
     try {
       if (signal.aborted) throw Error("Probe cancelado");
+      const hermesMethods = this.id === 'hermes' ? await hermesAuthMethods(this.config, env, signal) : [];
+      if (hermesMethods.length) authMethods = hermesMethods;
       const connection = await connect(this.config, env, this.config.profileDir, signal);
       process = connection.process;
       if (signal.aborted) throw Error("Probe cancelado");
-      authMethods = loginMethods(connection.initialized);
+      authMethods ??= loginMethods(connection.initialized);
       const session = await process.request("session/new", { cwd: resolve(this.config.profileDir), mcpServers: [] });
-      const models = modelsOf(session);
-      return { ...base, authMethods, version: text(connection.initialized.agentInfo?.version), models, defaultModel: text(session.models?.currentModelId) || models[0]?.id,
+      const models = acpModels(session, this.id);
+      return { ...base, authMethods, version: text(connection.initialized.agentInfo?.version), models, defaultModel: text(acpConfig(session, 'model')?.currentValue) || text(session.models?.currentModelId) || models[0]?.id,
         status: models.length ? "ready" : "error", detail: models.length ? "Catálogo declarado por el agente; turno real y cuota aún no comprobados." : "El agente no devolvió un catálogo de modelos. No se inventaron opciones." };
     } catch (error) {
       return { ...base, authMethods, status: authError(error) ? "signed-out" : "error", detail: authError(error) ? (authMethods?.length ? "Conectá la cuenta en el perfil de Syka mediante el login oficial." : `Configurá el login oficial del agente en el perfil ${this.config.profileDir}; esta ruta requiere su terminal.`) : "No se pudo negociar ACP o descubrir modelos. Revisá ejecutable, versión y perfil configurados." };
     } finally { signal.removeEventListener("abort", abort); await process?.close(); }
   }
-  async authenticate(env: HostEnv, methodId: string, signal: AbortSignal): Promise<void> {
+  async authenticate(env: HostEnv, methodId: string, signal: AbortSignal, hooks?: AuthHooks): Promise<void> {
+    if (this.id === 'hermes' && HERMES_LOGIN_METHODS.some(method => method.id === methodId)) {
+      if (await authenticateHermes(this.config, env, methodId, signal, hooks)) await advanceProfileScope(this.config.profileDir);
+      return;
+    }
     const { process, initialized } = await connect(this.config, env, this.config.profileDir, signal);
     const abort = () => { void process.close(); };
     signal.addEventListener("abort", abort, { once: true });
@@ -156,7 +165,7 @@ export class AcpHarness implements Harness {
       if (resume && capabilities.loadSession !== true) throw Error("Este agente no anuncia retoma. La conversación guardada se conserva.");
       const session = new AcpSession(process, this.id, profile, options.emit, options.instructions, bridge.close);
       const response = await process.request(resume ? "session/load" : "session/new", { cwd: options.cwd, mcpServers, ...(resume ? { sessionId: resume.sessionId } : {}) });
-      session.initialize(resume?.sessionId ?? text(response.sessionId), response);
+      session.initialize(resume?.sessionId ?? text(response.sessionId), response, options.model);
       return session;
     } catch (error) { await process.close(); await bridge?.close(); throw error; }
   }
@@ -178,6 +187,10 @@ class AcpSession implements HarnessSession {
   private closed = false;
   private chunks = new Map<string, Item>();
   private receivedOutput = false;
+  private contextUsage?: ContextUsage;
+  private selectedModel = '';
+  // session/new and session/load may publish usage before their response is applied.
+  private pendingContext = new Map<string, ContextUsage>();
   private process: AcpProcess;
   private harness: HarnessId;
   private profile: string;
@@ -198,25 +211,50 @@ class AcpSession implements HarnessSession {
     process.peer.onNotification = (method, params) => this.notification(method, object(params));
     process.peer.onRequest = (method, params) => this.request(method, object(params));
   }
-  initialize(id: string, metadata: ObjectValue) {
+  initialize(id: string, metadata: ObjectValue, model: string) {
     if (!id) throw Error("ACP no devolvió sessionId");
-    this.sessionId = id; this.metadata = metadata;
+    this.sessionId = id; this.metadata = metadata; this.selectedModel = model;
     this.resume = { acp: { version: 1, harness: this.harness, profile: this.profile, sessionId: id } };
+    const usage = this.pendingContext.get(id);
+    this.pendingContext.clear();
+    if (usage) this.publishContext(usage);
   }
   send(input: string, model: string, emit: Emit, effort?: string, fast?: boolean): Promise<TurnOutcome> {
     if (this.active || this.isClosed) return Promise.resolve({ status: "failed", error: "Sesión ocupada o cerrada." });
-    if (effort || fast) return Promise.resolve({ status: "failed", error: "Esfuerzo/fast no están negociados para esta ruta ACP." });
+    if (fast) return Promise.resolve({ status: "failed", error: "Modo rápido no está negociado para esta ruta ACP." });
     this.emit = emit; this.cancelled = false; this.chunks.clear(); this.receivedOutput = false;
-    this.active = this.run(input, model).finally(() => { this.active = null; });
+    this.active = this.run(input, model, effort).finally(() => { this.active = null; });
     return this.active;
   }
-  private async run(input: string, model: string): Promise<TurnOutcome> {
+  private async setConfig(config: ObjectValue, value: string): Promise<void> {
+    const response = await this.process.request('session/set_config_option', { sessionId: this.sessionId, configId: config.id, value });
+    if (Array.isArray(response.configOptions)) this.metadata.configOptions = response.configOptions;
+    const confirmed = Array.isArray(response.configOptions) ? response.configOptions.find(option => option?.id === config.id) : undefined;
+    if (confirmed?.currentValue !== value) throw new AcpConfigurationError('El agente no confirmó la configuración solicitada. No se envió el turno.');
+  }
+  private async run(input: string, model: string, effort?: string): Promise<TurnOutcome> {
     try {
-      if (!modelsOf(this.metadata).some(m => m.id === model)) throw Error("El modelo no está en el catálogo de esta sesión. Actualizá el selector.");
-      const config = Array.isArray(this.metadata.configOptions) ? this.metadata.configOptions.find(c => c?.category === "model") : undefined;
-      if (config) await this.process.request("session/set_config_option", { sessionId: this.sessionId, configId: config.id, value: model });
-      else if (this.metadata.models?.currentModelId !== model) await this.process.request("session/set_model", { sessionId: this.sessionId, modelId: model });
+      if (!acpModels(this.metadata, this.harness).some(m => m.id === model)) throw new AcpConfigurationError("El modelo no está en el catálogo de esta sesión. Actualizá el selector.");
+      const config = acpConfig(this.metadata, 'model');
+      const currentModel = config?.currentValue ?? this.metadata.models?.currentModelId;
+      this.selectedModel = model;
+      if (currentModel !== model) this.contextUsage = undefined;
+      if (config && config.currentValue !== model) await this.setConfig(config, model);
+      else if (!config && this.metadata.models?.currentModelId !== model) {
+        await this.process.request("session/set_model", { sessionId: this.sessionId, modelId: model });
+        this.metadata.models.currentModelId = model;
+      }
       if (this.cancelled) return { status: "interrupted" };
+      if (effort) {
+        // Re-read after switching model: ACP options may depend on that model.
+        const thought = acpConfig(this.metadata, 'thought_level');
+        if (!thought || !acpConfigValues(thought).some(option => option.value === effort)) throw new AcpConfigurationError('Ese nivel de razonamiento no está anunciado para el modelo seleccionado. No se envió el turno.');
+        await this.setConfig(thought, effort);
+      }
+      if (this.cancelled) return { status: "interrupted" };
+      // turn.started clears the previous snapshot. Restore only this model's
+      // native window while waiting for the runtime's next occupancy update.
+      if (this.contextUsage) this.publishContext(this.contextUsage);
       const prompt = !this.started && this.instructions ? `${this.instructions}\n\nUser request:\n${input}` : input;
       this.started = true;
       this.promptActive = true;
@@ -232,7 +270,7 @@ class AcpSession implements HarnessSession {
       if (status === 'completed' && !this.receivedOutput) return { status: 'failed', error: 'El agente terminó sin devolver texto ni herramientas. Revisá acceso al modelo, versión del CLI y conexión.' };
       return { status, ...(status === "failed" ? { error: "El agente terminó sin completar el turno." } : {}) };
     } catch (error) {
-      return { status: this.cancelled ? "interrupted" : "failed", ...(!this.cancelled ? { error: authError(error) ? "La cuenta requiere reconexión o no tiene acceso. No se cambió de proveedor." : "El turno ACP falló; revisá conexión, modelo y configuración. No se cambió de proveedor." } : {}) };
+      return { status: this.cancelled ? "interrupted" : "failed", ...(!this.cancelled ? { error: error instanceof AcpConfigurationError ? error.message : authError(error) ? "La cuenta requiere reconexión o no tiene acceso. No se cambió de proveedor." : "El turno ACP falló; revisá conexión, modelo y configuración. No se cambió de proveedor." } : {}) };
     } finally {
       this.promptActive = false;
       this.box.cancelAll();
@@ -240,11 +278,30 @@ class AcpSession implements HarnessSession {
       this.chunks.clear();
     }
   }
+  private publishContext(usage: ContextUsage) {
+    this.contextUsage = usage;
+    const currentModel = acpConfig(this.metadata, 'model')?.currentValue ?? this.metadata.models?.currentModelId;
+    if (currentModel === this.selectedModel) this.emit({ type: 'context.updated', usage });
+  }
   private notification(method: string, params: ObjectValue) {
-    if (method !== "session/update" || !this.active || params.sessionId !== this.sessionId) return;
+    if (method !== "session/update" || this.isClosed) return;
     const update = object(params.update);
+    if (update.sessionUpdate === 'usage_update') {
+      // ACP's used/size describe context occupancy, not billable totals or cost.
+      if (!Number.isSafeInteger(update.used) || update.used < 0 || !Number.isSafeInteger(update.size) || update.size <= 0) return;
+      const usage: ContextUsage = { usedTokens: update.used, maxTokens: update.size, ...(this.harness === 'hermes' ? { approximate: true } : {}) };
+      const id = text(params.sessionId);
+      if (!id) return;
+      if (!this.sessionId) {
+        if (!this.pendingContext.has(id) && this.pendingContext.size >= 8) this.pendingContext.delete(this.pendingContext.keys().next().value!);
+        this.pendingContext.set(id, usage);
+      } else if (id === this.sessionId) this.publishContext(usage);
+      return;
+    }
+    if (params.sessionId !== this.sessionId) return;
+    if (update.sessionUpdate === "config_option_update") { if (Array.isArray(update.configOptions)) this.metadata.configOptions = update.configOptions; return; }
+    if (!this.active) return;
     if ((update.sessionUpdate === 'agent_message_chunk' && text(update.content?.text).trim()) || update.sessionUpdate === 'tool_call' || update.sessionUpdate === 'tool_call_update') this.receivedOutput = true;
-    if (update.sessionUpdate === "config_option_update") { this.metadata.configOptions = update.configOptions; return; }
     if (update.sessionUpdate === "agent_message_chunk" || update.sessionUpdate === "agent_thought_chunk") {
       const delta = text(update.content?.text); if (!delta) return;
       if (this.steeringAck !== null && update.sessionUpdate === "agent_message_chunk" && /^(?:⏩ Steer queued for the active turn:|⚠️ Steer failed:|No active turn — queued for the next turn\.)/.test(delta)) {

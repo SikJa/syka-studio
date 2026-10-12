@@ -7,6 +7,19 @@ import { AntigravityCliHarness, parseAgyModels } from '../src/host/antigravity-c
 import type { ChatEvent } from '../src/protocol';
 
 describe('official Antigravity CLI transport',()=>{
+  it('distinguishes a missing login from a failed network check', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'syka-agy-status-'));
+    const harness = new AntigravityCliHarness({ command: process.execPath, args: [fileURLToPath(new URL('./fixtures/agy-agent.mjs', import.meta.url))], profileDir: cwd });
+    try {
+      for (const [failure, expected] of [['auth', 'signed-out'], ['network', 'error']] as const) {
+        const env = { env: { ...process.env, SYKA_TEST_AGY_FAILURE: failure } as Record<string, string>, extraDirs: [] };
+        const info = await harness.probe(env, new AbortController().signal);
+        expect(info.status).toBe(expected);
+        expect(info.models).toEqual([]);
+        if (failure === 'network') await expect(harness.authenticate(env, 'google-browser', new AbortController().signal)).rejects.toThrow('comprobar la sesión');
+      }
+    } finally { await rm(cwd, { recursive: true, force: true }); }
+  });
   it('only accepts live tab-separated model rows, without a fabricated catalog',()=>{
     expect(parseAgyModels('Fetching available models...\nclaude-opus-5-5-low\tOpus\nclaude-opus-5-5-low\tOpus\nweird model\tbad')).toEqual([{id:'claude-opus-5-5-low',label:'Opus'}]);
   });

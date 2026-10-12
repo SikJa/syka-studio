@@ -222,9 +222,9 @@ describe('host login lifecycle', () => {
     const connection = { send() {} }, entry = { id: 'antigravity' as const, command: process.execPath };
     try {
       await host.start(); const pending = host.handle(connection, 'harnesses.configure', entry);
-      await expect.poll(() => saving, { timeout: 10_000 }).toBe(true);
-      await expect(host.handle(connection, 'harnesses.configure', entry)).rejects.toThrow('Terminá');
-      await expect(host.handle(connection, 'turn.send', { projectId: 'test', cwd: root, text: 'test', model: { harness: 'antigravity', model: 'model-one' } })).rejects.toThrow('guardando');
+      await expect.poll(() => saving).toBe(true);
+      await expect(host.handle(connection, 'harnesses.configure', entry)).rejects.toMatchObject({ code: 'busy' });
+      await expect(host.handle(connection, 'turn.send', { projectId: 'test', cwd: root, text: 'test', model: { harness: 'antigravity', model: 'model-one' } })).rejects.toMatchObject({ code: 'busy' });
       release(); await pending;
       expect((await host.handle(connection, 'harnesses.list', { refresh: true })).find(h => h.id === 'antigravity')?.status).toBe('ready');
     } finally { release?.(); await host.stop(); }
@@ -260,11 +260,13 @@ describe('host login lifecycle', () => {
     };
     const host = new AgentHost({ store: new ChatStore(root), harnesses: [harness], env: Promise.resolve(env), mcp: null, version: 'test' });
     const connection = { send() {} };
-    await host.start(); await host.handle(connection, 'harnesses.list', { refresh: true }); expect(calls).toBe(0);
-    await expect(host.handle(connection, 'harnesses.authenticate', { harness: 'antigravity', methodId: 'other' })).rejects.toThrow('anunciado');
-    await host.handle(connection, 'harnesses.authenticate', { harness: 'antigravity', methodId: 'login' });
-    expect(calls).toBe(1);
-    await expect(host.handle(connection, 'harnesses.authenticate', { harness: 'antigravity', methodId: 'login' })).rejects.toThrow('curso');
-    await host.stop(); expect(aborted).toBe(true);
+    try {
+      await host.start(); await host.handle(connection, 'harnesses.list', { refresh: true }); expect(calls).toBe(0);
+      await expect(host.handle(connection, 'harnesses.authenticate', { harness: 'antigravity', methodId: 'other' })).rejects.toThrow('anunciado');
+      await host.handle(connection, 'harnesses.authenticate', { harness: 'antigravity', methodId: 'login' });
+      await expect.poll(() => calls).toBe(1);
+      await expect(host.handle(connection, 'harnesses.authenticate', { harness: 'antigravity', methodId: 'login' })).rejects.toMatchObject({ code: 'busy' });
+      await host.stop(); expect(aborted).toBe(true);
+    } finally { await host.stop(); }
   });
 });

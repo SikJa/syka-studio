@@ -15,6 +15,7 @@ import type {
   ChatEvent,
   HarnessId,
   HarnessInfo,
+  ProviderAuthFlow,
   Item,
   PendingRequest,
   Question,
@@ -67,6 +68,11 @@ export interface HarnessSession {
   close(): Promise<void>;
 }
 
+export type AuthHooks = {
+  update(flow: Omit<ProviderAuthFlow, 'id'>): void;
+  requestCode(prompt: string): Promise<string>;
+};
+
 export interface Harness {
   readonly id: HarnessId;
   /** Transport wiring only, not evidence of a successful provider/model turn. */
@@ -74,7 +80,9 @@ export interface Harness {
   probe(env: HostEnv, signal: AbortSignal): Promise<HarnessInfo>;
   open(options: OpenOptions): Promise<HarnessSession>;
   /** Only called by an explicit UI login action, never by probe/open. */
-  authenticate?(env: HostEnv, methodId: string, signal: AbortSignal): Promise<void>;
+  authenticate?(env: HostEnv, methodId: string, signal: AbortSignal, hooks?: AuthHooks): Promise<void>;
+  /** Read available official login choices only when the account UI is opened. */
+  authMethods?(env: HostEnv, signal: AbortSignal): Promise<NonNullable<HarnessInfo['authMethods']>>;
 }
 
 /** Tool output kept per item, so a transcript never carries a whole file. */

@@ -24,6 +24,7 @@ import type {
   ErrorCode,
   HarnessId,
   HarnessInfo,
+  ProviderAuthFlow,
   HostMsg,
   Item,
   Method,
@@ -66,11 +67,15 @@ export type AgentHostOptions = {
   idleMs?: number;
   /** How old a probe may be before `refresh` re-runs it. */
   probeMaxAgeMs?: number;
+  /** Bound account-choice discovery independently from interactive login. */
+  authMethodsTimeoutMs?: number;
   log?: (message: string) => void;
   providerSettings?: {
     read(): Promise<HarnessSettings>;
     save(entry: HarnessPathConfig): Promise<{ settings: HarnessSettings; harness: Harness }>;
   };
+  /** Invoked only by Connect; startup/probe never downloads components. */
+  prepareProvider?(id: HarnessId, env: HostEnv, signal: AbortSignal, progress: (message: string) => void): Promise<Harness>;
 };
 
 type Chat = {
@@ -93,6 +98,22 @@ type Chat = {
 
 const IDLE_MS = 10 * 60 * 1000;
 const PROBE_MAX_AGE_MS = 60 * 1000;
+const AUTH_METHODS_TIMEOUT_MS = 30_000;
+
+function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const stop = () => { signal.removeEventListener('abort', stop); reject(signal.reason ?? Error('Operación cancelada.')); };
+    operation.then(value => { signal.removeEventListener('abort', stop); resolve(value); }, error => { signal.removeEventListener('abort', stop); reject(error); });
+    if (signal.aborted) stop();
+    else signal.addEventListener('abort', stop, { once: true });
+  });
+}
+
+function checkedAuthMethods(methods: NonNullable<HarnessInfo['authMethods']>): NonNullable<HarnessInfo['authMethods']> {
+  if (!Array.isArray(methods) || methods.length > 32 || methods.some(method => !method || typeof method.id !== 'string' || !method.id.trim() || method.id !== method.id.trim() || method.id.length > 256
+    || typeof method.label !== 'string' || !method.label.trim() || method.label.length > 256 || /[\x00-\x1f\x7f]/.test(method.id + method.label))) throw new HostError('harness-unavailable', 'El proveedor devolvió opciones de conexión inválidas.');
+  return [...new Map(methods.map(method => [method.id, { id: method.id, label: method.label }])).values()];
+}
 
 export class AgentHost {
   private readonly options: AgentHostOptions;
@@ -100,11 +121,17 @@ export class AgentHost {
   private readonly connections = new Set<Connection>();
   private readonly harnessById = new Map<HarnessId, Harness>();
   private readonly probes = new Map<HarnessId, { info: HarnessInfo; at: number }>();
+  private readonly probeGenerations = new Map<HarnessId, number>();
   private probing: Promise<HarnessInfo[]> | null = null;
   private probeAbort: AbortController | null = null;
   private stopping = false;
   private authenticating = new Map<HarnessId, AbortController>();
-  private configuring = false;
+  private authFlows = new Map<HarnessId, ProviderAuthFlow>();
+  private authInputs = new Map<HarnessId, { flowId: string; options?: string[]; resolve(code: string): void; reject(error: Error): void }>();
+  private readonly authMethodQueries = new Map<HarnessId, AbortController>();
+  private readonly acceptingTurns = new Map<HarnessId, number>();
+  private configuring: HarnessId | null = null;
+  private configurationAbort: AbortController | null = null;
   private readonly operations = new Map<string, Promise<unknown>>();
 
   private serial<T>(chatId: string, action: () => Promise<T>): Promise<T> {
@@ -115,6 +142,14 @@ export class AgentHost {
     return next;
   }
 
+  private track<T>(key: string, operation: Promise<T>): Promise<T> {
+    this.operations.set(key, operation);
+    void operation.finally(() => { if (this.operations.get(key) === operation) this.operations.delete(key); }).catch(() => {});
+    return operation;
+  }
+
+  private invalidateProbe(id: HarnessId): void { this.probeGenerations.set(id, (this.probeGenerations.get(id) ?? 0) + 1); }
+
   constructor(options: AgentHostOptions) {
     this.options = options;
     for (const harness of options.harnesses) this.harnessById.set(harness.id, harness);
@@ -122,7 +157,7 @@ export class AgentHost {
 
   /** Includes queued/settling work, not just the currently visible project. */
   isBusy(): boolean {
-    return this.operations.size > 0 || [...this.chats.values()].some(chat =>
+    return this.operations.size > 0 || this.authenticating.size > 0 || this.authMethodQueries.size > 0 || this.configuring !== null || [...this.chats.values()].some(chat =>
       !!chat.turn || !!chat.settling || !!chat.meta.queue?.messages.length);
   }
 
@@ -157,6 +192,8 @@ export class AgentHost {
     this.stopping = true;
     this.probeAbort?.abort();
     for (const controller of this.authenticating.values()) controller.abort();
+    for (const controller of this.authMethodQueries.values()) controller.abort(new HostError('busy', 'El host está cerrando la conexión.'));
+    this.configurationAbort?.abort();
     const chats = [...this.chats.values()];
     await Promise.all(
       chats.map(async (chat) => {
@@ -179,7 +216,7 @@ export class AgentHost {
         }
       }),
     );
-    await Promise.allSettled([...this.operations.values()]);
+    await Promise.allSettled([...this.operations.values(), ...(this.probing ? [this.probing] : [])]);
     await this.options.store.flush();
   }
 
@@ -221,6 +258,7 @@ export class AgentHost {
   async handle<M extends Method>(connection: Connection, method: M, params: unknown): Promise<MethodResult<M>> {
     type R = MethodResult<M>;
     const p = (params ?? {}) as MethodParams<M>;
+    if (this.stopping) throw new HostError('busy', 'El host está cerrando la conexión.');
     switch (method) {
       case "harnesses.list":
         return this.listHarnesses((p as MethodParams<"harnesses.list">).refresh === true) as Promise<R>;
@@ -228,11 +266,32 @@ export class AgentHost {
         if (!this.options.providerSettings) throw new HostError('harness-unavailable', 'La configuración de proveedores no está disponible en este host.');
         return this.options.providerSettings.read() as Promise<R>;
       case "harnesses.configure":
-        return this.configureHarness(p as HarnessPathConfig) as Promise<R>;
+        if (this.operations.has('provider-configuration')) throw new HostError('busy', 'Terminá la configuración en curso antes de guardar otra ruta.');
+        return this.serial('provider-configuration', () => this.configureHarness(p as HarnessPathConfig)) as Promise<R>;
       case "harnesses.authenticate": {
         const request = p as MethodParams<"harnesses.authenticate">;
         await this.authenticate(request.harness, request.methodId);
         return undefined as R;
+      }
+      case 'harnesses.auth.respond': {
+        const request = p as MethodParams<'harnesses.auth.respond'>;
+        const pending = this.authInputs.get(request.harness);
+        if (!pending || pending.flowId !== request.flowId || this.authFlows.get(request.harness)?.id !== request.flowId || this.authenticating.get(request.harness)?.signal.aborted) throw new HostError('no-request', 'Este código de conexión ya no está pendiente.');
+        if (typeof request.code !== 'string' || !request.code.trim() || request.code.length > 2048 || /[\x00-\x1f\x7f]/.test(request.code)) throw new HostError('bad-request', 'Ingresá el código que mostró el proveedor.');
+        if (pending.options && !pending.options.includes(request.code.trim())) throw new HostError('bad-request', 'Elegí una de las cuentas anunciadas por el proveedor.');
+        this.authInputs.delete(request.harness); pending.resolve(request.code.trim());
+        return undefined as R;
+      }
+      case 'harnesses.auth.cancel': {
+        const request = p as MethodParams<'harnesses.auth.cancel'>;
+        const flow = this.authFlows.get(request.harness);
+        if (flow?.id !== request.flowId || ['connected', 'failed', 'cancelled'].includes(flow.phase) || !this.authenticating.has(request.harness)) throw new HostError('no-request', 'Esta conexión ya terminó.');
+        this.authenticating.get(request.harness)!.abort();
+        return undefined as R;
+      }
+      case 'harnesses.auth.methods': {
+        const id = (p as MethodParams<'harnesses.auth.methods'>).harness;
+        return this.readAuthMethods(id) as Promise<R>;
       }
       case "chats.create":
         return this.createChat(connection,p as MethodParams<"chats.create">) as Promise<R>;
@@ -251,9 +310,13 @@ export class AgentHost {
         return undefined as R;
       case "chats.delete":
         return this.deleteChat(requireString(p, "chatId")) as Promise<R>;
-      case "turn.send":
-        if (this.configuring) throw new HostError('busy', 'Se está guardando la configuración de agentes.');
-        return this.serial((p as MethodParams<"turn.send">).chatId ?? randomUUID(), () => this.send(connection, p as MethodParams<"turn.send">)) as Promise<R>;
+      case "turn.send": {
+        const request = p as MethodParams<'turn.send'>, provider = validateModel(request.model).harness;
+        if (this.configuring === provider || this.authenticating.has(provider)) throw new HostError('busy', 'Terminá la conexión o configuración de este proveedor antes de enviar.');
+        this.acceptingTurns.set(provider, (this.acceptingTurns.get(provider) ?? 0) + 1);
+        const action = this.serial(request.chatId ?? randomUUID(), () => this.send(connection, request));
+        return action.finally(() => { const pending = (this.acceptingTurns.get(provider) ?? 1) - 1; pending ? this.acceptingTurns.set(provider, pending) : this.acceptingTurns.delete(provider); }) as Promise<R>;
+      }
       case "queue.add":
       case "queue.remove":
       case "queue.resume":
@@ -285,19 +348,20 @@ export class AgentHost {
     const oldest = Math.min(...[...this.probes.values()].map((entry) => entry.at), Infinity);
     const stale = this.probes.size < this.harnessById.size || Date.now() - oldest > (this.options.probeMaxAgeMs ?? PROBE_MAX_AGE_MS);
     if (refresh && stale) return this.probeAll();
-    if (this.probing) return this.probing;
+    if (this.probing && this.probes.size === 0) return this.probing;
     return this.harnessList();
   }
 
   private probeAll(): Promise<HarnessInfo[]> {
     if (this.probing) return this.probing;
     const abort = new AbortController();
+    const harnesses = [...this.harnessById.values()].map(harness => ({ harness, generation: this.probeGenerations.get(harness.id) ?? 0 }));
     this.probeAbort = abort;
     this.probing = (async () => {
       const env = await this.options.env;
       await Promise.all(
-        [...this.harnessById.values()].map(async (harness) => {
-          if (this.authenticating.has(harness.id)) return;
+        harnesses.map(async ({ harness, generation }) => {
+          if (this.authenticating.has(harness.id) || this.configuring === harness.id || (this.probeGenerations.get(harness.id) ?? 0) !== generation) return;
           let info: HarnessInfo;
           try {
             info = await harness.probe(env, abort.signal);
@@ -310,11 +374,14 @@ export class AgentHost {
               models: [],
             };
           }
-          if (!this.authenticating.has(harness.id)) this.probes.set(harness.id, { info, at: Date.now() });
+          if (!this.stopping && !this.authenticating.has(harness.id) && this.configuring !== harness.id && this.harnessById.get(harness.id) === harness && (this.probeGenerations.get(harness.id) ?? 0) === generation) {
+            const flow = this.authFlows.get(harness.id);
+            this.probes.set(harness.id, { info: { ...info, ...(flow ? { authFlow: flow } : {}) }, at: Date.now() });
+          }
         }),
       );
       const list = this.harnessList();
-      this.broadcast({ t: "harnesses", harnesses: list });
+      if (!this.stopping) this.broadcast({ t: "harnesses", harnesses: list });
       return list;
     })().finally(() => {
       this.probing = null;
@@ -323,44 +390,150 @@ export class AgentHost {
     return this.probing;
   }
 
+  private async readAuthMethods(id: HarnessId): Promise<NonNullable<HarnessInfo['authMethods']>> {
+    const harness = this.harnessById.get(id);
+    if (!isHarnessId(id) || id === 'muse' || !harness) throw new HostError('harness-unavailable', 'Elegí un proveedor activo.');
+    if (this.configuring === id || this.authenticating.has(id) || this.authMethodQueries.has(id)) throw new HostError('busy', 'Este proveedor ya está comprobando o conectando una cuenta.');
+    const controller = new AbortController(), generation = this.probeGenerations.get(id) ?? 0;
+    this.authMethodQueries.set(id, controller);
+    const timeout = setTimeout(() => controller.abort(new HostError('harness-unavailable', 'La comprobación de cuentas venció. Podés volver a intentarlo.')), this.options.authMethodsTimeoutMs ?? AUTH_METHODS_TIMEOUT_MS);
+    const operation = (async () => {
+      try {
+        const env = await abortable(this.options.env, controller.signal);
+        const previous = this.probes.get(id)?.info ?? { id, label: HARNESS_LABELS[id], status: 'not-installed' as const, models: [] };
+        // Keep the underlying operation tracked until the adapter has actually
+        // closed its process, even when the caller's deadline already expired.
+        const methods = checkedAuthMethods(harness.authMethods ? await harness.authMethods(env, controller.signal) : previous.authMethods ?? []);
+        controller.signal.throwIfAborted();
+        if (!this.stopping && this.harnessById.get(id) === harness && (this.probeGenerations.get(id) ?? 0) === generation && !this.authenticating.has(id) && this.configuring !== id) {
+          this.probes.set(id, { at: Date.now(), info: { ...(this.probes.get(id)?.info ?? previous), authMethods: methods } });
+          this.broadcast({ t: 'harnesses', harnesses: this.harnessList() });
+        }
+        return methods;
+      } finally {
+        clearTimeout(timeout);
+        if (this.authMethodQueries.get(id) === controller) this.authMethodQueries.delete(id);
+      }
+    })();
+    this.track(`provider-methods:${id}`, operation);
+    return abortable(operation, controller.signal);
+  }
+
   // ---------------------------------------------------------------------
   // Chats
 
   private async authenticate(id: HarnessId, methodId: string): Promise<void> {
-    if (this.configuring) throw new HostError('busy', 'Se está guardando la configuración.');
-    const harness = this.harnessById.get(id);
-    const info = this.probes.get(id)?.info;
-    if (!harness?.authenticate || !info?.authMethods?.some(m => m.id === methodId)) throw new HostError("bad-request", "El método de login no fue anunciado por este proveedor.");
-    if (this.authenticating.has(id) || [...this.chats.values()].some(c => c.meta.harness === id && c.turn)) throw new HostError("busy", "Terminá el turno o login en curso antes de cambiar la cuenta.");
+    if (this.configuring === id) throw new HostError('busy', 'Se está guardando la configuración de este proveedor.');
+    let harness = this.harnessById.get(id);
+    const info = this.probes.get(id)?.info ?? { id, label: HARNESS_LABELS[id], status: 'not-installed' as const, models: [] };
+    if (!isHarnessId(id) || id === 'muse' || !harness || typeof methodId !== 'string') throw new HostError('bad-request', 'Elegí un proveedor activo.');
+    if (methodId !== 'connect' && !(info.authMethods?.some(m => m.id === methodId) || id === 'codex' && ['chatgpt-browser', 'chatgpt-device'].includes(methodId))) throw new HostError('bad-request', 'El método de login no fue anunciado por este proveedor.');
+    if (this.authenticating.has(id) || this.authMethodQueries.has(id) || this.acceptingTurns.has(id) || [...this.chats.values()].some(c => c.meta.harness === id && (c.turn || c.settling || c.meta.queue?.messages.length))) throw new HostError("busy", "Terminá el turno o comprobación de cuenta de este proveedor antes de cambiar la cuenta.");
+    const previousHarness = harness, previousInfo = info;
+    this.invalidateProbe(id);
     const controller = new AbortController(); this.authenticating.set(id, controller);
-    this.probes.set(id, { at: Date.now(), info: { ...info, status: "checking", detail: "Completá el login oficial en el navegador.", models: [] } });
-    this.broadcast({ t: "harnesses", harnesses: this.harnessList() });
-    void (async () => {
+    const flowId = randomUUID();
+    let current = info;
+    const update = (value: Omit<ProviderAuthFlow, 'id'>) => {
+      if (this.authenticating.get(id) !== controller) return;
+      const flow = { ...value, id: flowId };
+      this.authFlows.set(id, flow);
+      const ended = ['connected', 'failed', 'cancelled'].includes(value.phase);
+      const visible = !ended && previousInfo.status === 'ready' ? previousInfo : current;
+      this.probes.set(id, { at: Date.now(), info: { ...visible, status: ended || previousInfo.status === 'ready' ? visible.status : 'checking', detail: value.message, authFlow: flow, ...(ended || previousInfo.status === 'ready' ? {} : { models: [] }) } });
+      if (!this.stopping) this.broadcast({ t: 'harnesses', harnesses: this.harnessList() });
+    };
+    update({ phase: 'preparing', message: 'Buscando y preparando la conexión oficial…' });
+    const askInput = (prompt: string, choices?: NonNullable<HarnessInfo['authMethods']>) => new Promise<string>((resolveCode, reject) => {
+      this.authInputs.get(id)?.reject(Error('El proveedor pidió una nueva respuesta de conexión.'));
+      const timer = setTimeout(() => { this.authInputs.delete(id); cleanup(); reject(Error('La autorización venció. Volvé a conectar.')); }, 360_000);
+      const cleanup = () => { clearTimeout(timer); controller.signal.removeEventListener('abort', abort); };
+      const abort = () => { this.authInputs.delete(id); cleanup(); reject(Error('Conexión cancelada.')); };
+      if (controller.signal.aborted) return abort();
+      controller.signal.addEventListener('abort', abort, { once: true });
+      this.authInputs.set(id, { flowId, options: choices?.map(choice => choice.id), resolve: code => { cleanup(); resolveCode(code); }, reject: error => { cleanup(); reject(error); } });
+      const flow = this.authFlows.get(id)!;
+      update({ ...flow, phase: 'waiting', inputPrompt: prompt, options: choices });
+    });
+    const operation = (async () => {
       try {
-        for (const chat of this.chats.values()) if (chat.meta.harness === id && chat.session) { await chat.session.close(); chat.session = null; }
-        const env = await this.options.env;
-        await harness.authenticate!(env, methodId, controller.signal);
-        if (!controller.signal.aborted) this.probes.set(id, { at: Date.now(), info: await harness.probe(env, controller.signal) });
-      } catch {
-        this.probes.set(id, { at: Date.now(), info: { ...info, status: "signed-out", models: [], detail: "El login no se completó. Podés reintentar; no se cambió de proveedor." } });
-      } finally { this.authenticating.delete(id); if (!this.stopping) this.broadcast({ t: "harnesses", harnesses: this.harnessList() }); }
+        const env = await abortable(this.options.env, controller.signal);
+        if (controller.signal.aborted) throw Error('Conexión cancelada.');
+        if (this.options.prepareProvider) {
+          harness = await this.options.prepareProvider(id, env, controller.signal, message => update({ phase: 'preparing', message }));
+          if (!harness || harness.id !== id) throw Error('El componente preparado no corresponde al proveedor seleccionado.');
+        }
+        current = await harness!.probe(env, controller.signal);
+        // A valid existing session is reused. No login or inference is started by discovery.
+        if (methodId !== 'connect' || current.status !== 'ready') {
+          if (harness!.authMethods) current = { ...current, authMethods: checkedAuthMethods(await harness!.authMethods(env, controller.signal)) };
+          const choices = current.authMethods ?? [];
+          const selected = methodId === 'connect' ? (choices.length > 1 && id !== 'codex' ? await askInput('Elegí la cuenta que querés conectar.', choices) : choices[0]?.id) : methodId;
+          if (selected && !choices.some(choice => choice.id === selected)) throw Error('Este método de conexión ya no está disponible.');
+          if (!harness!.authenticate || !selected) throw Error(current.detail ?? 'Este proveedor no anunció un método de conexión compatible.');
+          update({ phase: 'waiting', message: 'Completá la autorización oficial en el navegador…', expiresAt: Date.now() + 360_000 });
+          await harness!.authenticate(env, selected, controller.signal, {
+            update,
+            requestCode: prompt => askInput(prompt),
+          });
+          update({ phase: 'verifying', message: 'Comprobando la sesión y los modelos disponibles…' });
+          current = await harness!.probe(env, controller.signal);
+        }
+        if (controller.signal.aborted) throw Error('Conexión cancelada.');
+        if (current.status !== 'ready') throw Error(current.detail ?? 'El proveedor no confirmó una sesión disponible.');
+        // Only replace a valid old account after the new login AND probe have
+        // succeeded. Cancel/failure leaves its existing sessions untouched.
+        this.harnessById.set(id, harness!);
+        update({ phase: 'connected', message: 'Conexión comprobada. Ya podés elegir un modelo.' });
+        if (methodId !== 'connect' || previousInfo.status !== 'ready') for (const chat of this.chats.values()) if (chat.meta.harness === id && chat.session) {
+          const session = chat.session; chat.session = null;
+          await session.close().catch(error => this.log(`old provider session close failed: ${(error as Error)?.name ?? 'Error'}`));
+        }
+      } catch (error) {
+        if (previousInfo.status === 'ready') { current = previousInfo; this.harnessById.set(id, previousHarness); }
+        else current = { ...current, status: current.status === 'checking' || current.status === 'ready' ? 'error' : current.status, models: [] };
+        const cancelled = controller.signal.aborted;
+        const message = cancelled ? 'Conexión cancelada. Podés volver a conectar.' : ((error as Error)?.message || 'No se pudo completar la conexión.').replace(/https?:\/\/\S+/g, '[enlace del proveedor]').slice(0, 500);
+        update({ phase: cancelled ? 'cancelled' : 'failed', message });
+      } finally {
+        if (this.authInputs.get(id)?.flowId === flowId) { this.authInputs.get(id)?.reject(Error('La conexión terminó.')); this.authInputs.delete(id); }
+        if (this.authenticating.get(id) === controller) this.authenticating.delete(id);
+        if (!this.stopping) this.broadcast({ t: "harnesses", harnesses: this.harnessList() });
+      }
     })();
+    this.track(`provider-login:${id}`, operation);
   }
 
   private async configureHarness(entry: HarnessPathConfig): Promise<HarnessSettings> {
+    if (this.stopping) throw new HostError('busy', 'El host está cerrando la conexión.');
     if (!this.options.providerSettings) throw new HostError('harness-unavailable', 'Este host no permite configurar proveedores.');
-    if (this.configuring || this.authenticating.has(entry.id) || [...this.chats.values()].some(c => c.meta.harness === entry.id && c.turn)) throw new HostError('busy', 'Terminá el turno o login antes de cambiar la ruta.');
-    this.configuring = true;
+    const requested = (entry as { id?: unknown }).id;
+    if (!isHarnessId(requested) || requested === 'codex' || requested === 'muse') throw new HostError('bad-request', 'Elegí un proveedor configurable.');
+    if (this.configuring !== null || this.authenticating.has(entry.id) || this.authMethodQueries.has(entry.id) || this.acceptingTurns.has(entry.id) || [...this.chats.values()].some(c => c.meta.harness === entry.id && (c.turn || c.settling || c.meta.queue?.messages.length))) throw new HostError('busy', 'Terminá el turno o login antes de cambiar la ruta.');
+    this.configuring = entry.id;
+    this.invalidateProbe(entry.id);
+    const generation = this.probeGenerations.get(entry.id)!, controller = new AbortController();
+    this.configurationAbort = controller;
     try {
-      await this.probing;
       const result = await this.options.providerSettings.save(entry);
+      controller.signal.throwIfAborted();
       for (const chat of this.chats.values()) if (chat.meta.harness === entry.id && chat.session) { await chat.session.close(); chat.session = null; }
       this.harnessById.set(entry.id, result.harness);
       this.probes.set(entry.id, { at: 0, info: { id: entry.id, label: HARNESS_LABELS[entry.id], status: 'checking', models: [], detail: 'Comprobando ejecutable y cuenta…' } });
       this.broadcast({ t: 'harnesses', harnesses: this.harnessList() });
-      void this.probeAll();
+      // A route change needs only its own new probe. Other providers may still
+      // be discovering accounts; their old cycle cannot overwrite this result.
+      const env = await abortable(this.options.env, controller.signal);
+      let info: HarnessInfo;
+      try { info = await result.harness.probe(env, controller.signal); }
+      catch (error) { info = { id: entry.id, label: HARNESS_LABELS[entry.id], status: 'error', models: [], detail: (error as Error)?.message ?? String(error) }; }
+      controller.signal.throwIfAborted();
+      if (!this.stopping && this.harnessById.get(entry.id) === result.harness && this.probeGenerations.get(entry.id) === generation) {
+        this.probes.set(entry.id, { at: Date.now(), info });
+        this.broadcast({ t: 'harnesses', harnesses: this.harnessList() });
+      }
       return result.settings;
-    } finally { this.configuring = false; }
+    } finally { if (this.configurationAbort === controller) this.configurationAbort = null; this.configuring = null; }
   }
 
   private async createChat(connection:Connection,params:MethodParams<"chats.create">):Promise<ChatSummary>{
@@ -503,7 +676,7 @@ export class AgentHost {
   private pumpSoon(chat: Chat): void {
     void this.serial(chat.meta.id, async () => {
       const queue = chat.meta.queue;
-      if (this.stopping || this.configuring || this.chats.get(chat.meta.id) !== chat || chat.turn || chat.transcript.pending || !queue?.messages.length || queue.paused) return;
+      if (this.stopping || this.configuring === chat.meta.harness || this.chats.get(chat.meta.id) !== chat || chat.turn || chat.transcript.pending || !queue?.messages.length || queue.paused) return;
       const first = queue.messages[0]!;
       try {
         await this.send({ send: () => {} }, { chatId: chat.meta.id, projectId: chat.meta.projectId, cwd: chat.meta.cwd, ...first }, first.id);
@@ -516,10 +689,12 @@ export class AgentHost {
   }
 
   private async send(connection: Connection, params: MethodParams<"turn.send">, queuedMessageId?: string, providerText?: string): Promise<{ chatId: string }> {
+    if (this.stopping) throw new HostError('busy', 'El host está cerrando la conexión.');
     const text = typeof params.text === "string" ? params.text : "";
     const projectId = requireString(params, "projectId");
     const cwd = requireString(params, "cwd");
     const model = validateModel(params.model);
+    if (this.authenticating.has(model.harness) || this.configuring === model.harness) throw new HostError('busy', 'Terminá la conexión o configuración de este proveedor antes de enviar.');
     const attachments = Array.isArray(params.attachments) ? params.attachments.filter((a): a is string => typeof a === "string") : [];
     if (!text.trim() && attachments.length === 0) throw new HostError("bad-request", "Nothing to send");
 

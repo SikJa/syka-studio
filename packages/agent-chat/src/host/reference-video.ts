@@ -5,6 +5,7 @@ import {join,relative,isAbsolute,sep} from 'node:path';
 import type {ToolImage} from '../protocol';
 import {killTree} from './env';
 import {videoDownloadError} from './video-download-error';
+import {parseVideoToolJson, VideoToolOutput, YTDLP_METADATA_ARGS, YTDLP_FFMPEG_NETWORK_ARGS, youtubeSectionFormat} from './yt-dlp';
 import {addStorageJobOwner,createStorageJob,finishStorageJob,moveToStorageTrash,settleStorageOwners} from './storage-ledger';
 
 export const REFERENCE_VIDEO_TOOL={type:'function',name:'syka_reference_video',description:'Watch-style local evidence from a public Instagram, TikTok, X/Twitter, YouTube/Shorts URL or an existing local video. Briefly inspect representative frames before asking about an unspecified purpose; recommend a direction grounded in what you actually saw, then wait for syka_ask_user before deeper analysis or editing. For this initial pass set initialInspection: true; it clamps the excerpt to at most 20 seconds and four frames, without preparing audio or retaining the source. analyze downloads temporarily, returns timestamped frame images to vision and persists a small reference manifest in the project. The downloaded source is removed in finally; local originals are never deleted. includeAudio prepares a playable MP3 for requested speech/music analysis; use media_transcribe for real speech timestamps. keepSource is opt-in to retain an editable source when explicitly needed. Never insert music/video into the timeline without a preview and placement answer. Public only, no automatic cookies/login. Long sources require start/end (max 10 min). read reopens persisted evidence; release removes only the disposable source; dispose removes this reference evidence only if the user explicitly asks.',inputSchema:{type:'object',properties:{action:{type:'string',enum:['analyze','read','release','dispose']},source:{type:'string'},initialInspection:{type:'boolean',description:'Bounded visual first look: up to 20 seconds from start (default 0), four frames, no prepared audio or retained source. Not an approved edit range.'},focus:{type:'string',description:'Specific inspection scope: a bounded initial visual inspection, or the aspect already specified by the user. An initial scope is not a chosen creative goal.'},id:{type:'string'},start:{type:'number',minimum:0},end:{type:'number',exclusiveMinimum:0},includeAudio:{type:'boolean'},keepSource:{type:'boolean'},frames:{type:'integer',minimum:2,maximum:24}},required:['action'],additionalProperties:false}};
@@ -35,15 +36,16 @@ export class ReferenceVideos {
  private storageRuntime(){return process.env.SYKA_RUNTIME_ROOT;}
  constructor(cwd:string,tools:Tools){this.cwd=cwd;this.tools=tools;}
  async close(){this.cancelled=true;await Promise.allSettled([...this.children].map(child=>killTree(child)));}
- private async run(binary:string|undefined,args:string[],timeout=120000):Promise<string>{
+ private async run(binary:string|undefined,args:string[],timeout=120000,json=false):Promise<string>{
   if(!binary)throw Error('Falta una herramienta local: necesitás yt-dlp, FFmpeg y FFprobe configurados.');
   if(this.cancelled)throw Error('Análisis de referencia cancelado.');
-  return new Promise((resolve,reject)=>{const child=spawn(binary,args,{windowsHide:true,env:this.tools.env,stdio:['ignore','pipe','pipe']});this.children.add(child);let out='',err='',expired=false;
+  return new Promise((resolve,reject)=>{const child=spawn(binary,args,{windowsHide:true,env:this.tools.env,stdio:['ignore','pipe','pipe']});this.children.add(child);const out=new VideoToolOutput(json);let err='',expired=false;
    if(this.storageJobId)void addStorageJobOwner(this.storageRuntime(),this.storageJobId,child.pid).catch(()=>{});
    const timer=setTimeout(()=>{expired=true;void killTree(child)},timeout);timer.unref();
-   child.stdout!.on('data',d=>out=(out+String(d)).slice(-4*1024*1024));child.stderr!.on('data',d=>err=(err+String(d)).slice(-8000));
+   child.stdout!.setEncoding('utf8');child.stderr!.setEncoding('utf8');
+   child.stdout!.on('data',d=>out.append(String(d)));child.stderr!.on('data',d=>err=(err+String(d)).slice(-8000));
    child.on('error',e=>{clearTimeout(timer);this.children.delete(child);reject(e)});
-   child.on('close',code=>{clearTimeout(timer);this.children.delete(child);code===0&&!this.cancelled?resolve(out):reject(Error(this.cancelled?'Análisis de referencia cancelado.':expired?'La referencia tardó demasiado. Probá con un tramo más corto.':this.friendlyError(err||'La herramienta local falló.')))});
+   child.on('close',code=>{clearTimeout(timer);this.children.delete(child);if(code!==0||this.cancelled||expired){reject(Error(this.cancelled?'Análisis de referencia cancelado.':expired?'La referencia tardó demasiado. Probá con un tramo más corto.':this.friendlyError(err||'La herramienta local falló.')));return;}try{resolve(out.read())}catch(error){reject(error)}});
   });
  }
  private friendlyError(raw:string){return videoDownloadError(raw);}
@@ -67,7 +69,7 @@ export class ReferenceVideos {
   }
  }
  private async folder(id:string){if(!/^ref-[a-f0-9-]{36}$/.test(id))throw Error('ID de referencia inválido.');const {folder}=await this.roots(),path=join(folder,id);if((await lstat(path)).isSymbolicLink()||!within(folder,await realpath(path)))throw Error('Referencia fuera del proyecto.');return path;}
- private base(){return ['--ignore-config','--no-plugin-dirs','--no-remote-components','--no-playlist','--no-cache-dir','--no-warnings','--socket-timeout','15','--retries','1','--fragment-retries','1',...(this.tools.node?['--js-runtimes',`node:${this.tools.node}`]:[])];}
+ private base(){return ['--encoding','utf-8','--ignore-config','--no-plugin-dirs','--no-remote-components','--no-playlist','--no-cache-dir','--no-warnings','--socket-timeout','15','--retries','1','--fragment-retries','1',...(this.tools.node?['--js-runtimes',`node:${this.tools.node}`]:[])];}
  async call(raw:unknown):Promise<{output:unknown;images?:ToolImage[]}>{
   if(!raw||typeof raw!=='object')throw Error('Faltan los argumentos.');
   const a=raw as {action?:string;source?:string;focus?:string;id?:string;start?:number;end?:number;frames?:number;includeAudio?:boolean;keepSource?:boolean;initialInspection?:boolean};
@@ -100,17 +102,19 @@ export class ReferenceVideos {
   try {
    this.storageJobId=id.slice(4);await createStorageJob(this.storageRuntime(),{id:this.storageJobId,kind:'reference-download',base:await realpath(this.cwd),path:temp});
    if(remote){
-    const info=JSON.parse(await this.run(this.tools.ytDlp,[...this.base(),'--skip-download','--dump-single-json','--',remote.url],90000));
-    if(info._type==='playlist'||info.entries)throw Error('Este enlace tiene varios elementos. Pasá un enlace individual o el archivo que querés analizar.');
+    const info=parseVideoToolJson(await this.run(this.tools.ytDlp,[...this.base(),...YTDLP_METADATA_ARGS,'--',remote.url],90000,true),'metadata');
+    if(['playlist','multi_video'].includes(info._type))throw Error('Este enlace tiene varios elementos. Pasá un enlace individual o el archivo que querés analizar.');
     if(info.is_live||['is_live','is_upcoming','post_live'].includes(info.live_status))throw Error('Elegí un video terminado o un archivo local; no descargamos directos en curso.');
     const duration=Number(info.duration);
     if(a.initialInspection)a.end=Math.min(a.end??sourceStart+20,sourceStart+20,Number.isFinite(duration)&&duration>0?duration:Infinity);
     if((!Number.isFinite(duration)||duration<=0||duration>600)&&a.end===undefined)throw Error('Elegí el tramo a analizar (inicio y final, hasta 10 minutos).');
     const end=a.end??duration;this.range(sourceStart,end,duration);
-    await this.run(this.tools.ytDlp,[...this.base(),'--max-filesize','500M','--format','bestvideo[ext=mp4][height<=1080]+bestaudio[ext=m4a]/best[ext=mp4][height<=1080]/best[height<=1080]','--merge-output-format','mp4',...(this.tools.ffmpeg?['--ffmpeg-location',this.tools.ffmpeg]:[]),...(a.start!==undefined||a.end!==undefined?['--download-sections',`*${sourceStart}-${end}`,'--force-keyframes-at-cuts']:[]),'--output',join(temp,'source.%(ext)s'),'--',remote.url],300000);
+    const section=a.start!==undefined||a.end!==undefined,normalFormat='bestvideo[ext=mp4][height<=1080]+bestaudio[ext=m4a]/best[ext=mp4][height<=1080]/best[height<=1080]';
+    const format=remote.platform==='youtube'&&section?youtubeSectionFormat(normalFormat):normalFormat;
+    await this.run(this.tools.ytDlp,[...this.base(),...YTDLP_FFMPEG_NETWORK_ARGS,'--max-filesize','500M','--format',format,'--merge-output-format','mp4',...(this.tools.ffmpeg?['--ffmpeg-location',this.tools.ffmpeg]:[]),...(section?['--download-sections',`*${sourceStart}-${end}`,'--force-keyframes-at-cuts']:[]),'--output',join(temp,'source.%(ext)s'),'--',remote.url],45*60_000);
     const candidates=(await readdir(temp)).filter(f=>/^source\.(mp4|webm|mkv|mov)$/.test(f));if(candidates.length!==1)throw Error('La descarga no produjo un video individual compatible.');source=join(temp,candidates[0]!);downloaded=true;
    }else{source=await realpath(sourceInput);if(!(await stat(source)).isFile())throw Error('El archivo local no existe.');}
-   const probe=JSON.parse(await this.run(this.tools.ffprobe,['-v','error','-show_format','-show_streams','-of','json',source]));
+   const probe=parseVideoToolJson(await this.run(this.tools.ffprobe,['-v','error','-show_format','-show_streams','-of','json',source],120000,true),'probe');
    if(!probe.streams?.some((s:any)=>s.codec_type==='video'))throw Error('El archivo no tiene una pista de video.');
    const total=Number(probe.format?.duration);if(!Number.isFinite(total)||total<=0)throw Error('No se pudo leer la duración real.');
    const offset=downloaded?0:sourceStart,end=downloaded?total:(a.initialInspection?Math.min(a.end??total,sourceStart+20,total):(a.end??total));this.range(offset,end,total);

@@ -18,6 +18,7 @@ import { NativeUsageRecovery } from './native-usage';
 import { resolveLocalTool } from './local-tools';
 import { loadExternalHarnesses, readHarnessSettings, saveHarnessSettings } from './external-harnesses';
 import { startCodeGraph } from './code-graph';
+import { prepareProviderComponent, resolveManagedComponent, prepareLoginTerminal } from './provider-components';
 
 import type { Harness, McpConfig } from "./harness";
 
@@ -65,10 +66,10 @@ export async function createAgentHost(config: AgentHostConfig): Promise<RunningA
   const log = config.log ?? ((message: string) => console.error(`[agent-chat] ${message}`));
   const runtimeDir = config.runtimeDir ?? join(config.dataDir, "codex-runtime");
   await Promise.all(["tmp", "cache", "logs", "isolated-state", "profile"].map((name) => mkdir(join(runtimeDir, name), { recursive: true })));
-  const env = hydrateEnv().then((host) => {
+  const env = hydrateEnv().then(async (host) => {
     const ffmpeg = config.ffmpegPath ?? resolveLocalTool('ffmpeg', { env: host.env, roots: [join(runtimeDir, '..', 'tools')], extraDirs: host.extraDirs }).path;
     const videoPaths=Object.fromEntries(([['yt-dlp','SYKA_YTDLP_PATH'],['ffprobe','SYKA_FFPROBE_PATH'],['node','SYKA_NODE_PATH']] as const).flatMap(([tool,key])=>{const path=resolveLocalTool(tool,{env:host.env,roots:[join(runtimeDir,'..','tools')],extraDirs:host.extraDirs}).path;return path?[[key,path]]:[]}));
-    return { ...host, env: { ...codexEnvironment(runtimeDir, host.env),
+    const ready = { ...host, env: { ...codexEnvironment(runtimeDir, host.env),
       ...(host.env.HERMES_HOME ? { SYKA_HERMES_HOME: host.env.HERMES_HOME } : {}),
       SYKA_AGENT_CONFIG: join(runtimeDir, '..', 'agent-settings.json'), SYKA_RESOURCE_CONFIG: join(runtimeDir, '..', 'resource-libraries.json'),
       ...(ffmpeg ? { SYKA_FFMPEG_PATH: ffmpeg } : {}),
@@ -77,6 +78,9 @@ export async function createAgentHost(config: AgentHostConfig): Promise<RunningA
       ...(config.docsDir ? { SYKA_REFERENCE_DOCS_DIR: config.docsDir } : {}),
       ...(config.codeGraphRoot ? { SYKA_CODE_GRAPH_ROOT: config.codeGraphRoot } : {}),
     } };
+    // Receipt-only discovery: no downloads or interactive authorization at startup.
+    if (!config.harnesses) for (const id of ['codex', 'claude', 'antigravity', 'grok', 'cursor', 'opencode'] as const) await resolveManagedComponent(id, ready, runtimeDir).catch(() => undefined);
+    return ready;
   });
   const store = new ChatStore(config.dataDir);
   const recovery = new NativeUsageRecovery(runtimeDir, store, log);
@@ -90,6 +94,16 @@ export async function createAgentHost(config: AgentHostConfig): Promise<RunningA
     mcp: config.mcp,
     instructions: config.instructions,
     version: config.version,
+    prepareProvider: config.harnesses ? undefined : async (id, hostEnv, signal, progress) => {
+      const configFile = join(runtimeDir, '..', 'harnesses.json'), profilesRoot = join(runtimeDir, '..', 'harness-profiles');
+      const settings = await readHarnessSettings(configFile, profilesRoot);
+      // An explicit user route stays authoritative, including invalid routes.
+      const explicit = settings.entries.find(entry => entry.id === id);
+      if (explicit) await import('./external-harnesses').then(module => module.validateExecutable(explicit));
+      else if (id !== 'hermes') await prepareProviderComponent(id, hostEnv, runtimeDir, signal, progress);
+      if (id === 'antigravity') await prepareLoginTerminal(hostEnv, runtimeDir, signal, progress);
+      return id === 'codex' ? new CodexHarness(config.version) : (await loadExternalHarnesses(configFile, profilesRoot)).find(harness => harness.id === id)!;
+    },
     providerSettings: config.harnesses ? undefined : {
       read: () => readHarnessSettings(join(runtimeDir, '..', 'harnesses.json'), join(runtimeDir, '..', 'harness-profiles')),
       save: async entry => {

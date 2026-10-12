@@ -18,7 +18,7 @@ import { compareVersions, killTree, needsShell, parseVersion, quoteArg, resolveB
 import { JsonRpcPeer, RpcError } from "./jsonrpc";
 import { QuestionBox, collectResult, newItemId, summarizeInput, truncateDetail } from "./harness";
 import { readOfficialAuth } from "./auth";
-import { openCodexLogin } from './browser-login';
+import { openCodexLogin, validateCodexLoginUrl } from './browser-login';
 import { SOURCE_TOOLS, SourceTools } from "./source-tools";
 import { GENERATED_IMAGE_TOOLS, GeneratedImages } from "./generated-images";
 import { BROWSER_TOOLS, BrowserTools } from "./browser-tools";
@@ -702,7 +702,7 @@ export class CodexHarness implements Harness {
   async probe(env: HostEnv, signal: AbortSignal): Promise<HarnessInfo> {
     const label = HARNESS_LABELS.codex;
     const binary = resolveBinary("codex", env);
-    if (!binary) return { id: this.id, label, status: "not-installed", detail: "Instalá Codex CLI y volvé a abrir el selector", models: [] };
+    if (!binary) return { id: this.id, label, status: "not-installed", detail: "Usá Conectar Codex para preparar el componente oficial y vincular tu cuenta.", models: [] };
 
     const child = spawnAppServer(binary, process.cwd(), env.env, null);
     const peer = new JsonRpcPeer(child);
@@ -715,7 +715,7 @@ export class CodexHarness implements Harness {
       const outdated = version && compareVersions(version, MIN_VERSION) < 0 ? `Update Codex (${version} is older than ${MIN_VERSION})` : undefined;
       const account = (await peer.request("account/read", { refreshToken: false })) as { account?: { type?: string }; requiresOpenaiAuth?: boolean };
       if (account.account?.type !== "chatgpt") {
-        return { id: this.id, label, status: "signed-out", detail: "Conectá tu cuenta de ChatGPT desde Configuración > Modelos e IA.", authMethods: [{ id: 'chatgpt-browser', label: 'Iniciar sesión con ChatGPT' }], version, models: [] };
+        return { id: this.id, label, status: "signed-out", detail: "Conectá tu cuenta de ChatGPT desde Configuración > Modelos e IA.", authMethods: [{ id: 'chatgpt-browser', label: 'Iniciar sesión con ChatGPT' }, { id: 'chatgpt-device', label: 'Vincular con un código' }], version, models: [] };
       }
       const list = (await peer.request("model/list", {})) as { data?: { id?: string; model?: string; displayName?: string; hidden?: boolean; isDefault?: boolean; supportedReasoningEfforts?: {reasoningEffort:string}[]; defaultReasoningEffort?: string; serviceTiers?:{id:string}[]; additionalSpeedTiers?:string[] }[] };
       const models = (list.data ?? [])
@@ -725,11 +725,11 @@ export class CodexHarness implements Harness {
       const preferred = (list.data ?? []).find((model) => !model.hidden && model.isDefault);
       const defaultModel = preferred?.id ?? preferred?.model ?? models[0]?.id;
       if (outdated || !models.length) return { id: this.id, label, status: "error", detail: outdated ?? "Codex no devolvió modelos disponibles", version, models: [] };
-      return { id: this.id, label, status: "ready", version, models, defaultModel, supportsSteering: true };
+      return { id: this.id, label, status: "ready", version, models, defaultModel, supportsSteering: true, authMethods: [{ id: 'chatgpt-browser', label: 'Iniciar sesión con ChatGPT' }, { id: 'chatgpt-device', label: 'Vincular con un código' }] };
     } catch (error) {
       const message = (error as Error)?.message ?? String(error);
       if (/log ?in|not authenticated|unauthori[sz]ed/i.test(message)) {
-        return { id: this.id, label, status: "signed-out", detail: "Conectá tu cuenta de ChatGPT desde Configuración > Modelos e IA.", authMethods: [{ id: 'chatgpt-browser', label: 'Iniciar sesión con ChatGPT' }], models: [] };
+        return { id: this.id, label, status: "signed-out", detail: "Conectá tu cuenta de ChatGPT desde Configuración > Modelos e IA.", authMethods: [{ id: 'chatgpt-browser', label: 'Iniciar sesión con ChatGPT' }, { id: 'chatgpt-device', label: 'Vincular con un código' }], models: [] };
       }
       return { id: this.id, label, status: "error", detail: message, models: [] };
     } finally {
@@ -739,8 +739,8 @@ export class CodexHarness implements Harness {
     }
   }
 
-  async authenticate(env: HostEnv, methodId: string, signal: AbortSignal): Promise<void> {
-    if (methodId !== 'chatgpt-browser') throw Error('Método de conexión no soportado.');
+  async authenticate(env: HostEnv, methodId: string, signal: AbortSignal, hooks?: import('./harness').AuthHooks): Promise<void> {
+    if (!['chatgpt-browser', 'chatgpt-device'].includes(methodId)) throw Error('Método de conexión no soportado.');
     const binary = resolveBinary('codex', env);
     if (!binary) throw Error('Codex no está instalado.');
     if (signal.aborted) throw Error('Conexión cancelada.');
@@ -765,12 +765,18 @@ export class CodexHarness implements Harness {
     peer.onNotification = (method, params) => { if (method === 'account/login/completed') consume(params as { loginId?: string; success?: boolean }); };
     try {
       await Promise.race([initialize(peer, this.version), completed]);
-      const login = await Promise.race([peer.request<{ type: string; loginId: string; authUrl: string }>('account/login/start', { type: 'chatgpt' }), completed.then(() => { throw Error('Respuesta de conexión inválida.'); })]);
-      if (login.type !== 'chatgpt' || typeof login.loginId !== 'string' || typeof login.authUrl !== 'string') throw Error('Respuesta de conexión inválida.');
+      const type = methodId === 'chatgpt-device' ? 'chatgptDeviceCode' : 'chatgpt';
+      const login = await Promise.race([peer.request<{ type: string; loginId: string; authUrl?: string; verificationUrl?: string; userCode?: string }>('account/login/start', { type }), completed.then(() => { throw Error('Respuesta de conexión inválida.'); })]);
+      if (login.type !== type || typeof login.loginId !== 'string') throw Error('Respuesta de conexión inválida.');
+      const url = validateCodexLoginUrl(type === 'chatgpt' ? login.authUrl ?? '' : login.verificationUrl ?? '');
+      if (type === 'chatgptDeviceCode' && (typeof login.userCode !== 'string' || !/^[A-Z0-9-]{4,32}$/i.test(login.userCode))) throw Error('Código de vinculación inválido.');
       loginId = login.loginId;
       notifications.splice(0).forEach(consume);
-      await openCodexLogin(login.authUrl);
+      hooks?.update({ phase: 'waiting', message: type === 'chatgptDeviceCode' ? 'Abrí la página de ChatGPT e ingresá este código para vincular tu cuenta.' : 'Autorizá tu cuenta de ChatGPT en el navegador y volvé a Syka.', url, ...(login.userCode ? { userCode: login.userCode } : {}), expiresAt: Date.now() + 180_000 });
+      try { await openCodexLogin(url); }
+      catch (error) { if (!hooks) throw error; hooks.update({ phase: 'waiting', message: 'Abrí el enlace oficial para completar la conexión.', url, ...(login.userCode ? { userCode: login.userCode } : {}), expiresAt: Date.now() + 180_000 }); }
       await completed;
+      hooks?.update({ phase: 'verifying', message: 'Comprobando la cuenta de ChatGPT…' });
       const account = await peer.request<{ account?: { type?: string } }>('account/read', { refreshToken: false });
       if (account.account?.type !== 'chatgpt') throw Error('El proveedor no confirmó la cuenta.');
     } finally {

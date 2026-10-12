@@ -13,6 +13,7 @@ import type { OpenOptions } from './harness';
 import { installedAcpHarness } from './installed-agents';
 import { AntigravityCliHarness } from './antigravity-cli';
 import { openCodeHarness } from './opencode';
+import { browserAcpHarness } from './browser-acp';
 
 export const EXTERNAL_HARNESS_IDS = ["antigravity", "claude", "hermes", "cursor", "grok", "opencode"] as const;
 // Accept retired entries when reading existing configuration; never load them.
@@ -78,11 +79,11 @@ function discoverClaude(profilesRoot: string): Harness {
     id: 'claude',
     async probe(env, signal) {
       delegate = await resolve(env);
-      return delegate ? delegate.probe(env, signal) : { id: 'claude', label: HARNESS_LABELS.claude, status: 'not-installed', models: [], detail: 'Prepará Claude Code desde su página oficial y volvé a comprobar la conexión.' };
+      return delegate ? delegate.probe(env, signal) : { id: 'claude', label: HARNESS_LABELS.claude, status: 'not-installed', models: [], detail: 'Usá Conectar Claude para preparar el componente oficial y vincular tu cuenta.' };
     },
-    async authenticate(env, methodId, signal) {
+    async authenticate(env, methodId, signal, hooks) {
       if (!delegate) throw Error('Comprobá la instalación de Claude Code antes de conectar.');
-      return delegate.authenticate(env, methodId, signal);
+      return delegate.authenticate(env, methodId, signal, hooks);
     },
     async open(options: OpenOptions) {
       if (!delegate) throw Error('Claude Code no está disponible.');
@@ -99,15 +100,16 @@ export async function loadExternalHarnesses(configFile: string, profilesRoot: st
     entries = value;
   } catch (error) {
     const missing = (error as NodeJS.ErrnoException).code === "ENOENT";
-    return EXTERNAL_HARNESS_IDS.map(id => missing && id === 'opencode' ? openCodeHarness(profilesRoot) : missing && id === 'claude' ? discoverClaude(profilesRoot) : missing && (id === 'hermes' || id === 'antigravity') ? installedAcpHarness(id, profilesRoot) : unavailable(id, missing ? 'Prepará este asistente desde su guía oficial.' : 'La configuración local requiere revisión; Codex sigue disponible.'));
+    return EXTERNAL_HARNESS_IDS.map(id => missing && id === 'opencode' ? openCodeHarness(profilesRoot) : missing && id === 'claude' ? discoverClaude(profilesRoot) : missing && (id === 'hermes' || id === 'antigravity') ? installedAcpHarness(id, profilesRoot) : missing && (id === 'grok' || id === 'cursor') ? browserAcpHarness(id, profilesRoot) : unavailable(id, 'La configuración local requiere revisión; Codex sigue disponible.'));
   }
   return Promise.all(EXTERNAL_HARNESS_IDS.map(async id => {
     const entry = entries.find(e => e.id === id);
-    if (!entry) return id === 'opencode' ? openCodeHarness(profilesRoot) : id === 'claude' ? discoverClaude(profilesRoot) : id === 'hermes' || id === 'antigravity' ? installedAcpHarness(id, profilesRoot) : unavailable(id, 'Prepará este asistente desde su guía oficial.');
+    if (!entry) return id === 'opencode' ? openCodeHarness(profilesRoot) : id === 'claude' ? discoverClaude(profilesRoot) : id === 'hermes' || id === 'antigravity' ? installedAcpHarness(id, profilesRoot) : browserAcpHarness(id, profilesRoot);
     try {
       const command = await validateExecutable(entry);
       const profileDir = join(profilesRoot, entry.id);
       if (entry.id === 'opencode') return openCodeHarness(profilesRoot, { ...entry, command });
+      if (entry.id === 'grok' || entry.id === 'cursor') return browserAcpHarness(entry.id, profilesRoot, { ...entry, command });
       if (entry.id === 'antigravity' && /^agy(?:\.exe)?$/i.test(basename(command))) return new AntigravityCliHarness({...entry,command,profileDir});
       return entry.id === "claude" ? new ClaudeCliHarness({ ...entry, id: "claude", command, profileDir }) : new AcpHarness({ ...entry, id: entry.id, command, profileDir });
     } catch { return unavailable(entry.id, "Ruta de ejecutable inválida. Usá un archivo absoluto y verificá también el entrypoint si es Node. No se buscó otro en PATH."); }

@@ -164,9 +164,22 @@ export function refreshHarnesses(force = false): void {
   void client.request("harnesses.list", { refresh: true }).catch(() => {});
 }
 
-export async function authenticateHarness(harness: HarnessId, methodId: string): Promise<void> {
+export async function authenticateHarness(harness: HarnessId, methodId = 'connect'): Promise<void> {
   await whenOpen();
   await client.request("harnesses.authenticate", { harness, methodId });
+}
+
+export async function submitProviderAuthCode(harness: HarnessId, flowId: string, code: string): Promise<void> {
+  await whenOpen();
+  await client.request('harnesses.auth.respond', { harness, flowId, code });
+}
+export async function cancelProviderAuth(harness: HarnessId, flowId: string): Promise<void> {
+  await whenOpen();
+  await client.request('harnesses.auth.cancel', { harness, flowId });
+}
+export async function providerAuthMethods(harness: HarnessId) {
+  await whenOpen();
+  return client.request('harnesses.auth.methods', { harness });
 }
 
 export async function readProviderSettings() {
