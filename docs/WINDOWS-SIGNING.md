@@ -1,6 +1,6 @@
 # Firma pública de Windows
 
-Estado de v0.208.1: beta manual de prueba sin firma, autorizada el 2026-10-12 para descargar y probar los conectores. El certificado/servicio de firma todavía está pendiente; esta beta no cumple la entrega firmada solicitada ni se ofrece por el canal estable. Ver [RELEASING.md](RELEASING.md) para esa excepción y el flujo de publicación.
+Estado de v0.208.1: publicación normal disponible en el canal de actualización de la app, todavía sin firma Authenticode. El certificado/servicio de firma sigue pendiente; elegir el canal normal no firma el instalador ni resuelve la reputación de Windows. Ver [RELEASING.md](RELEASING.md) para esta publicación y su validación.
 
 La firma Authenticode identifica al publicador y protege la integridad del archivo. SmartScreen también evalúa reputación: ni una firma válida ni un certificado EV garantizan la desaparición inmediata de avisos. No se deben desactivar Defender/SmartScreen ni usar certificados autofirmados para presentar una descarga pública como confiable.
 

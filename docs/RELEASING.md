@@ -2,7 +2,7 @@
 
 El repositorio de distribución es [SikJa/syka-studio](https://github.com/SikJa/syka-studio). La primera versión de esta línea es **0.208.0**. El repositorio `diffusionstudio/editor` es upstream: no es el destino de los tags ni de los instaladores de Syka.
 
-El recorrido es **código revisado → versión y commit → tag local → push explícito del tag → build de Windows → draft beta → revisión → publicación manual**. Cambiar código o subir un commit no ofrece una actualización a las instalaciones existentes. Hace falta publicar una nueva versión con todos sus archivos de actualización.
+El recorrido del pipeline firmado es **código revisado → versión y commit → tag local → push explícito del tag → build de Windows → draft beta → revisión → publicación manual**. Para ofrecer la versión desde la app, la publicación final debe ser normal y Latest. Cambiar código o subir un commit no ofrece una actualización a las instalaciones existentes. Hace falta publicar una nueva versión con todos sus archivos de actualización.
 
 ## Probar la interfaz de actualización
 
@@ -42,7 +42,7 @@ npm run build:installer
 
 La firma requiere una identidad pública validada y `WINDOWS_SIGN_PUBLISHER`. Admite Artifact Signing o un certificado con token/HSM en el almacén de Windows. Ver [WINDOWS-SIGNING.md](WINDOWS-SIGNING.md) para las variables y el entorno de GitHub. El workflow no provisiona certificados ni contrata servicios: falla si falta la identidad de firma. El build exige firmas Authenticode válidas y selladas, además de los hashes de distribución.
 
-`--unsigned` está disponible para QA local. El 2026-10-12 se autorizó publicar manualmente v0.208.1 como beta de prueba sin firma, con esa limitación visible en las notas y en los README. Esta excepción no habilita una entrega estable sin firma ni modifica el workflow firmado por tags. Las betas manuales necesitan revisión del paquete completo y su fuente exacta antes de publicarse; no presentar esa compilación como si resolviera la confianza de Windows.
+`--unsigned` está disponible para QA local. La publicación manual v0.208.1 usa el paquete verificado sin firma y se ofrece como release normal y Latest para permitir la actualización desde la app. La ausencia de firma permanece visible en las notas y en los README. Esta excepción no modifica el workflow firmado por tags ni habilita un fallback silencioso. Las publicaciones manuales necesitan revisión del paquete completo y su fuente exacta; no presentar esa compilación como si resolviera la confianza de Windows.
 
 Para revisar una compilación existente sin volver a compilar:
 
@@ -107,9 +107,9 @@ El workflow `.github/workflows/release.yml` tiene un build de Windows independie
 
 El job de build tiene permiso de lectura del repo. Sólo `draft-windows` tiene `contents: write`: descarga el artefacto de ese mismo run, vuelve a verificar los hashes y el feed y crea un **draft prerelease** mediante [GitHub CLI](https://cli.github.com/manual/gh_release_create). No publica un release estable. Una repetición puede reemplazar archivos del mismo draft beta; un release publicado o un draft estable existente queda bloqueado.
 
-Antes de promover una versión a estable, probá el instalador en otro Windows x64: arranque, preparación de herramientas, importación, exportación, grabación y actualización desde una versión anterior cuando exista. Verificá la firma y revisá las notas y el conjunto de archivos del draft en [Releases](https://github.com/SikJa/syka-studio/releases). Las betas v0.208.0 y v0.208.1 salen sin firma y se identifican como tales; la entrega estable requiere la identidad de firma pública solicitada. Una prueba pendiente debe quedar documentada y no certifica ese recorrido.
+La validación completa de una publicación incluye otro Windows x64: arranque, preparación de herramientas, importación, exportación, grabación y actualización desde una versión anterior cuando exista. Revisá la firma, las notas y el conjunto de archivos en [Releases](https://github.com/SikJa/syka-studio/releases). v0.208.0 salió como beta y v0.208.1 se publica como actualización normal; ambas siguen sin firma pública. La detección y descarga de 0.208.1 desde GitHub se verificaron con el actualizador nativo y el controlador de 0.208.0. La aplicación del paquete, el reinicio y la instalación en otro equipo siguen pendientes y no se certifican por marcar la release como normal.
 
-La publicación de esta beta se hace manualmente desde el draft, manteniendo **Set as a pre-release**. El canal estable de Syka consulta `releases/latest`: **los drafts y las prereleases no notifican una actualización estable**. Para ofrecer una actualización estable hay que preparar y revisar una versión estable publicada con Setup, RELEASES y nupkg; el flujo de firma debe configurarse antes de convertir el pipeline en uno de releases estables. No se promociona automáticamente esta beta sin firma.
+El canal normal de Syka consulta `releases/latest`: **los drafts y las prereleases no notifican una actualización**. Para ofrecerla desde la app, publicá la release con **Set as a pre-release desmarcado** y marcala como Latest, con Setup, RELEASES y nupkg completos. La firma Authenticode es una condición independiente de esos metadatos: su ausencia no impide técnicamente detectar o descargar la actualización. El pipeline firmado sigue requiriendo una identidad pública; no genera ni publica automáticamente un paquete sin firma.
 
 Después de publicar, actualizar el botón de descarga de `README.md`, `README.en.md` y `README.pt-BR.md` para que apunte al instalador publicado. La beta inicial usa su URL directa porque todavía no hay una release estable. Al publicar la primera estable, usar `https://github.com/SikJa/syka-studio/releases/latest/download/Syka-Studio-x64-Setup.exe`: esa dirección seguirá la última estable sin cambiar los README en cada versión. No apuntar el botón a una versión que sólo exista como draft.
 

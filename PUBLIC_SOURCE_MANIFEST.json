@@ -7613,8 +7613,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "bytes": 10383,
-      "sha256": "2a3b3bdeee9acca0078bf3a3578c4195e4864ad717fb271c2a21cb4893d64292",
+      "bytes": 10700,
+      "sha256": "5dff899c2232f1b68d12fcea7bfcd66cf4df82f6ec5588cee94f3b35c664620d",
       "kind": "text"
     },
     {
@@ -26513,8 +26513,8 @@
     },
     {
       "path": "docs/WINDOWS-SIGNING.md",
-      "bytes": 5398,
-      "sha256": "600cea4847bed258476d3a71897870b970988024bbb848e6c3ece9cbacfe689a",
+      "bytes": 5389,
+      "sha256": "ca8112c84d44ebb66524f85f99da12736933da34b7fb1536f6c5cd9cfba2a62c",
       "kind": "text"
     },
     {
@@ -29165,20 +29165,20 @@
     },
     {
       "path": "README.en.md",
-      "bytes": 8013,
-      "sha256": "ec090d5c0b48f5ffb74ec3c31fab4293a063d11a4b6329165637da35bce481f4",
+      "bytes": 8115,
+      "sha256": "8e515741889a956ff6d2eb50c1c6ca13b02939171c42346878e087a8f2829aaf",
       "kind": "text"
     },
     {
       "path": "README.md",
-      "bytes": 8511,
-      "sha256": "a1cc924c1fff3349adff7223fc166384bf669ac11031a0aaca37550a09e9a1dd",
+      "bytes": 8627,
+      "sha256": "73383a1f504a3ecbf6e4919f286842e6709b3ad60d8f05b1edf691b2e7e4c8f6",
       "kind": "text"
     },
     {
       "path": "README.pt-BR.md",
-      "bytes": 8643,
-      "sha256": "daa9b9e6c935a9a7c7b11982d7a68f44e07236ac12d9277cc87050aad8536822",
+      "bytes": 8746,
+      "sha256": "1b58f8ba612a9c1eadbb3168a80f58751377e1ea5e7222e5a5b4c6b4a70fc7b2",
       "kind": "text"
     },
     {
@@ -29464,5 +29464,5 @@
       "kind": "text"
     }
   ],
-  "manifestSha256": "7d6eaeac25488683ef18a240d8479519104f658ee47a574e2213bc49f92ce4df"
+  "manifestSha256": "1c29af79518e26bf89e3f4410096f03ac95d787513c1211262af513157dad2b1"
 }

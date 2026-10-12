@@ -10,7 +10,7 @@
 <p align="center"><b>Editá video. Trabajá con agentes. Conservá el control.</b></p>
 
 <p align="center">
-  <a href="https://github.com/SikJa/syka-studio/releases/download/v0.208.1/Syka-Studio-x64-Setup.exe"><img src="apps/desktop/syka-assets/download-es.svg" alt="Descargar última versión · Windows" width="400" height="87" /></a>
+  <a href="https://github.com/SikJa/syka-studio/releases/latest/download/Syka-Studio-x64-Setup.exe"><img src="apps/desktop/syka-assets/download-es.svg" alt="Descargar última versión · Windows" width="400" height="87" /></a>
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@ El motor, la línea de tiempo y los proyectos editables vienen de Diffusion; Syk
 
 ## Instalación
 
-**Versión actual: 0.208.1 para Windows x64.** Es una beta con los nuevos conectores y un instalador **sin firma digital**; Windows puede mostrar una advertencia de seguridad. La beta se instala manualmente y no se ofrece por el canal estable de actualización de la app. Este comando descarga un instalador público compatible y comprueba su SHA-256: usa la última estable si existe o una beta publicada si todavía no hay estable, nunca un borrador. Si no hay una release compatible publicada, informa el motivo y no instala.
+**Versión actual: 0.208.1 para Windows x64.** Incluye los nuevos conectores y se ofrece por el canal normal de actualización de la app. Syka descarga cuando se lo pedís y solicita confirmación antes de reiniciar e instalar. El instalador todavía está **sin firma digital**; Windows puede mostrar una advertencia de seguridad. La firma y el canal de actualización son independientes. Este comando descarga un instalador público compatible y comprueba su SHA-256: usa la última estable si existe o una beta publicada si todavía no hay estable, nunca un borrador. Si no hay una release compatible publicada, informa el motivo y no instala.
 
 Abrí PowerShell y copiá:
 
