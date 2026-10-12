@@ -186,7 +186,7 @@ function buildEnvironment(options, root) {
     const required = storeCertificate ? ['WINDOWS_SIGNTOOL_PATH'] : ['WINDOWS_SIGNTOOL_PATH', 'WINDOWS_SIGN_DLIB', 'WINDOWS_SIGN_METADATA'];
     for (const name of required) {
       if (!env[name] || !statSync(env[name], { throwIfNoEntry: false })?.isFile()) {
-        throw Error(`Signing requires ${name}. Use --unsigned explicitly for a local beta build.`);
+        throw Error(`Signing requires ${name}. Use --unsigned explicitly for a local unsigned build.`);
       }
     }
   }
@@ -266,7 +266,7 @@ export async function buildWindows(args = process.argv.slice(2), root = ROOT) {
     execFileSync('cargo', ['--version'], { cwd: root, env, stdio: 'inherit', windowsHide: true });
     const rust = execFileSync('rustc', ['-vV'], { cwd: root, env, encoding: 'utf8', windowsHide: true });
     if (!/^host: x86_64-pc-windows-msvc\r?$/m.test(rust)) throw Error('Use the x86_64-pc-windows-msvc Rust toolchain for the native Windows build.');
-    console.log(`Preflight passed: Windows x64, Node 24, version ${version}, ${options.unsigned ? 'explicit unsigned beta' : 'signing configured'}.`);
+    console.log(`Preflight passed: Windows x64, Node 24, version ${version}, ${options.unsigned ? 'explicit unsigned build' : 'signing configured'}.`);
     if (options.preflightOnly) return;
     startedAt = Date.now();
     npm(['run', 'make', '--workspace=@diffusionstudio/desktop', '--', '--platform=win32', '--arch=x64'], { cwd: root, env, windowsHide: true });

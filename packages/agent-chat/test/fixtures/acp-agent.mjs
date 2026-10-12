@@ -30,6 +30,7 @@ createInterface({ input: process.stdin }).on('line', async line => {
       if (input.includes('hang')) break;
       if (input.includes('permission')) { permissionId = 'permission1'; send({ id: permissionId, method: 'session/request_permission', params: { sessionId: 's1', toolCall: { title: 'Write project file' }, options: [{ optionId: 'allow_once', name: 'Allow once', kind: 'allow_once' }, { optionId: 'reject_once', name: 'Reject', kind: 'reject_once' }] } }); break; }
       if (input.includes('exit')) { process.exit(1); }
+      if (mode === 'private-thought') for (const text of ['PRIVATE_REASONING_IN_ENGLISH', ' more private text']) send({ method: 'session/update', params: { sessionId: 's1', update: { sessionUpdate: 'agent_thought_chunk', content: { type: 'text', text } } } });
       if (mode === 'usage' || mode === 'context-only') send({ method: 'session/update', params: { sessionId: 's1', update: { sessionUpdate: 'usage_update', used: 48000, size: 200000, cost: { amount: 3, currency: 'USD' } } } });
       for (const text of ['hello ', process.env.OPENAI_API_KEY ? 'LEAK' : 'world']) send({ method: 'session/update', params: { sessionId: 's1', update: { sessionUpdate: 'agent_message_chunk', content: { type: 'text', text } } } });
       result({ stopReason: 'end_turn', ...(mode === 'usage' ? {usage: {totalTokens: 100, inputTokens: 80, outputTokens: 20, cachedReadTokens: 30, thoughtTokens: 5}} : mode === 'legacy-usage' ? {_meta: {quota: {token_count: {input_tokens: 80, output_tokens: 20}}}} : {}) }); break;

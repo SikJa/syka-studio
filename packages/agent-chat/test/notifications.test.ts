@@ -24,13 +24,33 @@ it('keeps project notices separate, deduplicates replay and does not cancel a di
   store.upsert(notice('a')); expect(store.visible().map(n => n.id)).toEqual(['b']);
   store.remove('a'); store.upsert(notice('a')); expect(store.visible().map(n => n.id)).toEqual(['b', 'a']);
 });
-it('keeps reasoning and ordinary completed turns out of delivery notices', () => {
+it('notifies completion and questions, never reasoning, progress or interruption', () => {
   expect(isNoticeEvent({ type: 'item.completed', item: { id: 'r', kind: 'reasoning', text: 'private' } })).toBe(false);
-  expect(isNoticeEvent({ type: 'turn.completed', turnId: 't', status: 'completed' })).toBe(false);
+  expect(isNoticeEvent({ type: 'turn.completed', turnId: 't', status: 'completed' })).toBe(true);
+  expect(isNoticeEvent({ type: 'turn.completed', turnId: 't', status: 'interrupted' })).toBe(false);
   expect(isNoticeEvent({ type: 'turn.completed', turnId: 't', status: 'failed', error: 'missing' })).toBe(true);
   expect(isAuthenticationError('401 Unauthorized')).toBe(true); expect(isAuthenticationError('ENOENT logo.png')).toBe(false);
   expect(isAuthenticationError('Groq rechazó la clave. Revisala en Proveedores.')).toBe(true);
   expect(cleanNoticeText('Bearer secret-value https://example.org/?token=secret')).not.toContain('secret');
+});
+it('bounds bursts, expires popups, and keeps expired questions pending', () => {
+  const store = new NoticeStore();
+  for (let i=0;i<200;i++) store.upsert({ ...notice(String(i)), kind: 'download', message: String(i), createdAt: 1000 });
+  expect(store.visible()).toHaveLength(3);
+  store.expire(9000); expect(store.visible()).toEqual([]);
+  store.upsert({ ...notice('question'), createdAt: 10000 });
+  store.keepAlive('question', 29000); store.expire(30000);
+  expect(store.visible().map(n => n.id)).toEqual(['question']);
+  store.expire(49000); expect(store.visible()).toEqual([]); expect(store.get('question')).toBeDefined();
+});
+it('suppresses repeated errors with new IDs after resolution without suppressing a different completed turn', () => {
+  const store = new NoticeStore();
+  const error = { ...notice('compiler-1'), projectName: 'project', kind: 'blocked' as const, message: 'same failure', createdAt: 1000 };
+  expect(store.upsert(error)).toBe(true); store.remove(error.id);
+  expect(store.upsert({ ...error, id: 'compiler-2', createdAt: 2000 })).toBe(false);
+  const done = { ...error, kind:'complete' as const, chatId:'chat', message:'done' };
+  expect(store.upsert({ ...done, id:'turn-1' })).toBe(true);
+  expect(store.upsert({ ...done, id:'turn-2' })).toBe(true);
 });
 it('answers a host question from another connection, correlates the project, and rejects stale replies', async () => {
   const f = await fixture(), events: AgentNoticeEvent[] = [];

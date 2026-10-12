@@ -16,8 +16,21 @@ import './update-menu.css';
 const [update, setUpdate] = createRoot(() => createSignal<UpdateState>({ phase: 'disabled', currentVersion: APP_VERSION }));
 let connected = false;
 let statusPoll: ReturnType<typeof setTimeout> | undefined;
+const announced = new Set<string>();
 function applyUpdate(next: UpdateState) {
   setUpdate(next);
+  if (next.availableVersion && ['available', 'ready'].includes(next.phase)) {
+    const key = `${next.phase}:${next.availableVersion}`;
+    if (!announced.has(key)) {
+      announced.add(key);
+      const ready = next.phase === 'ready';
+      toast(t(ready ? 'Actualización lista para instalar' : 'Actualización disponible'), {
+        id: 'syka-automatic-update', duration: 15_000, closeButton: true,
+        description: `Syka Studio ${next.availableVersion}. ${t(ready ? 'Reiniciá cuando te venga bien.' : 'Podés descargarla desde acá.')}`,
+        action: { label: t(ready ? 'Reiniciar e instalar' : 'Descargar actualización'), onClick: () => void command(ready ? 'install' : 'download') },
+      });
+    }
+  }
   clearTimeout(statusPoll); statusPoll = undefined;
   // A status event can arrive while Electron is still loading the window.
   // Recover active operations with cheap local status reads, never new checks
@@ -86,3 +99,6 @@ export function UpdateSettings() {
   onMount(connect);
   return <UpdateDetails />;
 }
+
+/** Mounted once at app level, including direct launches into the editor. */
+export function AutomaticUpdateNotice() { onMount(connect); return null; }

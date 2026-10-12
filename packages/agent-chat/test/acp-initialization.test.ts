@@ -5,6 +5,7 @@ import { join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { AcpHarness } from '../src/host/acp';
 import type { HarnessSession } from '../src/host/harness';
+import type { ChatEvent } from '../src/protocol';
 const roots: string[] = [], sessions: HarnessSession[] = [];
 const env = { env: { PATH: process.env.PATH ?? '', SYSTEMROOT: process.env.SYSTEMROOT ?? 'C:\\Windows' }, extraDirs: [] };
 async function setup(mode: string) {
@@ -17,6 +18,15 @@ afterEach(async () => {
   for (const root of roots.splice(0)) { if (!resolve(root).startsWith(resolve(tmpdir()) + sep) || !root.includes('syka-acp-init-')) throw Error('Invalid cleanup'); await rm(root, { recursive: true, force: true }); }
 });
 describe('ACP v1 optional implementation metadata', () => {
+  it('does not forward private thought chunks into the chat or durable event stream', async () => {
+    const { harness, root } = await setup('private-thought');
+    const events: ChatEvent[] = [];
+    const session = await harness.open({ cwd: root, model: 'model-one', mcp: null, env, emit: event => events.push(event) }); sessions.push(session);
+    expect((await session.send('fixture', 'model-one', event => events.push(event))).status).toBe('completed');
+    expect(JSON.stringify(events)).not.toContain('PRIVATE_REASONING_IN_ENGLISH');
+    expect(JSON.stringify(events)).toContain('hello world');
+    expect(events.filter(e => e.type === 'item.started' && e.item.kind === 'reasoning')).toHaveLength(1);
+  });
   it('loads the catalog and opens a session when Cursor omits agentInfo', async () => {
     const { harness, root } = await setup('no-agent-info');
     expect(await harness.probe(env, new AbortController().signal)).toMatchObject({ status: 'ready', defaultModel: 'model-one', models: [{ id: 'model-one' }, { id: 'future-model' }] });

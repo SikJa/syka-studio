@@ -538,6 +538,12 @@
       "kind": "text"
     },
     {
+      "path": "apps/desktop/src/notification-delivery.test.ts",
+      "bytes": 2069,
+      "sha256": "eda8d44609665b99711d93464c82107ad11086a03d7567a3b36e59c5e03d1eb2",
+      "kind": "text"
+    },
+    {
       "path": "apps/desktop/src/notification-image-info.test.ts",
       "bytes": 1196,
       "sha256": "3b5363fc4cbf8c5b272b49963d62eaaaef254645e179c28bfe8eaa4fdc876d7e",
@@ -569,8 +575,8 @@
     },
     {
       "path": "apps/desktop/src/notifications.ts",
-      "bytes": 16786,
-      "sha256": "04b50ee3ce431764536e2d70fea5026915cba2c07d89757b3290a35812e99702",
+      "bytes": 17865,
+      "sha256": "17e038aa98c3525e00ed99ad26005b15f6f07cb5b3f57ec4748364b533c5cb85",
       "kind": "text"
     },
     {
@@ -1289,8 +1295,8 @@
     },
     {
       "path": "apps/web/src/agent-chat/chat-identity-orb.tsx",
-      "bytes": 5323,
-      "sha256": "3ae936d23092536ff3478fa2e13b5f92e3a56d326ed8c6cbf9b034370e5e4ca5",
+      "bytes": 5352,
+      "sha256": "b91bee9aac8077195daac752931b06e805b0f23fcf0c36091b19989a5516008a",
       "kind": "text"
     },
     {
@@ -1433,8 +1439,8 @@
     },
     {
       "path": "apps/web/src/agent-chat/mirel-adapter.css",
-      "bytes": 28949,
-      "sha256": "9be73990903c2164cb544f10f4eb8613b28c3337fbc8df9695314560b50fcc5f",
+      "bytes": 29112,
+      "sha256": "2475d148393e2a33c6b77d71c992c02e7610d1fed6ea32e0f31230d88671dee9",
       "kind": "text"
     },
     {
@@ -1589,14 +1595,14 @@
     },
     {
       "path": "apps/web/src/agent-chat/transcript-visibility.test.ts",
-      "bytes": 6172,
-      "sha256": "aa587ec79c3886c35f4cf0f1c9e8dc24ab5a93a694289656521cb34a3f884a5a",
+      "bytes": 6637,
+      "sha256": "2fee7d92645fc93e62ca50d6ff2b2a1f044c8173af0d7af01d5d348e0b1b69da",
       "kind": "text"
     },
     {
       "path": "apps/web/src/agent-chat/transcript-visibility.ts",
-      "bytes": 2857,
-      "sha256": "7718934638ee019d734534f5f659c213326e175ed9b05e13654963ddefb4b355",
+      "bytes": 3935,
+      "sha256": "20857ddf285fdf7d1f6ed939e60d80e93fd7779ab0a38b8ce9452859e8b02e43",
       "kind": "text"
     },
     {
@@ -1685,8 +1691,8 @@
     },
     {
       "path": "apps/web/src/app.tsx",
-      "bytes": 2584,
-      "sha256": "6f6f85767d75b22f6d704b0513ae636a51792db20b131d876b8dbb28f92df2e8",
+      "bytes": 2702,
+      "sha256": "8eaecfc55a0e995f1f6c6bff5d114d001d375af2cc99ce79040cb5403b7fb25b",
       "kind": "text"
     },
     {
@@ -3785,8 +3791,8 @@
     },
     {
       "path": "apps/web/src/components/canvas/transport.tsx",
-      "bytes": 8132,
-      "sha256": "814349de66244491eb7140dc064599f51f1de72421fdd5f8f88eff2b86afd2da",
+      "bytes": 8136,
+      "sha256": "d82b34400c926edc2dcb69036be0fe77c20b674a1759356e73307dedcf298ac1",
       "kind": "text"
     },
     {
@@ -4013,8 +4019,8 @@
     },
     {
       "path": "apps/web/src/components/dashboard/update-menu.tsx",
-      "bytes": 5595,
-      "sha256": "152a7380f521204c5b59240bde96708739ff363c830f2a23a1f7715391582f1b",
+      "bytes": 6506,
+      "sha256": "a696f8041ed755012e2ae784df687b3a5dc5e683e0d643e0b4a0aeda2d8e0c1b",
       "kind": "text"
     },
     {
@@ -6341,8 +6347,8 @@
     },
     {
       "path": "apps/web/src/lib/appearance/color.ts",
-      "bytes": 5613,
-      "sha256": "3e5fbc6311257c0c566b950dfc2a7b81892d840e977a1e589e83a515b60d3dbd",
+      "bytes": 5604,
+      "sha256": "b118e7c559ccb4ef5c2e9e8f449927cf7d53eacf5c51bb1d551a85a9588c1b94",
       "kind": "text"
     },
     {
@@ -6415,6 +6421,12 @@
       "path": "apps/web/src/lib/mcp.ts",
       "bytes": 2779,
       "sha256": "4f5a35e0a611e5b13b4544c98c0108ab2edfefc80cbc3f547de8d95b9336fd06",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/orb-motion.ts",
+      "bytes": 642,
+      "sha256": "c38de09203cf153af9f9461b7dd1b251e4c1a6559b9767a5b162d281735e84b8",
       "kind": "text"
     },
     {
@@ -6551,8 +6563,8 @@
     },
     {
       "path": "apps/web/src/mirel-chat/components/selection-actions.css",
-      "bytes": 8197,
-      "sha256": "1b79109463dc4cf8626c70e3e608df64e044a5d1d002d0de32476326f4482282",
+      "bytes": 8219,
+      "sha256": "a8518ba25395313313fb8c629bba5b2cd205703a20fab27a6dc06ec332314e50",
       "kind": "text"
     },
     {
@@ -6869,14 +6881,14 @@
     },
     {
       "path": "apps/web/src/mirel-chat/features/notifications/entry.tsx",
-      "bytes": 18402,
-      "sha256": "a952d1d0d79c733c022f825bfcacd7aea60203b3aafab21a5869789f3865c803",
+      "bytes": 19689,
+      "sha256": "268b091bbc147a76c40ae4c390fc6564b73b28fbe6325c144bef168b22c5a294",
       "kind": "text"
     },
     {
       "path": "apps/web/src/mirel-chat/features/notifications/notifications.css",
-      "bytes": 7313,
-      "sha256": "03e26aebe9423032deff7fd906eedbb6b6b0c410d48cb92413fe536ee35d02e3",
+      "bytes": 7444,
+      "sha256": "e5715713e8ed64a51761df553f521f0e031a0c414386a1f484a3936228dcf70b",
       "kind": "text"
     },
     {
@@ -26597,8 +26609,8 @@
     },
     {
       "path": "packages/agent-chat/src/host/acp.ts",
-      "bytes": 26028,
-      "sha256": "b282a40f151cdc1fd00a0ce9ca3da2ca5c6281b1d186d350b08500aab122ac3c",
+      "bytes": 26139,
+      "sha256": "e36655472a1804e466e8d9ca473c70d8a8ac3ba49090f7863cd5b033046177c6",
       "kind": "text"
     },
     {
@@ -26717,8 +26729,8 @@
     },
     {
       "path": "packages/agent-chat/src/host/editorial-instructions.ts",
-      "bytes": 11200,
-      "sha256": "67bf5e171ff980e95521d918c556f518b74570bd04212f0a4d9b61a4d8d91da1",
+      "bytes": 11549,
+      "sha256": "daeb9c6022e6143a1e77d8202ea1efc581945710bd487a8f654fea4f2e5c0085",
       "kind": "text"
     },
     {
@@ -26771,8 +26783,8 @@
     },
     {
       "path": "packages/agent-chat/src/host/host.ts",
-      "bytes": 59722,
-      "sha256": "2df9e201a28adf7aa6c249437391eacd857ee751695099273dcbb5a3a0ddaa9d",
+      "bytes": 58720,
+      "sha256": "1467be4de7607738e4067890aa75e412654a2b402ae77f8cf269acff34bae2e9",
       "kind": "text"
     },
     {
@@ -26993,8 +27005,8 @@
     },
     {
       "path": "packages/agent-chat/src/notifications.ts",
-      "bytes": 5925,
-      "sha256": "b8c92d2b969c3afbf5f49087864d5515cf471e639b6dcf1a76a09a8da53aff9c",
+      "bytes": 7593,
+      "sha256": "6f82c1a5c904113d0e663d045e734f7e3eb7b909080857c16972d3a8c5792d43",
       "kind": "text"
     },
     {
@@ -27023,8 +27035,8 @@
     },
     {
       "path": "packages/agent-chat/test/acp-initialization.test.ts",
-      "bytes": 2112,
-      "sha256": "410e2fd3b5661178bc0cf9c14b86b157c4d211dbe6dc23e516c4ef42c20b5f43",
+      "bytes": 2847,
+      "sha256": "e2332870bc262191a08e8c25a8fa985ecc1757274184a9632051048f17ced72a",
       "kind": "text"
     },
     {
@@ -27191,8 +27203,8 @@
     },
     {
       "path": "packages/agent-chat/test/fixtures/acp-agent.mjs",
-      "bytes": 3615,
-      "sha256": "20d5b5cf5946cad60e545fe62b5739896594b29fdedebb287e3adc3bf2561798",
+      "bytes": 3837,
+      "sha256": "e2fa2cf8439b64d0f5d6df76b8afdd133025daf0016c1ba2407a05a42cafb5ab",
       "kind": "text"
     },
     {
@@ -27323,8 +27335,8 @@
     },
     {
       "path": "packages/agent-chat/test/notifications.test.ts",
-      "bytes": 9141,
-      "sha256": "4cf461d9575c8828e08e727a78955882f74bb3fec0f1804b4485e0463e16b19c",
+      "bytes": 10436,
+      "sha256": "7eafb75853679400920b658ff71914510634271e3e377cc6bcec79e38d2f9a98",
       "kind": "text"
     },
     {
@@ -28559,8 +28571,8 @@
     },
     {
       "path": "packages/runtime/src/media/audio.ts",
-      "bytes": 9309,
-      "sha256": "2633e98f540f9471cf683cc74ea7ff8baeb4e952eca8400dc1458ba2a213a962",
+      "bytes": 9670,
+      "sha256": "233984141ae60a065e88224d26dc6af409593aef6c6590db2e6d442685c0346e",
       "kind": "text"
     },
     {
@@ -28840,9 +28852,15 @@
       "kind": "text"
     },
     {
+      "path": "packages/runtime/src/systems/playback-audio.test.ts",
+      "bytes": 3209,
+      "sha256": "5bdf8488a0193ceba33996d4ac25aa320cc49f9a87176219f45e85c05bc6906b",
+      "kind": "text"
+    },
+    {
       "path": "packages/runtime/src/systems/playback.ts",
-      "bytes": 17361,
-      "sha256": "36507475175de11609b4a76b4e288ca3e9e148a7994406c165475f78ecc1f240",
+      "bytes": 17665,
+      "sha256": "8862874557913e986edc02bcbb444272b9065971823b8094a2ad8855d5eed5bb",
       "kind": "text"
     },
     {
@@ -28865,8 +28883,8 @@
     },
     {
       "path": "packages/runtime/src/traits/audio.ts",
-      "bytes": 689,
-      "sha256": "54d4db820de611633aa0d8b28aeb9e373be6b922ce60ca631d400ee91d51c8b4",
+      "bytes": 701,
+      "sha256": "d8d593b583381a34d3a919a2a7d0e6028567a8a1dc3cd7bbb6defc10cc785239",
       "kind": "text"
     },
     {
@@ -29201,8 +29219,8 @@
     },
     {
       "path": "scripts/build-windows.mjs",
-      "bytes": 15735,
-      "sha256": "b0d6d718b44d7ec732d88a7e1638a8a65eddf2378fb6195dfd776e9761a8613a",
+      "bytes": 15455,
+      "sha256": "a86f1c34908676a1109078e4d44a18fa479686dbd5c9b5a69188ef55958994ed",
       "kind": "text"
     },
     {
@@ -29464,5 +29482,5 @@
       "kind": "text"
     }
   ],
-  "manifestSha256": "1c29af79518e26bf89e3f4410096f03ac95d787513c1211262af513157dad2b1"
+  "manifestSha256": "08c67803e4370d30b01ed9dcc72c95f1e34688d5fdaa05f346f909be4d6731d6"
 }

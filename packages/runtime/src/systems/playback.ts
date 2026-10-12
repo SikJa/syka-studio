@@ -103,8 +103,11 @@ function advancePlayhead(world: World, entity: Entity): void {
 	const playing = playback.playing[eid] ?? false;
 	const wasPlaying = audioPlayback.wasPlaying[eid] ?? false;
 
-	// Shuttling (J/L at anything but 1x) plays silent
-	if ((playing && !wasPlaying) || looped || (playing && speed !== 1)) {
+	const speedChanged = speed !== (audioPlayback.speed[eid] ?? 1);
+	// Re-anchor once on a speed change, rather than moving the audio clock on
+	// every frame. Discard buffers scheduled using the previous rate.
+	if ((playing && !wasPlaying) || looped || (playing && speedChanged)) {
+		resetDecoders(world, entity);
 		audioPlayback.contextOffsetInSeconds[eid] = ctx?.currentTime ?? 0;
 		audioPlayback.timelineOffsetInSeconds[eid] = computed.localTimeInSeconds[eid]!;
 	}
@@ -114,6 +117,7 @@ function advancePlayhead(world: World, entity: Entity): void {
 	}
 
 	audioPlayback.wasPlaying[eid] = playing;
+	audioPlayback.speed[eid] = speed;
 }
 
 function forwardVideoDecoder(world: World, scene: Entity, entity: Entity, fill: Entity): void {
@@ -177,7 +181,8 @@ function forwardAudioDecoder(world: World, scene: Entity, entity: Entity, audioS
 	const localFrame = computed.localTime[eid]!;
 	const source = getSourceWindow(entity);
 
-	const playbackRate = computed.playbackRate[eid] || 1;
+	const previewSpeed = playback.speed[sid] || 1;
+	const playbackRate = (computed.playbackRate[eid] || 1) * previewSpeed;
 	const origin = computed.origin[eid]!;
 
 	const audioOffset = audioPlayback.contextOffsetInSeconds[sid] ?? 0;
@@ -185,20 +190,20 @@ function forwardAudioDecoder(world: World, scene: Entity, entity: Entity, audioS
 	// In offline rendering the encoder pins contextOffset to 0 and playbackOffset
 	// to the workarea start, so this term shifts scheduled audio back into the
 	// encoded window (and resolves to 0 when there is no workarea).
-	const audioDelay = audioOffset - playbackOffset;
+	const audioDelay = audioOffset - playbackOffset / previewSpeed;
 	const bus = resolveAudioBus(world, entity);
 
 	if (!decoder.ready) {
 		framePromises(world)?.push(initPromise);
-	} else if (computed.visibility[eid] === 1 && playback.playing[sid] === true && (playback.speed[sid] || 1) === 1) {
+	} else if (computed.visibility[eid] === 1 && playback.playing[sid] === true && previewSpeed > 0) {
 		const playPromise = decoder.playTo(bus, {
 			relativeFrom: localFrame / fps,
-			relativeTo: (localFrame + 15) / fps,
+			relativeTo: (localFrame + 15 * playbackRate) / fps,
 			trimStart: source.in / fps,
 			trimEnd: source.out / fps,
 			playbackRate,
 			currentTime: currentTime / fps,
-			relativeDelay: (origin / fps) + audioDelay,
+			relativeDelay: (origin / fps) / previewSpeed + audioDelay,
 		});
 		framePromises(world)?.push(playPromise);
 	} else {
@@ -365,7 +370,7 @@ function resetDecoders(world: World, entity: Entity): void {
 		entity.get(AudioDecoderHandle)?.reset();
 	}
 
-	for (const child of world.query(ChildOf(entity), AudioDecoderHandle)) {
+	for (const child of world.query(ChildOf(entity))) {
 		resetDecoders(world, child);
 	}
 }

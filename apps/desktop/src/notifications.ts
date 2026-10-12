@@ -24,6 +24,9 @@ let layout = { width: 300, height: 84 };
 const nativeRegions = process.platform === 'win32';
 let regionsReady = false;
 let regionRectangles = 0;
+let expiryTimer: ReturnType<typeof setTimeout> | undefined;
+let deliveryTimer: ReturnType<typeof setTimeout> | undefined;
+let showPending = false;
 const submitting = new Set<string>();
 const resolvedWhileSubmitting = new Set<string>();
 const snapshot = (): NoticeSnapshot => ({ notices: store.visible(), accent, sound: true,
@@ -46,7 +49,7 @@ export function allowedNoticeCommand(channel: string, data: unknown): boolean {
   if ([MAIN_CHANNELS.SYKA_GROQ_STATUS, MAIN_CHANNELS.SYKA_GROQ_TRANSCRIBE, MAIN_CHANNELS.SYKA_GLOSSARY_APPLY_TRANSCRIPT].includes(channel as never)) return true;
   if (channel !== MAIN_CHANNELS.SYKA_NOTIFICATIONS) return false;
   const action = (data as NoticeCommand)?.action;
-  return ['list', 'dismiss', 'open', 'artifact', 'answer', 'attach-image', 'remove-image', 'attach-file', 'remove-file', 'layout', 'interactive'].includes(action);
+  return ['list', 'dismiss', 'keep-alive', 'open', 'artifact', 'answer', 'attach-image', 'remove-image', 'attach-file', 'remove-file', 'layout', 'interactive'].includes(action);
 }
 
 function bounds() {
@@ -102,6 +105,22 @@ function showOverlay() {
   raiseOverlay();
 }
 function changed(show = false) {
+  clearTimeout(expiryTimer);
+  const expires = store.nextExpiry();
+  if (expires !== undefined) {
+    expiryTimer = setTimeout(() => { store.expire(); changed(); }, Math.max(1, expires - Date.now()));
+    expiryTimer.unref();
+  }
+  showPending ||= show;
+  if (deliveryTimer) return;
+  deliveryTimer = setTimeout(() => {
+    deliveryTimer = undefined;
+    const shouldShow = showPending; showPending = false;
+    publishChanged(shouldShow);
+  }, 60);
+  deliveryTimer.unref();
+}
+function publishChanged(show: boolean) {
   if (!store.visible().length) { mainBridge.emit(overlay, MAIN_CHANNELS.SYKA_NOTICES_CHANGED, snapshot()); overlay?.hide(); return; }
   createOverlay();
   mainBridge.emit(overlay, MAIN_CHANNELS.SYKA_NOTICES_CHANGED, snapshot());
@@ -151,6 +170,9 @@ export function agentNotice(payload: AgentNoticeEvent): void {
       const report = event.notice;
       await insert({ ...base, id: `${chat.projectId}:${report.kind}:${report.operationId}`, kind: report.kind,
         title: NOTICE_TITLES[report.kind], message: cleanNoticeText(report.message), artifact: report.artifact });
+    } else if (event.type === 'turn.completed' && event.status === 'completed') {
+      await insert({ ...base, id: `${chat.id}:complete:${event.turnId}`, kind: 'complete', title: 'Syka terminó de responder',
+        message: 'La respuesta está lista. Abrí el chat para verla.' });
     } else if (event.type === 'turn.completed' && event.status === 'failed') {
       const auth = isAuthenticationError(event.error || '');
       await insert({ ...base, id: auth ? `${chat.projectId}:auth:${chat.harness}` : `${chat.id}:blocked:${event.turnId}`,
@@ -229,6 +251,7 @@ export function registerNotifications(getEditor: () => BrowserWindow | null): vo
         if (!store.visible().some(n => n.id === notice.id)) { await images.remove(notice.id, attachedImage.id); throw Error('La pregunta ya se resolvió u ocultó.'); }
         return { ...snapshot(), attachedFile: attachedImage, ...(request.action === 'attach-image' ? { attachedImage } : {}) };
       }
+      else if (request.action === 'keep-alive') { store.keepAlive(request.id); changed(); }
       else if (request.action === 'dismiss') { store.dismiss(request.id); if (!submitting.has(notice.id)) void images.discard(notice.id); changed(); }
       else if (request.action === 'open') navigate(notice);
       else if (request.action === 'artifact') {

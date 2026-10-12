@@ -70,6 +70,8 @@ export class AudioDecoder {
 	private sink: AudioBufferSink | null = null;
 	private generation = 0;
 	private disposed = false;
+	private ended = false;
+	private playbackRate = 1;
 
 	public ready = false;
 
@@ -140,6 +142,7 @@ export class AudioDecoder {
 
 		duration -= offset;
 		duration = Math.max(0, duration);
+		if (!duration || offset >= newBuffer.duration) return;
 
 		const bufferSource = context.createBufferSource();
 		bufferSource.buffer = newBuffer;
@@ -170,7 +173,7 @@ export class AudioDecoder {
 
 		try {
 			if (this.disposed || generation !== this.generation || !this.ready || !this.sink) return;
-			if (this.iterator == null || this.stretcher == null || isBufferOutOfRange) {
+			if (this.iterator == null || this.stretcher == null || isBufferOutOfRange || this.playbackRate !== options.playbackRate) {
 				// Close the previous iterator so its pre-decoded AudioSamples get released.
 				await this.iterator?.return();
 				if (generation !== this.generation) return;
@@ -178,7 +181,10 @@ export class AudioDecoder {
 				this.firstBuffer = null;
 				this.lastBuffer = null;
 				this.stretcher = null;
+				this.ended = false;
+				this.playbackRate = options.playbackRate;
 			}
+			if (this.ended) return;
 
 			while (true) {
 				const nextBuffer = (await this.iterator.next()).value;
@@ -191,6 +197,7 @@ export class AudioDecoder {
 				this.stretcher ??= new TimeStretcher(numberOfChannels, sampleRate, playbackRate);
 
 				if (!nextBuffer) {
+					this.ended = true;
 					this.renderData(bus, options, this.stretcher.finalize(), sampleRate);
 					break;
 				}
@@ -201,14 +208,14 @@ export class AudioDecoder {
 
 				if (this.lastBuffer) {
 					const sampleGap = Math.round(
-						nextBuffer.timestamp - (this.lastBuffer.timestamp + this.lastBuffer.duration)
+						(nextBuffer.timestamp - (this.lastBuffer.timestamp + this.lastBuffer.duration)) * sampleRate
 					);
 
 					if (sampleGap > 0) {
 						this.renderData(
 							bus,
 							options,
-							Array(numberOfChannels).fill(new Float32Array(sampleGap)),
+							this.stretcher.append(Array.from({ length: numberOfChannels }, () => new Float32Array(sampleGap))),
 							sampleRate
 						);
 					}
@@ -244,6 +251,7 @@ export class AudioDecoder {
 		this.lastBuffer = null;
 		this.stretcher = null;
 		this.nextTimestamp = 0;
+		this.ended = false;
 
 		for (const node of this.audioNodes) {
 			node.onended = null;

@@ -24,6 +24,9 @@
 .quick-result-action{display:flex;justify-content:flex-end;margin-top:10px}.quick-open,.quick-back{background:transparent;border:0;color:#d0d0d4;font-size:10px;display:inline-flex;align-items:center;gap:5px;padding:6px 4px;border-radius:6px}.quick-open:hover,.quick-back:hover{background:#ffffff06}.quick-back{color:#96969d;margin-top:4px}
 .floating-orb{position:relative;width:61px;height:61px;flex-shrink:0;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;filter:none;padding:0;margin:0 0 2px;display:grid;place-items:center}
 .floating-orb canvas{width:61px;height:61px;display:block;background:transparent;pointer-events:none}
+.floating-orb{transition:transform 260ms var(--ease-smooth-out)}
+.floating-orb[data-expanded="true"]{transform:scale(.94)}
+.floating-orb:active{transform:scale(.86)}
 .notice-badge{position:absolute;top:0;right:0;background:var(--primary);color:var(--primary-foreground);border:1px solid color-mix(in srgb,var(--primary) 65%,#ffffff2a);font-size:9px;min-width:15px;height:15px;line-height:13px;border-radius:6px;box-shadow:0 1px 5px #0005;animation:badge-arrival 220ms var(--ease-smooth-out) 170ms both}
 .floating-orb:focus-visible{outline:1px solid #c9c9cf;outline-offset:-4px;border-radius:50%}
 .notification-native-composer{--primary:#39393d;--primary-foreground:#efeff1;--primary-hover:#49494d;--agent-composer-accent:#a4a4a9;--agent-composer-action:#39393d;--agent-composer-fill:#202022;font-family:inherit}
@@ -36,7 +39,7 @@
 .notification-native-composer .agent-composer-primary:focus-visible{outline:1px solid #c9c9cf;outline-offset:2px}
 @keyframes quick-arrival{from{opacity:0;transform:translateY(9px) scale(.98);filter:blur(2px)}to{opacity:1;transform:none;filter:blur(0)}}
 @keyframes badge-arrival{from{opacity:0;transform:scale(.75)}to{opacity:1;transform:scale(1)}}
-@media(prefers-reduced-motion:reduce){.quick-notice,.notice-badge{animation:none!important}.t-resize,.t-panel-slide{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.quick-notice,.notice-badge{animation:none!important}.t-resize,.t-panel-slide,.floating-orb{transition:none!important}}
 .notification-reply{border-radius:14px}
 .notification-reply[data-dragging="true"]{outline:1px solid #c9c9cf;outline-offset:2px}
 .notice-photo-status{display:block;margin:4px 2px 0;font-size:9px;color:#98989e}

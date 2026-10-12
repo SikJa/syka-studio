@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Item } from '@diffusionstudio/agent-chat';
-import { visibleTranscriptItems, transcriptPresentation, currentActivity } from './transcript-visibility';
+import { visibleTranscriptItems, transcriptPresentation, currentActivity, publicProgressSummary } from './transcript-visibility';
 
 describe('transient turn activity', () => {
   it('keeps native image generation at its conversation position with public progress, including after completion',()=>{
@@ -9,7 +9,7 @@ describe('transient turn activity', () => {
       {id:'comment',kind:'assistant',phase:'commentary',text:'Preparando la portada.'},
       {id:'image',kind:'tool',name:'imageGeneration',title:'Generar imagen',status:'running'},
       {id:'private',kind:'reasoning',text:'never expose'}];
-    expect(visibleTranscriptItems(trace,true).map(i=>i.id)).toEqual(['u','summary','comment','image']);
+    expect(visibleTranscriptItems(trace,true).map(i=>i.id)).toEqual(['u','comment','image']);
     expect(currentActivity([trace[3]])).toEqual({label:'Generando imagen',text:''});
     trace[3]={...trace[3] as Extract<Item,{kind:'tool'}>,status:'done'};
     trace.push({id:'final',kind:'assistant',phase:'final',text:'Listo.'});
@@ -71,7 +71,7 @@ describe('transient turn activity', () => {
   });
   it('uses public activity labels without exposing internal tool names or outputs', () => {
     expect(currentActivity([{id:'r',kind:'reasoning',text:'private reasoning'}]).text).not.toContain('private');
-    expect(currentActivity([{id:'t',kind:'tool',name:'syka_read_source',title:'syka_read_source',status:'running',output:'secret output'}])).toEqual({label:'Ejecutando herramientas',text:''});
+    expect(currentActivity([{id:'t',kind:'tool',name:'syka_read_source',title:'syka_read_source',status:'running',output:'secret output'}])).toEqual({label:'Revisando archivos',text:''});
     expect(currentActivity([{id:'w',kind:'tool',name:'webSearch',title:'Search',status:'running'}])).toEqual({label:'Consultando la web',text:''});
     expect(currentActivity([],true)).toEqual({label:'Esperando tu respuesta',text:''});
   });
@@ -83,9 +83,15 @@ describe('transient turn activity', () => {
       {id:'shell',kind:'tool',name:'commandExecution',title:'Run',status:'done'},
       {id:'answer',kind:'assistant',text:'Guardado',phase:'final'}];
     expect(visibleTranscriptItems(trace,false).map(i=>i.id)).toEqual(['u','web','answer']);
-    expect(visibleTranscriptItems(trace.slice(0,-1),true).map(i=>i.id)).toEqual(['u','summary','web']);
+    expect(visibleTranscriptItems(trace.slice(0,-1),true).map(i=>i.id)).toEqual(['u','web']);
     expect(visibleTranscriptItems(trace,true).map(i=>i.id)).toEqual(['u','web','answer']);
-    expect(currentActivity([trace[2]]).text).toBe(''); // Already visible in its summary row.
+    expect(currentActivity([trace[2]]).text).toBe('Voy a comparar las fuentes.');
     expect(trace).toHaveLength(6);
+  });
+  it('uses a brief public Spanish summary without exposing English or private thoughts', () => {
+    expect(publicProgressSummary('Investigating internal details in English.')).toBe('');
+    expect(publicProgressSummary('Voy a revisar el audio. Luego viene un párrafo largo.')).toBe('Voy a revisar el audio.');
+    expect(publicProgressSummary('Estoy revisando ' + 'el proyecto '.repeat(100)).length).toBeLessThanOrEqual(221);
+    expect(currentActivity([{id:'r',kind:'reasoning',text:'Voy a revelar pensamiento privado.'}]).text).toBe('Analizando el proyecto');
   });
 });

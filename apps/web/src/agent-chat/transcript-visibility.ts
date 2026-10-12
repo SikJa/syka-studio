@@ -15,7 +15,7 @@ export function transcriptPresentation(items: Item[], active: boolean) {
     if (finalSeen && (item.kind === 'reasoning' || (item.kind === 'assistant' && item.phase === 'commentary'))) {
       transient.add(item.id);
     }
-    if ((item.kind === 'tool' && item.name !== 'webSearch' && item.name !== 'imageGeneration') || (item.kind === 'reasoning' && !item.summary)) {
+    if ((item.kind === 'tool' && item.name !== 'webSearch' && item.name !== 'imageGeneration') || item.kind === 'reasoning') {
       transient.add(item.id);
     } else if (item.kind === 'assistant') {
       if (item.phase === 'final' || (!item.phase && !laterAssistant && (!active || index < turnStart))) finalSeen = true;
@@ -40,10 +40,25 @@ export function currentActivity(activity: Item[], waiting = false) {
   const last = activity.at(-1);
   if (last?.kind === 'tool') return {
     label: last.status === 'failed' ? 'Revisando un problema' : last.status !== 'running' ? 'Continuando'
-      : last.name === 'webSearch' ? 'Consultando la web' : last.name === 'imageGeneration' ? 'Generando imagen' : 'Ejecutando herramientas',
+      : last.name === 'webSearch' ? 'Consultando la web' : last.name === 'imageGeneration' ? 'Generando imagen'
+      : /read|inspect|source|file|syka_files/i.test(last.name + ' ' + last.title) ? 'Revisando archivos'
+      : /write|edit|patch|apply/i.test(last.name + ' ' + last.title) ? 'Aplicando cambios'
+      : /render|export/i.test(last.name + ' ' + last.title) ? 'Preparando el video'
+      : /search|browse|fetch/i.test(last.name + ' ' + last.title) ? 'Consultando información' : 'Ejecutando herramientas',
     text: '',
   };
-  if (last?.kind === 'assistant') return { label: 'Trabajando', text: last.phase === 'commentary' ? '' : last.text };
-  if (last?.kind === 'reasoning' && last.summary) return {label:'Pensando',text:''};
+  if (last?.kind === 'assistant') return { label: 'Preparando la respuesta', text: publicProgressSummary(last.text) };
+  if (last?.kind === 'reasoning' && last.summary) return {label:'Pensando',text:publicProgressSummary(last.text) || 'Analizando el proyecto'};
   return { label: 'Pensando', text: 'Analizando el proyecto' };
+}
+
+/** Only short, explicitly public summaries. Never translate or summarize a
+ * private thought stream; unknown-language summaries use the localized status. */
+export function publicProgressSummary(text: string): string {
+  const plain = text.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').replace(/\s+/g, ' ').trim();
+  if (!/\b(?:voy|estoy|revisando|analizando|para|las|los|del|una|necesito|verificar|preparando|comparar|buscando|archivo|proyecto)\b/i.test(plain)) return '';
+  const sentence = plain.match(/^.{1,220}?(?:[.!?](?:\s|$)|$)/)?.[0]?.trim();
+  if (sentence) return sentence;
+  const boundary = plain.lastIndexOf(' ', 200);
+  return plain.slice(0, boundary > 80 ? boundary : 200).trimEnd() + '…';
 }

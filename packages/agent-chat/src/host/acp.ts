@@ -302,6 +302,15 @@ class AcpSession implements HarnessSession {
     if (update.sessionUpdate === "config_option_update") { if (Array.isArray(update.configOptions)) this.metadata.configOptions = update.configOptions; return; }
     if (!this.active) return;
     if ((update.sessionUpdate === 'agent_message_chunk' && text(update.content?.text).trim()) || update.sessionUpdate === 'tool_call' || update.sessionUpdate === 'tool_call_update') this.receivedOutput = true;
+    if (update.sessionUpdate === 'agent_thought_chunk') {
+      // ACP thoughts are internal reasoning, not a provider-authored public
+      // summary. Publish only activity, never the thought text or its deltas.
+      if (!this.chunks.has('reasoning')) {
+        const item: Item = { id: newItemId('acp'), kind: 'reasoning', text: '' };
+        this.chunks.set('reasoning', item); this.emit({ type: 'item.started', item });
+      }
+      return;
+    }
     if (update.sessionUpdate === "agent_message_chunk" || update.sessionUpdate === "agent_thought_chunk") {
       const delta = text(update.content?.text); if (!delta) return;
       if (this.steeringAck !== null && update.sessionUpdate === "agent_message_chunk" && /^(?:⏩ Steer queued for the active turn:|⚠️ Steer failed:|No active turn — queued for the next turn\.)/.test(delta)) {

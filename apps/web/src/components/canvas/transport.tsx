@@ -89,7 +89,7 @@ export function CanvasTransport(props: { fullscreen: boolean; onFullscreen: () =
         <DropdownMenuRadioGroup value={String(speed())} onChange={value => { scene()?.set(Playback, { speed: Number(value) }); }}>
           <For each={[0.25, 0.5, 1, 1.5, 2, 4]}>{value => <DropdownMenuRadioItem value={String(value)}>{value}×</DropdownMenuRadioItem>}</For>
         </DropdownMenuRadioGroup>
-        <p class="syka-transport-menu-note">Previsualización. Audio a 1×.</p>
+        <p class="syka-transport-menu-note">Audio y video a la misma velocidad.</p>
       </DropdownMenuContent></DropdownMenuPortal>
     </DropdownMenu>
     {control(loop() ? 'Desactivar bucle' : 'Repetir video', 'loop', () => scene()?.set(Playback, { loop: !loop() }), loop())}

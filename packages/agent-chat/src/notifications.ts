@@ -26,6 +26,7 @@ export type StudioNotice = {
   artifact?: string;
   provider?: "groq" | "agents";
   createdAt: number;
+  expiresAt?: number;
 };
 export type NoticeSnapshot = { notices: StudioNotice[]; accent: string; sound: boolean;
   attachedFile?: NoticeAttachment;
@@ -52,6 +53,7 @@ export type NoticeNavigation = { projectId?: string; projectDir?: string; chatId
 export type NoticeCommand =
   | { action: 'list' }
   | { action: 'dismiss'; id: string }
+  | { action: 'keep-alive'; id: string }
   | { action: 'open' | 'artifact'; id: string }
   | { action: 'answer'; id: string; answers: Record<string, string[]>; attachments?: string[] }
   | { action: 'attach-image'; id: string; name: string; bytes: Uint8Array }
@@ -74,7 +76,7 @@ export const NOTICE_TITLES: Record<NoticeKind, string> = {
 /** Only operational events cross into the desktop overlay. No reasoning or tokens. */
 export function isNoticeEvent(event: AgentNoticeEvent['event']): boolean {
   return event.type === 'project.notice' || event.type === 'request.opened' || event.type === 'request.resolved'
-    || (event.type === 'turn.completed' && event.status === 'failed');
+    || (event.type === 'turn.completed' && event.status !== 'interrupted');
 }
 
 export function isAuthenticationError(message: string): boolean {
@@ -90,11 +92,23 @@ export function cleanNoticeText(value: string, limit = 600): string {
 export class NoticeStore {
   private records = new Map<string, StudioNotice>();
   private dismissed = new Set<string>();
+  private recent = new Map<string, number>();
   upsert(notice: StudioNotice): boolean {
     const previous = this.records.get(notice.id);
+    const key = notice.kind === 'complete' && notice.chatId ? notice.id
+      : `${notice.projectId ?? notice.projectName}:${notice.chatId ?? ''}:${notice.kind}:${notice.message}`;
+    const seen = this.recent.get(key);
+    // Repeated operation IDs and compiler retries must not replay the same
+    // alert or sound. Questions remain correlated with the original request.
+    if (notice.kind !== 'question' && !previous && seen !== undefined && notice.createdAt - seen < 60_000) return false;
     // A reopened request after a rejected dispatch must become retryable again.
     if (notice.kind === 'question' && !previous) this.dismissed.delete(notice.id);
-    this.records.set(notice.id, notice);
+    const createdAt = previous?.createdAt ?? notice.createdAt;
+    this.records.set(notice.id, { ...notice, createdAt, expiresAt: previous?.expiresAt ?? createdAt + (notice.kind === 'question' ? 20_000 : 8_000) });
+    if (!previous) {
+      this.recent.set(key, notice.createdAt);
+      while (this.recent.size > 1000) this.recent.delete(this.recent.keys().next().value!);
+    }
     while (this.records.size > 100) {
       const candidate = [...this.records.values()].find(n => n.kind !== 'question') ?? this.records.values().next().value;
       if (!candidate) break;
@@ -105,5 +119,20 @@ export class NoticeStore {
   get(id: string): StudioNotice | undefined { return this.records.get(id); }
   dismiss(id: string): void { this.dismissed.add(id); }
   remove(id: string): void { this.records.delete(id); this.dismissed.delete(id); }
-  visible(): StudioNotice[] { return [...this.records.values()].filter(n => !this.dismissed.has(n.id)); }
+  keepAlive(id: string, now = Date.now()): void {
+    const notice = this.records.get(id);
+    if (notice && !this.dismissed.has(id)) notice.expiresAt = now + (notice.kind === 'question' ? 20_000 : 8_000);
+  }
+  expire(now = Date.now()): boolean {
+    let changed = false;
+    for (const notice of this.records.values()) {
+      if (!this.dismissed.has(notice.id) && notice.expiresAt! <= now) { this.dismissed.add(notice.id); changed = true; }
+    }
+    return changed;
+  }
+  nextExpiry(): number | undefined {
+    const times = [...this.records.values()].filter(n => !this.dismissed.has(n.id)).map(n => n.expiresAt!);
+    return times.length ? Math.min(...times) : undefined;
+  }
+  visible(): StudioNotice[] { return [...this.records.values()].filter(n => !this.dismissed.has(n.id)).slice(-3); }
 }

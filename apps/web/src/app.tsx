@@ -21,6 +21,7 @@ import { NotFoundPage } from '@/pages/not-found';
 import { DashboardPage } from '@/pages/dashboard';
 import { SykaSettingsRoot } from '@/components/settings/modal';
 import { DesktopNotificationBridge } from '@/components/desktop-notification-bridge';
+import { AutomaticUpdateNotice } from '@/components/dashboard/update-menu';
 
 function BootSplash() {
   const auth = useAuth();
@@ -56,6 +57,7 @@ function App() {
               {props.children}
               <SykaSettingsRoot />
               <DesktopNotificationBridge />
+              <AutomaticUpdateNotice />
               <BootSplash />
               <EditorApi />
             </AuthProvider>

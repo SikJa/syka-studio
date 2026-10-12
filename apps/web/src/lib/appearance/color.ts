@@ -83,7 +83,7 @@ export function accentTokens(input: string, dark: boolean): Record<string, strin
     '--primary-hover': mix(primary, away, .12), '--primary-pressing': mix(primary, away, .22),
     '--tertiary': selected, '--tertiary-foreground': selectedFg,
     '--tertiary-hover': mix(selected, surface, .15), '--tertiary-pressing': mix(selected, surface, .3),
-    '--selection': selected, '--selection-foreground': selectedFg,
+    '--selection': primary, '--selection-foreground': fg,
     '--ring': readable(primary, surface, 4.5), '--syka-accent-text': readable(primary, surface, 4.5),
   };
 }

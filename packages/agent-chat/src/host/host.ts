@@ -795,7 +795,7 @@ export class AgentHost {
   }
 
   private publish(chat: Chat, event: ChatEvent): void {
-    if (event.type === 'request.opened' || event.type === 'request.resolved' || (event.type === 'turn.completed' && event.status === 'failed')) this.notice(chat, event);
+    if (event.type === 'request.opened' || event.type === 'request.resolved' || (event.type === 'turn.completed' && event.status !== 'interrupted')) this.notice(chat, event);
     chat.seq += 1;
     if (isPersistedEvent(event)) {
       this.options.store.append(chat.meta.id, event).catch((error: Error) => this.log(`append failed: ${error.message}`));

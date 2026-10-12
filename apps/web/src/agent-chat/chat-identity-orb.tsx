@@ -1,6 +1,7 @@
 import { createEffect, createSignal, onCleanup, onMount } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { SykaChatOrb } from './mirel-messages';
+import { pulseOrb } from '@/lib/orb-motion';
 
 /** One persistent canvas follows the header/activity anchors without being remounted. */
 export function ChatIdentityOrb(props: { working: boolean; paused?: boolean }) {
@@ -88,10 +89,10 @@ export function ChatIdentityOrb(props: { working: boolean; paused?: boolean }) {
   return <>
     <span ref={anchor} class="syka-orb-anchor" data-chat-orb-anchor="header" aria-hidden="true" />
     <Portal>
-      <span class="syka-shared-chat-orb" data-working={props.working} data-travel={travel()} data-kb-theme={theme()} aria-hidden="true"
+      <button type="button" class="syka-shared-chat-orb" data-working={props.working} data-travel={travel()} data-kb-theme={theme()} aria-label="Animar orbe de Syka" onClick={event => pulseOrb(event.currentTarget)}
         style={{ '--chat-orb-size': `${position().size}px`, transform: `translate3d(${position().x}px,${position().y}px,0)`, opacity: position().visible ? 1 : 0, 'z-index': position().zIndex }}>
         <SykaChatOrb working={props.working && !props.paused} paused={props.paused} />
-      </span>
+      </button>
     </Portal>
   </>;
 }

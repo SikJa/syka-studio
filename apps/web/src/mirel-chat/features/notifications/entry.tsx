@@ -10,6 +10,7 @@ import { attachOrb, wakeOrbs } from './orb';
 import { NOTICE_ATTACHMENT_ACCEPT, NOTICE_ATTACHMENT_MAX_COUNT, NOTICE_ATTACHMENT_MAX_TOTAL_BYTES, noticeAttachmentLimit } from '../../../../../../packages/agent-chat/src/notifications';
 import type { NoticeCommand, NoticeImage, NoticeRegion, NoticeSnapshot, StudioNotice } from '../../../../../../packages/agent-chat/src/notifications';
 import './notifications.css';
+import { pulseOrb } from '@/lib/orb-motion';
 
 const command = (data: NoticeCommand) => mainBridge.call(MAIN_CHANNELS.SYKA_NOTIFICATIONS, data);
 const sound = new Audio(new URL(location.protocol === 'file:' ? 'syka-notice.wav' : '/syka-notice.wav', window.location.href).href);
@@ -28,6 +29,7 @@ function Notification({ notice }: { notice: StudioNotice }) {
   const row = useRef<HTMLElement>(null), bubble = useRef<HTMLDivElement>(null), body = useRef<HTMLDivElement>(null), head = useRef<HTMLButtonElement>(null), canvas = useRef<HTMLCanvasElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const alive = useRef(true);
+  const manualExpanded = useRef<boolean | null>(null);
   const question = notice.request?.questions[step];
   const selectedChoices = question ? choices[question.id] || [] : [];
   const longest = Math.max(0, ...draft.split('\n').map(line => line.length));
@@ -37,6 +39,16 @@ function Notification({ notice }: { notice: StudioNotice }) {
     const detach = canvas.current ? attachOrb(canvas.current) : () => {};
     return () => { alive.current = false; clearTimeout(closeTimer.current); detach(); };
   }, []);
+  useEffect(() => {
+    // Reading, replying and preparing attachments keep this alert alive;
+    // dismissing the popup never resolves the question in the chat.
+    const timer = setInterval(() => {
+      if (row.current?.matches(':hover') || row.current?.contains(document.activeElement) || draft.trim() || photoRef.current.length || uploads.current || sending) {
+        void command({ action: 'keep-alive', id: notice.id }).catch(console.error);
+      }
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [notice.id, draft, sending]);
   useLayoutEffect(() => {
     const element = body.current;
     if (!element) return;
@@ -44,11 +56,16 @@ function Notification({ notice }: { notice: StudioNotice }) {
     const observer = new ResizeObserver(fit); observer.observe(element); fit();
     return () => observer.disconnect();
   }, [step]);
-  function show() { clearTimeout(closeTimer.current); setExpanded(true); wakeOrbs(); }
+  function show() { clearTimeout(closeTimer.current); if (manualExpanded.current !== false) setExpanded(true); wakeOrbs(); }
+  function toggleOrb() {
+    clearTimeout(closeTimer.current);
+    manualExpanded.current = !expanded; setExpanded(!expanded); wakeOrbs();
+    pulseOrb(row.current?.querySelector('.floating-orb'));
+  }
   function leave() {
     clearTimeout(closeTimer.current);
     closeTimer.current = setTimeout(() => {
-      if (!row.current?.matches(':hover') && !row.current?.contains(document.activeElement) && !draft.trim() && !photoRef.current.length && !uploads.current && !bubble.current?.querySelector('.dictation-inline')) setExpanded(false);
+      if (!row.current?.matches(':hover') && !row.current?.contains(document.activeElement) && !draft.trim() && !photoRef.current.length && !uploads.current && !bubble.current?.querySelector('.dictation-inline')) { setExpanded(false); manualExpanded.current = null; }
     }, 280);
   }
   async function act(action: 'open' | 'artifact' | 'dismiss') {
@@ -123,7 +140,7 @@ function Notification({ notice }: { notice: StudioNotice }) {
       onBlur={leave}
       onFocus={event => { if (body.current?.contains(event.target)) show(); }}
       onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); setExpanded(false); head.current?.focus(); } }}>
-      <button ref={head} className="quick-head" aria-expanded={expanded} aria-controls={'body-' + notice.id} onClick={show}>
+      <button ref={head} className="quick-head" aria-expanded={expanded} aria-controls={'body-' + notice.id} onClick={() => { manualExpanded.current = null; show(); }}>
         <span className="quick-title"><i aria-hidden="true"/><span className="quick-title-label">{notice.title}</span></span>
         <span className="quick-project">{notice.projectName} · Syka Studio</span>
       </button>
@@ -157,7 +174,7 @@ function Notification({ notice }: { notice: StudioNotice }) {
         {!!error && <p role="alert" className="notice-error">{error}</p>}
       </div>
     </div>
-    <button className="floating-orb" aria-label={'Abrir proyecto: ' + notice.projectName} onClick={() => void act('open')}>
+    <button className="floating-orb" aria-label={(expanded ? 'Contraer aviso: ' : 'Expandir aviso: ') + notice.projectName} aria-expanded={expanded} aria-controls={'body-' + notice.id} data-expanded={expanded} onClick={toggleOrb}>
       <canvas ref={canvas}/><span className="notice-badge">{notice.kind === 'question' ? notice.request?.questions.length || '1' : ['blocked', 'auth'].includes(notice.kind) ? '!' : '✓'}</span>
     </button>
   </article>;
@@ -165,7 +182,7 @@ function Notification({ notice }: { notice: StudioNotice }) {
 
 function Notifications() {
   const [state, setState] = useState<NoticeSnapshot>({ notices: [], accent: '#008cff', sound: true });
-  const stack = useRef<HTMLDivElement>(null), seen = useRef(new Set<string>());
+  const stack = useRef<HTMLDivElement>(null), seen = useRef(new Set<string>()), lastSound = useRef(0);
   useLayoutEffect(() => {
     if (document.activeElement?.closest('.quick-body')) return;
     const frame = requestAnimationFrame(() => { if (stack.current) stack.current.scrollTop = stack.current.scrollHeight; });
@@ -178,9 +195,10 @@ function Notifications() {
       current++;
       const fresh = data.notices.some(n => !seen.current.has(n.id));
       for (const notice of data.notices) seen.current.add(notice.id);
+      while (seen.current.size > 1000) seen.current.delete(seen.current.values().next().value!);
       for (const [key, value] of Object.entries(accentTokens(data.accent, true))) document.documentElement.style.setProperty(key, value);
       setState(data);
-      if (fresh && data.sound && localStorage.getItem('syka:chat-question-sound') !== 'off') { sound.currentTime = 0; void sound.play().catch(console.error); }
+      if (fresh && data.sound && Date.now() - lastSound.current >= 10_000 && localStorage.getItem('syka:chat-question-sound') !== 'off') { lastSound.current = Date.now(); sound.currentTime = 0; void sound.play().catch(console.error); }
     };
     const off = mainBridge.handle(MAIN_CHANNELS.SYKA_NOTICES_CHANGED, apply);
     const revision = current;

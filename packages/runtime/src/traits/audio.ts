@@ -16,6 +16,7 @@ export const Soloed = trait();
 // Runtime-only: maps timeline time to AudioContext time while playing.
 export const AudioPlayback = trait({
 	wasPlaying: false,
+	speed: 1,
 	contextOffsetInSeconds: 0,
 	timelineOffsetInSeconds: 0,
 });
