@@ -35,7 +35,7 @@ El motor, la línea de tiempo y los proyectos editables vienen de Diffusion; Syk
 
 ## Instalación
 
-**Versión actual: 0.208.1 para Windows x64.** Incluye los nuevos conectores y se ofrece por el canal normal de actualización de la app. Syka descarga cuando se lo pedís y solicita confirmación antes de reiniciar e instalar. El instalador todavía está **sin firma digital**; Windows puede mostrar una advertencia de seguridad. La firma y el canal de actualización son independientes. Este comando descarga un instalador público compatible y comprueba su SHA-256: usa la última estable si existe o una beta publicada si todavía no hay estable, nunca un borrador. Si no hay una release compatible publicada, informa el motivo y no instala.
+**Versión actual: 0.208.2 para Windows x64.** Incluye los nuevos conectores, audio en todas las velocidades del selector, selección de texto con el acento, avisos breves sin acumulación y un orbe que responde al clic. La app muestra automáticamente un aviso cuando hay una actualización. Syka descarga cuando se lo pedís y solicita confirmación antes de reiniciar e instalar. El instalador todavía está **sin firma digital**; Windows puede mostrar una advertencia de seguridad. La firma y el canal de actualización son independientes. Este comando descarga un instalador público compatible y comprueba su SHA-256: usa la última estable si existe o una beta publicada si todavía no hay estable, nunca un borrador. Si no hay una release compatible publicada, informa el motivo y no instala.
 
 Abrí PowerShell y copiá:
 

@@ -24,7 +24,7 @@
     {
       "path": "apps/cli/package.json",
       "bytes": 806,
-      "sha256": "84392b23e2b3e7b7b0cb1b4869ce9bd669e8c13f36a0cc8935e8b7ae311e2e51",
+      "sha256": "7ce605cc872d2dd21bbfa2332c479b01806965b9477c8a563e32e522fc9f315e",
       "kind": "text"
     },
     {
@@ -114,7 +114,7 @@
     {
       "path": "apps/desktop/package.json",
       "bytes": 3274,
-      "sha256": "55b94ee3fb1c2b771ca018b00bf22db27544f335c2f8b4d0cf498125fb126fc2",
+      "sha256": "faf9cdba33d6223ec724de8ad613e7a5eca393bdd833a8bed95edd0da226829c",
       "kind": "text"
     },
     {
@@ -1200,7 +1200,7 @@
     {
       "path": "apps/web/package.json",
       "bytes": 2692,
-      "sha256": "2f425e8ee975075165ce94bbdfdae4878542a486db60ef1f842812d842614ad2",
+      "sha256": "36a865502f348efa023067f9c4fc404f53901f04a4fad3eef2a22518b3faca84",
       "kind": "text"
     },
     {
@@ -26550,13 +26550,13 @@
     {
       "path": "package-lock.json",
       "bytes": 509848,
-      "sha256": "80a88049a74ad9d960ebc5084a8513dd6f856705505d46a208bd7ac342743be3",
+      "sha256": "4537449d2d88707dc06ffbf37b28c4f9421fc15b87ed247feb1cef2cc28bc105",
       "kind": "text"
     },
     {
       "path": "package.json",
       "bytes": 1823,
-      "sha256": "0d8021dcc4b4c193b3a8c11ecac8b10e657b79e949cb48de13e8e991952ca1ab",
+      "sha256": "56acd64fee28eb0352e4ff6ec514a9f66448fd90b42927603690ce83498f3e6a",
       "kind": "text"
     },
     {
@@ -29189,8 +29189,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 8627,
-      "sha256": "73383a1f504a3ecbf6e4919f286842e6709b3ad60d8f05b1edf691b2e7e4c8f6",
+      "bytes": 8782,
+      "sha256": "a02f7c04930a9674fdff696247ea6ea1b42a3eee23048d217ae0d558b124d976",
       "kind": "text"
     },
     {
@@ -29482,5 +29482,5 @@
       "kind": "text"
     }
   ],
-  "manifestSha256": "08c67803e4370d30b01ed9dcc72c95f1e34688d5fdaa05f346f909be4d6731d6"
+  "manifestSha256": "2a3f3f9572f29dbb358c98c2649f984a8eef9030f562769b456617dddcfd78ff"
 }
