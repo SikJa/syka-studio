@@ -17,13 +17,28 @@ export async function checkSoundCatalog(docsDir) {
     if (isAbsolute(rel) || rel.startsWith('..') || !(await stat(path)).isFile()) throw Error('Sound outside app resources: ' + entry.path);
     const data = await readFile(path);
     if (createHash('sha256').update(data).digest('hex') !== entry.sha256) throw Error('Bundled sound hash mismatch: ' + entry.path);
+    if ((entry.path.startsWith('cuelume/') || entry.provider === 'Cuelume') &&
+      (!entry.path.startsWith('cuelume/') || entry.provider !== 'Cuelume' || entry.license !== 'MIT')) throw Error('Cuelume rights metadata missing: ' + entry.path);
     if (!['CC0-1.0', 'MIT'].includes(entry.license) || !Number.isFinite(entry.duration) || entry.duration <= 0) throw Error('Missing sound rights/duration: ' + entry.path);
     bytes += data.length; if (entry.soundProfile) profiled++;
     const provider = entry.path.startsWith('kenney/') ? entry.path.split('/')[1] : entry.provider;
     providers[provider] = (providers[provider] || 0) + 1;
     types[entry.audioType] = (types[entry.audioType] || 0) + 1;
   }
-  for (const id of Object.keys(providers).filter(id => id !== 'Syka')) {
+  if (providers.Cuelume) {
+    const license = await readFile(join(root, 'LICENSE-CUELUME.txt'), 'utf8');
+    const source = JSON.parse(await readFile(join(root, 'sources', 'cuelume.json'), 'utf8'));
+    if (!license.includes('MIT License') || !license.includes('Daniel Belyi') ||
+      createHash('sha256').update(license).digest('hex') !== source.licenseSha256 ||
+      source.provider !== 'Cuelume' || source.license !== 'MIT' || !/^[a-f0-9]{40}$/.test(source.commit) || !Array.isArray(source.files))
+      throw Error('Cuelume license or provenance missing');
+    const sourcePaths = new Map(source.files.map(file => [file.path, file.sha256]));
+    for (const entry of catalog.entries.filter(entry => entry.provider === 'Cuelume')) {
+      if (!entry.path.startsWith('cuelume/') || entry.license !== 'MIT' || sourcePaths.get(entry.path) !== entry.sha256)
+        throw Error('Unverified Cuelume derivative: ' + entry.path);
+    }
+  }
+  for (const id of Object.keys(providers).filter(id => id !== 'Syka' && id !== 'Cuelume')) {
     const license = await readFile(join(root, 'LICENSE-KENNEY-' + id.toUpperCase() + '.txt'), 'utf8');
     if (!license.includes('CC0')) throw Error('CC0 license missing for ' + id);
   }

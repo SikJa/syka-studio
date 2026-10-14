@@ -3,8 +3,9 @@ import type { AgentOperationalActivity } from "./syka-contracts";
 import { ThinkingOrb, type OrbState } from "thinking-orbs";
 import { SYKA_ORB_STATE } from '@/lib/syka-brand';
 import { useOrbTheme } from './use-orb-theme';
-import { useEffect, useLayoutEffect, useRef, useState, type SyntheticEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type SyntheticEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { ToolBrandMark } from './thinking-logos/brand-mark';
 
 export type AgentThinkingVariant = "steps" | "reasoning";
 
@@ -85,14 +86,15 @@ function useStreamingThinkingText(text: string, active: boolean): string {
   return active ? text.slice(0, visibleCharacters) : text;
 }
 
-export function AgentToolChipsTrace({ activities }: { activities: readonly AgentOperationalActivity[] }) {
+export function AgentToolChipsTrace({ activities, identity }: { activities: readonly AgentOperationalActivity[]; identity?: ReactNode }) {
   const busy = activities.some((activity) => activity.state === "started" || activity.state === "progress");
-  return busy ? <AgentCodingTrace activities={activities} /> : <AgentToolChipsSummary activities={activities} />;
+  return busy ? <AgentCodingTrace activities={activities} identity={identity} /> : <AgentToolChipsSummary activities={activities} />;
 }
 
-function AgentCodingTrace({ activities }: { activities: readonly AgentOperationalActivity[] }) {
+function AgentCodingTrace({ activities, identity }: { activities: readonly AgentOperationalActivity[]; identity?: ReactNode }) {
   const busy = activities.some((activity) => activity.state === "started" || activity.state === "progress");
   const failed = activities.some((activity) => activity.state === "failed");
+  const currentTool = [...activities].reverse().find(activity => activity.state === 'started' || activity.state === 'progress') ?? activities[activities.length - 1];
   const [open, setOpen] = useState(true);
   const [openRows, setOpenRows] = useState<Set<string>>(new Set());
   const traceRef = useRef<HTMLDivElement>(null);
@@ -107,7 +109,7 @@ function AgentCodingTrace({ activities }: { activities: readonly AgentOperationa
   });
   return <section className="agent-coding-trace" data-busy={busy}>
     <button type="button" className="agent-coding-header" aria-expanded={open} onClick={() => setOpen((current) => !current)}>
-      <AgentTraceOrb state={SYKA_ORB_STATE} active={busy} />
+      {identity ?? (currentTool ? <ToolBrandMark activity={currentTool} /> : <AgentTraceOrb state={SYKA_ORB_STATE} active={busy} />)}
       <span className={busy ? "shimmer" : "settled"}>{busy ? "Ejecutando herramientas" : failed ? "La ejecución encontró un problema" : `Ejecutó ${activities.length} ${activities.length === 1 ? "herramienta" : "herramientas"}`}</span>
       <ChevronIcon expanded={open} />
     </button>
@@ -179,7 +181,7 @@ function AgentToolChipsSummary({ activities }: { activities: readonly AgentOpera
           const label = action.kind === "write" && diff ? `${action.label} ${diff.add + diff.del} líneas` : action.label;
           return <div className="agent-tool-summary-row" key={activity.id} data-state={activity.state} style={{ "--trace-index": index } as React.CSSProperties}>
             <button type="button" aria-expanded={rowOpen} onClick={() => toggleRow(activity.id)}>
-              <span className="agent-tool-summary-icon"><ToolRowIcon kind={action.kind} /><ChevronIcon expanded={rowOpen} /></span>
+              <span className="agent-tool-summary-icon"><ToolBrandMark activity={activity} size={22} /><ChevronIcon expanded={rowOpen} /></span>
               <strong>{label}</strong>
               <code>{toolSubject(activity.label, action.kind)}</code>
             </button>
@@ -273,11 +275,4 @@ function CheckIcon() {
 
 function ErrorIcon() {
   return <svg className="agent-trace-error" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>;
-}
-
-function ToolRowIcon({ kind }: { kind: ToolKind }) {
-  if (kind === "write") return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z" /></svg>;
-  if (kind === "run") return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 17l6-5-6-5M12 19h8" /></svg>;
-  if (kind === "read") return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></svg>;
-  return <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z" /></svg>;
 }

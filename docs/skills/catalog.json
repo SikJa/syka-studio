@@ -1,7 +1,7 @@
 {
   "version": 1,
   "engine": "diffusion",
-  "count": 27,
+  "count": 28,
   "skills": [
     {
       "name": "editor.md",
@@ -108,7 +108,7 @@
       "category": "Música y sonido",
       "path": "skills/syka-local-audio/SKILL.md",
       "description": "Diseñar música y SFX en Syka: elegir sonidos por material/ataque/brillo, alinear cues medidos, proponer volumen contra la base real y revisar el mix exportado con fingerprints. Usar al pedir audio o mejorar una mezcla; conserva Diffusion y edición nativa.",
-      "sha256": "710c26007d5e124ec70f5521c4935dececa3508b7e76596ec8343125bbed260b",
+      "sha256": "de71ddd960a353fd11dd324916ff8643f19052ac58f5e32f5acdcee24890e174",
       "delivery": "bundled"
     },
     {
@@ -117,7 +117,7 @@
       "category": "Referencias y recursos",
       "path": "skills/syka-media-use/SKILL.md",
       "description": "Planear y resolver imágenes, logos, footage, música y SFX reales para una edición Syka. Usar cuando una idea necesita recursos visuales o sonoros, sin prometer proveedores no configurados.",
-      "sha256": "11a11c6fc804f3fdfff76b9d989071acd522790459045460880d5f5c2adebb39",
+      "sha256": "9a8a65807fbcea189162bd8552dc3e1bfc77bfe914a507a9a3c6af9d477df239",
       "delivery": "bundled"
     },
     {
@@ -126,7 +126,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-motion-brief/SKILL.md",
       "description": "Consultar especificaciones de una animación y compilar un superprompt detallado, JSON portable, storyboard y eventos compartidos para Diffusion, con decisión de sonido para toda pieza.",
-      "sha256": "c8e7f2f5f8596ac9386f59c2b7ec2d35a6a94ccd3543f27c3e12cc1b727d1262",
+      "sha256": "e67314b49b5a56e8f91fdcd99b992f5c79fac9ef31e07883e8b73e620a29b3d9",
       "delivery": "bundled"
     },
     {
@@ -135,7 +135,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-motion-direction/SKILL.md",
       "description": "Diseñar la dirección visual y el storyboard de un lanzamiento SaaS, explicador o motion en Syka; convertir referencias en escenas conectadas, tipografía legible, sonido intencional y componentes editables.",
-      "sha256": "e330ed45678487c3709b4eb6774889f69f1d6ebdf7e81aecd4fd4aaf3483014a",
+      "sha256": "6b84b3d3d6a865a35022e8757a0d7b16416f3e6ad26e9072ec9d7145cd0b9298",
       "delivery": "bundled"
     },
     {
@@ -208,6 +208,15 @@
       "path": "skills/syka-pr-to-video/SKILL.md",
       "description": "Crear una explicación visual de una PR o cambio de código en Syka a partir de su diff real, con antes/después y evidencia verificable.",
       "sha256": "e6af4abe5bc59e88be4b64fd78fc187d6dff80788e63c7f581ca8a717e875b6f",
+      "delivery": "bundled"
+    },
+    {
+      "name": "syka-product-launch",
+      "title": "Lanzamiento con una demostración real",
+      "category": "Dirección y motion",
+      "path": "skills/syka-product-launch/SKILL.md",
+      "description": "Producir anuncios y demos de lanzamiento en Diffusion con producto real, doce criterios editoriales, voz sincronizada por palabras, sonido de microacciones, componentes editables y variantes elegidas desde el brief.",
+      "sha256": "4f607e354e4166153f5cf63b1b24f6a3fc8b5db6a4174e6673fc96f1e9dbc869",
       "delivery": "bundled"
     },
     {

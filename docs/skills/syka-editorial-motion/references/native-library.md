@@ -19,6 +19,11 @@ adelantar/retroceder, exportación y edición del texto y del logo.
 
 ## Catálogo incluido
 
+Para demos de lanzamiento, `syka-product-launch/examples/` incluye ProductDemo
+(estados antes/después), ProductFocus (control y cursor medidos) y LaunchCover
+(portada/cierre con luz secundaria). Son componentes fuente incluidos en la skill,
+no MP4s de referencia. Su contrato está en references/demo-recipes.md de esa skill.
+
 `syka_resources kind: motions` incluye Órbita y Carrusel circular aunque la persona
 no haya conectado carpetas. Cada resultado identifica `componentPath`,
 `componentFiles` (incluye helper y README) y `usage`. Esos son los archivos que

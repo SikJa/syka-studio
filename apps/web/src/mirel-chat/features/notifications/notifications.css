@@ -1,5 +1,5 @@
 :root{color-scheme:dark;--notice-surface:rgba(8,8,8,.96);--compact-width:216px;--expanded-width:284px;--ease-smooth-out:cubic-bezier(.22,1,.36,1);--ring:#c9c9cf;--syka-accent-text:#d0d0d4}
-*{box-sizing:border-box}html,body,#syka-notices{margin:0;width:100%;height:100%;background:transparent!important;overflow:hidden}body{font-family:Inter,Arial,sans-serif;color:#e8edef}button,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:default}
+*{box-sizing:border-box}button,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:default}
 .notice-stack{position:absolute;right:4px;bottom:4px;display:flex;flex-direction:column;align-items:flex-end;gap:9px;width:362px;max-height:calc(100% - 8px);overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#ffffff16 transparent;padding:5px 3px 4px 0;}
 .quick-notice{flex-shrink:0;display:flex;align-items:flex-end;gap:3px;max-width:100%;position:relative;isolation:isolate;pointer-events:none}
 .quick-bubble,.floating-orb{pointer-events:auto}

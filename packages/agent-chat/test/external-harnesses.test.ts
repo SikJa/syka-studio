@@ -20,7 +20,7 @@ import type { HarnessSession, OpenOptions } from "../src/host/harness";
 
 const roots: string[] = [];
 const sessions: HarnessSession[] = [];
-const env = { env: { PATH: process.env.PATH ?? '', SYSTEMROOT: process.env.SYSTEMROOT ?? 'C:\\Windows', OPENAI_API_KEY: 'test-secret-must-not-leak' }, extraDirs: [] };
+const env = { env: { PATH: process.env.PATH ?? '', SYSTEMROOT: process.env.SYSTEMROOT ?? 'C:\\Windows', OPENAI_API_KEY: 'test-token-must-not-leak' }, extraDirs: [] };
 const fixture = (name: string) => fileURLToPath(new URL(`./fixtures/${name}.mjs`, import.meta.url));
 async function setup() { const root = await mkdtemp(join(tmpdir(), 'syka-harness-test-')); roots.push(root); return root; }
 const acp = (root: string, mode = '') => new AcpHarness({ id: 'antigravity', command: process.execPath, args: [fixture('acp-agent'), mode], profileDir: root });

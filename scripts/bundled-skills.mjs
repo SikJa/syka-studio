@@ -5,7 +5,7 @@ import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const categories = [
   ['Edición y revisión', ['editor.md','watch.md','syka-editing-basics','syka-editing-recipe','syka-edit-review','syka-explainer-edit','syka-design-import']],
-  ['Dirección y motion', ['syka-visual-direction','syka-editorial-motion','syka-motion-brief','syka-motion-direction','syka-motion-storyboard','syka-motion-reels','syka-motion-typography','syka-motion-transitions','syka-faceless-explainer','syka-slideshow','syka-pr-to-video']],
+  ['Dirección y motion', ['syka-visual-direction','syka-editorial-motion','syka-motion-brief','syka-motion-direction','syka-product-launch','syka-motion-storyboard','syka-motion-reels','syka-motion-typography','syka-motion-transitions','syka-faceless-explainer','syka-slideshow','syka-pr-to-video']],
   ['Subtítulos', ['syka-captions','syka-camera-3d-captions']],
   ['Música y sonido', ['syka-local-audio','syka-music-video']],
   ['Referencias y recursos', ['syka-media-use','syka-video-references','syka-motion-reference','syka-motion-references']],

@@ -152,7 +152,7 @@ export function PresetPicker(props: {
                 )}
               >
                 {(r) => (
-                  <AgentReferenceMenu onUse={preview => { referenceInChat(project.id(), 'Usá este preset como referencia visual para mi edición. Revisá la selección y proponé cómo adaptarlo.', {preset:{id:r.id,label:r.label,kind:r.kind,value:r.value},...selectionContext(world)}, preview); close(); }}>
+                  <AgentReferenceMenu onUse={(preview,origin) => { referenceInChat(project.id(), 'Usá este preset como referencia visual para mi edición. Revisá la selección y proponé cómo adaptarlo.', {preset:{id:r.id,label:r.label,kind:r.kind,value:r.value},...selectionContext(world)}, preview,undefined,origin); close(); }}>
                   <button
                     class="syka-resource-card"
                     draggable="true"

@@ -2,7 +2,7 @@
   "name": "@diffusionstudio/desktop",
   "productName": "Syka Studio",
   "private": true,
-  "version": "0.208.2",
+  "version": "0.209.0",
   "license": "MPL-2.0",
   "repository": {
     "type": "git",

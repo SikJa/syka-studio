@@ -420,7 +420,7 @@ export function RightSidebar() {
                         <div class="syka-resource-grid" classList={{ 'syka-type-resource-grid': ['caption', 'font', 'text'].includes(category()) }}>
                           <For each={resources()}>
                             {(r) => (
-                              <AgentReferenceMenu onUse={preview => referenceInChat(project.id(), 'Usá este preset como referencia visual para mi edición. Revisá la selección y proponé cómo adaptarlo.', {preset:{id:r.id,label:r.label,kind:r.kind,value:r.value,textStyle:r.textStyle},...selectionContext(world)}, preview)}>
+                              <AgentReferenceMenu onUse={(preview,origin) => referenceInChat(project.id(), 'Usá este preset como referencia visual para mi edición. Revisá la selección y proponé cómo adaptarlo.', {preset:{id:r.id,label:r.label,kind:r.kind,value:r.value,textStyle:r.textStyle},...selectionContext(world)}, preview,undefined,origin)}>
                               <button
                                 class="syka-resource-card"
                                 classList={{ selected: picked() === r.id }}

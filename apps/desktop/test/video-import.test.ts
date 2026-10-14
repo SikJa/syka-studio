@@ -49,6 +49,26 @@ describe('YouTube import boundaries',()=>{
     expect(origin.timeMap.sourceStartSeconds).toBe(4);expect(origin.transcription.state).toBe('not-requested');expect(JSON.stringify(origin)).not.toContain('private-secret');
     expect(integrated).toHaveLength(1);expect((await readdir(join(root,'video-imports')))).toEqual([]);
   });
+  it('reads a long archive whose full metadata exceeds 8 MiB without truncating JSON or losing Unicode',async()=>{
+    const s=service('large-metadata'),job=s.inspect(url),ready=await until(s,job.id,'ready');
+    expect(ready.metadata).toMatchObject({title:'Public fixture con ñandúes',duration:43200,requiresRange:true});
+    await s.start(job.id,join(root,'project'),{start:7200,end:7212});
+    expect((await until(s,job.id,'done')).result?.sourceRange).toEqual({start:7200,end:7212});
+  });
+  it('downloads a later section without selecting the fragmented progressive MP4 that requires reading all earlier content',async()=>{
+    const s=service('nonseekable-mp4'),job=s.inspect(url);await until(s,job.id,'ready');
+    await s.start(job.id,join(root,'project'),{start:4,end:16});
+    expect((await until(s,job.id,'done')).result?.duration).toBe(12);
+  });
+  it('reports malformed or oversized JSON clearly and never adds a file to the project',async()=>{
+    for(const mode of ['invalid-json','overflow-json']){
+      const s=service(mode),job=s.inspect(url);
+      for(let n=0;n<200&&s.status(job.id).state==='inspecting';n++)await new Promise(r=>setTimeout(r,20));
+      expect(s.status(job.id)).toMatchObject({state:'error'});expect(s.status(job.id).error).toMatch(/metadatos|JSON/);
+      expect(s.status(job.id).error).not.toContain('SyntaxError');
+    }
+    expect(await readdir(join(root,'project'))).toEqual([]);
+  });
   it('cancels a real child process and never starts transcription or a download afterwards',async()=>{
     const s=service('hang'),job=s.inspect(url);await new Promise(r=>setTimeout(r,100));
     expect((await s.cancel(job.id)).state).toBe('cancelled');

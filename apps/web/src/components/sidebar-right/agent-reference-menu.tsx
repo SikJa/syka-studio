@@ -1,9 +1,10 @@
 import { createSignal, onCleanup, Show, type JSX } from 'solid-js';
 import { ContextMenu, ContextMenuTrigger, ContextMenuPortal, ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu';
 import { referenceThumbnail } from '@/agent-chat/reference-attachments';
+import type {MascotRect} from '@/agent-chat/mascot-journey';
 import './agent-reference-menu.css';
 
-export function AgentReferenceMenu(props: { children: JSX.Element; onUse(preview?: string): void }) {
+export function AgentReferenceMenu(props: { children: JSX.Element; onUse(preview?: string,origin?:MascotRect): void }) {
   let trigger!: HTMLDivElement;
   let content!: HTMLDivElement;
   let used = false;
@@ -47,7 +48,7 @@ export function AgentReferenceMenu(props: { children: JSX.Element; onUse(preview
         event.preventDefault();
         if (!used) trigger.querySelector<HTMLButtonElement>('button')?.focus({preventScroll:true});
       }}>
-        <ContextMenuItem onSelect={() => { used = true; props.onUse(referenceThumbnail(trigger)); }}>
+        <ContextMenuItem onSelect={() => { used = true; const r=trigger.getBoundingClientRect();props.onUse(referenceThumbnail(trigger),{x:r.x,y:r.y,width:r.width,height:r.height}); }}>
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 17H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-6l-5 4z"/></svg>
           Usar con el agente
         </ContextMenuItem>

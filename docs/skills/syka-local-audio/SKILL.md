@@ -9,7 +9,8 @@ El agente puede producir sonido con código local y editar pistas de Diffusion. 
 
 ## Elegir el camino
 
-- Buscá recursos del proyecto y `syka_resources` con `action:list`, `kind:sounds`, `query` en español o inglés y, si sirve, `audioType:sfx`, `music` o `stem`. `audioCategories` devuelve las familias con cantidades; `audioFamily:pop`, `whoosh`, `click`, etc. limita las variantes al gesto buscado. La biblioteca incluida tiene Kenney CC0, efectos originales y bases/capas Syka MIT; las carpetas personales siguen siendo opcionales. Evaluá candidatos por su función y escuchalos en Biblioteca, no elijas el primer nombre por defecto.
+- Buscá recursos del proyecto y `syka_resources` con `action:list`, `kind:sounds`, `query` en español o inglés y, si sirve, `audioType:sfx`, `music` o `stem`. `audioCategories` devuelve las familias con cantidades; `audioFamily:pop`, `whoosh`, `click`, etc. limita las variantes al gesto buscado. La biblioteca incluida tiene Kenney CC0, Cuelume MIT, efectos originales y bases/capas Syka MIT; las carpetas personales siguen siendo opcionales. Evaluá candidatos por su función y escuchalos en Biblioteca, no elijas el primer nombre por defecto.
+- Para demos de apps, botones, menús, escritura y resultados, leé [references/cuelume.md](references/cuelume.md): 14 cues × 4 materiales × 3 arreglos de intensidad, ya renderizados como WAV locales. Buscá `query:Cuelume` o `query:"Cuelume press"`, elegí por evento/material, importá con `copy:true` y colocá `<audio>` nativo. No uses `bind()`/`play()` en HTML para sonorizar un video: esos eventos de interfaz no se conservan en seek/export. No reemplaces los sonidos de la aplicación por los del video.
 - Para foley, impactos o una mezcla exigente, leé [references/sound-layer.md](references/sound-layer.md). Elegí por material y función, usando `brightness`/`attack` y `soundProfile` cuando existan. Conservá una familia sonora coherente y variá repeticiones. No conviertas una preferencia por grabaciones en una prohibición universal de síntesis.
 - Para personalizar sonido o música electrónica, obtené `scripts/audio-studio.mjs` mediante `syka_skills read`, guardalo en el proyecto y ejecutalo con Node. No necesita Python, modelos, red ni paquetes npm. Produce WAV estéreo a 48 kHz, metadata, variantes reproducibles y, para música, capas separadas opcionales.
 - El generador previo `scripts/synthesize.py` sigue disponible como alternativa Python estándar para cues y bases sencillas; no es el camino principal para una música más desarrollada.
@@ -27,6 +28,14 @@ node "audio-studio.mjs" --kind music --mood pulse --bpm 116 --bars 8 --output "A
 - Antes de reutilizar un FFmpeg empaquetado por otra aplicación, comprobá que tenga los filtros y formatos necesarios (`-filters`, `-formats`). Algunos binarios reducidos sirven para render específico pero no para extraer PCM/rawvideo. Verificá el código de salida y la cantidad de muestras antes de calcular métricas; un decoder sin datos no demuestra silencio ni corrupción del video.
 
 ## Integración
+
+El perfil `brief.audio.microActions:detailed` permite una capa más expresiva de
+acentos pequeños en clics, selección y respuesta, con peso support. Agrupá gestos
+rápidos, variá material y separá acentos principales; el fondo ambiental no pide
+sonido por cada pulso. selective concentra los acentos y none omite esta capa.
+Respetá el modo elegido, voz y pausas; no convertirlo en un límite fijo de sonidos.
+Para una narración existente, las palabras medidas se conectan con event.wordCue
+en syka_motion_plan; consultar syka-product-launch/references/narration-sync.md.
 
 Con un archivo real, usá `syka_audio_analyze` antes de alinear acentos importantes.
 Mide ataques candidatos, cambios de energía, tempo/grilla candidatos y LUFS/true

@@ -28,6 +28,12 @@ Para una pieza sustancial, leé [references/production-prompt.md](references/pro
 
 ## Construcción
 
+Para un lanzamiento cargá `syka-product-launch`: doce criterios editoriales,
+demostraciones estructuradas, prompts breves derivados del mismo brief y componentes
+de estados/foco/portada. `holdActivity:ambient` puede sostener actividad discreta en
+luz, textura u objeto secundario sin desplazar el texto durante lectura. El perfil
+sonoro detailed agrega pequeñas respuestas a microacciones cuando fue elegido.
+
 Para tarjetas, comparaciones o callouts sobre footage, cargá `syka-editorial-motion`. Incluye ejemplos ejecutables en Diffusion y la traducción del reloj/DOM de HyperFrames. Usá los ejemplos para arrancar una muestra, adaptándolos al contenido real; no sustituye el storyboard ni convierte todos los gráficos en un mismo preset.
 
 - Una escena demuestra una idea. Alterná encuadre, escala y densidad cuando lo justifique la historia: producto completo → detalle útil → resultado. No repitas seis tarjetas idénticas con distinto texto.

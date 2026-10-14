@@ -20,7 +20,8 @@ export function AgentOrbCanvas({state, preset, theme, speed, paused}: {
     const paint=(time:number)=>{
       lastTime.current=time;
       context.setTransform(ratio*cssSize/preset,0,0,ratio*cssSize/preset,0,0);
-      context.clearRect(0,0,preset,preset);draw(context,preset,time,dark,resolved.opts);
+      context.clearRect(0,0,preset,preset);
+      draw(context,preset,time,dark,resolved.opts);
     };
     const resize=()=>{
       // clientWidth is unaffected by the notification's animated scale.

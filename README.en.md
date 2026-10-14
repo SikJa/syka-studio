@@ -35,7 +35,7 @@ The engine, timeline, and editable projects come from Diffusion. Syka adds its w
 
 ## Installation
 
-**Current version: 0.208.1 for Windows x64.** It includes the new connectors and is available through the app's normal update channel. Syka downloads when requested and asks for confirmation before restarting and installing. The installer is still **unsigned**; Windows may display a security warning. Signing and the update channel are independent. This command downloads a compatible public installer and checks its SHA-256: it uses the latest stable release if available, or a published beta if no stable release exists, never a draft. If no compatible release has been published, it explains why and does not install anything.
+**Current version: 0.209.0 for Windows x64.** Includes 28 bundled skills, motion knowledge and product-launch workflows, 2,052 logo entries and 602 audio resources. Preserves the preview, notification and update fixes from 0.208.2. The app downloads when requested and asks before restarting to install. The installer is still **unsigned**; Windows may display a security warning.
 
 Open PowerShell and copy:
 

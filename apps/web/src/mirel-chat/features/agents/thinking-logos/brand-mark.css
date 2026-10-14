@@ -1,0 +1,16 @@
+.syka-thinking-logo { --icon-swap-dur:250ms;--icon-swap-blur:1px;--icon-swap-start-scale:.8;--icon-swap-ease:ease-in-out;position:relative;display:inline-grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);flex:none;vertical-align:middle; }
+.syka-thinking-logo .t-icon { grid-area:1/1;display:grid;place-items:center;min-width:0;min-height:0;transition:opacity var(--icon-swap-dur) var(--icon-swap-ease),filter var(--icon-swap-dur) var(--icon-swap-ease),transform var(--icon-swap-dur) var(--icon-swap-ease); }
+.syka-thinking-logo .t-icon img { width:100%;height:100%;min-width:0;min-height:0;max-width:100%;max-height:100%;object-fit:contain;padding:10%;box-sizing:border-box; }
+.syka-thinking-logo[data-state="a"] [data-icon="a"],.syka-thinking-logo[data-state="b"] [data-icon="b"] { opacity:1;filter:blur(0);transform:scale(1); }
+.syka-thinking-logo[data-state="a"] [data-icon="b"],.syka-thinking-logo[data-state="b"] [data-icon="a"] { opacity:0;filter:blur(var(--icon-swap-blur));transform:scale(var(--icon-swap-start-scale)); }
+.syka-thinking-logo[data-dark="true"] .syka-logo-monochrome { filter:brightness(0) invert(.85); }
+.syka-thinking-logo[data-dark="false"] .syka-logo-monochrome { filter:brightness(0); }
+.syka-logo-placeholder { width:45%;height:45%;border:1px solid currentColor;border-radius:50%;opacity:.25; }
+.syka-tool-brand { display:inline-flex;position:relative;flex:none;align-items:center; }
+.syka-tool-brand-error { position:absolute;right:-2px;bottom:-2px;display:grid;place-items:center;font:700 9px/1 sans-serif;width:12px;height:12px;border-radius:50%;background:#bb3939;color:#fff; }
+.agent-tool-row>button>.syka-tool-brand { margin-right:3px; }
+.agent-tool-summary-icon:has(.syka-tool-brand) { width:22px;height:22px; }
+.agent-tool-summary-icon>.syka-tool-brand { grid-area:1/1;transition:opacity 150ms ease; }
+.agent-tool-summary-row>button:hover .agent-tool-summary-icon>.syka-tool-brand,.agent-tool-summary-row>button[aria-expanded="true"] .agent-tool-summary-icon>.syka-tool-brand { opacity:0; }
+@media(prefers-reduced-motion:reduce) { .syka-thinking-logo .t-icon { transition:none!important; } }
+:root[data-syka-motion="reduced"] .syka-thinking-logo .t-icon,:root[data-motion="reduced"] .syka-thinking-logo .t-icon { transition:none!important; }

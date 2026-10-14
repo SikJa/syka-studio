@@ -30,6 +30,15 @@ del video generado por el repo.
 Fuente: [reference-to-motion/SKILL.md](https://github.com/charlie947/motion-graphics-skills/blob/dfc4284d9f2dcfefacbc8f06729f38deacc54192/skills/reference-to-motion/SKILL.md).
 
 ## Procedencia y alcance
+
+Complemento 2026-10-11, commit 229022ebca76972e119e36ada23a1648d51665ab:
+la colección tiene 15 skills y agrega motion-prompt-writer. Syka adapta la base
+de marca reutilizable y la escena variable con ocho partes en shortPrompts del
+mismo motion-plan, conservando el superprompt extenso. launch-video y motion-effects
+alimentan la receta syka-product-launch y sus componentes originales ProductDemo,
+ProductFocus y LaunchCover. No se imponen Apple, seis segundos, loop ni tamaños
+universales. CANON-FACTS valida patrones de prompt, no hechos del producto.
+Fuente: https://github.com/charlie947/motion-graphics-skills/tree/229022ebca76972e119e36ada23a1648d51665ab
 MIT.
 Lectura: Skill de brief completa y README principal.
 No se ejecutó el pipeline upstream ni se certificó la calidad de sus videos/audio. Este estudio no instala otro motor y no reproduce el contenido completo de la skill original. Los recursos de producción requieren sus propios derechos.

@@ -35,7 +35,7 @@ O motor, a linha do tempo e os projetos editáveis vêm do Diffusion. Syka acres
 
 ## Instalação
 
-**Versão atual: 0.208.1 para Windows x64.** Inclui os novos conectores e está disponível pelo canal normal de atualização do app. O Syka baixa quando solicitado e pede confirmação antes de reiniciar e instalar. O instalador continua **sem assinatura digital**; o Windows pode exibir um aviso de segurança. A assinatura e o canal de atualização são independentes. Este comando baixa um instalador público compatível e verifica seu SHA-256: usa a última release estável disponível ou uma beta publicada quando ainda não há estável, nunca um rascunho. Se não houver uma release compatível publicada, informa o motivo e não instala nada.
+**Versão atual: 0.209.0 para Windows x64.** Inclui 28 skills, conhecimento de motion e fluxos de lançamento, 2.052 entradas de logos e 602 recursos de áudio. Mantém as correções de preview, notificações e atualização da versão 0.208.2. O app baixa quando solicitado e pede confirmação antes de reiniciar e instalar. O instalador continua **sem assinatura digital**; o Windows pode mostrar um aviso de segurança.
 
 Abra o PowerShell e copie:
 

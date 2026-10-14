@@ -7,10 +7,13 @@ import { ChatIdentityOrb } from './chat-identity-orb';
 import { ChatPlacementButton } from './chat-placement-control';
 import { chatFloating, setChatFloating, fullscreenChatMount } from './chat-presentation';
 import { ContextMenu, ContextMenuTrigger, ContextMenuPortal, ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu';
+import type {MascotActivity} from '@/lib/syka-mascot';
 
 export function ChatIdentityHeader(props: {
   working: boolean;
   blocked?: boolean;
+  activity?: MascotActivity;
+  projectId?: string;
   sessionsOpen: boolean;
   onToggleSessions(): void;
 }) {
@@ -21,7 +24,7 @@ export function ChatIdentityHeader(props: {
         aria-expanded={props.sessionsOpen} onClick={props.onToggleSessions}>
         <Icon name="sidebar" class="size-4" />
       </button>
-      <ChatIdentityOrb working={props.working || !!props.blocked} paused={props.blocked} />
+      <ChatIdentityOrb working={props.working || !!props.blocked} activity={props.blocked?'question':props.activity} projectId={props.projectId} />
       <ChatPlacementButton />
     </ContextMenuTrigger>
     <ContextMenuPortal><ContextMenuContent class="syka-chat-placement-menu" aria-label="Posición del chat">

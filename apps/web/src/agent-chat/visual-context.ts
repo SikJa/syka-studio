@@ -5,6 +5,7 @@ import { activeChatId, draftKey, draft, setDraftAttachments, setSidebarTab } fro
 import { chatFloating } from './chat-presentation';
 import { mergeAttachments } from './attachments';
 import { referenceAttachment } from './reference-attachments';
+import {emitMascotCue,type MascotRect} from './mascot-journey';
 
 export function linkedReferenceInstruction(kind: ResourceKind) {
   return kind === 'motions' ? 'Usá este video como referencia visual. Si incluye componentPath y componentFiles, leé y copiá esos archivos al proyecto, adaptá sus props y recursos reales: esa es la implementación editable. Si no, revisá si la carpeta tiene un componente .tsx y README. Si sólo hay una muestra, analizala localmente sin transcribirla ni subirla y proponé cómo recrearla. No reemplaces las capas editables por el MP4 de muestra.'
@@ -27,9 +28,12 @@ export function selectionContext(world: World) {
   };
 }
 
-export function referenceInChat(projectId: string, instruction: string, context: unknown, previewUrl?: string, destinationKey?:string) {
+export function referenceInChat(projectId: string, instruction: string, context: unknown, previewUrl?: string, destinationKey?:string, origin?:MascotRect) {
+  const active=document.activeElement;
+  const source=origin??(!active?.closest('.syka-agent-chat')?active?.closest('.syka-resource-card,button')?.getBoundingClientRect():undefined);
   const key = destinationKey ?? draftKey(projectId, activeChatId(projectId));
   setDraftAttachments(key, mergeAttachments(draft(key).attachments, [referenceAttachment(instruction, context, previewUrl)]));
+  if(source?.width)emitMascotCue(projectId,{kind:'reference',origin:{x:source.x,y:source.y,width:source.width,height:source.height}});
   focusChatComposer();
 }
 

@@ -48,7 +48,8 @@ ataque medido. Ejemplo completo de consulta/JSON/prompt:
 | Reel / pieza vertical | `syka-motion-reels` + dirección |
 | Storyboard / plan narrativo | `syka-motion-storyboard` |
 | Motion tipográfico | `syka-motion-typography` |
-| Lanzamiento / marca / explicación | `syka-motion-direction` + componentes editoriales |
+| Lanzamiento de producto / función | `syka-product-launch` + dirección + componentes editoriales |
+| Marca / explicación | `syka-motion-direction` + componentes editoriales |
 | Captions | Biblioteca nativa de subtítulos + revisión de lectura |
 | Camera 3D Captions | `syka-camera-3d-captions` |
 | Interfaz | Estados de interacción y movimiento reducido; no imponer export |
@@ -86,3 +87,21 @@ ataque medido. Ejemplo completo de consulta/JSON/prompt:
 
 Compilar no produce ni certifica un video. Esta skill y los estudios se distribuyen
 con Syka sin descargar videos, visor personal, otro motor ni entrenar pesos.
+
+## Extensiones del plan v2
+
+`brief.audio.microActions` elige none/selective/detailed; detailed agrega acentos
+pequeños de clic, selección y respuesta cuando ese tratamiento fue elegido o
+delegado. `brief.motion.holdActivity` elige still/ambient/punctuated y preserva
+el foco legible durante el hold. No son valores obligatorios para otros usuarios.
+
+En una demo, `beat.demo` registra trigger/reaction/result/evidence. Si hay una toma
+de voz real con tiempos de palabras, `narration` conserva asset, words y trim/rate;
+`event.wordCue` enlaza por índice y borde. El compilador valida y recalcula los
+tiempos, no genera narración. Leer syka-product-launch/references/narration-sync.md.
+
+Guardar todas las vistas devueltas en `documents`: además de las originales,
+short-prompts.md y delivery-plan.md; en lanzamientos, launch-checklist.md. Los
+prompts breves son ocho partes por escena del mismo brief; el extenso se conserva.
+`brief.deliverables` planifica solo variantes elegidas; no dispara exports.
+Los campos nuevos son opcionales: entradas anteriores siguen compilando.

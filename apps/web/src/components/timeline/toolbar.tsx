@@ -47,6 +47,7 @@ export function TimelineToolbar() {
     <Show when={history.shared()}>
       <Show when={history.problem()}><span class="ml-auto text-xxs text-muted-foreground whitespace-nowrap px-2" role="status" title={history.problem()}>No se puede deshacer</span></Show>
     </Show>
+    <span class="syka-mascot-timeline-dock" data-syka-mascot-target="timeline" aria-hidden="true" />
     <div class="ml-auto shrink-0"><EditorZoomControl /></div>
   </div>;
 }

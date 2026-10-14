@@ -1,0 +1,1214 @@
+{
+  "version": 1,
+  "provider": "Cuelume",
+  "packageVersion": "0.2.8",
+  "commit": "2a1ba4fc1b67e8371c9f37e37a51e61353166335",
+  "repository": "https://github.com/danielwh2/cuelume",
+  "author": "Daniel Belyi",
+  "license": "MIT",
+  "licenseSha256": "c0d53cbcf3b4e9cfa23c0ce575a1568d34f763eaf74917fb525a61d5624752ca",
+  "renderer": "Upstream scripts/sound.mjs, pinned and unchanged; seeded offline stereo rendering",
+  "portableNotice": "The full MIT notice and pinned source URL are embedded in the WAV INFO/ICMT chunk and also included as LICENSE-CUELUME.txt.",
+  "settings": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "bitDepth": 16,
+    "part": "both",
+    "step": 0,
+    "seed": 0,
+    "emphasis": [
+      "subtle",
+      "normal",
+      "strong"
+    ],
+    "themes": [
+      "default",
+      "mech",
+      "bubble",
+      "press"
+    ]
+  },
+  "limitations": [
+    "Frozen cues do not retain live typing cadence or randomized per-play strikes.",
+    "Upstream offline renderer omits the shared soft clip; every published cue is checked for PCM clipping.",
+    "The count preset uses the upstream default duration, not automatic time-stretch to the edit."
+  ],
+  "files": [
+    {
+      "path": "cuelume/default/tap-subtle.wav",
+      "sha256": "0043a94249558c3853e3289411ac358b8b6260fdb6f7f3579de44e14e359a55c",
+      "theme": "default",
+      "cue": "tap",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/tap-normal.wav",
+      "sha256": "0baa7dea6826108b6ca13dce7f7de1df40ce51f68de18fc85e92d3532398d2af",
+      "theme": "default",
+      "cue": "tap",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/tap-strong.wav",
+      "sha256": "525c6e630755635a3f7dbb7d3adf3d00a8efa3c31c3ccd4c337aa40eef1e6df2",
+      "theme": "default",
+      "cue": "tap",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/type-subtle.wav",
+      "sha256": "b164d6b4087381fc3f4dc6d5843b33b27a7073a4b0eddf69005fddb7f15c3bda",
+      "theme": "default",
+      "cue": "type",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/type-normal.wav",
+      "sha256": "5e255d781ad44671f11444a44810e5352de6d2d93331d0d6249853e37ab06735",
+      "theme": "default",
+      "cue": "type",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/type-strong.wav",
+      "sha256": "5c29a8691f177145891d962dfac77c11b19001a35010911ea253d35bfaec7907",
+      "theme": "default",
+      "cue": "type",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/select-subtle.wav",
+      "sha256": "cff5929df95db4de5705865b23660bd52adcbe15dfa25b4f6e19bc21f0628062",
+      "theme": "default",
+      "cue": "select",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/select-normal.wav",
+      "sha256": "b547c9d36130c788442efc9e077bd6fef6326590d1f0b67b170620df9d8b611c",
+      "theme": "default",
+      "cue": "select",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/select-strong.wav",
+      "sha256": "1d203bbf78a24d2f898eb1813cf53439018291b2ffa05276aac1f6dff36cbcce",
+      "theme": "default",
+      "cue": "select",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/toggle-subtle.wav",
+      "sha256": "4799d2da27c816f43dd8de21cf2580f4814df0e16f94d8da76a4963d9761f411",
+      "theme": "default",
+      "cue": "toggle",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/toggle-normal.wav",
+      "sha256": "c9f4fb8091531e6106d6a46c88b44285d1978565e5146c57a90606475a4a051b",
+      "theme": "default",
+      "cue": "toggle",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/toggle-strong.wav",
+      "sha256": "91ebac7b2c53af22e2122f00bb2297f037f78c900ac887db3042908164fc6397",
+      "theme": "default",
+      "cue": "toggle",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/open-subtle.wav",
+      "sha256": "50224e977acf141e0b5e8807229afc83548505f33ff4669c043c594bc568c10c",
+      "theme": "default",
+      "cue": "open",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/open-normal.wav",
+      "sha256": "d7f65b40f7bb95735c11e05d43c54375f177bfc7f13a8f8fed3d2b83a8d93f24",
+      "theme": "default",
+      "cue": "open",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/open-strong.wav",
+      "sha256": "7768f1a8bf2b77c79fa02f4480be1ac8b568cf3d1ecb518ea8cd9b188375b0ec",
+      "theme": "default",
+      "cue": "open",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/close-subtle.wav",
+      "sha256": "c826b076cf4ce357f32a385d83b3f8a7ce66be1a7224aac0598bd55419a7ef10",
+      "theme": "default",
+      "cue": "close",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/close-normal.wav",
+      "sha256": "6bf15fb11272e775f515d01d6102ba9793a955f236842c1b200f2ae31a064799",
+      "theme": "default",
+      "cue": "close",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/close-strong.wav",
+      "sha256": "eb4dbf2b50f695836aca7ac1a915edf2df9b147298119248db2c6bb297445ca3",
+      "theme": "default",
+      "cue": "close",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/navigate-subtle.wav",
+      "sha256": "ccfa78e37996ce228230f2facf1e0a6999824e118264e59630d2cb43558df19c",
+      "theme": "default",
+      "cue": "navigate",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/navigate-normal.wav",
+      "sha256": "7df05a424a988a8baeb89e107524f18058098e386161ce5909e1a21bb4d8c2d4",
+      "theme": "default",
+      "cue": "navigate",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/navigate-strong.wav",
+      "sha256": "b52090241035072a78eb9783ad9d1cb76524cabbc016cb2ad93c973327eed170",
+      "theme": "default",
+      "cue": "navigate",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/success-subtle.wav",
+      "sha256": "0e34e165979fd84238a025a8ef9afff6ab49d199b5ac5d31cfc6045bc8b6b1f7",
+      "theme": "default",
+      "cue": "success",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/success-normal.wav",
+      "sha256": "df357cc79e6499fb8cce7876b09f8b501e677e3cd97cf1045c1bb5a6e1acaef9",
+      "theme": "default",
+      "cue": "success",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/success-strong.wav",
+      "sha256": "025e3bee3b693396f4380397b39a4a24ed657d0e4e35840122b34c7b7966e2cb",
+      "theme": "default",
+      "cue": "success",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/error-subtle.wav",
+      "sha256": "4448064bf7ddb24f91b72ee1a8aa0926f54dd3684008bd8bf52970e42954b9de",
+      "theme": "default",
+      "cue": "error",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/error-normal.wav",
+      "sha256": "54cd4ec75e26f102a68b4d592c557638610cf106fbc1ec9848a5126b022fcab9",
+      "theme": "default",
+      "cue": "error",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/error-strong.wav",
+      "sha256": "ec3d20330111e7bf8a8b9f73d88c8199b77a30742096a6a0bde73c046ba1b6e9",
+      "theme": "default",
+      "cue": "error",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/warning-subtle.wav",
+      "sha256": "bb96284cd31a16a53cbde4221ea9780f239bed5e1df23821ab6bfa7e5db7289d",
+      "theme": "default",
+      "cue": "warning",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/warning-normal.wav",
+      "sha256": "449e4aa5874bf0fbcd2378e002f8b35ca5292381af5e059f87c40f727971aa7f",
+      "theme": "default",
+      "cue": "warning",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/warning-strong.wav",
+      "sha256": "27c4265a896b1d89fcd694e10e28b41e71d0cb73fb7c68c1c937568185b37aca",
+      "theme": "default",
+      "cue": "warning",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/loading-subtle.wav",
+      "sha256": "070a069a1eebd3d2a47e28618231a34394eb7e2a0003d8ffc0ee4b9f7961fdae",
+      "theme": "default",
+      "cue": "loading",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/loading-normal.wav",
+      "sha256": "45aab8f0fd18f8376ab1311d2d85f80d78cc5e23e52130b4627d94768eec16c5",
+      "theme": "default",
+      "cue": "loading",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/loading-strong.wav",
+      "sha256": "5c437be63cbac7aee4b61ea170f99f9619741b4456407f2a7b0811ef29ef6bff",
+      "theme": "default",
+      "cue": "loading",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/ready-subtle.wav",
+      "sha256": "57afda2bc161514b8f107b219348ecef4ba9a4d57e1d9fede96920d9f34e00c0",
+      "theme": "default",
+      "cue": "ready",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/ready-normal.wav",
+      "sha256": "82b69d298678e31f60c66ee9d61fc05e476b121ed322aa0fde68b715e2fbe242",
+      "theme": "default",
+      "cue": "ready",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/ready-strong.wav",
+      "sha256": "7cff4d92d80fdbc1396f1286c93b421640f360dc0964c1981de7c9017447280f",
+      "theme": "default",
+      "cue": "ready",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/attention-subtle.wav",
+      "sha256": "01832b2cbc6717e675a3e8f371ab426fb481158c496f881ac6b12f27b3f1a8f9",
+      "theme": "default",
+      "cue": "attention",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/attention-normal.wav",
+      "sha256": "cedd272d62f1d8c7d9ef74721c4cbf204e42bbcb5c4b414f16984e2e2b3da882",
+      "theme": "default",
+      "cue": "attention",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/attention-strong.wav",
+      "sha256": "8b4fc943a65de653c394ea1658e3ad8007c07f0e5a9650618450ec9b86fb40c5",
+      "theme": "default",
+      "cue": "attention",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/default/count-subtle.wav",
+      "sha256": "dcfa6809b4288eda827bd76ba3f307159870ba60244d7f8d82dee9051b438bed",
+      "theme": "default",
+      "cue": "count",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/default/count-normal.wav",
+      "sha256": "40b0a36c2d1f79f0096fdf0f91d29ff1bce84a6eaa2b0c4715d0cb92fa54b8fa",
+      "theme": "default",
+      "cue": "count",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/default/count-strong.wav",
+      "sha256": "213a37e73406b7a9a0ee37cb0c0ac7fb11782357732f0764c700e61c2fe73737",
+      "theme": "default",
+      "cue": "count",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/tap-subtle.wav",
+      "sha256": "f3e21d9bb5fcba553deff05b09d5aa7bbc697347752bbb28f556d906fe0edb14",
+      "theme": "mech",
+      "cue": "tap",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/tap-normal.wav",
+      "sha256": "11d5b601501bf8b04b09fb58fcb9cbcd2edb38c9fb1287453c050f66248a5a92",
+      "theme": "mech",
+      "cue": "tap",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/tap-strong.wav",
+      "sha256": "cdf6af15890742ffefa3cc402d0e1a2b560212109f48253acd333c6f5a32e1b9",
+      "theme": "mech",
+      "cue": "tap",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/type-subtle.wav",
+      "sha256": "9f5d0faad02b2f28874bb80f7408a8b23cd108e8344db11fcff2e517c5b068d5",
+      "theme": "mech",
+      "cue": "type",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/type-normal.wav",
+      "sha256": "d74ee67e12f70b9477bf8cce2a4f74d3f3fc498b43e867f3a5501bf92e67fc22",
+      "theme": "mech",
+      "cue": "type",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/type-strong.wav",
+      "sha256": "a6e09d38f6dcb53e1acd1e63c19d0220b4d2ec0e4eb96cca2d4b249852b9c25a",
+      "theme": "mech",
+      "cue": "type",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/select-subtle.wav",
+      "sha256": "e8eb5a2045e3f681b61e246c0de822ea6ec8430cd767b3d3908c105120ff2281",
+      "theme": "mech",
+      "cue": "select",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/select-normal.wav",
+      "sha256": "820c36196c57d90d5e7129c66466b53bc10278863d9b3ab3761c5e36b221489c",
+      "theme": "mech",
+      "cue": "select",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/select-strong.wav",
+      "sha256": "ad26c235573813587a6388d71f0aea563eb6572763b8ea916417b5821e079319",
+      "theme": "mech",
+      "cue": "select",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/toggle-subtle.wav",
+      "sha256": "6c45cea32a974a2840d9bf27dd0596f68fb29a79df835e9db7575a5bf26a45e5",
+      "theme": "mech",
+      "cue": "toggle",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/toggle-normal.wav",
+      "sha256": "09241d3d150e2cb1ec7503bddbe143ce73bc58485213a8f1058e6995d9593d05",
+      "theme": "mech",
+      "cue": "toggle",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/toggle-strong.wav",
+      "sha256": "0697c5ac31714fb85debd55657aa9c31f47c46ac99ee9872ab2f82aa175a2ab6",
+      "theme": "mech",
+      "cue": "toggle",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/open-subtle.wav",
+      "sha256": "0b8043202e17df44ef8d3219790d0baeefec3b1a4f4172a5842a4e8cafd729bb",
+      "theme": "mech",
+      "cue": "open",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/open-normal.wav",
+      "sha256": "b7718328b6af026e5e2dbbac08fcd6a33a38c4cc87d68ab20005b88490b92e18",
+      "theme": "mech",
+      "cue": "open",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/open-strong.wav",
+      "sha256": "1ddaf3b83ff16ecb85f13b1ef61d3b9084909d283daa9aadb5efe71b0efbdf81",
+      "theme": "mech",
+      "cue": "open",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/close-subtle.wav",
+      "sha256": "72bcb659187729a5405a14e8c5132bba10762ea6cd570db4e46e4612a00cd7c1",
+      "theme": "mech",
+      "cue": "close",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/close-normal.wav",
+      "sha256": "3edd6bd4f4f38a4f0b25f4e4530aae4c3a04682d61a8567284943db512f07852",
+      "theme": "mech",
+      "cue": "close",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/close-strong.wav",
+      "sha256": "3941bff86e0f695c486bb470543d995e71fa3d961c739b0137669bee9be0f774",
+      "theme": "mech",
+      "cue": "close",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/navigate-subtle.wav",
+      "sha256": "cc3f5a75dfcf8e6e26cc47f92d9ef3de86dc0cd3e73176b85a40118f106733c5",
+      "theme": "mech",
+      "cue": "navigate",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/navigate-normal.wav",
+      "sha256": "e7554fc48c4920564f8bed090d80c12e75d67046000477da18f9f0f14e2280ed",
+      "theme": "mech",
+      "cue": "navigate",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/navigate-strong.wav",
+      "sha256": "4f631832f310d3d02f9ea2696a595f1b9111f07b5cdc92263c446a6cf77ca49c",
+      "theme": "mech",
+      "cue": "navigate",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/success-subtle.wav",
+      "sha256": "65fb95a653f5ff7d6646a892194d910bae74885c5a93446bbcc24197fa759285",
+      "theme": "mech",
+      "cue": "success",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/success-normal.wav",
+      "sha256": "452ef9ee6f9ee85806c9ea1c34ec8a47657a8561d4a8428c6e1ca7c9b4f4a1b1",
+      "theme": "mech",
+      "cue": "success",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/success-strong.wav",
+      "sha256": "d8e5704c6bf44aa8cc60e2e67f7c34642a4d84e3ec5e9cb52303634daa2019f8",
+      "theme": "mech",
+      "cue": "success",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/error-subtle.wav",
+      "sha256": "385a70c4ac68421d8c011e1ef76bf20738aa8cceff91f3a64a63aeba211ea781",
+      "theme": "mech",
+      "cue": "error",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/error-normal.wav",
+      "sha256": "972c2bae1056e9cd24ee440e3d17a4a17b6f9161dc9b5da0fd0d03a378dc6b4e",
+      "theme": "mech",
+      "cue": "error",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/error-strong.wav",
+      "sha256": "bcf3f26589f851b0c37c5689ccd7ed9b597211b16d14ce9fc7fff38d575ccc72",
+      "theme": "mech",
+      "cue": "error",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/warning-subtle.wav",
+      "sha256": "b0459de593e066f86973444309a98aafed24737906761a333f5d17498519392e",
+      "theme": "mech",
+      "cue": "warning",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/warning-normal.wav",
+      "sha256": "a3bc34fd421741025a900789fcd25a55db2d527cf314ea2a5b4f311e14689682",
+      "theme": "mech",
+      "cue": "warning",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/warning-strong.wav",
+      "sha256": "7a72584fd2ff5165eb962f6f7f30c7b4c40716e4868bd24c68cf11f50a0aa3b9",
+      "theme": "mech",
+      "cue": "warning",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/loading-subtle.wav",
+      "sha256": "e89fd196f124b2dcbbd4ead11c05bff65da81deb7d97dad3a8b5069cef2d756f",
+      "theme": "mech",
+      "cue": "loading",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/loading-normal.wav",
+      "sha256": "9cdbe881e53a6a698fec686d1a9bd8e3b2bbc4d5ed90ca56ec8cdde1327f3234",
+      "theme": "mech",
+      "cue": "loading",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/loading-strong.wav",
+      "sha256": "f8ee930b9f5e2b2805a5cfadb33094e10f9fe0fb1a3edad1a4368b89600035d5",
+      "theme": "mech",
+      "cue": "loading",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/ready-subtle.wav",
+      "sha256": "31a7a491c1b1f51ccf720025c1e1d6ca8c2ea0c7dcebcb473ca132c00c093e84",
+      "theme": "mech",
+      "cue": "ready",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/ready-normal.wav",
+      "sha256": "6ec55eecc1bfc93d705aee7b9daa6e2d413d7b56cfeb52e3236371942807d9fe",
+      "theme": "mech",
+      "cue": "ready",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/ready-strong.wav",
+      "sha256": "b0ede8239d562c5ec35dae1a59438d909952ac8710ea4b39fe9effebbf29d9fa",
+      "theme": "mech",
+      "cue": "ready",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/attention-subtle.wav",
+      "sha256": "15029be415bd409c776b03ddf2222f1199a05e8b7add5a478a8f932699ebf7b2",
+      "theme": "mech",
+      "cue": "attention",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/attention-normal.wav",
+      "sha256": "c1b2cd5516558fb6efd75eedcdb76a95a432c57f27830e4569607b6b0e569e7e",
+      "theme": "mech",
+      "cue": "attention",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/attention-strong.wav",
+      "sha256": "12d01829c4acd97f2ca5f954f3365c4fee14ff76c251bdca1f06ac4fd15dcb3c",
+      "theme": "mech",
+      "cue": "attention",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/mech/count-subtle.wav",
+      "sha256": "c4459e24bb65efdaac8489aa4f388a30559b0ad4a5480265e52123fa412f8228",
+      "theme": "mech",
+      "cue": "count",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/mech/count-normal.wav",
+      "sha256": "4e27d210429b5941a32b43ed89754e7dd8451a954d734a13c1b6d4b48d7017c5",
+      "theme": "mech",
+      "cue": "count",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/mech/count-strong.wav",
+      "sha256": "367e1b5b67a1eb347baba2f93078a2530568bb45c8c9ee1fe9956676e27ddc6f",
+      "theme": "mech",
+      "cue": "count",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/tap-subtle.wav",
+      "sha256": "97d4767a318d4165554b60f1de77a57a05f5785ae338204b4bffac8a57d8bb38",
+      "theme": "bubble",
+      "cue": "tap",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/tap-normal.wav",
+      "sha256": "7b1a7788953b1bf2ea8e7943566fd76f38e90b17d0a4a7fb8b6effc4d9870299",
+      "theme": "bubble",
+      "cue": "tap",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/tap-strong.wav",
+      "sha256": "409831db79babad654d35eced24c8c117d34c2b0eb9e0a784aff04520fe5b8b3",
+      "theme": "bubble",
+      "cue": "tap",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/type-subtle.wav",
+      "sha256": "4e4fffa3ee19ac95cc5871dea13c1ea235e1fa51343c69ae4b68b26dc7175108",
+      "theme": "bubble",
+      "cue": "type",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/type-normal.wav",
+      "sha256": "fafdedd8eb7074ef32951f933adff19d4775150fe5a20374fa4db1d5124ba66e",
+      "theme": "bubble",
+      "cue": "type",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/type-strong.wav",
+      "sha256": "99da2377f8e4f156e402358defeb850217ea27692a806666e07899d10702ff0d",
+      "theme": "bubble",
+      "cue": "type",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/select-subtle.wav",
+      "sha256": "5192c06fcb558123ce5611feba35ba0f7ebd92366b6c00f62829a845e2b82049",
+      "theme": "bubble",
+      "cue": "select",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/select-normal.wav",
+      "sha256": "2e81ee2aac0099dd531ca4d801b08bb7421d63c9a4d9ef9b4a956d164f140117",
+      "theme": "bubble",
+      "cue": "select",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/select-strong.wav",
+      "sha256": "921f3f27c73d0c383a74873daff084c7a0570cc1d8aa25f6e376ddfa6dc5ed1f",
+      "theme": "bubble",
+      "cue": "select",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/toggle-subtle.wav",
+      "sha256": "7b68096053467b9fa874c630f5b5057072e2bc32bfc335780e84c05445e0da62",
+      "theme": "bubble",
+      "cue": "toggle",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/toggle-normal.wav",
+      "sha256": "e2f91c214513c45a348e0d38c56778569b1e772364a44e2aeeb75774346f181d",
+      "theme": "bubble",
+      "cue": "toggle",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/toggle-strong.wav",
+      "sha256": "4bac250785ce8e911210d23e7d9f370b88c44dbad9ecb0274bd1aaa75b0d5b86",
+      "theme": "bubble",
+      "cue": "toggle",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/open-subtle.wav",
+      "sha256": "63c9ed7631d91f86f39fc4a2233588fa6fb18c6b497159062cdba69d2e5f4028",
+      "theme": "bubble",
+      "cue": "open",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/open-normal.wav",
+      "sha256": "8dcdea7a223fe27539df4aabe1d51d1ec4c8fed61cf5e607eb829d324b118227",
+      "theme": "bubble",
+      "cue": "open",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/open-strong.wav",
+      "sha256": "a2579410ec37e55e9097e125a17f235c92617e98b158c4217da904e97e02e845",
+      "theme": "bubble",
+      "cue": "open",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/close-subtle.wav",
+      "sha256": "5e865b24b0d3097a2be6fdcbba160280bad6e2d954b9c77d13e6118d53b7a98d",
+      "theme": "bubble",
+      "cue": "close",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/close-normal.wav",
+      "sha256": "0956906e87da4577cbd320a122f2b998e677aa93776e7072da552f59e716d7a0",
+      "theme": "bubble",
+      "cue": "close",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/close-strong.wav",
+      "sha256": "c42142b05b2ef7b0bb67089e299fedad7080f25841862e4076277260de92666b",
+      "theme": "bubble",
+      "cue": "close",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/navigate-subtle.wav",
+      "sha256": "031b8d0474fac4b98359ea5d293ed0940950fe2732bf75a9f3c9c8bea8d0691f",
+      "theme": "bubble",
+      "cue": "navigate",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/navigate-normal.wav",
+      "sha256": "2856546af283c39f2e9730dfcbb4b6c0dd85ef815544d40ebbdf4ea05bd329f8",
+      "theme": "bubble",
+      "cue": "navigate",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/navigate-strong.wav",
+      "sha256": "4deda6235fbbaf1bf051e1e2fcccca23cfa5f76b894ae5669efc76921d91a969",
+      "theme": "bubble",
+      "cue": "navigate",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/success-subtle.wav",
+      "sha256": "5cd02301f28014ac95261705d27592e6f52371e54208b823433fec41f8bfebb6",
+      "theme": "bubble",
+      "cue": "success",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/success-normal.wav",
+      "sha256": "7a1692bc421142b484694b2932a0305503a45c48381e6376a535ed0d17c08616",
+      "theme": "bubble",
+      "cue": "success",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/success-strong.wav",
+      "sha256": "52470251bf98747395fd0bde5ccf20140f2340f014ed799c6e7e3b4380d18340",
+      "theme": "bubble",
+      "cue": "success",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/error-subtle.wav",
+      "sha256": "7fd128a4dc76a3146bf78aa3b1f0cebf484b1b4b08ec88138a8df6e865a769d6",
+      "theme": "bubble",
+      "cue": "error",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/error-normal.wav",
+      "sha256": "986d19fd628e5c74493071e9af75355835e5ecfb408ef34fec91b492d6f9ce05",
+      "theme": "bubble",
+      "cue": "error",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/error-strong.wav",
+      "sha256": "20f1a93dec51408ea43727f80d23a76e7b216756aa0ebfe29aa2e2042e3b4dfd",
+      "theme": "bubble",
+      "cue": "error",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/warning-subtle.wav",
+      "sha256": "19d13ae4fcf9fef163d3205ad3cf8a709259031459a65a915bfd20a53fadc954",
+      "theme": "bubble",
+      "cue": "warning",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/warning-normal.wav",
+      "sha256": "a43594667cf1c349eea3a8deaa1060cb7bd73e8f4f8e3dbb47b4d8277bdf9023",
+      "theme": "bubble",
+      "cue": "warning",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/warning-strong.wav",
+      "sha256": "01566b25e93a7fcb8bad870735f0ee609d7436e363ae1dba2886ee4f57e8c237",
+      "theme": "bubble",
+      "cue": "warning",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/loading-subtle.wav",
+      "sha256": "6c1f28280b082b004d27d3b78f8ea194a463fd1aaa43aea80a91216f79ffae28",
+      "theme": "bubble",
+      "cue": "loading",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/loading-normal.wav",
+      "sha256": "095be4d2f3dc64708e36531104ebe498cd687c598569c1609b1809e9017a1783",
+      "theme": "bubble",
+      "cue": "loading",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/loading-strong.wav",
+      "sha256": "ae896e037baea3a4ba3b5b533d151ae0ddde2f4389f16aef8f8372833d33d03a",
+      "theme": "bubble",
+      "cue": "loading",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/ready-subtle.wav",
+      "sha256": "e90df3857dc809bcc299f6f5e69cea3ebb7a546623984da9d8255f6997b7b212",
+      "theme": "bubble",
+      "cue": "ready",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/ready-normal.wav",
+      "sha256": "7650eeeeebb1fc41b42667376303209b9dd5657580c75637b5500388f9de1a2b",
+      "theme": "bubble",
+      "cue": "ready",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/ready-strong.wav",
+      "sha256": "ede90eca333a3d13b27553fba3d7e8464d5ead28dcd7980cd74f2c6dd4746ea6",
+      "theme": "bubble",
+      "cue": "ready",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/attention-subtle.wav",
+      "sha256": "330371076968f70f93bfe2dc841ff868ce1d0e699253d8086298f0e7d52e63c5",
+      "theme": "bubble",
+      "cue": "attention",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/attention-normal.wav",
+      "sha256": "b6b03ffd6ba5298af3301f529b9833d2e4a163f23e02fdf3d403d9d0d0e3e639",
+      "theme": "bubble",
+      "cue": "attention",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/attention-strong.wav",
+      "sha256": "8291bc20b3536310dc987eacaecb4e21f3fb58a2fd8dd2e90a272a73ec47e3d7",
+      "theme": "bubble",
+      "cue": "attention",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/bubble/count-subtle.wav",
+      "sha256": "7c4d3cf0c04178cdab7274aac0a9ccb8572d487587c965cfded7b8de74aef421",
+      "theme": "bubble",
+      "cue": "count",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/bubble/count-normal.wav",
+      "sha256": "6c3a7f06a7276b90f05d6297934015f5347051363d4eaf5ad23682357076b0d8",
+      "theme": "bubble",
+      "cue": "count",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/bubble/count-strong.wav",
+      "sha256": "8b712319154278025863d7dca299b1641c731dcb99d520feba28f335c0fbba18",
+      "theme": "bubble",
+      "cue": "count",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/tap-subtle.wav",
+      "sha256": "632ef267140ed3e54ca91572170959491c72105b79a6e1d2ba2bd17f967a7332",
+      "theme": "press",
+      "cue": "tap",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/tap-normal.wav",
+      "sha256": "825264c324e4d236500867c0516223fff5a0b31842594ecc3c2ecbef28453f39",
+      "theme": "press",
+      "cue": "tap",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/tap-strong.wav",
+      "sha256": "cc39b647894ef8df5b5973bdb2a18e0c042bc77929e216eb8e75a98e29c8aacc",
+      "theme": "press",
+      "cue": "tap",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/type-subtle.wav",
+      "sha256": "c75ae837f52ec88f525e38d87846b0cc88b46c48db87b82424ca284ec9b255b2",
+      "theme": "press",
+      "cue": "type",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/type-normal.wav",
+      "sha256": "52ed8d3404a22adb1b15cde8d35f9e4a71fea80589287934f5083b0f9fe128e0",
+      "theme": "press",
+      "cue": "type",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/type-strong.wav",
+      "sha256": "c1d088bfaba3b43c215fa9b2029746375aa1fd41ada2cd4dbaec53ff4bf3edfb",
+      "theme": "press",
+      "cue": "type",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/select-subtle.wav",
+      "sha256": "4384f07f81ca85892ce6ca9982e7669f9134a72feec58b1eb316ab7ceb7aa114",
+      "theme": "press",
+      "cue": "select",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/select-normal.wav",
+      "sha256": "6df4dc0d03b245bcd195f3498506d8f8876a13f2118ccb35b2e68cf530a74a85",
+      "theme": "press",
+      "cue": "select",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/select-strong.wav",
+      "sha256": "495e1c78303e1c9918da81197ddff82455e4079b7f85a2545ea6c4d503b6d603",
+      "theme": "press",
+      "cue": "select",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/toggle-subtle.wav",
+      "sha256": "4cfeed62e00085ae95b80ef74a455f86c83bf18e47690bc2aed07cf9a93a219d",
+      "theme": "press",
+      "cue": "toggle",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/toggle-normal.wav",
+      "sha256": "24bddc01c37b106b746671f8261d4a9bbf317de9ffb2bdaa3dc5d34de235e0c7",
+      "theme": "press",
+      "cue": "toggle",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/toggle-strong.wav",
+      "sha256": "0e71dcaf2297457a34143266628d8ac1b62d99da5639ae43fa8821c03dbcf885",
+      "theme": "press",
+      "cue": "toggle",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/open-subtle.wav",
+      "sha256": "c7cb286d1f51dbded4865aceb0ce63da5d463636976b7c0001bae3d46c62e346",
+      "theme": "press",
+      "cue": "open",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/open-normal.wav",
+      "sha256": "979e21bafd58f2d214ab4aca1a1fa21607816756f450106e3483a502e12b6e7b",
+      "theme": "press",
+      "cue": "open",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/open-strong.wav",
+      "sha256": "4b881402e304b7f9a02f0649ce296307cb11182e614d15fb4449e12c940f60d7",
+      "theme": "press",
+      "cue": "open",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/close-subtle.wav",
+      "sha256": "9c3fe021b99e1454989a362959c1dbc50a7179bea05b9c0b6ab11009dcd4c19f",
+      "theme": "press",
+      "cue": "close",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/close-normal.wav",
+      "sha256": "bd91dc2e2b886471f055082b10ac4484a2dbf93bda2efe6a0aa622f8ee18502b",
+      "theme": "press",
+      "cue": "close",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/close-strong.wav",
+      "sha256": "d5829a063c04e4d95096381edaeeeecd70ff5148f291eee57e510eed6cf3c83a",
+      "theme": "press",
+      "cue": "close",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/navigate-subtle.wav",
+      "sha256": "778a37ff247c27796e27056d4f11e0f41c6df561d8cb3b866fb3f562d59d07a2",
+      "theme": "press",
+      "cue": "navigate",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/navigate-normal.wav",
+      "sha256": "3b6547a5876dd7f1c58344acf2cd976e3fe20b07e7a95b90eee535e1374c3bd2",
+      "theme": "press",
+      "cue": "navigate",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/navigate-strong.wav",
+      "sha256": "842599fd494a209b57d5bb91bdcadd913158566176707d5e5fd182f689a201e8",
+      "theme": "press",
+      "cue": "navigate",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/success-subtle.wav",
+      "sha256": "192a0a143b90ae18b086ca82144f0374ccb321ecd768ed064375ce27697fc1d3",
+      "theme": "press",
+      "cue": "success",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/success-normal.wav",
+      "sha256": "1c2a33fdc9aaf452369f7e743327d6339dc6bc2ebf1fd7e7e7b255f6534eca76",
+      "theme": "press",
+      "cue": "success",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/success-strong.wav",
+      "sha256": "d63ec352a2d40738ec157bd18e5a3e7db95f4f7dba54acc2394a6b2aa1680e6f",
+      "theme": "press",
+      "cue": "success",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/error-subtle.wav",
+      "sha256": "d2a1c44cac39a30cf8cab94cfcaa7c3bfdc8c44f084b957e207d1ffef5e22b00",
+      "theme": "press",
+      "cue": "error",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/error-normal.wav",
+      "sha256": "c9c94ecc24c064b2d817c9f9e422c05b8cb3cd7ac3d5fc8b5f6e119dfc1240f3",
+      "theme": "press",
+      "cue": "error",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/error-strong.wav",
+      "sha256": "0611a88dc8b916936ee6b81a36b528fe92c4dc7e2952ad94f76d0aaa2bbff265",
+      "theme": "press",
+      "cue": "error",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/warning-subtle.wav",
+      "sha256": "43a6cd7be9b737e6ea2d013a23b4ad2839fb4a88acfde9b4f8ff98c5c246db60",
+      "theme": "press",
+      "cue": "warning",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/warning-normal.wav",
+      "sha256": "36943ae92b01ce96493bb95e79d0554729476f48595a35f485fc152fff2b64cc",
+      "theme": "press",
+      "cue": "warning",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/warning-strong.wav",
+      "sha256": "1de236d557c83f020290a0b4918d962d84f554c1225acb172ef6951454576dd7",
+      "theme": "press",
+      "cue": "warning",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/loading-subtle.wav",
+      "sha256": "0962cfd5c47bc7d048e930f70ad46287dced3bb24cde2f1e7310e39b70fbbc49",
+      "theme": "press",
+      "cue": "loading",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/loading-normal.wav",
+      "sha256": "6776bcd659ad91c7df7f336416aaa0bf331e133943277a6fd24d915ece52b281",
+      "theme": "press",
+      "cue": "loading",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/loading-strong.wav",
+      "sha256": "b4528090548c858a15b7a67b6e0b805dc736fa82fb9ba4457d77269534bac549",
+      "theme": "press",
+      "cue": "loading",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/ready-subtle.wav",
+      "sha256": "38f77b9d622e46dd7235e632cbfcf8ee65cc196b7047e385b1fc866c06180706",
+      "theme": "press",
+      "cue": "ready",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/ready-normal.wav",
+      "sha256": "6b466d316eeb1c3e4ed5162b15d6b8589a952bf85c84415b346530df59813579",
+      "theme": "press",
+      "cue": "ready",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/ready-strong.wav",
+      "sha256": "85915c562dc264e905209367e5fed42876a00bca6961f8116d89ccc5fb2a20b0",
+      "theme": "press",
+      "cue": "ready",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/attention-subtle.wav",
+      "sha256": "c24aa0766964703c44c3b099d5ac3d41acb7714b24d4b0e2bc21a98edaaf4411",
+      "theme": "press",
+      "cue": "attention",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/attention-normal.wav",
+      "sha256": "6d8daacdcdd3192f9bbed50dfe49bbefeff2eee0aa34a51f5dde84a624d5c8f4",
+      "theme": "press",
+      "cue": "attention",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/attention-strong.wav",
+      "sha256": "1b45f706f1e7c9f4be58361b40a44addb4c6b5cf972907a182e65a4acf9d3622",
+      "theme": "press",
+      "cue": "attention",
+      "emphasis": "strong"
+    },
+    {
+      "path": "cuelume/press/count-subtle.wav",
+      "sha256": "1d0a661e2ec0d9fd6e04536436fc69f77a4a77877d49536cbc5b321ce75e67db",
+      "theme": "press",
+      "cue": "count",
+      "emphasis": "subtle"
+    },
+    {
+      "path": "cuelume/press/count-normal.wav",
+      "sha256": "d7c0979cde7387000ca110968188da800bdc171909eec647660e5e5e0d2e6f47",
+      "theme": "press",
+      "cue": "count",
+      "emphasis": "normal"
+    },
+    {
+      "path": "cuelume/press/count-strong.wav",
+      "sha256": "88a5d9caec385273db08a1c0e4fab90568acd3e81b2199e1697a9076ffcf5220",
+      "theme": "press",
+      "cue": "count",
+      "emphasis": "strong"
+    }
+  ]
+}

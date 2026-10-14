@@ -1,0 +1,14 @@
+Thinking Logos engine: MIT, copyright 2026 Jakub Antalik and Enes Ozturk.
+Pinned source commit and exact artwork hashes are recorded in manifest.json.
+The complete engine license ships at apps/web/syka-public/licenses/thinking-logos/LICENSE.txt.
+
+SVGs selected from Syka's SVGL/LobeHub catalog retain their original files and notices.
+Google Docs and FFmpeg symbols come from Simple Icons (CC0; trademarks remain their owners').
+Agent Reach, Higgsfield and HyperFrames artwork was obtained from their own public sources.
+HyperFrames attribution and Apache-2.0 notice are retained by the existing HyperFrames notices.
+The Graphify entry is a Syka functional graph symbol, explicitly marked as such, not an official logo.
+
+The 110 entries identify products/tools only. Catalog membership does not assert that a service is
+authenticated or that a tool is installed. Only operation metadata determines the chat's active mark.
+At 20–28 CSS pixels a stable original mark accompanies the moving points; larger marks use full morphs.
+Complex fine detail requires the text label at compact sizes. The existing Syka identity orb is unchanged.

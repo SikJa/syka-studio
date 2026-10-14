@@ -1,6 +1,6 @@
 # Skills incluidas en Syka Studio
 
-Catálogo generado desde los archivos públicos del producto: **27 skills**. Se incluyen en los recursos de la aplicación y se accede con syka_skills; no se descargan videos ni se requiere la biblioteca personal de su desarrollador. El manifiesto [catalog.json](skills/catalog.json) registra nombre, categoría, ruta relativa y SHA256.
+Catálogo generado desde los archivos públicos del producto: **28 skills**. Se incluyen en los recursos de la aplicación y se accede con syka_skills; no se descargan videos ni se requiere la biblioteca personal de su desarrollador. El manifiesto [catalog.json](skills/catalog.json) registra nombre, categoría, ruta relativa y SHA256.
 
 ## Edición y revisión
 
@@ -27,6 +27,7 @@ Catálogo generado desde los archivos públicos del producto: **27 skills**. Se 
 | [syka-motion-transitions](skills/syka-motion-transitions/SKILL.md) | Transiciones fluidas en el reloj de Syka |
 | [syka-motion-typography](skills/syka-motion-typography/SKILL.md) | Tipografía que conduce la animación |
 | [syka-pr-to-video](skills/syka-pr-to-video/SKILL.md) | Explicar un cambio, no inventar un lanzamiento |
+| [syka-product-launch](skills/syka-product-launch/SKILL.md) | Lanzamiento con una demostración real |
 | [syka-slideshow](skills/syka-slideshow/SKILL.md) | Presentación y video son entregables distintos |
 | [syka-visual-direction](skills/syka-visual-direction/SKILL.md) | Dirección que se puede ejecutar y corregir |
 

@@ -131,7 +131,7 @@ export async function motionReview(cwd: string, raw: unknown, search?: ToolSearc
   if (!Array.isArray(cuts) || cuts.length > 64 || cuts.some(t => typeof t !== 'number' || !Number.isFinite(t) || t < 0 || t >= duration)) throw Error('Cortes declarados fuera del export.');
   const automaticChecks = await motionDiagnostics(ffmpeg.path, source, frames, args.loop, cuts);
   const snapshot: { file: string; sha256: string }[] = [];
-  for (const file of ['index.tsx', 'package.json','motion-plan.json','production-prompt.md','design.md','frame.md','audio-plan.md']) {
+  for (const file of ['index.tsx', 'package.json','motion-plan.json','production-prompt.md','design.md','frame.md','audio-plan.md','short-prompts.md','delivery-plan.md','launch-checklist.md']) {
     try {
       const path = await realpath(join(root, file));
       if (inside(root, path)) snapshot.push({ file, sha256: createHash('sha256').update(await readFile(path)).digest('hex') });

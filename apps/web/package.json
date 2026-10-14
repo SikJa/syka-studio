@@ -1,7 +1,7 @@
 {
   "name": "@diffusionstudio/web",
   "private": true,
-  "version": "0.208.2",
+  "version": "0.209.0",
   "license": "MPL-2.0",
   "type": "module",
   "scripts": {
@@ -51,6 +51,7 @@
     "motion": "13.1.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "robot-heads": "0.3.0",
     "solid-js": "^1.9.10",
     "somoto": "^0.0.2",
     "stats.js": "^0.17.0",

@@ -36,6 +36,15 @@ if (existsSync(runtimeLock)) {
     notices(dir, pkg.name, pkg.version, pkg.license, 'runtime-npm');
   }
 }
+const cuelume = join(repo, 'docs', 'resources', 'sounds');
+const cuelumeSource = join(cuelume, 'sources', 'cuelume.json');
+if (existsSync(cuelumeSource)) {
+  const source = JSON.parse(readFileSync(cuelumeSource, 'utf8'));
+  const out = join(target, 'audio', 'cuelume'); mkdirSync(out, { recursive: true });
+  copyFileSync(join(cuelume, 'LICENSE-CUELUME.txt'), join(out, 'LICENSE-CUELUME.txt'));
+  copyFileSync(cuelumeSource, join(out, 'cuelume.json'));
+  inventory.push({ name: 'cuelume', version: source.packageVersion, license: 'MIT', kind: 'audio', notices: ['LICENSE-CUELUME.txt'], provenance: 'cuelume.json', sourceRevision: source.commit });
+}
 if (process.platform === 'win32') {
   const raw = execFileSync('cargo', ['metadata', '--locked', '--offline', '--format-version', '1', '--filter-platform', 'x86_64-pc-windows-msvc', '--manifest-path', join(desktop, 'native/screen-recorder/Cargo.toml')], { encoding: 'utf8', windowsHide: true, maxBuffer: 8 * 1024 * 1024 });
   for (const pkg of JSON.parse(raw).packages) notices(dirname(pkg.manifest_path), pkg.name, pkg.version, pkg.license, 'rust');

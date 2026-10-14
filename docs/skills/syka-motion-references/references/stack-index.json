@@ -1,12 +1,14 @@
 {
   "schemaVersion": 1,
-  "snapshot": "2026-10-10",
+  "snapshot": "2026-10-13",
   "counts": {
     "repoStudies": 23,
     "galleryCandidates": 178,
     "galleryAlreadyKnown": 80,
     "addedGalleryMetadata": 98,
-    "nativeCaptionRoute": 1
+    "nativeCaptionRoute": 1,
+    "articleStudies": 1,
+    "guidedMascotStudies": 1
   },
   "entries": [
     {
@@ -14,9 +16,20 @@
       "kind": "skill",
       "title": "Bodila51/opus-sound-layer · Familia sonora, cues y QA",
       "author": "Bodila51",
-      "sources": ["https://github.com/Bodila51/opus-sound-layer"],
+      "sources": [
+        "https://github.com/Bodila51/opus-sound-layer"
+      ],
       "patterns": [],
-      "useCases": ["audio", "reel", "storyboard", "product-launch", "typography", "captions", "ui-motion", "general"],
+      "useCases": [
+        "audio",
+        "reel",
+        "storyboard",
+        "product-launch",
+        "typography",
+        "captions",
+        "ui-motion",
+        "general"
+      ],
       "category": null,
       "searchText": "Bodila51 opus-sound-layer sound design audio sonido musica SFX foley material vidrio papel metal ataque brillo centroid cola cues cut move land appear peak velocity balance masking bandas QA fingerprints LUFS true peak Kenney CC0 portable Diffusion",
       "promptStatus": "syka_written_repository_study",
@@ -131,7 +144,7 @@
         "storyboard"
       ],
       "category": null,
-      "searchText": "charlie947/motion-graphics-skills Brief y prompt de producción motion-brief-writer separa contexto de marca, hechos, copy, tarea, salida y ejemplos. Snapshot 2026-10-10: catorce módulos, reference-to-motion separa movimiento de apariencia. Roles movement look story audio technical. Completar los seis bloques existentes de production-prompt.md con hechos, parámetros, referencias concretas y criterios de revisión. product-launch typography explainer data storyboard",
+      "searchText": "charlie947/motion-graphics-skills Brief y prompt de producción motion-brief-writer separa contexto de marca, hechos, copy, tarea, salida y ejemplos. Snapshot 2026-10-10: catorce módulos, reference-to-motion separa movimiento de apariencia. Roles movement look story audio technical. Completar los seis bloques existentes de production-prompt.md con hechos, parámetros, referencias concretas y criterios de revisión. product-launch typography explainer data storyboard 15 skills motion-prompt-writer eight-part prompts launch-video motion-effects",
       "promptStatus": "syka_written_repository_study",
       "sourceRole": "syka_original_study",
       "reviewed": false,
@@ -3831,6 +3844,92 @@
         "skill": "syka-camera-3d-captions",
         "limitations": "Projected native text; no true 3D renderer, automatic occlusion or ring glyph layout."
       },
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-amanda-sartini-launch-rules",
+      "kind": "skill",
+      "title": "Amanda Sartini · Doce criterios de lanzamiento",
+      "author": "Amanda Sartini",
+      "sources": [
+        "https://x.com/i/article/2109015312729587712"
+      ],
+      "patterns": [
+        "action-result",
+        "ui-demo",
+        "audio-sync"
+      ],
+      "useCases": [
+        "product-launch",
+        "brand",
+        "ui-motion",
+        "audio"
+      ],
+      "category": null,
+      "searchText": "Amanda Sartini doce reglas lanzamiento anuncio demo producto cursor callout cámara música sonido lectura portada cierre vertical Syka",
+      "promptStatus": "syka_written_article_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "written-documentation-study",
+        "scope": "Texto y portada; sin código ni revisión audiovisual completa.",
+        "upstreamExecuted": false,
+        "mediaWatched": false
+      },
+      "bundledTextPath": "references/repo-studies/amanda-sartini-launch-rules.md",
+      "bundledTextSource": "https://x.com/i/article/2109015312729587712",
+      "bundledTextLicense": "Original Syka study; no full article or media redistribution",
+      "rights": {
+        "referenceOnly": true,
+        "productionAsset": false,
+        "licenseAssessment": "Original Syka study; original article rights retained."
+      },
+      "media": [],
+      "textPath": null
+    },
+    {
+      "id": "stack-hyperframes-guided-mascot",
+      "kind": "skill",
+      "title": "HyperFrames · Lanzamiento guiado y mascota de marca",
+      "author": "HyperFrames / adaptación original Syka",
+      "sources": [
+        "https://x.com/HyperFrames_/status/2109689637216379019",
+        "https://x.com/HyperFrames_/status/2108644709946257524",
+        "https://github.com/heygen-com/hyperframes/tree/072f53cda9bb648ef0f4e00836825352e6619d39/registry/blocks/lottie-character-walk",
+        "https://github.com/jeremy-prt/bloub",
+        "https://github.com/fayazara/robot-heads"
+      ],
+      "patterns": [
+        "action-result",
+        "character-acting",
+        "ui-demo"
+      ],
+      "useCases": [
+        "product-launch",
+        "ui-motion",
+        "brand",
+        "storyboard"
+      ],
+      "category": null,
+      "searchText": "mascota mascot orbe personaje cursor animacion guiado lanzamiento hook proof turn CTA HyperFrames Lottie GSAP subtitulos audio Bloub robot-heads Robot Heads mascota opcional orbe original conservar",
+      "promptStatus": "syka_written_visual_study",
+      "sourceRole": "syka_original_study",
+      "reviewed": false,
+      "ownAnalysis": {
+        "type": "sampled-frames-and-source-study",
+        "scope": "18 fotogramas entre dos videos; código público del bloque Lottie. Sin escucha ni renderer verificado de los anuncios.",
+        "upstreamExecuted": false,
+        "mediaWatched": false,
+        "sampledFramesViewed": 18
+      },
+      "bundledTextPath": "references/repo-studies/hyperframes-guided-mascot.md",
+      "bundledTextSource": "https://x.com/HyperFrames_/status/2109689637216379019",
+      "bundledTextLicense": "Original Syka study; no third-party videos or mascot assets redistributed",
       "rights": {
         "referenceOnly": true,
         "productionAsset": false

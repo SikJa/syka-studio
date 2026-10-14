@@ -1,0 +1,76 @@
+{
+  "name": "cuelume",
+  "version": "0.2.8",
+  "commit": "2a1ba4fc1b67e8371c9f37e37a51e61353166335",
+  "repository": "https://github.com/danielwh2/cuelume",
+  "license": "MIT",
+  "files": [
+    {
+      "source": "src/audio/render.ts",
+      "path": "dist/audio/render.js",
+      "sourceSha256": "8d31473d53f51a4cca95bb1a99a1f17b26798192e3da8b2682afb432b113c5ea",
+      "sha256": "03137f1d0364e95885967adbc91ad0f995e3af6c4753d0a67c687da8bce7cd03"
+    },
+    {
+      "source": "src/audio/output.ts",
+      "path": "dist/audio/output.js",
+      "sourceSha256": "165b77a8909ec3a7cba9af71eae80a7f00f1194c0971dcd004e10f9156123e39",
+      "sha256": "6f640d11327f09eadbc455712622dd9709dea0913886eaccc5313d3ab851e5a5"
+    },
+    {
+      "source": "src/sounds/themes.ts",
+      "path": "dist/sounds/themes.js",
+      "sourceSha256": "3337166a29ae1a6fc2f9294a6411c7db2c9e3f56692198ce75c725c4002cbac8",
+      "sha256": "815d317cc61d9a5de52299d0b9ece8075de7cc2008d08b02ee7fb95c9654fb67"
+    },
+    {
+      "source": "src/sounds/context.ts",
+      "path": "dist/sounds/context.js",
+      "sourceSha256": "622c83c03d0fc6ef01b51ef3fdc6c801420597fa519bb54ca7445842fa038870",
+      "sha256": "4a7640389c01b855893cee4ed19821ce8b4c2a761e6d5364828cf5f8308592b9"
+    },
+    {
+      "source": "src/sounds/layers.ts",
+      "path": "dist/sounds/layers.js",
+      "sourceSha256": "438d71de83830f1c26b595656dc19e7bebe2d172f3e734b5bdb9eb33473e8bb4",
+      "sha256": "8cf7f798fc2a8ab5dc546950a65d5044c01cea8222a1ede1423e13b85b7dd2d3"
+    },
+    {
+      "source": "src/sounds/recipes.ts",
+      "path": "dist/sounds/recipes.js",
+      "sourceSha256": "c20c150dfc47bd191eaa391e49c3cc079b11c666b896b65126f28726ab12ea45",
+      "sha256": "bfe5201f154df4d1cf93d3bc40ef56108ddca76696206033246be88102990214"
+    },
+    {
+      "source": "src/sounds/bubble.ts",
+      "path": "dist/sounds/bubble.js",
+      "sourceSha256": "9b7ea9ff5f7969a86f3161f94a79a5e9506fb553183f698eff425e6821838130",
+      "sha256": "af801af202f78a4458ffb6ce5068cb49bc637116ec33b5d5a3f81ded77495e93"
+    },
+    {
+      "source": "src/sounds/mech.ts",
+      "path": "dist/sounds/mech.js",
+      "sourceSha256": "5a685511247098c228432aec426b747adf496bdfba6be180f7a785245c0d4834",
+      "sha256": "9efd7c6c28df20d5a3288ce9d2dfd94bf7d5d3e9b4a33052f19b552e83d1679f"
+    },
+    {
+      "source": "src/sounds/press.ts",
+      "path": "dist/sounds/press.js",
+      "sourceSha256": "a7a8cf1fd92e80061f4094ccd7796bff6eb89c760f42b6a748271b50157e8344",
+      "sha256": "3a0a2ff5dbf299dc9c692000374e0559db8f36487de1c605a0ca967f955effe4"
+    },
+    {
+      "source": "scripts/sound.mjs",
+      "path": "scripts/sound.mjs",
+      "sourceSha256": "2d69ab74f76b46a3993ac78c26c1f88a74c2631ad653f0c5bff430d585b1c478",
+      "sha256": "2d69ab74f76b46a3993ac78c26c1f88a74c2631ad653f0c5bff430d585b1c478"
+    },
+    {
+      "source": "LICENSE",
+      "path": "LICENSE",
+      "sourceSha256": "c0d53cbcf3b4e9cfa23c0ce575a1568d34f763eaf74917fb525a61d5624752ca",
+      "sha256": "c0d53cbcf3b4e9cfa23c0ce575a1568d34f763eaf74917fb525a61d5624752ca"
+    }
+  ],
+  "adaptation": "Upstream TypeScript compiled to ESM using the existing TypeScript toolchain; offline renderer unchanged. No npm runtime dependency."
+}

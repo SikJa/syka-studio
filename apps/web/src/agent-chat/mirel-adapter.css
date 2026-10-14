@@ -168,9 +168,23 @@
 .syka-user-text .agent-rich-url>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .syka-user-text .agent-rich-url :is(.agent-link-platform,.agent-rich-url-icon){flex-shrink:0}
 .syka-chat-identity > .syka-orb-anchor {grid-column:2;grid-row:1;justify-self:center;}
+/* One row for Assets/Chat and identity/navigation. Keep the window title bar. */
+.syka-sidebar-toolbar{position:relative;height:56px;min-height:56px;flex-shrink:0;border-bottom:1px solid var(--color-border);background:var(--color-background);min-width:0;--sidebar-toolbar-columns:28px minmax(0,1fr) 48px minmax(0,1fr) 28px}
+.syka-sidebar-toolbar>.syka-sidebar-tabs,.syka-agent-chat .syka-sidebar-toolbar .syka-chat-identity{position:absolute;inset:0;display:grid;grid-template-columns:var(--sidebar-toolbar-columns);gap:8px;align-items:center;width:100%;height:56px;padding:4px 12px;box-sizing:border-box;margin:0;border:0;background:transparent}
+.syka-sidebar-toolbar>.syka-sidebar-tabs{pointer-events:none;z-index:1}
+.syka-sidebar-toolbar>.syka-sidebar-tabs>[role=tab]{pointer-events:auto}
+.syka-sidebar-toolbar>.syka-sidebar-tabs>[data-tour-target=left-tab-assets]{grid-column:2;justify-self:end}
+.syka-sidebar-toolbar>.syka-sidebar-tabs>[data-tour-target=left-tab-chat]{grid-column:4;justify-self:start}
+.syka-agent-chat .syka-sidebar-toolbar .syka-chat-identity>.syka-orb-anchor{width:48px;height:48px;grid-column:3;grid-row:1;justify-self:center;margin:0}
+.syka-agent-chat .syka-sidebar-toolbar .syka-session-toggle{grid-column:1;grid-row:1;margin:0;border:0;background:transparent;color:var(--color-muted-foreground);border-radius:7px}
+.syka-agent-chat .syka-sidebar-toolbar .syka-chat-identity .syka-chat-placement-action{grid-column:5;grid-row:1;margin:0}
+.syka-sidebar-toolbar .syka-session-toggle:hover{background:var(--surface-hover);color:var(--color-foreground)}
+.syka-mascot-timeline-dock{display:block;flex:0 0 64px;width:64px;height:32px;pointer-events:none}
 .syka-shared-chat-orb {--orb-travel-duration:900ms;--orb-travel-ease:cubic-bezier(.4,0,.2,1);--chat-orb-size:28px;position:fixed;top:0;left:0;width:var(--chat-orb-size);height:var(--chat-orb-size);z-index:55;pointer-events:auto;cursor:pointer;border:0;background:transparent;padding:0;transition:transform var(--orb-travel-duration) var(--orb-travel-ease),width var(--orb-travel-duration) var(--orb-travel-ease),height var(--orb-travel-duration) var(--orb-travel-ease),opacity 180ms ease-out;}
 .syka-shared-chat-orb:focus-visible {outline:1px solid var(--ring);outline-offset:2px;border-radius:50%;}
 .syka-shared-chat-orb[data-travel="false"] {transition:opacity 180ms ease-out;}
+.syka-shared-chat-orb[data-excursion="true"]{transition:none;pointer-events:none}
+.syka-shared-chat-orb .syka-header-orb>canvas{display:block;width:100%!important;height:100%!important}
 .syka-shared-chat-orb .syka-header-orb,.syka-shared-chat-orb .agent-identity-orb,.syka-shared-chat-orb .agent-identity-orb canvas {display:block;width:100%!important;height:100%!important;}
 .syka-agent-chat [data-chat-orb-anchor="response"] {height:0;}
 .syka-question-orb [data-chat-orb-anchor="question"] {width:100%;height:100%;}

@@ -308,7 +308,7 @@ export function Assets() {
       ref={root}
       onKeyDown={handleKeyDown}
     >
-      <div class="h-12 shrink-0 flex items-center gap-2 px-4 border-y border-border [[data-platform=win32]_&]:border-t-0">
+      <div class="h-11 shrink-0 flex items-center gap-2 px-4 border-y border-border [[data-platform=win32]_&]:border-t-0">
         <div class="flex-1 min-w-0 flex items-center">
           <SidebarTabs />
         </div>

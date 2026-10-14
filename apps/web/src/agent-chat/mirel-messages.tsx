@@ -1,9 +1,11 @@
 import { createEffect, createSignal, onMount, onCleanup } from 'solid-js';
 import { createRoot } from '@/lib/react-root';
 import { createElement } from 'react';
-import {AgentIdentityOrb} from '@/mirel-chat/features/agents/agent-identity-orb';
+import {SykaOrganicMascot} from '@/mirel-chat/features/agents/syka-organic-mascot';
+import type {MascotActivity} from '@/lib/syka-mascot';
 import { MessageBubble } from '@/mirel-chat/features/agents/syka-message-bubble';
 import { AgentThinkingTrace, AgentToolChipsTrace } from '@/mirel-chat/features/agents/agent-thinking-trace';
+import { ToolBrandMark } from '@/mirel-chat/features/agents/thinking-logos/brand-mark';
 import type { AgentFeedbackVerdict,AgentThreadMessage } from '@/mirel-chat/features/agents/syka-contracts';
 import type { Item } from '@diffusionstudio/agent-chat';
 import {createContext,useContext} from 'solid-js';
@@ -45,10 +47,17 @@ export function MirelMessage(props:{item:Extract<Item,{kind:'assistant'}>}){
 }
 export function MirelTrace(props:{item:Extract<Item,{kind:'tool'|'reasoning'}>}){
  const actions=useContext(ChatActionsContext);let el!:HTMLDivElement;let root:ReturnType<typeof createRoot>;
- onMount(()=>{root=createRoot(el);createEffect(()=>{const item=props.item;const activity={id:item.id,kind:item.kind==='tool'?'tool' as const:'status' as const,state:item.kind==='tool'?(item.status==='running'?'started' as const:item.status==='failed'?'failed' as const:'completed' as const):(actions?.running()&&(item.id==='current-thinking'||actions.isActiveItem(item.id))?'progress' as const:'completed' as const),label:item.kind==='tool'?item.title:'Pensando',summary:item.kind==='tool'?item.detail:item.text};root.render(item.kind==='tool'?createElement(AgentToolChipsTrace,{activities:[activity]}):createElement(AgentThinkingTrace,{activities:[activity],variant:'reasoning'}));});});onCleanup(()=>root?.unmount());return <div class="syka-mirel-visuals" ref={el}/>;
+ onMount(()=>{root=createRoot(el);createEffect(()=>{const item=props.item;const activity={id:item.id,kind:item.kind==='tool'?'tool' as const:'status' as const,state:item.kind==='tool'?(item.status==='running'?'started' as const:item.status==='failed'?'failed' as const:'completed' as const):(actions?.running()&&(item.id==='current-thinking'||actions.isActiveItem(item.id))?'progress' as const:'completed' as const),label:item.kind==='tool'?item.title:'Pensando',toolName:item.kind==='tool'?item.name:undefined,summary:item.kind==='tool'?item.detail:item.text};root.render(item.kind==='tool'?createElement(AgentToolChipsTrace,{activities:[activity]}):createElement(AgentThinkingTrace,{activities:[activity],variant:'reasoning'}));});});onCleanup(()=>root?.unmount());return <div class="syka-mirel-visuals" ref={el}/>;
 }
-export function SykaChatOrb(props:{working:boolean;variant?:'header'|'hero';paused?:boolean}) {
+export function MirelToolMark(props:{item:Extract<Item,{kind:'tool'}>;size?:number}) {
+ let el!:HTMLSpanElement;let root:ReturnType<typeof createRoot>;
+ onMount(()=>{root=createRoot(el);createEffect(()=>root.render(createElement(ToolBrandMark,{activity:{toolName:props.item.name,label:props.item.title,summary:props.item.detail,state:props.item.status},size:props.size??24})));});
+ onCleanup(()=>root?.unmount());return <span ref={el}/>;
+}
+export function SykaChatOrb(props:{working:boolean;variant?:'header'|'hero';paused?:boolean;activity?:MascotActivity}) {
  let element!:HTMLSpanElement;let root:ReturnType<typeof createRoot>;
- onMount(()=>{root=createRoot(element);createEffect(()=>root.render(createElement(AgentIdentityOrb,{agent,variant:props.variant??'header',working:props.working,paused:props.paused})));});
+  // Render at a stable resolution; the shared portal scales the same canvas
+  // between the compact header, question and editor destinations.
+  onMount(()=>{root=createRoot(element);createEffect(()=>root.render(createElement(SykaOrganicMascot,{activity:props.activity??(props.working?'thinking':'idle'),size:96,finish:'accent',paused:props.paused,interactive:false})));});
  onCleanup(()=>root?.unmount());return <span class="syka-header-orb" ref={element}/>;
 }

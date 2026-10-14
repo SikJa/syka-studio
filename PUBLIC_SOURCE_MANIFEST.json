@@ -17,14 +17,14 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 987,
-      "sha256": "ebaff422d97c00dd4c9e6e39d9c557caa3137ad4183cb812599fc6fea8079d16",
+      "bytes": 1089,
+      "sha256": "0bbaecb0307217e46328c3442cb6d23c6a639ca81a81edb0789f4cb942e6a1ee",
       "kind": "text"
     },
     {
       "path": "apps/cli/package.json",
       "bytes": 806,
-      "sha256": "7ce605cc872d2dd21bbfa2332c479b01806965b9477c8a563e32e522fc9f315e",
+      "sha256": "c38f73920c03d41d8bc8620068622d8e9344e8ab97c55dfabb67e1fdfe709e12",
       "kind": "text"
     },
     {
@@ -114,7 +114,7 @@
     {
       "path": "apps/desktop/package.json",
       "bytes": 3274,
-      "sha256": "faf9cdba33d6223ec724de8ad613e7a5eca393bdd833a8bed95edd0da226829c",
+      "sha256": "d123843382a7335d6497e65c9942657faff07d4727c4c6c8dc9815b2d1d55ca4",
       "kind": "text"
     },
     {
@@ -167,8 +167,8 @@
     },
     {
       "path": "apps/desktop/scripts/stage-licenses.mjs",
-      "bytes": 2960,
-      "sha256": "d0e89d3dc4a3cd77a6182179469ee4f46f6b1a789c13f2e704028b8a1e3f7df7",
+      "bytes": 3566,
+      "sha256": "4c5ddb26d319f60c75cc2a21ae59cd543f4db3b574d4ce78e38b0e92839fb61c",
       "kind": "text"
     },
     {
@@ -935,8 +935,8 @@
     },
     {
       "path": "apps/desktop/src/video-import/service.ts",
-      "bytes": 18151,
-      "sha256": "756f054a505f064146391ca419253ac57e56ac1407a70cfbaccb6974fa5e7980",
+      "bytes": 17936,
+      "sha256": "c0704b4af8781ee8dc5881ba6ac7bb9598bea115797966aa7dc46f077d552358",
       "kind": "text"
     },
     {
@@ -1061,8 +1061,8 @@
     },
     {
       "path": "apps/desktop/test/fixtures/video-import.mjs",
-      "bytes": 1089,
-      "sha256": "e04740cc2b5bb324a15e09ee5a53cb9f4a0bd1aecc7b1d7dab38ee63929bd634",
+      "bytes": 2057,
+      "sha256": "899c3ae0a7cad1928d2ac6800c9f6af8ca16d2479babae979854b5195f223fac",
       "kind": "text"
     },
     {
@@ -1145,8 +1145,8 @@
     },
     {
       "path": "apps/desktop/test/video-import.test.ts",
-      "bytes": 7567,
-      "sha256": "9862d8040a5fe5cd23ebd866944dfeaf56952b8973c142721e99d2c65c4a8c25",
+      "bytes": 8920,
+      "sha256": "02694bd24670c64b1c780036aff255fed05806c0e43a53eb1fbb0664e20d2bd1",
       "kind": "text"
     },
     {
@@ -1199,8 +1199,8 @@
     },
     {
       "path": "apps/web/package.json",
-      "bytes": 2692,
-      "sha256": "36a865502f348efa023067f9c4fc404f53901f04a4fad3eef2a22518b3faca84",
+      "bytes": 2720,
+      "sha256": "1b41cf1a9f3d4fedef8b9f1a1ecdfe9dffbba6bc142cdbcb13e9b8a057c083b5",
       "kind": "text"
     },
     {
@@ -1289,14 +1289,14 @@
     },
     {
       "path": "apps/web/src/agent-chat/chat-identity-header.tsx",
-      "bytes": 1803,
-      "sha256": "6707146e086aeafb02899c35dde977e29be74dd340a6794b7fe76ab3be94d927",
+      "bytes": 1968,
+      "sha256": "2cacd78372fde657d47e329c1d776528fe49a1c805069295f1dbb4061007a20f",
       "kind": "text"
     },
     {
       "path": "apps/web/src/agent-chat/chat-identity-orb.tsx",
-      "bytes": 5352,
-      "sha256": "b91bee9aac8077195daac752931b06e805b0f23fcf0c36091b19989a5516008a",
+      "bytes": 10451,
+      "sha256": "349653c0a29dc53264b26134c2b3bae948bcb7c1eceac81c9efebe485db1d982",
       "kind": "text"
     },
     {
@@ -1307,8 +1307,8 @@
     },
     {
       "path": "apps/web/src/agent-chat/chat-panel.tsx",
-      "bytes": 25865,
-      "sha256": "02f88d77338e31b282418bc396bba3f360208f7b8e3a1d96582ee1c61e3929dd",
+      "bytes": 26465,
+      "sha256": "9b5420c67e12108db6603b2d2fe8b8d442566f105e258aa01379ccec8d986dd9",
       "kind": "text"
     },
     {
@@ -1415,8 +1415,8 @@
     },
     {
       "path": "apps/web/src/agent-chat/items.tsx",
-      "bytes": 7543,
-      "sha256": "4de6955cb6bcedd9382f122aed854bf34f1f7bc3df9d6987d2017fc9c62caf25",
+      "bytes": 7555,
+      "sha256": "eb719b00fc2a4db9ff827d5f0c885a768923a30807ec5eb286d6aa622d873cbd",
       "kind": "text"
     },
     {
@@ -1438,21 +1438,45 @@
       "kind": "text"
     },
     {
+      "path": "apps/web/src/agent-chat/mascot-activity.test.ts",
+      "bytes": 2871,
+      "sha256": "03a0a3398a78281420b6186349454857b795531cf54185ef5b50d02a06a1a899",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/agent-chat/mascot-activity.ts",
+      "bytes": 2261,
+      "sha256": "96c38be92d11c1ba5cab0e78ba8a12359e2791889e2768515093d8ba246ff3ae",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/agent-chat/mascot-journey.test.ts",
+      "bytes": 3176,
+      "sha256": "6c55ae51aba62fb20fb6f01e584ec4fc83ffd8bc12c8ff5d30f4dbfe9d2b4447",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/agent-chat/mascot-journey.ts",
+      "bytes": 3668,
+      "sha256": "49757870fbcf1814e1cc52ac0949c0e648a859ff7e1571d9525a73c5a907e856",
+      "kind": "text"
+    },
+    {
       "path": "apps/web/src/agent-chat/mirel-adapter.css",
-      "bytes": 29112,
-      "sha256": "2475d148393e2a33c6b77d71c992c02e7610d1fed6ea32e0f31230d88671dee9",
+      "bytes": 30835,
+      "sha256": "0a9767166089c68a8c3a2db6a319b4ca591c1fbd2f1de35ba3eaa5386aa54582",
       "kind": "text"
     },
     {
       "path": "apps/web/src/agent-chat/mirel-composer.tsx",
-      "bytes": 17467,
-      "sha256": "bad5652a10f9850709ea78905f0f2873e100ef1651414b3b5e41773673f35913",
+      "bytes": 17255,
+      "sha256": "f5b9b3373a55dbe1e85d49ada87e54fae88fba12c06b40eb22de874de3a873d6",
       "kind": "text"
     },
     {
       "path": "apps/web/src/agent-chat/mirel-messages.tsx",
-      "bytes": 5192,
-      "sha256": "85dd1f9cc22fcd6164630ace3cd183801601d2b31976459598f1d35968819da7",
+      "bytes": 6061,
+      "sha256": "f20b8612a0358d9c59a38a5eca1790a9bb8cc423246e6d91f05bc0460c54091c",
       "kind": "text"
     },
     {
@@ -1499,8 +1523,8 @@
     },
     {
       "path": "apps/web/src/agent-chat/provider-catalog.ts",
-      "bytes": 6499,
-      "sha256": "140ec25db709db44ade318fd934fe5cddbb9cc710333b96826d4dd9396c2e87c",
+      "bytes": 6452,
+      "sha256": "9a07bdf1dcd4559bbf24098821a561330fdfefbafb4a46ba7d45045e4342cfd0",
       "kind": "text"
     },
     {
@@ -1577,8 +1601,8 @@
     },
     {
       "path": "apps/web/src/agent-chat/sidebar-tabs.tsx",
-      "bytes": 1526,
-      "sha256": "941d2c5d15123b0c235a2e8488445f1dbabc6f7653d4ded9c2a3c4d364f76193",
+      "bytes": 1544,
+      "sha256": "3140527f7b261ebbddc9a46aa1fb0fb8f8997df1d511ec46bc72cf77f98cb839",
       "kind": "text"
     },
     {
@@ -1589,8 +1613,8 @@
     },
     {
       "path": "apps/web/src/agent-chat/store.ts",
-      "bytes": 20214,
-      "sha256": "1c7625a140f8101d78bf915b439b9b607074704b36f1f5cfddda067572c3f449",
+      "bytes": 19707,
+      "sha256": "91855e7d1fd08698de0c30a78d4caebe15360d0c7b4cb76de2f951409e189449",
       "kind": "text"
     },
     {
@@ -1613,14 +1637,14 @@
     },
     {
       "path": "apps/web/src/agent-chat/turn-activity.tsx",
-      "bytes": 1860,
-      "sha256": "cf5ffea8e08fdcdf4103ac6b28fb65b43e3b181aa55f1a56de828500bc5e6148",
+      "bytes": 2693,
+      "sha256": "f1649250fc7413b338a9251752a87b875ac2e2dc2577c4a6965dce3a14c8e830",
       "kind": "text"
     },
     {
       "path": "apps/web/src/agent-chat/visual-context.ts",
-      "bytes": 2468,
-      "sha256": "2aa38314e73630f1a9e5725dc1077791984b211404dddbf3c295a2a952b428e2",
+      "bytes": 2831,
+      "sha256": "9a1a6b281a95e8e81cf1369d1e36f64003aeb902f742f269a04b4129600bf89a",
       "kind": "text"
     },
     {
@@ -4290,7 +4314,7 @@
     {
       "path": "apps/web/src/components/sidebar-left/assets.tsx",
       "bytes": 24025,
-      "sha256": "29c183ee79ca949bd2a63188c447aae475f8db44c7f1bc7d481249904cfc9512",
+      "sha256": "4c5fbeb43d504945594b9c97ada84122d0b86b52be8b600ef424fb85088db158",
       "kind": "text"
     },
     {
@@ -4415,8 +4439,8 @@
     },
     {
       "path": "apps/web/src/components/sidebar-right/agent-reference-menu.tsx",
-      "bytes": 3277,
-      "sha256": "9389406a8b66b75a8e5c83e018df71aa2a11432a4f20153dd4efeed7a5899d32",
+      "bytes": 3384,
+      "sha256": "8dd3bfd30d372d5cfea18bd79b503fd0bf9055f35ce0b41059a7c25bce93f4fc",
       "kind": "text"
     },
     {
@@ -4799,8 +4823,8 @@
     },
     {
       "path": "apps/web/src/components/sidebar-right/linked-resources.tsx",
-      "bytes": 13139,
-      "sha256": "3204a99586239a646b97f87f70cdc3d70e2fcc262821e6569e10d162d792a0fc",
+      "bytes": 13307,
+      "sha256": "5af636196e06a9020af33fa1edb3b638b861136c48edb34c32d216ccfba4a7e7",
       "kind": "text"
     },
     {
@@ -4817,8 +4841,8 @@
     },
     {
       "path": "apps/web/src/components/sidebar-right/preset-picker.tsx",
-      "bytes": 7787,
-      "sha256": "4e1817e1adace2e0cd09ef2858f79a8ccbfbb7b0105a092c867923ec3ebba7a3",
+      "bytes": 7813,
+      "sha256": "fd264baa1edfd552c6ccf4e7abbaac43ee5cabb7c99261275050c7b2395acaba",
       "kind": "text"
     },
     {
@@ -4853,8 +4877,8 @@
     },
     {
       "path": "apps/web/src/components/sidebar-right/right-sidebar.tsx",
-      "bytes": 24679,
-      "sha256": "81f7b92557fecdb2d0cd82394539c941194d01589985be646458e1f7e09640ed",
+      "bytes": 24777,
+      "sha256": "5903145f7e013aba5dfe4fa7a9b9324de524b17d92aee3c86bd01702f56fe03c",
       "kind": "text"
     },
     {
@@ -4985,8 +5009,8 @@
     },
     {
       "path": "apps/web/src/components/timeline/toolbar.tsx",
-      "bytes": 4614,
-      "sha256": "dd0f4e67757e891b934fb21e283854fd8e87d59c849304de47f4f892b593d554",
+      "bytes": 4663,
+      "sha256": "bf33cc8265a5751c11b314f0a86476adc3a8a1c641f4dd6e5f3c6ce72fe89a77",
       "kind": "text"
     },
     {
@@ -6508,6 +6532,18 @@
       "kind": "text"
     },
     {
+      "path": "apps/web/src/lib/syka-mascot.test.ts",
+      "bytes": 3150,
+      "sha256": "67d8d7269fb69b2363a2c2238642982e1ee1c959788b549f4c82132d8b2c822a",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/syka-mascot.ts",
+      "bytes": 11082,
+      "sha256": "3933d976fc154a4f83612a5285baf2b7a8a295828579e9a95a58e23d9e760283",
+      "kind": "text"
+    },
+    {
       "path": "apps/web/src/lib/syka-transcription.ts",
       "bytes": 4142,
       "sha256": "56bf2d7513fe3b55f8d0c6ac60d1c3ee8a01872bfa68d31823692112e8223fcb",
@@ -6529,6 +6565,90 @@
       "path": "apps/web/src/lib/uploads.ts",
       "bytes": 4161,
       "sha256": "22fce4adca475253bece8139efd7702ba2efd9afef4ef657b93cdc00d8e20451",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/cycles.ts",
+      "bytes": 8924,
+      "sha256": "7567aaecf000fa8dce5900617ec64a4537520a3329c62a67c81526d4e25ed86c",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/decor.ts",
+      "bytes": 8652,
+      "sha256": "6c300f8aaa7d2f95c13b35993753b0542779528d16bd8e1d01507e467fe52d04",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/engine.ts",
+      "bytes": 22227,
+      "sha256": "d824c715b6ec38b241fc61ae2ac516d7c1623f9603f88942b4585cdd9307e638",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/expressions.ts",
+      "bytes": 5539,
+      "sha256": "66c5562afcf376c7fde0c83b6c9cc953f1313d9e2f910e2b94fd24098aa52ae5",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/eyefit.ts",
+      "bytes": 18589,
+      "sha256": "8da411d7643c24f383d2d994a4668e43292c9810a6f63c257dbfd13f61284e9b",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/face.ts",
+      "bytes": 5832,
+      "sha256": "f9ddf7f750b101dbf6fa29acc95fe5fbdeec41c96b2873b1a844df2b5c1bd8c8",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/LICENSE",
+      "bytes": 1072,
+      "sha256": "d43fe2742faaf4a86210ec33bb155f101f64883e3994be9193099367940736b4",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/math.ts",
+      "bytes": 1566,
+      "sha256": "736be559b961109c3ca2a4c88d7992e99ceaff46450a522d47e596c1def99c0f",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/profiles.ts",
+      "bytes": 2077,
+      "sha256": "62dc55bc860b9e2b1f7a43168cee8738b68b42bf4d07f668d32984ee886f02d3",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/README.md",
+      "bytes": 1116,
+      "sha256": "184530a69a1edc01ed841bb96213bbaee74e6c4dc3395f671ce2fd02002bb193",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/repere.ts",
+      "bytes": 1317,
+      "sha256": "2f74419387868a13c2f887a714c7442b130753d938732d91f39905f39ab2030e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/shape.ts",
+      "bytes": 10222,
+      "sha256": "72020197e3ff117487ed670d915dfb3297b8034f7e9a803f573f15b3dd41d44e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/skins.ts",
+      "bytes": 4785,
+      "sha256": "2fa0f296e8a49b7b81458eebb98b6ecb44d1073bdc815a46e7846819b743b3c3",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/lib/vendor/bloub/states.ts",
+      "bytes": 17031,
+      "sha256": "7b67bfc4ee95011225a2cef542866dacde0a1c044a56f174bee4173b82cec207",
       "kind": "text"
     },
     {
@@ -6605,8 +6725,8 @@
     },
     {
       "path": "apps/web/src/mirel-chat/features/agents/agent-composer.tsx",
-      "bytes": 37947,
-      "sha256": "fe4201d63d503ecd2fb99956e7a5762bbdf5061b1fb70eeee3ebb72d99039789",
+      "bytes": 37173,
+      "sha256": "2e0c346fec70ee13870ab4c0409d6e99220e0038adbd3ec6be5fde8beb92aa46",
       "kind": "text"
     },
     {
@@ -6629,8 +6749,8 @@
     },
     {
       "path": "apps/web/src/mirel-chat/features/agents/agent-identity-orb.tsx",
-      "bytes": 3101,
-      "sha256": "817bd134f4c023780064946edcfad443bbcce5591a416b9bcd8ca5356b719bdb",
+      "bytes": 3114,
+      "sha256": "4582ce244be62735b2d223158a3cf5b129ae64faad3b1e7abb9bad2362ff83dc",
       "kind": "text"
     },
     {
@@ -6689,8 +6809,8 @@
     },
     {
       "path": "apps/web/src/mirel-chat/features/agents/agent-orb-canvas.tsx",
-      "bytes": 2983,
-      "sha256": "e6b78dbac55cbdf53e57aa24060db29cc2879c42f7276a38a34590ea49fbe8f2",
+      "bytes": 2991,
+      "sha256": "21c6df4222adb18494786de92876bfb6322a64778856f4a844a4253107678f18",
       "kind": "text"
     },
     {
@@ -6749,8 +6869,8 @@
     },
     {
       "path": "apps/web/src/mirel-chat/features/agents/agent-thinking-trace.tsx",
-      "bytes": 16859,
-      "sha256": "fc0e765d2afb54bde00ce67c180d3be6c573039d515b800282e2176d973cff77",
+      "bytes": 16343,
+      "sha256": "cbe76972e5c503d0710637159e6c1555aafb992734771c0e47c0092cd02c4536",
       "kind": "text"
     },
     {
@@ -6857,8 +6977,8 @@
     },
     {
       "path": "apps/web/src/mirel-chat/features/agents/syka-contracts.ts",
-      "bytes": 806,
-      "sha256": "02e8cff7049b19e3ce052f146b22be0c8e6655da64ba442237b25d2b3ae6f447",
+      "bytes": 823,
+      "sha256": "e0b7ed171395084b8f52789c26313bc3e367828b1ed00ca09c591c451c359a6f",
       "kind": "text"
     },
     {
@@ -6868,9 +6988,891 @@
       "kind": "text"
     },
     {
+      "path": "apps/web/src/mirel-chat/features/agents/syka-organic-mascot.tsx",
+      "bytes": 4330,
+      "sha256": "b2986b8ea70a1d4eaa7df3227533fc4542974f3796340dad905463a921dbc422",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/syka-robot-mascot.tsx",
+      "bytes": 1907,
+      "sha256": "ae979de5458b0a3eadd05dc93441feb419bfb84a4322c5938116853eb9bafa44",
+      "kind": "text"
+    },
+    {
       "path": "apps/web/src/mirel-chat/features/agents/syka-session-rail.tsx",
       "bytes": 11330,
       "sha256": "fc27557272a6975e122438ebe83ae429c3075c1b652c882e10b73cf38e53cfcf",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/assets.ts",
+      "bytes": 1145,
+      "sha256": "3657c2f91bede52e9d8b7b39afd24b276063b715916fe1e28e6f35615b6b9b02",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/brand-mark.css",
+      "bytes": 2303,
+      "sha256": "1e148ce2e8cdf5b6a26c23f31c611f3606ff9bb3934b128540d6c2de2efa8cac",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/brand-mark.tsx",
+      "bytes": 5541,
+      "sha256": "88e8c6cddc283eb021c3d9f799122c878021b831e5b720ed1d0b6a0362885501",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/catalog.json",
+      "bytes": 26572,
+      "sha256": "96f42f27003bb781fadc6e5875b40bf5a8269aaf46c840212f3f8e632e9bee01",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/catalog.test.ts",
+      "bytes": 5018,
+      "sha256": "05aed2b613f077bf226fca810ebd879732f54a4258fff7739201fd4db2cff9a4",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/catalog.ts",
+      "bytes": 6196,
+      "sha256": "eed2fafb4dcb3567888496dc75bbb1c7f5636f0156acbe8228af1907801993e8",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/adobe.json",
+      "bytes": 40083,
+      "sha256": "7e4cca9598df06e562f629347bd586cc1733fdfbbe6faa8bbe4f890822e800fd",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/after-effects.json",
+      "bytes": 36067,
+      "sha256": "2127d2643870cad9431921e9611dba9c2096593b5faf42721ac2006618ff0c56",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/agent-reach.json",
+      "bytes": 58632,
+      "sha256": "b75877ae1cde5a3026994d716f00f0efe87147f1c4fae4511fe776e721a1f733",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/antigravity.json",
+      "bytes": 41368,
+      "sha256": "ffdac581d82ee9ce63db197e1143ce132642ac4842afdb331f80eb2b3b3f3cdd",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/apple.json",
+      "bytes": 32671,
+      "sha256": "e5b6d3fddacf8aa28ceae1cde8ae8a490be7e41609860a4488eb357c741de85a",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/aws.json",
+      "bytes": 50488,
+      "sha256": "ac4f66306b4f7d791362718c6f334026185633642c3daa37212167007178934e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/azure.json",
+      "bytes": 34802,
+      "sha256": "618c0fba71ad17db83e6d75585189d8a2bec922e8744b167f3cf00fd7c9791b4",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/blender.json",
+      "bytes": 43631,
+      "sha256": "13481574bccc632475b7116a8fac1ce295dbd2f935be6b79f2a7e8999b6a24ea",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/bun.json",
+      "bytes": 40207,
+      "sha256": "1db1214ba2067c3efc49b656d21a50161c78959f450f6c33af1ab9eb20788aaf",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/canva.json",
+      "bytes": 46677,
+      "sha256": "e34109a846211e8a10f131b974752d443f30bfd60204972461d94e104338b44d",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/capcut.json",
+      "bytes": 46323,
+      "sha256": "197b0736cbc01cc96d0a16f31bf3caa7b52affcaa7386bd6bef0889e1e41e0cb",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/chrome.json",
+      "bytes": 44082,
+      "sha256": "0d64483cf767c08abd92745892080b6d15290ae721f7df81e262c1d196cf3546",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/claude.json",
+      "bytes": 59197,
+      "sha256": "6a3f76847469a929c2402649c500d7fa5a972bac4c8660948ae2ac16c2307baf",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/cloudflare.json",
+      "bytes": 35067,
+      "sha256": "88a4f4ef30613729c08bd5c82175c000afa7c15f5d778ca6a6d9d8856f8d38ab",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/codex.json",
+      "bytes": 38510,
+      "sha256": "022983c2da26f8ab5de1b395495d8a6faf5d5ffeb42f36a64e7539fdd5a64611",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/cursor.json",
+      "bytes": 40588,
+      "sha256": "aa1d0bd495ce6c296cb37bb9772eb05cafaa79a26a8fccdc76a705f91daad400",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/deepseek.json",
+      "bytes": 44532,
+      "sha256": "7e56aeea2fb8b12d95c12c6e5f81b78e698c06b0a5aca97020db8dd68b73812f",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/discord.json",
+      "bytes": 38139,
+      "sha256": "11b6ba7797a667c7b020582eadf1b35e945a34194dcb698bd90769362c4ca5f3",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/docker.json",
+      "bytes": 42071,
+      "sha256": "d5a971d1a8a074d910f88ec4aa0edb31729d735840d7868a73f0cf00508c0f45",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/dropbox.json",
+      "bytes": 47817,
+      "sha256": "929ac0a01b006d99459900612f55b78a2a34ae6e3098a284f24265b4133f07be",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/edge.json",
+      "bytes": 41457,
+      "sha256": "787c021f865175d92975c7219c634f33135afbadb84b0cb04f5001e1c9202a0e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/elevenlabs.json",
+      "bytes": 33797,
+      "sha256": "9922be9617a22d98d3e70d990429ded66f46910a8f54caee5fbab331479218f2",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/exa.json",
+      "bytes": 51696,
+      "sha256": "026600890aa459a4006cb640481a1e494d8be0dda4ec6f5b880214ba11db00c7",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/excel.json",
+      "bytes": 40912,
+      "sha256": "7df2de5282d96b9769024b325e62211d43f365914ad9dec28a6fae7f9b9aac71",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/facebook.json",
+      "bytes": 40186,
+      "sha256": "44ac0235312839db8a32321e0083e5e600e38520b3a96acad1153a97402dcd43",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/ffmpeg.json",
+      "bytes": 54008,
+      "sha256": "7c9520a7d5f1e7333d27550bdf4cd5a64224a098f71ef28452ef3686505fcb7a",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/figma.json",
+      "bytes": 35359,
+      "sha256": "9fe497ba686c03f410339980d1a153b57fc042704bc064957324e668827a1c5e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/firebase.json",
+      "bytes": 29570,
+      "sha256": "81f326b842617a0c00695db7b3dab891929455119a1e48654b12a7b850be5df1",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/firecrawl.json",
+      "bytes": 33990,
+      "sha256": "df7c02e4c82dc3ac043867100627e3ff4383366ea3985100598d718c182a4c6a",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/gemini.json",
+      "bytes": 34458,
+      "sha256": "2ea15a8abba0dddfd3d9e98fd95569cc567560e708e5eab55ea07954188c6ecd",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/git.json",
+      "bytes": 40505,
+      "sha256": "c64ceb86e2727004a8b902e562ac71afbcb09875354edb898477cbbc3f626941",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/github-copilot.json",
+      "bytes": 49862,
+      "sha256": "43d06a3a975d5035786f64db92babd169f2eca741b7076b2dd30622a4b425073",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/github.json",
+      "bytes": 42098,
+      "sha256": "f3727076b7c92940fc974be07c9c143ed7bc890f71b97c55556d2b3da9d8756d",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/gmail.json",
+      "bytes": 35446,
+      "sha256": "e200f63c24f092b2c6c1059395f395a5cad3911005f9ec147e647bfeb9ebe4ac",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/google-calendar.json",
+      "bytes": 49374,
+      "sha256": "2f29c025b0b40b58c54253ca46e51392fcf0907ee4d668cef841ed4f85daacfe",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/google-cloud.json",
+      "bytes": 39421,
+      "sha256": "d420e0ad33c50b707cf332ee30cd1b57cc9f6996d4a42b9025948333ec6b6d9f",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/google-docs.json",
+      "bytes": 41569,
+      "sha256": "43d024b16a1015a4cad96ca23b69c2d9a140836c7ec28bc7d03e2b2e5d50b548",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/google-drive.json",
+      "bytes": 35349,
+      "sha256": "81c832292b412a04d1c0c282b32dda79aa5603494461d5d93e9b5140d9842f7b",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/google-meet.json",
+      "bytes": 37255,
+      "sha256": "365dc2546190458792105c8cb2acad0a51e0975571f4578b781510ac81be9434",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/google-sheets.json",
+      "bytes": 46018,
+      "sha256": "985826b612553f4fe7b9d84dc36ce582a9760b64f081587828a6b84c2b250d40",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/google-slides.json",
+      "bytes": 42181,
+      "sha256": "b7a62adfff304ddc5fa28da88f758fb704583e9ff484694765af9d354f929114",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/google.json",
+      "bytes": 48829,
+      "sha256": "faa4351c04659c243a20ce8672a6855368b351ccb3378145c4cf38df9a48ebaf",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/graphify.json",
+      "bytes": 44589,
+      "sha256": "8881dc2b6ba626d6dbc2e28ac89d3343854991684c8c04c3303ca5dd291ad10f",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/grok.json",
+      "bytes": 44989,
+      "sha256": "ae62f59c1f6a0ad1196e7c0a957f2b00e3f4ce0f03095fc127564058becc6220",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/hermes.json",
+      "bytes": 102311,
+      "sha256": "c23d33bf29b1a952a0b96338a76d09f1e7da2b704446e6779c50fe5291fbc9c4",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/higgsfield.json",
+      "bytes": 47491,
+      "sha256": "504d11dbeb13f91273be34033eab7ecb0cd58ff13e1a13fe0581806ded1ef539",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/hugging-face.json",
+      "bytes": 43315,
+      "sha256": "e8d8ca6bb391b65e8610e0cb18e5f353b853905d8b6ca926dc4661352e81b889",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/hyperframes.json",
+      "bytes": 31224,
+      "sha256": "9debd19049c6f1fe7f585c905d658c469018525f735257659c0eec857a4b20e1",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/illustrator.json",
+      "bytes": 32759,
+      "sha256": "a1504ab92031b43962fec84ae1f01ee3905c52324cb9ed3b35eb6e3ab11fd82e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/instagram.json",
+      "bytes": 66355,
+      "sha256": "ba3baea26af8d5e95a77fba28849d93bfaa6cd32340825aed8de1fbdb6d76086",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/jina.json",
+      "bytes": 30843,
+      "sha256": "d02f21f7b2d46102d79574d34a5e1e3d7c49b6d8ffe43ce8552ccab2fe98edb0",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/kling.json",
+      "bytes": 40115,
+      "sha256": "76c978ebb0a4a635de47a91f93ac16d9f39842c33151cadaefbf54cb12b351c8",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/linear.json",
+      "bytes": 53218,
+      "sha256": "95dc3e9853fa366026ea57822eb04b392e1142720cf282fdc0541b806a183528",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/linkedin.json",
+      "bytes": 46923,
+      "sha256": "59e62a8bc926b947b2c4ef3c50d44b0b667107e455eb0d6004b91b934b15d7ce",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/mistral.json",
+      "bytes": 37356,
+      "sha256": "489e8382998e892cdba369e7eb53822c1bd249f3b39bd313e35ae35ee23385b2",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/mongodb.json",
+      "bytes": 31252,
+      "sha256": "a6e4d753ef89822b23dc5cc53a9bd1c22e8d944d99477b6bbc3a121015cd77be",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/n8n.json",
+      "bytes": 40528,
+      "sha256": "615e70f1f301f1fa1a034db6d7a3203a2180120323c2035a1c23aa15f9fb5b0f",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/netlify.json",
+      "bytes": 35981,
+      "sha256": "ce0eeb870f72ac793bf51fafa1d7ab1ef82a51c096f763864745ae9c239d6e74",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/nextjs.json",
+      "bytes": 28119,
+      "sha256": "d7eaafb9c8b91bc3acfc82ceca949b6fca9908c1d3ff6d2b9f6b380ab0a52a1e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/nodejs.json",
+      "bytes": 32145,
+      "sha256": "b882744d1023314d6da0e008e2e9eeec14e31a8c3675b6b7968c4536fdaedc64",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/notion.json",
+      "bytes": 59672,
+      "sha256": "175125b822126ed65074d3736dde3ce857da07f081f9f1f4316e86ba7d6f33bd",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/npm.json",
+      "bytes": 44789,
+      "sha256": "2342335650a98856979cdc5be23ed43dba21b0cf893c6e3b921a59054c72557a",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/obs.json",
+      "bytes": 57423,
+      "sha256": "30a9de8e6ee034663ec85a2ba5c97732e5543d1996e66327b05cf7651e7bae65",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/obsidian.json",
+      "bytes": 35081,
+      "sha256": "a0ea7a84034022944292e7ceac8523346ded3784a84404a5237162160bb035bb",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/ollama.json",
+      "bytes": 60033,
+      "sha256": "cdbe4cff84f6bf37f0aabb514ed4ec0fb2e40ae820c8bb467c032d5e8410d4fc",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/onedrive.json",
+      "bytes": 33655,
+      "sha256": "75bceb0836df155c26b056d8f6002ecbc71c64d6426cdb38c9458fb2356b881a",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/openai.json",
+      "bytes": 54177,
+      "sha256": "cb620b7c99a95330b59f630455077154dfebbe002a8fa49ab15bdf156b8ec1a7",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/opencode.json",
+      "bytes": 33393,
+      "sha256": "dc74803b18c72a5c73532346943e9e9f1c9162756384b891cad04c7eddbac3df",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/openrouter.json",
+      "bytes": 35993,
+      "sha256": "069e7d04c38cf7dd8fc7b38b2e9aa00a52af07e543562d83b15deecbd3dcdcaf",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/outlook.json",
+      "bytes": 44278,
+      "sha256": "377887b4b022ce18ec01ef4a3752190b10086d6778ace27d5ed14c53b0f7f82d",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/perplexity.json",
+      "bytes": 62641,
+      "sha256": "dd11c3905950fcc060e156ccfbcac96c55e7aeaa73941bfc0de734a9c300efbe",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/photoshop.json",
+      "bytes": 34384,
+      "sha256": "6cea93f3f0131ca5a799eaeb24048e0e20bf2974097685c54fb023ebe0aaf743",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/playwright.json",
+      "bytes": 39642,
+      "sha256": "c0f7d089c8c362b097a3d8949c52a7fc3f9dac31cc2b9cad104a994df7f3afb3",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/pnpm.json",
+      "bytes": 52240,
+      "sha256": "0f08be9ae61bf23956edfd4f93fc4b62fcb2ba27260369c825c3c27fced13e55",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/postgresql.json",
+      "bytes": 84510,
+      "sha256": "7d1f545cbdb25a3c02a3adc3fc1b444421c3bba55b224e17ed018a85ef9bd295",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/powerpoint.json",
+      "bytes": 40479,
+      "sha256": "1e7fa46aaa12d3f5ea1c8154569efa6f9e5b44e89d5ba6c7e6955d8eae753abf",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/powershell.json",
+      "bytes": 40988,
+      "sha256": "4b82a8426443f059014b6309c9097fe4e2f4593c8bb6a3a36af022e363706b11",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/premiere.json",
+      "bytes": 30515,
+      "sha256": "d20819ac2060644be8adaa78be37cf528487a111fd4a0b98f2304fe6390e2268",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/python.json",
+      "bytes": 44071,
+      "sha256": "b84823b1a96310aad1c7648cc4156b8a6ee10b9a575bd8ad31430c2b5253722a",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/qwen.json",
+      "bytes": 50497,
+      "sha256": "e558863a08fe497d127954fac60f1ef3cd9aa8ee1c45a5a536dee368a09b9798",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/railway.json",
+      "bytes": 57932,
+      "sha256": "c4dc5ff5a87e6f4606ef18a3a6509d5b85329e8c009c1cb9b5eca1cc2cb1b148",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/react.json",
+      "bytes": 72683,
+      "sha256": "2f0c3dde5fe9cfd6d150f36293a7808355c300bd6d2a96331f9af4f2d96c775c",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/reddit.json",
+      "bytes": 59105,
+      "sha256": "5f9dbdb068a8b8473416020de476c5639be8b072c10af1c0d4467195b056fec9",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/redis.json",
+      "bytes": 39665,
+      "sha256": "857874a6dc8c306d4568d604742fdc13cb6cccf82537a0e157f4184c37c6cbf9",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/remotion.json",
+      "bytes": 26186,
+      "sha256": "a059572e572a52ff172d4ecd66516d1a96b2fc8ca066ca35ddbf1436f51c6ca4",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/render.json",
+      "bytes": 25657,
+      "sha256": "16de4a52e112f0832554d9799cb13cbbdc1bfbcf0b504764f9016df5d21a6e72",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/replicate.json",
+      "bytes": 48603,
+      "sha256": "2d0ee596bbb535e29421aa48910b6c9268d9570b3e483be47f07465710cdde92",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/runway.json",
+      "bytes": 47120,
+      "sha256": "5e30faa0e2c472c163bffe6bee584f4d1304516008639c965e86b2d04dc4d9e2",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/slack.json",
+      "bytes": 48035,
+      "sha256": "a8d0ac9f74695488bc821b08e8324c8be6c9ed4a5461dfd36985e8f87f7ae313",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/sora.json",
+      "bytes": 37593,
+      "sha256": "1a0e9688e5e9fd298768739c9037d01bbc316bfd7e793baa85f2abb5461cc187",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/spotify.json",
+      "bytes": 48427,
+      "sha256": "cc1168bee92810a01e2f8b689985690ec052c18ac68f4aa4898c2a392ea2e413",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/sqlite.json",
+      "bytes": 38051,
+      "sha256": "3f0158361553163205735c6a1958bbb7ad955c75a2eba3d96610d18bed101c79",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/suno.json",
+      "bytes": 40568,
+      "sha256": "617998c5e3c6863e28346bbf6b49724f08cbc3fdd1f5f1f75181a1d90d011148",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/supabase.json",
+      "bytes": 31435,
+      "sha256": "8a9404e0f9eb7c80b65ff92fb1e978b685a132d3ebfdc6f86a1055d938a638f4",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/syka.json",
+      "bytes": 60446,
+      "sha256": "d782182ce7708954feb10221cdade61edb652b214b528f7bed39f7ce55d20b3c",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/teams.json",
+      "bytes": 43730,
+      "sha256": "09c4eaa4f71f537d2b8ef64152a130435ab244ecd6e20803bedb1bd69f5c6a43",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/telegram.json",
+      "bytes": 41173,
+      "sha256": "d46307e31d89de4a26a79b93ed2e78b6605c27de90bd69fd383a26914c6a281d",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/tiktok.json",
+      "bytes": 37146,
+      "sha256": "17a66e1f094ff4a721558027dbbb555e69b7f4505b84414a12a8bfe98f7771a6",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/trello.json",
+      "bytes": 41082,
+      "sha256": "65310b42eb7ba77091f19feb9f757476e2234e560b9f93aff53ea05ac8639d5a",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/twitch.json",
+      "bytes": 42045,
+      "sha256": "df241919521646240f2141a325d923cf79443b8c3585f7d81e3354765bcd1ceb",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/typescript.json",
+      "bytes": 47746,
+      "sha256": "4a463be83a15bfc8db2d869090c274e7d5f993eea6d92db14f55e6f975316bbd",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/vercel.json",
+      "bytes": 30124,
+      "sha256": "129262fc54faa715a9eef84ccadc26a82c59df495bd6ae00eda2668c35ea3bd8",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/vscode.json",
+      "bytes": 41975,
+      "sha256": "8b687e8eb4a9fa2087e68eac61738b2c0f12b1bf233ecd08efb6f139083f0ad5",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/whatsapp.json",
+      "bytes": 52841,
+      "sha256": "e542a86bb581fb57f40c5ed08ca9d8d18f4623f83d384703365b6c929ea685c8",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/windows.json",
+      "bytes": 41718,
+      "sha256": "05004aaef6f223edf5b9bec191480c3af0689a5b2d7d3370c0f50dfa394a3f79",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/word.json",
+      "bytes": 41607,
+      "sha256": "d8c28969b02dd8fb21ae86398fdb7a07e8f3a9f62b299d6774b3796cb4944962",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/x.json",
+      "bytes": 51772,
+      "sha256": "6d69ecfba3e6aac526781202c7a50f6ca96845a4542802ad01a51efb30ed07eb",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/youtube.json",
+      "bytes": 32846,
+      "sha256": "ce39fee77b8b07bc84568616c40e55861369a14908039708e60eb1452df66f4e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/zernio.json",
+      "bytes": 38303,
+      "sha256": "e9cb6144f366909a36796cae5bea07086144a1c6650ea778d833f443c3d8be34",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/data/zoom.json",
+      "bytes": 45282,
+      "sha256": "26fbe910798c98286b064f8c46dba377b04a1734cfe864eddf135f2137a50423",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/gallery.css",
+      "bytes": 7434,
+      "sha256": "ef85a24c720a9dabd59f1c35c92d5a08abe3278c65bcca04a9421f37bf211273",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/gallery.tsx",
+      "bytes": 5944,
+      "sha256": "83c8b0b9bc2303ed46aa4f0fa862a2754592dc65cbda1ff681995ffa529abafd",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/renderer.ts",
+      "bytes": 1909,
+      "sha256": "67072b491d740fcd788f8d3faff9a13455ba61d98d9794a5a90aeac42422de35",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/bake/bake.ts",
+      "bytes": 5871,
+      "sha256": "0acc4b667f1e5fb809bd7b5456e0bb8c8745ae21bd8cdfd5defcc118a6820a65",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/bake/contour.ts",
+      "bytes": 6873,
+      "sha256": "9102df77ba25d781457f3ce81e305596c9d51ae7af82b6aa53bb32f0ef47024e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/bake/fill.ts",
+      "bytes": 5271,
+      "sha256": "9ce0a78768499fffc617b3eae1bbb25fe6bda487032c437716dd61fa4b2dd8e2",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/bake/index.ts",
+      "bytes": 902,
+      "sha256": "e28d4756554bbac403a970e841f696cc16dc2397d62ab25bf3e013e6ab54a676",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/bake/mask.ts",
+      "bytes": 7043,
+      "sha256": "0628393726c24c02d6d7350b0d16d1cffffc2414cd10a659e38515c865c07184",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/bake/shell.ts",
+      "bytes": 4638,
+      "sha256": "255a1f686761728275f03b0d33b11800da05a899c6934bc946b0c799960e2dda",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/braid.ts",
+      "bytes": 1952,
+      "sha256": "a0d09442a9162dfa2f16fafb8dc435b88edb0bc9e7011ea6bc558be586ae938b",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/cloud.ts",
+      "bytes": 1895,
+      "sha256": "bcac06e546edc3a68efe31974278aacd541273b942e877dc83984a962d4502fe",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/core.ts",
+      "bytes": 6090,
+      "sha256": "bb83e85bc131fafb92c400a733777b04b96215f2707614868ad9f28245c70022",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/index.ts",
+      "bytes": 2272,
+      "sha256": "af5312e887f5d15ca224c464d5f8d28e4ba6118a99d03996c442fa779a45ed54",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/lattice.ts",
+      "bytes": 7671,
+      "sha256": "94da24becc639bc9b1898f336acaa0adf6ffdb34d579402491d69be1efe5e68d",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/logo.ts",
+      "bytes": 21197,
+      "sha256": "2114fe7e48388c975b3274566ec46c8bb20a027f3648c7944612b7de19cf3670",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/logoDeform.ts",
+      "bytes": 20174,
+      "sha256": "f6c92c6181b07aeeec8edede9f99f0a93557331cd70c81ebca2f282eec95d147",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/morph.ts",
+      "bytes": 4275,
+      "sha256": "6ae227001dec4f9254b55ae517d15e6eae4bf64699364e3032b628912ad05d43",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/orbits.ts",
+      "bytes": 2556,
+      "sha256": "27f974f2d9e0e1614055882673217b4db230bf8e4b88dc5ac21b298a924dfb65",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/profiles.ts",
+      "bytes": 4125,
+      "sha256": "d1e5a81d18dc1f1e10075343e73ca2eb632a648335174279f852470a9ad51151",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/registry.ts",
+      "bytes": 1409,
+      "sha256": "c0c4f17f24f824a56fdac61a1fd2b6cf94c6244a0ebb84e4d8df9d85c554015d",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/ribbon.ts",
+      "bytes": 4070,
+      "sha256": "a79cc262b42f3f12f5d4a108e7cf9710938d5fb1f6166c9fa789f02d4e0679c4",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/tint.ts",
+      "bytes": 4530,
+      "sha256": "54455390562c50cd027124df5172f825bc4d5a673aedca7a87314afde0d833cc",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/types.ts",
+      "bytes": 1756,
+      "sha256": "8b26a72f1f4be5397ed33ad0cc57cd798d2629faf97f3d873c41c695e8755b9c",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/engine/web.ts",
+      "bytes": 3428,
+      "sha256": "1dc2e38e9d01298ebf32744a3569f4e3234ba4af61cc64c5089511f7a9b7369d",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/LICENSE",
+      "bytes": 1177,
+      "sha256": "5e48483404c4bca695edd71d1e2dd9fff19e27984957ada42394dce00c0ad287",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/logoPresets.ts",
+      "bytes": 6963,
+      "sha256": "2c8ca48c62d955ed862e176e51233c38e1db29a4798b7b8b0034b2e3f1fe18e3",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/presets.ts",
+      "bytes": 3317,
+      "sha256": "b6263cbfbd232db1319e3a598bc1969ef12f0131eb877b583567ddc1661d19f1",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/PROVENANCE.md",
+      "bytes": 603,
+      "sha256": "f6197b98044895240548e2f078a03d35cb61ccb629abd060a614cd9f0c4a548e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/agents/thinking-logos/vendor/types.ts",
+      "bytes": 2532,
+      "sha256": "9e460312d5061e845f769dfd4ecafe0f3b5acf26178d405161b84e42245186ff",
       "kind": "text"
     },
     {
@@ -6881,20 +7883,32 @@
     },
     {
       "path": "apps/web/src/mirel-chat/features/notifications/entry.tsx",
-      "bytes": 19689,
-      "sha256": "268b091bbc147a76c40ae4c390fc6564b73b28fbe6325c144bef168b22c5a294",
+      "bytes": 6379,
+      "sha256": "b30b9d94ce8b2f7623ec6ad0d20c06c900ccbc963ddba9f984f5099cb95560e5",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/notifications/notification.tsx",
+      "bytes": 14048,
+      "sha256": "80ec85afbd8f910744ed64f67f4df865dc86e6800259749155b0a19362378111",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/src/mirel-chat/features/notifications/notifications-window.css",
+      "bytes": 163,
+      "sha256": "692f98cbde0912bcd7bb6668def8e14e532a12aa79a3b9c26c0279cebb058fc4",
       "kind": "text"
     },
     {
       "path": "apps/web/src/mirel-chat/features/notifications/notifications.css",
-      "bytes": 7444,
-      "sha256": "e5715713e8ed64a51761df553f521f0e031a0c414386a1f484a3936228dcf70b",
+      "bytes": 7285,
+      "sha256": "4bfca9cbbe0af8b47c094bc4678a13ac206beb18e6ec1818d10f2b407fa5383d",
       "kind": "text"
     },
     {
       "path": "apps/web/src/mirel-chat/features/notifications/orb.ts",
-      "bytes": 2122,
-      "sha256": "ce0d36fd3ddc6f1d307cc7572b94c8e464ba10d6bca1265559336f8c4757b906",
+      "bytes": 3972,
+      "sha256": "a8b060559c4c8cfe798c363e2b8758ec7ee12e88164d26bcb37c779d82ad023b",
       "kind": "text"
     },
     {
@@ -7108,6 +8122,12 @@
       "kind": "text"
     },
     {
+      "path": "apps/web/syka-public/licenses/thinking-logos/LICENSE.txt",
+      "bytes": 1177,
+      "sha256": "5e48483404c4bca695edd71d1e2dd9fff19e27984957ada42394dce00c0ad287",
+      "kind": "text"
+    },
+    {
       "path": "apps/web/syka-public/syka-notice.wav",
       "bytes": 22124,
       "sha256": "2afab088fc52ed9cbdf4728b0a85c17c2119609ce013be8c48982e9a0a6891ef",
@@ -7117,6 +8137,12 @@
       "path": "apps/web/syka-public/syka.svg",
       "bytes": 55490,
       "sha256": "aeab3d7a72946575f3b27e2a034f55540b366544c575c5d5baa9aeb3bc229e8e",
+      "kind": "text"
+    },
+    {
+      "path": "apps/web/thinking-logos.html",
+      "bytes": 333,
+      "sha256": "da5373927f890fe7fb81b469b4c83f0969deb6a94c44bdce844ab6433b1574dd",
       "kind": "text"
     },
     {
@@ -7156,6 +8182,12 @@
       "kind": "text"
     },
     {
+      "path": "apps/web/vite.thinking-logos.config.ts",
+      "bytes": 452,
+      "sha256": "4ea7fecdfe4ac496428494999f3f4fff72c338b7c2a59cbd0a1389e008f3eea9",
+      "kind": "text"
+    },
+    {
       "path": "CONTRIBUTING.md",
       "bytes": 3907,
       "sha256": "a9ddad1bc4af8d6896d591d67f78a4437a22a28dbfc986c0ae6987ef8b329f48",
@@ -7163,8 +8195,8 @@
     },
     {
       "path": "CREDITS.md",
-      "bytes": 9148,
-      "sha256": "45f784e0ce15cb391f495ec053c935991de7b44949206eedd375d22588f80c38",
+      "bytes": 10037,
+      "sha256": "9106f79104b051080f978f8a651ca5c737ac91c98e6d8e2bf14c3abb20828051",
       "kind": "text"
     },
     {
@@ -20021,9 +21053,1017 @@
     },
     {
       "path": "docs/resources/sounds/catalog.json",
-      "bytes": 1085217,
-      "sha256": "862dc29e65255a8555b49910f248055cd2852ebc7e3257e7b06fd854003002a1",
+      "bytes": 1556537,
+      "sha256": "b29745f673c13adf3995880b3da931d6b0a8358b3bead1844dcac11cc8f76b7d",
       "kind": "text"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/attention-normal.wav",
+      "bytes": 125648,
+      "sha256": "b6b03ffd6ba5298af3301f529b9833d2e4a163f23e02fdf3d403d9d0d0e3e639",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/attention-strong.wav",
+      "bytes": 136976,
+      "sha256": "8291bc20b3536310dc987eacaecb4e21f3fb58a2fd8dd2e90a272a73ec47e3d7",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/attention-subtle.wav",
+      "bytes": 117152,
+      "sha256": "330371076968f70f93bfe2dc841ff868ce1d0e699253d8086298f0e7d52e63c5",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/close-normal.wav",
+      "bytes": 86576,
+      "sha256": "0956906e87da4577cbd320a122f2b998e677aa93776e7072da552f59e716d7a0",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/close-strong.wav",
+      "bytes": 97080,
+      "sha256": "c42142b05b2ef7b0bb67089e299fedad7080f25841862e4076277260de92666b",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/close-subtle.wav",
+      "bytes": 83972,
+      "sha256": "5e865b24b0d3097a2be6fdcbba160280bad6e2d954b9c77d13e6118d53b7a98d",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/count-normal.wav",
+      "bytes": 234900,
+      "sha256": "6c3a7f06a7276b90f05d6297934015f5347051363d4eaf5ad23682357076b0d8",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/count-strong.wav",
+      "bytes": 262432,
+      "sha256": "8b712319154278025863d7dca299b1641c731dcb99d520feba28f335c0fbba18",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/count-subtle.wav",
+      "bytes": 214248,
+      "sha256": "7c4d3cf0c04178cdab7274aac0a9ccb8572d487587c965cfded7b8de74aef421",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/error-normal.wav",
+      "bytes": 112596,
+      "sha256": "986d19fd628e5c74493071e9af75355835e5ecfb408ef34fec91b492d6f9ce05",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/error-strong.wav",
+      "bytes": 121272,
+      "sha256": "20f1a93dec51408ea43727f80d23a76e7b216756aa0ebfe29aa2e2042e3b4dfd",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/error-subtle.wav",
+      "bytes": 106084,
+      "sha256": "7fd128a4dc76a3146bf78aa3b1f0cebf484b1b4b08ec88138a8df6e865a769d6",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/loading-normal.wav",
+      "bytes": 318608,
+      "sha256": "095be4d2f3dc64708e36531104ebe498cd687c598569c1609b1809e9017a1783",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/loading-strong.wav",
+      "bytes": 355204,
+      "sha256": "ae896e037baea3a4ba3b5b533d151ae0ddde2f4389f16aef8f8372833d33d03a",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/loading-subtle.wav",
+      "bytes": 291164,
+      "sha256": "6c1f28280b082b004d27d3b78f8ea194a463fd1aaa43aea80a91216f79ffae28",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/navigate-normal.wav",
+      "bytes": 88460,
+      "sha256": "2856546af283c39f2e9730dfcbb4b6c0dd85ef815544d40ebbdf4ea05bd329f8",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/navigate-strong.wav",
+      "bytes": 99152,
+      "sha256": "4deda6235fbbaf1bf051e1e2fcccca23cfa5f76b894ae5669efc76921d91a969",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/navigate-subtle.wav",
+      "bytes": 85744,
+      "sha256": "031b8d0474fac4b98359ea5d293ed0940950fe2732bf75a9f3c9c8bea8d0691f",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/open-normal.wav",
+      "bytes": 104260,
+      "sha256": "8dcdea7a223fe27539df4aabe1d51d1ec4c8fed61cf5e607eb829d324b118227",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/open-strong.wav",
+      "bytes": 109960,
+      "sha256": "a2579410ec37e55e9097e125a17f235c92617e98b158c4217da904e97e02e845",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/open-subtle.wav",
+      "bytes": 98928,
+      "sha256": "63c9ed7631d91f86f39fc4a2233588fa6fb18c6b497159062cdba69d2e5f4028",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/ready-normal.wav",
+      "bytes": 126032,
+      "sha256": "7650eeeeebb1fc41b42667376303209b9dd5657580c75637b5500388f9de1a2b",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/ready-strong.wav",
+      "bytes": 160824,
+      "sha256": "ede90eca333a3d13b27553fba3d7e8464d5ead28dcd7980cd74f2c6dd4746ea6",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/ready-subtle.wav",
+      "bytes": 117740,
+      "sha256": "e90df3857dc809bcc299f6f5e69cea3ebb7a546623984da9d8255f6997b7b212",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/select-normal.wav",
+      "bytes": 73964,
+      "sha256": "2e81ee2aac0099dd531ca4d801b08bb7421d63c9a4d9ef9b4a956d164f140117",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/select-strong.wav",
+      "bytes": 82780,
+      "sha256": "921f3f27c73d0c383a74873daff084c7a0570cc1d8aa25f6e376ddfa6dc5ed1f",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/select-subtle.wav",
+      "bytes": 73164,
+      "sha256": "5192c06fcb558123ce5611feba35ba0f7ebd92366b6c00f62829a845e2b82049",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/success-normal.wav",
+      "bytes": 131028,
+      "sha256": "7a1692bc421142b484694b2932a0305503a45c48381e6376a535ed0d17c08616",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/success-strong.wav",
+      "bytes": 159096,
+      "sha256": "52470251bf98747395fd0bde5ccf20140f2340f014ed799c6e7e3b4380d18340",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/success-subtle.wav",
+      "bytes": 121724,
+      "sha256": "5cd02301f28014ac95261705d27592e6f52371e54208b823433fec41f8bfebb6",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/tap-normal.wav",
+      "bytes": 80128,
+      "sha256": "7b1a7788953b1bf2ea8e7943566fd76f38e90b17d0a4a7fb8b6effc4d9870299",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/tap-strong.wav",
+      "bytes": 82004,
+      "sha256": "409831db79babad654d35eced24c8c117d34c2b0eb9e0a784aff04520fe5b8b3",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/tap-subtle.wav",
+      "bytes": 78720,
+      "sha256": "97d4767a318d4165554b60f1de77a57a05f5785ae338204b4bffac8a57d8bb38",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/toggle-normal.wav",
+      "bytes": 84196,
+      "sha256": "e2f91c214513c45a348e0d38c56778569b1e772364a44e2aeeb75774346f181d",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/toggle-strong.wav",
+      "bytes": 91144,
+      "sha256": "4bac250785ce8e911210d23e7d9f370b88c44dbad9ecb0274bd1aaa75b0d5b86",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/toggle-subtle.wav",
+      "bytes": 81920,
+      "sha256": "7b68096053467b9fa874c630f5b5057072e2bc32bfc335780e84c05445e0da62",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/type-normal.wav",
+      "bytes": 71524,
+      "sha256": "fafdedd8eb7074ef32951f933adff19d4775150fe5a20374fa4db1d5124ba66e",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/type-strong.wav",
+      "bytes": 75032,
+      "sha256": "99da2377f8e4f156e402358defeb850217ea27692a806666e07899d10702ff0d",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/type-subtle.wav",
+      "bytes": 71092,
+      "sha256": "4e4fffa3ee19ac95cc5871dea13c1ea235e1fa51343c69ae4b68b26dc7175108",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/warning-normal.wav",
+      "bytes": 103568,
+      "sha256": "a43594667cf1c349eea3a8deaa1060cb7bd73e8f4f8e3dbb47b4d8277bdf9023",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/warning-strong.wav",
+      "bytes": 120848,
+      "sha256": "01566b25e93a7fcb8bad870735f0ee609d7436e363ae1dba2886ee4f57e8c237",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/bubble/warning-subtle.wav",
+      "bytes": 98356,
+      "sha256": "19d13ae4fcf9fef163d3205ad3cf8a709259031459a65a915bfd20a53fadc954",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/attention-normal.wav",
+      "bytes": 184016,
+      "sha256": "cedd272d62f1d8c7d9ef74721c4cbf204e42bbcb5c4b414f16984e2e2b3da882",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/attention-strong.wav",
+      "bytes": 218540,
+      "sha256": "8b4fc943a65de653c394ea1658e3ad8007c07f0e5a9650618450ec9b86fb40c5",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/attention-subtle.wav",
+      "bytes": 166768,
+      "sha256": "01832b2cbc6717e675a3e8f371ab426fb481158c496f881ac6b12f27b3f1a8f9",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/close-normal.wav",
+      "bytes": 88976,
+      "sha256": "6bf15fb11272e775f515d01d6102ba9793a955f236842c1b200f2ae31a064799",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/close-strong.wav",
+      "bytes": 92972,
+      "sha256": "eb4dbf2b50f695836aca7ac1a915edf2df9b147298119248db2c6bb297445ca3",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/close-subtle.wav",
+      "bytes": 85984,
+      "sha256": "c826b076cf4ce357f32a385d83b3f8a7ce66be1a7224aac0598bd55419a7ef10",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/count-normal.wav",
+      "bytes": 235668,
+      "sha256": "40b0a36c2d1f79f0096fdf0f91d29ff1bce84a6eaa2b0c4715d0cb92fa54b8fa",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/count-strong.wav",
+      "bytes": 271876,
+      "sha256": "213a37e73406b7a9a0ee37cb0c0ac7fb11782357732f0764c700e61c2fe73737",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/count-subtle.wav",
+      "bytes": 214900,
+      "sha256": "dcfa6809b4288eda827bd76ba3f307159870ba60244d7f8d82dee9051b438bed",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/error-normal.wav",
+      "bytes": 95504,
+      "sha256": "54cd4ec75e26f102a68b4d592c557638610cf106fbc1ec9848a5126b022fcab9",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/error-strong.wav",
+      "bytes": 100804,
+      "sha256": "ec3d20330111e7bf8a8b9f73d88c8199b77a30742096a6a0bde73c046ba1b6e9",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/error-subtle.wav",
+      "bytes": 91532,
+      "sha256": "4448064bf7ddb24f91b72ee1a8aa0926f54dd3684008bd8bf52970e42954b9de",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/loading-normal.wav",
+      "bytes": 321680,
+      "sha256": "45aab8f0fd18f8376ab1311d2d85f80d78cc5e23e52130b4627d94768eec16c5",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/loading-strong.wav",
+      "bytes": 375248,
+      "sha256": "5c437be63cbac7aee4b61ea170f99f9619741b4456407f2a7b0811ef29ef6bff",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/loading-subtle.wav",
+      "bytes": 293776,
+      "sha256": "070a069a1eebd3d2a47e28618231a34394eb7e2a0003d8ffc0ee4b9f7961fdae",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/navigate-normal.wav",
+      "bytes": 112784,
+      "sha256": "7df05a424a988a8baeb89e107524f18058098e386161ce5909e1a21bb4d8c2d4",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/navigate-strong.wav",
+      "bytes": 120812,
+      "sha256": "b52090241035072a78eb9783ad9d1cb76524cabbc016cb2ad93c973327eed170",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/navigate-subtle.wav",
+      "bytes": 109588,
+      "sha256": "ccfa78e37996ce228230f2facf1e0a6999824e118264e59630d2cb43558df19c",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/open-normal.wav",
+      "bytes": 109716,
+      "sha256": "d7f65b40f7bb95735c11e05d43c54375f177bfc7f13a8f8fed3d2b83a8d93f24",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/open-strong.wav",
+      "bytes": 116052,
+      "sha256": "7768f1a8bf2b77c79fa02f4480be1ac8b568cf3d1ecb518ea8cd9b188375b0ec",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/open-subtle.wav",
+      "bytes": 104960,
+      "sha256": "50224e977acf141e0b5e8807229afc83548505f33ff4669c043c594bc568c10c",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/ready-normal.wav",
+      "bytes": 164436,
+      "sha256": "82b69d298678e31f60c66ee9d61fc05e476b121ed322aa0fde68b715e2fbe242",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/ready-strong.wav",
+      "bytes": 210016,
+      "sha256": "7cff4d92d80fdbc1396f1286c93b421640f360dc0964c1981de7c9017447280f",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/ready-subtle.wav",
+      "bytes": 150120,
+      "sha256": "57afda2bc161514b8f107b219348ecef4ba9a4d57e1d9fede96920d9f34e00c0",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/select-normal.wav",
+      "bytes": 72352,
+      "sha256": "b547c9d36130c788442efc9e077bd6fef6326590d1f0b67b170620df9d8b611c",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/select-strong.wav",
+      "bytes": 75836,
+      "sha256": "1d203bbf78a24d2f898eb1813cf53439018291b2ffa05276aac1f6dff36cbcce",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/select-subtle.wav",
+      "bytes": 71792,
+      "sha256": "cff5929df95db4de5705865b23660bd52adcbe15dfa25b4f6e19bc21f0628062",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/success-normal.wav",
+      "bytes": 144080,
+      "sha256": "df357cc79e6499fb8cce7876b09f8b501e677e3cd97cf1045c1bb5a6e1acaef9",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/success-strong.wav",
+      "bytes": 177068,
+      "sha256": "025e3bee3b693396f4380397b39a4a24ed657d0e4e35840122b34c7b7966e2cb",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/success-subtle.wav",
+      "bytes": 132820,
+      "sha256": "0e34e165979fd84238a025a8ef9afff6ab49d199b5ac5d31cfc6045bc8b6b1f7",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/tap-normal.wav",
+      "bytes": 103184,
+      "sha256": "0baa7dea6826108b6ca13dce7f7de1df40ce51f68de18fc85e92d3532398d2af",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/tap-strong.wav",
+      "bytes": 125496,
+      "sha256": "525c6e630755635a3f7dbb7d3adf3d00a8efa3c31c3ccd4c337aa40eef1e6df2",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/tap-subtle.wav",
+      "bytes": 98000,
+      "sha256": "0043a94249558c3853e3289411ac358b8b6260fdb6f7f3579de44e14e359a55c",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/toggle-normal.wav",
+      "bytes": 75136,
+      "sha256": "c9f4fb8091531e6106d6a46c88b44285d1978565e5146c57a90606475a4a051b",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/toggle-strong.wav",
+      "bytes": 77264,
+      "sha256": "91ebac7b2c53af22e2122f00bb2297f037f78c900ac887db3042908164fc6397",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/toggle-subtle.wav",
+      "bytes": 74160,
+      "sha256": "4799d2da27c816f43dd8de21cf2580f4814df0e16f94d8da76a4963d9761f411",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/type-normal.wav",
+      "bytes": 73696,
+      "sha256": "5e255d781ad44671f11444a44810e5352de6d2d93331d0d6249853e37ab06735",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/type-strong.wav",
+      "bytes": 77344,
+      "sha256": "5c29a8691f177145891d962dfac77c11b19001a35010911ea253d35bfaec7907",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/type-subtle.wav",
+      "bytes": 72964,
+      "sha256": "b164d6b4087381fc3f4dc6d5843b33b27a7073a4b0eddf69005fddb7f15c3bda",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/warning-normal.wav",
+      "bytes": 100304,
+      "sha256": "449e4aa5874bf0fbcd2378e002f8b35ca5292381af5e059f87c40f727971aa7f",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/warning-strong.wav",
+      "bytes": 129144,
+      "sha256": "27c4265a896b1d89fcd694e10e28b41e71d0cb73fb7c68c1c937568185b37aca",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/default/warning-subtle.wav",
+      "bytes": 95612,
+      "sha256": "bb96284cd31a16a53cbde4221ea9780f239bed5e1df23821ab6bfa7e5db7289d",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/attention-normal.wav",
+      "bytes": 115472,
+      "sha256": "c1b2cd5516558fb6efd75eedcdb76a95a432c57f27830e4569607b6b0e569e7e",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/attention-strong.wav",
+      "bytes": 124768,
+      "sha256": "12d01829c4acd97f2ca5f954f3365c4fee14ff76c251bdca1f06ac4fd15dcb3c",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/attention-subtle.wav",
+      "bytes": 108504,
+      "sha256": "15029be415bd409c776b03ddf2222f1199a05e8b7add5a478a8f932699ebf7b2",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/close-normal.wav",
+      "bytes": 76844,
+      "sha256": "3edd6bd4f4f38a4f0b25f4e4530aae4c3a04682d61a8567284943db512f07852",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/close-strong.wav",
+      "bytes": 77948,
+      "sha256": "3941bff86e0f695c486bb470543d995e71fa3d961c739b0137669bee9be0f774",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/close-subtle.wav",
+      "bytes": 76016,
+      "sha256": "72bcb659187729a5405a14e8c5132bba10762ea6cd570db4e46e4612a00cd7c1",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/count-normal.wav",
+      "bytes": 212052,
+      "sha256": "4e27d210429b5941a32b43ed89754e7dd8451a954d734a13c1b6d4b48d7017c5",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/count-strong.wav",
+      "bytes": 236932,
+      "sha256": "367e1b5b67a1eb347baba2f93078a2530568bb45c8c9ee1fe9956676e27ddc6f",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/count-subtle.wav",
+      "bytes": 193388,
+      "sha256": "c4459e24bb65efdaac8489aa4f388a30559b0ad4a5480265e52123fa412f8228",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/error-normal.wav",
+      "bytes": 82028,
+      "sha256": "972c2bae1056e9cd24ee440e3d17a4a17b6f9161dc9b5da0fd0d03a378dc6b4e",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/error-strong.wav",
+      "bytes": 84632,
+      "sha256": "bcf3f26589f851b0c37c5689ccd7ed9b597211b16d14ce9fc7fff38d575ccc72",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/error-subtle.wav",
+      "bytes": 80076,
+      "sha256": "385a70c4ac68421d8c011e1ef76bf20738aa8cceff91f3a64a63aeba211ea781",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/loading-normal.wav",
+      "bytes": 320912,
+      "sha256": "9cdbe881e53a6a698fec686d1a9bd8e3b2bbc4d5ed90ca56ec8cdde1327f3234",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/loading-strong.wav",
+      "bytes": 357968,
+      "sha256": "f8ee930b9f5e2b2805a5cfadb33094e10f9fe0fb1a3edad1a4368b89600035d5",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/loading-subtle.wav",
+      "bytes": 293120,
+      "sha256": "e89fd196f124b2dcbbd4ead11c05bff65da81deb7d97dad3a8b5069cef2d756f",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/navigate-normal.wav",
+      "bytes": 96464,
+      "sha256": "e7554fc48c4920564f8bed090d80c12e75d67046000477da18f9f0f14e2280ed",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/navigate-strong.wav",
+      "bytes": 101228,
+      "sha256": "4f631832f310d3d02f9ea2696a595f1b9111f07b5cdc92263c446a6cf77ca49c",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/navigate-subtle.wav",
+      "bytes": 93700,
+      "sha256": "cc3f5a75dfcf8e6e26cc47f92d9ef3de86dc0cd3e73176b85a40118f106733c5",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/open-normal.wav",
+      "bytes": 78224,
+      "sha256": "b7718328b6af026e5e2dbbac08fcd6a33a38c4cc87d68ab20005b88490b92e18",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/open-strong.wav",
+      "bytes": 79416,
+      "sha256": "1ddaf3b83ff16ecb85f13b1ef61d3b9084909d283daa9aadb5efe71b0efbdf81",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/open-subtle.wav",
+      "bytes": 77332,
+      "sha256": "0b8043202e17df44ef8d3219790d0baeefec3b1a4f4172a5842a4e8cafd729bb",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/ready-normal.wav",
+      "bytes": 103184,
+      "sha256": "6ec55eecc1bfc93d705aee7b9daa6e2d413d7b56cfeb52e3236371942807d9fe",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/ready-strong.wav",
+      "bytes": 124768,
+      "sha256": "b0ede8239d562c5ec35dae1a59438d909952ac8710ea4b39fe9effebbf29d9fa",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/ready-subtle.wav",
+      "bytes": 98060,
+      "sha256": "31a7a491c1b1f51ccf720025c1e1d6ca8c2ea0c7dcebcb473ca132c00c093e84",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/select-normal.wav",
+      "bytes": 76940,
+      "sha256": "820c36196c57d90d5e7129c66466b53bc10278863d9b3ab3761c5e36b221489c",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/select-strong.wav",
+      "bytes": 78604,
+      "sha256": "ad26c235573813587a6388d71f0aea563eb6572763b8ea916417b5821e079319",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/select-subtle.wav",
+      "bytes": 75692,
+      "sha256": "e8eb5a2045e3f681b61e246c0de822ea6ec8430cd767b3d3908c105120ff2281",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/success-normal.wav",
+      "bytes": 97616,
+      "sha256": "452ef9ee6f9ee85806c9ea1c34ec8a47657a8561d4a8428c6e1ca7c9b4f4a1b1",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/success-strong.wav",
+      "bytes": 103340,
+      "sha256": "d8e5704c6bf44aa8cc60e2e67f7c34642a4d84e3ec5e9cb52303634daa2019f8",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/success-subtle.wav",
+      "bytes": 93328,
+      "sha256": "65fb95a653f5ff7d6646a892194d910bae74885c5a93446bbcc24197fa759285",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/tap-normal.wav",
+      "bytes": 71620,
+      "sha256": "11d5b601501bf8b04b09fb58fcb9cbcd2edb38c9fb1287453c050f66248a5a92",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/tap-strong.wav",
+      "bytes": 73604,
+      "sha256": "cdf6af15890742ffefa3cc402d0e1a2b560212109f48253acd333c6f5a32e1b9",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/tap-subtle.wav",
+      "bytes": 71172,
+      "sha256": "f3e21d9bb5fcba553deff05b09d5aa7bbc697347752bbb28f556d906fe0edb14",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/toggle-normal.wav",
+      "bytes": 74156,
+      "sha256": "09241d3d150e2cb1ec7503bddbe143ce73bc58485213a8f1058e6995d9593d05",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/toggle-strong.wav",
+      "bytes": 75260,
+      "sha256": "0697c5ac31714fb85debd55657aa9c31f47c46ac99ee9872ab2f82aa175a2ab6",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/toggle-subtle.wav",
+      "bytes": 73328,
+      "sha256": "6c45cea32a974a2840d9bf27dd0596f68fb29a79df835e9db7575a5bf26a45e5",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/type-normal.wav",
+      "bytes": 70352,
+      "sha256": "d74ee67e12f70b9477bf8cce2a4f74d3f3fc498b43e867f3a5501bf92e67fc22",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/type-strong.wav",
+      "bytes": 72612,
+      "sha256": "a6e09d38f6dcb53e1acd1e63c19d0220b4d2ec0e4eb96cca2d4b249852b9c25a",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/type-subtle.wav",
+      "bytes": 70092,
+      "sha256": "9f5d0faad02b2f28874bb80f7408a8b23cd108e8344db11fcff2e517c5b068d5",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/warning-normal.wav",
+      "bytes": 87616,
+      "sha256": "a3bc34fd421741025a900789fcd25a55db2d527cf314ea2a5b4f311e14689682",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/warning-strong.wav",
+      "bytes": 91336,
+      "sha256": "7a72584fd2ff5165eb962f6f7f30c7b4c40716e4868bd24c68cf11f50a0aa3b9",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/mech/warning-subtle.wav",
+      "bytes": 84824,
+      "sha256": "b0459de593e066f86973444309a98aafed24737906761a333f5d17498519392e",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/attention-normal.wav",
+      "bytes": 538832,
+      "sha256": "6d8daacdcdd3192f9bbed50dfe49bbefeff2eee0aa34a51f5dde84a624d5c8f4",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/attention-strong.wav",
+      "bytes": 690896,
+      "sha256": "1b45f706f1e7c9f4be58361b40a44addb4c6b5cf972907a182e65a4acf9d3622",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/attention-subtle.wav",
+      "bytes": 471440,
+      "sha256": "c24aa0766964703c44c3b099d5ac3d41acb7714b24d4b0e2bc21a98edaaf4411",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/close-normal.wav",
+      "bytes": 139088,
+      "sha256": "bd91dc2e2b886471f055082b10ac4484a2dbf93bda2efe6a0aa622f8ee18502b",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/close-strong.wav",
+      "bytes": 148996,
+      "sha256": "d5829a063c04e4d95096381edaeeeecd70ff5148f291eee57e510eed6cf3c83a",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/close-subtle.wav",
+      "bytes": 131660,
+      "sha256": "9c3fe021b99e1454989a362959c1dbc50a7179bea05b9c0b6ab11009dcd4c19f",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/count-normal.wav",
+      "bytes": 211284,
+      "sha256": "d7c0979cde7387000ca110968188da800bdc171909eec647660e5e5e0d2e6f47",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/count-strong.wav",
+      "bytes": 234092,
+      "sha256": "88a5d9caec385273db08a1c0e4fab90568acd3e81b2199e1697a9076ffcf5220",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/count-subtle.wav",
+      "bytes": 194176,
+      "sha256": "1d0a661e2ec0d9fd6e04536436fc69f77a4a77877d49536cbc5b321ce75e67db",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/error-normal.wav",
+      "bytes": 183056,
+      "sha256": "c9c94ecc24c064b2d817c9f9e422c05b8cb3cd7ac3d5fc8b5f6e119dfc1240f3",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/error-strong.wav",
+      "bytes": 201760,
+      "sha256": "0611a88dc8b916936ee6b81a36b528fe92c4dc7e2952ad94f76d0aaa2bbff265",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/error-subtle.wav",
+      "bytes": 169032,
+      "sha256": "d2a1c44cac39a30cf8cab94cfcaa7c3bfdc8c44f084b957e207d1ffef5e22b00",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/loading-normal.wav",
+      "bytes": 308432,
+      "sha256": "6776bcd659ad91c7df7f336416aaa0bf331e133943277a6fd24d915ece52b281",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/loading-strong.wav",
+      "bytes": 358892,
+      "sha256": "b4528090548c858a15b7a67b6e0b805dc736fa82fb9ba4457d77269534bac549",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/loading-subtle.wav",
+      "bytes": 280720,
+      "sha256": "0962cfd5c47bc7d048e930f70ad46287dced3bb24cde2f1e7310e39b70fbbc49",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/navigate-normal.wav",
+      "bytes": 86808,
+      "sha256": "3b6547a5876dd7f1c58344acf2cd976e3fe20b07e7a95b90eee535e1374c3bd2",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/navigate-strong.wav",
+      "bytes": 90176,
+      "sha256": "842599fd494a209b57d5bb91bdcadd913158566176707d5e5fd182f689a201e8",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/navigate-subtle.wav",
+      "bytes": 84284,
+      "sha256": "778a37ff247c27796e27056d4f11e0f41c6df561d8cb3b866fb3f562d59d07a2",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/open-normal.wav",
+      "bytes": 248340,
+      "sha256": "979e21bafd58f2d214ab4aca1a1fa21607816756f450106e3483a502e12b6e7b",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/open-strong.wav",
+      "bytes": 280096,
+      "sha256": "4b881402e304b7f9a02f0649ce296307cb11182e614d15fb4449e12c940f60d7",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/open-subtle.wav",
+      "bytes": 224520,
+      "sha256": "c7cb286d1f51dbded4865aceb0ce63da5d463636976b7c0001bae3d46c62e346",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/ready-normal.wav",
+      "bytes": 431316,
+      "sha256": "6b466d316eeb1c3e4ed5162b15d6b8589a952bf85c84415b346530df59813579",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/ready-strong.wav",
+      "bytes": 545744,
+      "sha256": "85915c562dc264e905209367e5fed42876a00bca6961f8116d89ccc5fb2a20b0",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/ready-subtle.wav",
+      "bytes": 380048,
+      "sha256": "38f77b9d622e46dd7235e632cbfcf8ee65cc196b7047e385b1fc866c06180706",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/select-normal.wav",
+      "bytes": 86960,
+      "sha256": "6df4dc0d03b245bcd195f3498506d8f8876a13f2118ccb35b2e68cf530a74a85",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/select-strong.wav",
+      "bytes": 87172,
+      "sha256": "495e1c78303e1c9918da81197ddff82455e4079b7f85a2545ea6c4d503b6d603",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/select-subtle.wav",
+      "bytes": 71824,
+      "sha256": "4384f07f81ca85892ce6ca9982e7669f9134a72feec58b1eb316ab7ceb7aa114",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/success-normal.wav",
+      "bytes": 379476,
+      "sha256": "1c2a33fdc9aaf452369f7e743327d6339dc6bc2ebf1fd7e7e7b255f6534eca76",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/success-strong.wav",
+      "bytes": 467408,
+      "sha256": "d63ec352a2d40738ec157bd18e5a3e7db95f4f7dba54acc2394a6b2aa1680e6f",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/success-subtle.wav",
+      "bytes": 335984,
+      "sha256": "192a0a143b90ae18b086ca82144f0374ccb321ecd768ed064375ce27697fc1d3",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/tap-normal.wav",
+      "bytes": 350676,
+      "sha256": "825264c324e4d236500867c0516223fff5a0b31842594ecc3c2ecbef28453f39",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/tap-strong.wav",
+      "bytes": 402896,
+      "sha256": "cc39b647894ef8df5b5973bdb2a18e0c042bc77929e216eb8e75a98e29c8aacc",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/tap-subtle.wav",
+      "bytes": 311508,
+      "sha256": "632ef267140ed3e54ca91572170959491c72105b79a6e1d2ba2bd17f967a7332",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/toggle-normal.wav",
+      "bytes": 151760,
+      "sha256": "24bddc01c37b106b746671f8261d4a9bbf317de9ffb2bdaa3dc5d34de235e0c7",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/toggle-strong.wav",
+      "bytes": 164204,
+      "sha256": "0e71dcaf2297457a34143266628d8ac1b62d99da5639ae43fa8821c03dbcf885",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/toggle-subtle.wav",
+      "bytes": 142432,
+      "sha256": "4cfeed62e00085ae95b80ef74a455f86c83bf18e47690bc2aed07cf9a93a219d",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/type-normal.wav",
+      "bytes": 90052,
+      "sha256": "52ed8d3404a22adb1b15cde8d35f9e4a71fea80589287934f5083b0f9fe128e0",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/type-strong.wav",
+      "bytes": 90884,
+      "sha256": "c1d088bfaba3b43c215fa9b2029746375aa1fd41ada2cd4dbaec53ff4bf3edfb",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/type-subtle.wav",
+      "bytes": 73328,
+      "sha256": "c75ae837f52ec88f525e38d87846b0cc88b46c48db87b82424ca284ec9b255b2",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/warning-normal.wav",
+      "bytes": 263316,
+      "sha256": "36943ae92b01ce96493bb95e79d0554729476f48595a35f485fc152fff2b64cc",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/warning-strong.wav",
+      "bytes": 322260,
+      "sha256": "1de236d557c83f020290a0b4918d962d84f554c1225acb172ef6951454576dd7",
+      "kind": "media"
+    },
+    {
+      "path": "docs/resources/sounds/cuelume/press/warning-subtle.wav",
+      "bytes": 237252,
+      "sha256": "43a6cd7be9b737e6ea2d013a23b4ad2839fb4a88acfde9b4f8ff98c5c246db60",
+      "kind": "media"
     },
     {
       "path": "docs/resources/sounds/kenney/casino/card-fan-1.ogg",
@@ -22330,6 +24370,12 @@
       "kind": "media"
     },
     {
+      "path": "docs/resources/sounds/LICENSE-CUELUME.txt",
+      "bytes": 1069,
+      "sha256": "c0d53cbcf3b4e9cfa23c0ce575a1568d34f763eaf74917fb525a61d5624752ca",
+      "kind": "text"
+    },
+    {
       "path": "docs/resources/sounds/LICENSE-KENNEY-CASINO.txt",
       "bytes": 487,
       "sha256": "3d9c53acb6e236d760da14030f54bc53e1d8c2599f78470c36b96fddcde09221",
@@ -22381,6 +24427,12 @@
       "path": "docs/resources/sounds/README.md",
       "bytes": 2557,
       "sha256": "d1b6e147df9793e14675a900f04dc2cf368265e3da00cab87f7c99c9440a9d2f",
+      "kind": "text"
+    },
+    {
+      "path": "docs/resources/sounds/sources/cuelume.json",
+      "bytes": 38247,
+      "sha256": "4c2f7597adaff42aa1bf4e3328f45441b483795158e4d6f37552ba2056c58c33",
       "kind": "text"
     },
     {
@@ -22924,6 +24976,54 @@
       "kind": "media"
     },
     {
+      "path": "docs/resources/thinking-logos/manifest.json",
+      "bytes": 54493,
+      "sha256": "eaedb6102dc5aa13731053feda77520cab869d31d9d5377ca893d65fbc306cdd",
+      "kind": "text"
+    },
+    {
+      "path": "docs/resources/thinking-logos/NOTICE.txt",
+      "bytes": 1135,
+      "sha256": "7f3700df8d7f50f4de683d23db45a3c46d4c0716e4ff00ea7965dbb26ce26114",
+      "kind": "text"
+    },
+    {
+      "path": "docs/resources/thinking-logos/sources/agent-reach.svg",
+      "bytes": 1572,
+      "sha256": "1c0186477f299bf9d635b5a48c5c452f5c6a4e173acc917113b18f7e9c043283",
+      "kind": "text"
+    },
+    {
+      "path": "docs/resources/thinking-logos/sources/ffmpeg.svg",
+      "bytes": 419,
+      "sha256": "076e200007de7d3f03ddc970e63a23f7cb46a772d1f4e7c670ceb22a9d46ed35",
+      "kind": "text"
+    },
+    {
+      "path": "docs/resources/thinking-logos/sources/google-docs.svg",
+      "bytes": 378,
+      "sha256": "880b39680b64812e5203f366c08779e86c824e3a6264a8eefca2a56afbf79fa6",
+      "kind": "text"
+    },
+    {
+      "path": "docs/resources/thinking-logos/sources/graphify.svg",
+      "bytes": 350,
+      "sha256": "fd7d2369b8d2c8a9da78dbc7e463c17aa28c2586e8875c4236efd4543c08aeb8",
+      "kind": "text"
+    },
+    {
+      "path": "docs/resources/thinking-logos/sources/higgsfield.svg",
+      "bytes": 1669,
+      "sha256": "ebe84e5db7a19e2cb7e79eb846c72d95da4a7374ddf93666748e6d0d958c092b",
+      "kind": "text"
+    },
+    {
+      "path": "docs/resources/thinking-logos/sources/hyperframes.svg",
+      "bytes": 1112,
+      "sha256": "cde038469b062f049741b0e96c553591166a3864e2710c27900fa25a6ed2566e",
+      "kind": "text"
+    },
+    {
       "path": "docs/SERVICE_MAP_SYKA.md",
       "bytes": 13129,
       "sha256": "24914723c6ebd862ca7398149adfcd1da80414bf8160ac6bf6605421e9152c6e",
@@ -22931,14 +25031,14 @@
     },
     {
       "path": "docs/SKILLS_INCLUDED.md",
-      "bytes": 4302,
-      "sha256": "50a5be9e3c4608feb41c9a696b45676733d3e42364d92bf57e9bf9cb00184f9b",
+      "bytes": 4406,
+      "sha256": "8ca436564f63efedbab4be51b9b05263045861f27e2ee5d8ff8e10fdc1b69929",
       "kind": "text"
     },
     {
       "path": "docs/skills/catalog.json",
-      "bytes": 14082,
-      "sha256": "9170ce6c4ebca902301f150579c27c5db1e4689420216c5347fadaa40c79a086",
+      "bytes": 14635,
+      "sha256": "bdc42760958e0cb510726af401a51008f5a693ccc655fd18b2b6acad9727d166",
       "kind": "text"
     },
     {
@@ -23057,8 +25157,8 @@
     },
     {
       "path": "docs/skills/syka-editorial-motion/references/native-library.md",
-      "bytes": 2893,
-      "sha256": "8f4dfd96e275567f121b98da0209b0668c04877c1add4dd6d694be75502b0019",
+      "bytes": 3173,
+      "sha256": "d2ee4ef46b232aae146f0a7fcd00c9f0b66d49ad0bda533b96e0abe0e4d4a39a",
       "kind": "text"
     },
     {
@@ -23095,6 +25195,12 @@
       "path": "docs/skills/syka-local-audio/examples/NativeMusicBed.tsx",
       "bytes": 873,
       "sha256": "07760811fd439efa8b078277d13a87df03db21d67b369e0312901f5c9c3264a4",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-local-audio/references/cuelume.md",
+      "bytes": 3895,
+      "sha256": "cc67a77a0081b78766850b865fa0417eb23ed3829c5c8f2590ed9030516a6815",
       "kind": "text"
     },
     {
@@ -23135,20 +25241,20 @@
     },
     {
       "path": "docs/skills/syka-local-audio/SKILL.md",
-      "bytes": 8670,
-      "sha256": "710c26007d5e124ec70f5521c4935dececa3508b7e76596ec8343125bbed260b",
+      "bytes": 9785,
+      "sha256": "de71ddd960a353fd11dd324916ff8643f19052ac58f5e32f5acdcee24890e174",
       "kind": "text"
     },
     {
       "path": "docs/skills/syka-media-use/SKILL.md",
-      "bytes": 4598,
-      "sha256": "11a11c6fc804f3fdfff76b9d989071acd522790459045460880d5f5c2adebb39",
+      "bytes": 4740,
+      "sha256": "9a8a65807fbcea189162bd8552dc3e1bfc77bfe914a507a9a3c6af9d477df239",
       "kind": "text"
     },
     {
       "path": "docs/skills/syka-motion-brief/SKILL.md",
-      "bytes": 5542,
-      "sha256": "c8e7f2f5f8596ac9386f59c2b7ec2d35a6a94ccd3543f27c3e12cc1b727d1262",
+      "bytes": 6620,
+      "sha256": "e67314b49b5a56e8f91fdcd99b992f5c79fac9ef31e07883e8b73e620a29b3d9",
       "kind": "text"
     },
     {
@@ -23183,8 +25289,8 @@
     },
     {
       "path": "docs/skills/syka-motion-direction/SKILL.md",
-      "bytes": 7515,
-      "sha256": "e330ed45678487c3709b4eb6774889f69f1d6ebdf7e81aecd4fd4aaf3483014a",
+      "bytes": 7874,
+      "sha256": "6b84b3d3d6a865a35022e8757a0d7b16416f3e6ad26e9072ec9d7145cd0b9298",
       "kind": "text"
     },
     {
@@ -26165,14 +28271,20 @@
     },
     {
       "path": "docs/skills/syka-motion-references/references/repo-studies/AbubakrChan-product-launch-motion.md",
-      "bytes": 2371,
-      "sha256": "8c2f816e1feb60c4b5cf54dd037cb68428367cea24209e77acef3532e1a9d48c",
+      "bytes": 2834,
+      "sha256": "26528a7e61f54a295d5ec8bc969516633c6d18c7d4f62c5ef9e81b841712161c",
       "kind": "text"
     },
     {
       "path": "docs/skills/syka-motion-references/references/repo-studies/airbnb-lottie-web.md",
       "bytes": 1105,
       "sha256": "2b522881cedcb8681d51aecf024c4e2f646b5a92229a72864cb88a4ab84092df",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-motion-references/references/repo-studies/amanda-sartini-launch-rules.md",
+      "bytes": 1204,
+      "sha256": "797b6b661e073a61b91e33495b54f22748890162b6ad4789b978b481b1532449",
       "kind": "text"
     },
     {
@@ -26189,8 +28301,8 @@
     },
     {
       "path": "docs/skills/syka-motion-references/references/repo-studies/charlie947-motion-graphics-skills.md",
-      "bytes": 2344,
-      "sha256": "71db96dc8d0b6355db967a8d02f3b40b5dd0af6ccdc3a61d3e29dc02c01640db",
+      "bytes": 2970,
+      "sha256": "2e9980db6880b5efa4205d5d3d877359b9fc5d125b2605fa1800c0d528d03e33",
       "kind": "text"
     },
     {
@@ -26233,6 +28345,12 @@
       "path": "docs/skills/syka-motion-references/references/repo-studies/howseen-ai-claude-motion-design.md",
       "bytes": 1352,
       "sha256": "4b968fc7a1cfb9ce48f62cd94e3aad51a66a7f303bb9ffa0058d0e82fbc5f35f",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-motion-references/references/repo-studies/hyperframes-guided-mascot.md",
+      "bytes": 8357,
+      "sha256": "a5427ac2a86c7277671c169ea42f253eb8cd052348f8a12956f48c06682bf3d9",
       "kind": "text"
     },
     {
@@ -26297,8 +28415,8 @@
     },
     {
       "path": "docs/skills/syka-motion-references/references/stack-index.json",
-      "bytes": 138307,
-      "sha256": "b96ef26aaa876949fc560848ec5d5769c6e71b091ed8b7ab78a85bb7208d25b4",
+      "bytes": 142006,
+      "sha256": "d10624e1c410785f33daff918e30764742b7a87e28375ee2e90cc09439f4fe7e",
       "kind": "text"
     },
     {
@@ -26383,6 +28501,66 @@
       "path": "docs/skills/syka-pr-to-video/SKILL.md",
       "bytes": 1721,
       "sha256": "e6af4abe5bc59e88be4b64fd78fc187d6dff80788e63c7f581ca8a717e875b6f",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-product-launch/examples/launch-time.ts",
+      "bytes": 986,
+      "sha256": "572f33b57fbc4392d81940a4e3594dbff05ca43dedeeef216cd43e4ea7dcb34b",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-product-launch/examples/LaunchCover.tsx",
+      "bytes": 2306,
+      "sha256": "dc3220676103abfaa39a9f0fe391bdd97c2f0b7580195d4b3226cb20403aa504",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-product-launch/examples/ProductDemo.tsx",
+      "bytes": 2318,
+      "sha256": "d6eb3a16cb74748630da2724435bb622ed0d38302eb9d4f647947a2dec9b1331",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-product-launch/examples/ProductFocus.tsx",
+      "bytes": 2504,
+      "sha256": "4de934e1c6727e4ba25de16c0c48929c79a4753d10f7a8504fc3ca68284c24f3",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-product-launch/references/demo-recipes.md",
+      "bytes": 3280,
+      "sha256": "8b71c7db76c68e203e75862a1fc8acdb127765dc701cc7a6a1372ed969c7ef39",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-product-launch/references/guided-launch-and-mascot.md",
+      "bytes": 8357,
+      "sha256": "a5427ac2a86c7277671c169ea42f253eb8cd052348f8a12956f48c06682bf3d9",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-product-launch/references/narration-sync.md",
+      "bytes": 2325,
+      "sha256": "adebce4c1a2fea287110a109430a09d0f0a0814e9d1526187c4e2c95d7e2aaca",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-product-launch/references/sources.md",
+      "bytes": 1418,
+      "sha256": "082adccaeed24491bb41c7581245d37deaa6dd6e267900f3c77d413d74f63f22",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-product-launch/references/twelve-rules.md",
+      "bytes": 2412,
+      "sha256": "030b789e1cd62cd4087581836dbb4d79a08b5ac69286723a80b8b51d48cc525c",
+      "kind": "text"
+    },
+    {
+      "path": "docs/skills/syka-product-launch/SKILL.md",
+      "bytes": 4606,
+      "sha256": "4f607e354e4166153f5cf63b1b24f6a3fc8b5db6a4174e6673fc96f1e9dbc869",
       "kind": "text"
     },
     {
@@ -26537,8 +28715,8 @@
     },
     {
       "path": "LICENSE_POLICY.md",
-      "bytes": 6399,
-      "sha256": "aac3b435c960c1ce6dc4addb42e0217693e303b709dcafe0e4b4bd240bcba9c8",
+      "bytes": 6473,
+      "sha256": "a6bdcbb89ca8b4ca0b2e71a83d488afbe4df044035f2d67310e7523818ae8f2c",
       "kind": "text"
     },
     {
@@ -26549,14 +28727,14 @@
     },
     {
       "path": "package-lock.json",
-      "bytes": 509848,
-      "sha256": "4537449d2d88707dc06ffbf37b28c4f9421fc15b87ed247feb1cef2cc28bc105",
+      "bytes": 510237,
+      "sha256": "83a464c5f93b88bc6bf50675e2dd71af11374d8436bf6eb9b1828c980a2547e4",
       "kind": "text"
     },
     {
       "path": "package.json",
       "bytes": 1823,
-      "sha256": "56acd64fee28eb0352e4ff6ec514a9f66448fd90b42927603690ce83498f3e6a",
+      "sha256": "12d886d61efe475e42bfdd634886e0eea8368943173d4fb42ab444173e245192",
       "kind": "text"
     },
     {
@@ -26675,8 +28853,8 @@
     },
     {
       "path": "packages/agent-chat/src/host/claude-cli.ts",
-      "bytes": 13996,
-      "sha256": "a530548f01e47567b41c30ba1b20e8c90071fa25ee0e98437cb0522eb1cc648f",
+      "bytes": 13820,
+      "sha256": "413a3dab7c37a96c6173c93611c27cf14c5758672228b85ac69ba31337edec95",
       "kind": "text"
     },
     {
@@ -26699,8 +28877,8 @@
     },
     {
       "path": "packages/agent-chat/src/host/codex.ts",
-      "bytes": 50308,
-      "sha256": "1794de61f37bb75758aa8d2c3b1331071d2231301892b59e936554d07503cc4d",
+      "bytes": 49514,
+      "sha256": "daa2710ff2e95b033b782b700b965bb66e0ae38b448c8664b82ecd5ed904911c",
       "kind": "text"
     },
     {
@@ -26735,14 +28913,14 @@
     },
     {
       "path": "packages/agent-chat/src/host/env.ts",
-      "bytes": 13104,
-      "sha256": "2a4629740cc9884717361ffdad87d131dc021e6380ca004bb10faac4b47d073a",
+      "bytes": 12796,
+      "sha256": "f1a4f9140e109598458d9046fb98955f36a7b7e0f3e0526efb040ffdcac5c981",
       "kind": "text"
     },
     {
       "path": "packages/agent-chat/src/host/external-harnesses.ts",
-      "bytes": 8664,
-      "sha256": "6ade6c1d205e1bf421a19b26c7e50cfa793062e3a94af3215a504524ce3cfa20",
+      "bytes": 8547,
+      "sha256": "c9ffa0ee3622d557bfc62c9ed0bd4a3c5accdfffdd23217af61b470a0b23948c",
       "kind": "text"
     },
     {
@@ -26765,8 +28943,8 @@
     },
     {
       "path": "packages/agent-chat/src/host/harness.ts",
-      "bytes": 10735,
-      "sha256": "02da5f675babb71567cfde983bed95b8eb14aac25da43eadfd87d8dfc19ab6f9",
+      "bytes": 10493,
+      "sha256": "c8cffb702232823f153b536e33fa7f1e242abcefe0b428ab5adb4fe639279d28",
       "kind": "text"
     },
     {
@@ -26789,8 +28967,8 @@
     },
     {
       "path": "packages/agent-chat/src/host/index.ts",
-      "bytes": 7985,
-      "sha256": "0bc69fffe1fa900dd53806d7c34f35a0c19066a9b89f29d96c4ce4723ec12918",
+      "bytes": 7834,
+      "sha256": "43112ad4bf4b56e4af0ab31513d5c11890644595afaadde47faae1a37c5b15f5",
       "kind": "text"
     },
     {
@@ -26825,8 +29003,8 @@
     },
     {
       "path": "packages/agent-chat/src/host/motion-brief.ts",
-      "bytes": 7484,
-      "sha256": "3f0c389fedba83a1794648bd77467f4553713105eb50b19d0501204a452e3a72",
+      "bytes": 9016,
+      "sha256": "c71e580c055db0a5225bb17c3687cb534aa880ad30bfd5ab4b89e11afecdbcbe",
       "kind": "text"
     },
     {
@@ -26843,14 +29021,20 @@
     },
     {
       "path": "packages/agent-chat/src/host/motion-plan.ts",
-      "bytes": 27598,
-      "sha256": "b6cf4736b1aadb9e40da78d09017f8cd00fb0d8e793b69b861a6e2ef02560212",
+      "bytes": 36935,
+      "sha256": "bea7cfe1826183a7c9c62fd2577654391dc74ef37f75675a61a32238a6ad5d3b",
       "kind": "text"
     },
     {
       "path": "packages/agent-chat/src/host/motion-review.ts",
-      "bytes": 16694,
-      "sha256": "3c4f3ca3bde8835055460ae963acb6ba63444744ead7eefc04498410f110812e",
+      "bytes": 16556,
+      "sha256": "5725d9a676b9bc39bda5b79554db6e0d54a28eed189eb12a82e49cd1384e0bba",
+      "kind": "text"
+    },
+    {
+      "path": "packages/agent-chat/src/host/narration-cues.ts",
+      "bytes": 4021,
+      "sha256": "235045bac5b3740d0a0355f4e53643ef03b24b4068d322e1ebc36f8efdbf4153",
       "kind": "text"
     },
     {
@@ -27011,14 +29195,14 @@
     },
     {
       "path": "packages/agent-chat/src/protocol.ts",
-      "bytes": 10803,
-      "sha256": "bd65d4c7a6cdab29d36c2c2297086dd6a4b120f8e1080daebc289ed570e035ac",
+      "bytes": 10543,
+      "sha256": "e062aada05784c97b60f16065df2fd076f3f5f20483b9a5ef4921ac1ba745871",
       "kind": "text"
     },
     {
       "path": "packages/agent-chat/src/reduce.ts",
-      "bytes": 4217,
-      "sha256": "2eddedfa4ce7796852d9641c1fadd42e14222172ac882b760d566e76da9e8813",
+      "bytes": 4105,
+      "sha256": "fb586924df1d1add448989ed62d8180928c811a9c1b488da613b55bf05047196",
       "kind": "text"
     },
     {
@@ -27166,6 +29350,12 @@
       "kind": "text"
     },
     {
+      "path": "packages/agent-chat/test/cuelume-sounds.test.ts",
+      "bytes": 4923,
+      "sha256": "33fa53d81378a098f4035ba8edb9d826b2c9d356fb10412f40d2b3b944378445",
+      "kind": "text"
+    },
+    {
       "path": "packages/agent-chat/test/e2e.test.ts",
       "bytes": 27198,
       "sha256": "0ccb231e489f7d9c32ab84d5a79be249e1d3bd8f5c3fa3ff846909758a1039c7",
@@ -27197,8 +29387,8 @@
     },
     {
       "path": "packages/agent-chat/test/external-harnesses.test.ts",
-      "bytes": 20848,
-      "sha256": "401873f0ee3f334567b7635a9aa400afc9ef73421ff2c4b97566d3ca0e3ebb03",
+      "bytes": 20575,
+      "sha256": "e9289a034e1f0c4e1ed91bd0383d56fa6bf548509881aa442bb7424d8fd3fcc1",
       "kind": "text"
     },
     {
@@ -27283,6 +29473,18 @@
       "path": "packages/agent-chat/test/installed-agents.test.ts",
       "bytes": 3944,
       "sha256": "47935f81e6f16f14d03834bafe65d1b820c421bdf6c105ca7a32918088edf075",
+      "kind": "text"
+    },
+    {
+      "path": "packages/agent-chat/test/launch-motion.test.ts",
+      "bytes": 1143,
+      "sha256": "d7ab13060f270f7675ddd3403ee0c7d3ded1c7071658bd135f21313892fadc8e",
+      "kind": "text"
+    },
+    {
+      "path": "packages/agent-chat/test/launch-plan.test.ts",
+      "bytes": 7965,
+      "sha256": "8f563f1c17af81ca6180d34c3f3bec004de2b44f3d53cbb8d8a401b592e7991b",
       "kind": "text"
     },
     {
@@ -27481,6 +29683,12 @@
       "path": "packages/assets/src/cache.ts",
       "bytes": 9860,
       "sha256": "e6659aac9d0020915bd7781e4efe759a4672b587bf6a28bbdc197de61120bfe3",
+      "kind": "text"
+    },
+    {
+      "path": "packages/assets/src/cuelume-copy.test.ts",
+      "bytes": 2413,
+      "sha256": "c5daccbbd5a376675cc74955485cf321a0b78af9a6ccdcf435c970830cc6f276",
       "kind": "text"
     },
     {
@@ -28013,8 +30221,8 @@
     },
     {
       "path": "packages/jsx/src/jsx-runtime.ts",
-      "bytes": 4513,
-      "sha256": "e3b3cf9a54aeb0641c8c4120a7065c636944baf161b5a1c95d7c91fd2661beaa",
+      "bytes": 4603,
+      "sha256": "a7309323dd7aa19cf526b0584d659fd36f392247358dd349cfa20809b128349a",
       "kind": "text"
     },
     {
@@ -29183,20 +31391,20 @@
     },
     {
       "path": "README.en.md",
-      "bytes": 8115,
-      "sha256": "8e515741889a956ff6d2eb50c1c6ca13b02939171c42346878e087a8f2829aaf",
+      "bytes": 7735,
+      "sha256": "adfe695f7d6e8f5285745607bcdbe97dceb9e6b622b8c481dd2ef55ba7eaa265",
       "kind": "text"
     },
     {
       "path": "README.md",
-      "bytes": 8782,
-      "sha256": "a02f7c04930a9674fdff696247ea6ea1b42a3eee23048d217ae0d558b124d976",
+      "bytes": 8286,
+      "sha256": "d30100f5c350172760f4cb5d3e8373080725490f185d90d777d87035c5dcd515",
       "kind": "text"
     },
     {
       "path": "README.pt-BR.md",
-      "bytes": 8746,
-      "sha256": "1b58f8ba612a9c1eadbb3168a80f58751377e1ea5e7222e5a5b4c6b4a70fc7b2",
+      "bytes": 8386,
+      "sha256": "811b40a2ff7a96a7818ba5f75a2384927812b9e3667dfd352c8ff1113b9fe940",
       "kind": "text"
     },
     {
@@ -29231,8 +31439,8 @@
     },
     {
       "path": "scripts/bundled-skills.mjs",
-      "bytes": 4382,
-      "sha256": "67afd3b28e4e325a35bccf6b089b75f48bdd4da1f2dfc88d4366ae2ffeffa217",
+      "bytes": 4367,
+      "sha256": "290b85487a058f0a8058d4586ecf2d7acd2c53718a1798fedfce1bda506111e7",
       "kind": "text"
     },
     {
@@ -29249,8 +31457,8 @@
     },
     {
       "path": "scripts/check-sound-catalog.mjs",
-      "bytes": 2861,
-      "sha256": "a0f12c32c2f9aede2d7c2e6ad9318c3d5aceefd8dcf177d3641fa42775484c7b",
+      "bytes": 4023,
+      "sha256": "e70f2549c9f8ec8aac47e83189b482ae5087fdc21f02c7d5e28459f5d5cbe6c6",
       "kind": "text"
     },
     {
@@ -29260,9 +31468,15 @@
       "kind": "text"
     },
     {
+      "path": "scripts/dev-server-env.test.mjs",
+      "bytes": 2288,
+      "sha256": "70e3e7cc86ac01b6f596530b8c744a1ba268e1142fc89155fe71a1f5be446346",
+      "kind": "text"
+    },
+    {
       "path": "scripts/dev-syka.mjs",
-      "bytes": 4683,
-      "sha256": "c99b42e317b6e6f313b8458205c1228b9bc3619521afc349a1ba902fef8edba6",
+      "bytes": 5208,
+      "sha256": "85a8f01300e428f013e8026e7a50979e5142d76db63b13c906c58b05d632867a",
       "kind": "text"
     },
     {
@@ -29303,8 +31517,92 @@
     },
     {
       "path": "scripts/install.ps1",
-      "bytes": 6059,
-      "sha256": "8da55812f8b931e9f1106ba4ac0150949792ed8491fb9190460b4fa51d4984ff",
+      "bytes": 5973,
+      "sha256": "33c8a7ed6cd5e71212cb17bc0a5145c06ced69cef07ee7a80bcd60a6f739cac1",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/dist/audio/output.js",
+      "bytes": 5730,
+      "sha256": "6f640d11327f09eadbc455712622dd9709dea0913886eaccc5313d3ab851e5a5",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/dist/audio/render.js",
+      "bytes": 8108,
+      "sha256": "03137f1d0364e95885967adbc91ad0f995e3af6c4753d0a67c687da8bce7cd03",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/dist/sounds/bubble.js",
+      "bytes": 8696,
+      "sha256": "af801af202f78a4458ffb6ce5068cb49bc637116ec33b5d5a3f81ded77495e93",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/dist/sounds/context.js",
+      "bytes": 5171,
+      "sha256": "4a7640389c01b855893cee4ed19821ce8b4c2a761e6d5364828cf5f8308592b9",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/dist/sounds/layers.js",
+      "bytes": 5969,
+      "sha256": "8cf7f798fc2a8ab5dc546950a65d5044c01cea8222a1ede1423e13b85b7dd2d3",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/dist/sounds/mech.js",
+      "bytes": 9484,
+      "sha256": "9efd7c6c28df20d5a3288ce9d2dfd94bf7d5d3e9b4a33052f19b552e83d1679f",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/dist/sounds/press.js",
+      "bytes": 7897,
+      "sha256": "3a0a2ff5dbf299dc9c692000374e0559db8f36487de1c605a0ca967f955effe4",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/dist/sounds/recipes.js",
+      "bytes": 11500,
+      "sha256": "bfe5201f154df4d1cf93d3bc40ef56108ddca76696206033246be88102990214",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/dist/sounds/themes.js",
+      "bytes": 783,
+      "sha256": "815d317cc61d9a5de52299d0b9ece8075de7cc2008d08b02ee7fb95c9654fb67",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/LICENSE",
+      "bytes": 1069,
+      "sha256": "c0d53cbcf3b4e9cfa23c0ce575a1568d34f763eaf74917fb525a61d5624752ca",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/PINNED.json",
+      "bytes": 3221,
+      "sha256": "a0baf1e22ffe503ce5045a5d6de3dad03fd63d68fbdeb569d8b4cf33410b8971",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/README.md",
+      "bytes": 1039,
+      "sha256": "5b3597549847097b5634b001c9d8d5455ccb3651dd83df5f07559aaf1c7dd073",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/cuelume/scripts/sound.mjs",
+      "bytes": 11197,
+      "sha256": "2d69ab74f76b46a3993ac78c26c1f88a74c2631ad653f0c5bff430d585b1c478",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/lib/dev-server-env.mjs",
+      "bytes": 229,
+      "sha256": "46f9c4748d831daa27923d09ad471e4dbf12496a467fa4829e2c93b825e52f6e",
       "kind": "text"
     },
     {
@@ -29327,8 +31625,8 @@
     },
     {
       "path": "scripts/lib/public-source.mjs",
-      "bytes": 28013,
-      "sha256": "54ff36467d910dec634c8de61ba07053aeda1f1752c508c6414d85c14f120c61",
+      "bytes": 27757,
+      "sha256": "00c6b3d2396aaaa129425c6250b5564f5c8b9a9a61f65c1de4b40d512f2d14a1",
       "kind": "text"
     },
     {
@@ -29404,9 +31702,21 @@
       "kind": "text"
     },
     {
+      "path": "scripts/prepare-cuelume-sounds.mjs",
+      "bytes": 9882,
+      "sha256": "a5d34352bb6b00f71344913d6725ab993d3db9dcba2062c0b1f9a70e857d4da1",
+      "kind": "text"
+    },
+    {
       "path": "scripts/prepare-logo-catalog.mjs",
       "bytes": 6965,
       "sha256": "da9697a7378933f4c7445053792934e663531e6f994758b53f4f96cad2101134",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/prepare-thinking-logos.mjs",
+      "bytes": 8222,
+      "sha256": "406a49b177e3f677323d3739d72c1b09772e8fcd8a51c4ddabd8b06374c58b66",
       "kind": "text"
     },
     {
@@ -29452,9 +31762,21 @@
       "kind": "text"
     },
     {
+      "path": "scripts/thinking-logo-selection.mjs",
+      "bytes": 9155,
+      "sha256": "72404533e641abd5eb6f64ae68b1bcbddee228c4a4bd284c4de4f9f6f5706b7a",
+      "kind": "text"
+    },
+    {
       "path": "scripts/verify-windows-signatures.ps1",
       "bytes": 3173,
       "sha256": "64799748c996b1dcbd796a75ce858cda5a6754c888d70d20a3c3d449eb85b679",
+      "kind": "text"
+    },
+    {
+      "path": "scripts/write-thinking-logo-review.mjs",
+      "bytes": 3315,
+      "sha256": "bd174df208638d8a9b3621670274ced765f4692dab87227e91ab1691ee946bd4",
       "kind": "text"
     },
     {
@@ -29482,5 +31804,5 @@
       "kind": "text"
     }
   ],
-  "manifestSha256": "2a3f3f9572f29dbb358c98c2649f984a8eef9030f562769b456617dddcfd78ff"
+  "manifestSha256": "9f61bf79750238c4e5d268d959228e4c19a84c429d584087128514c526738397"
 }

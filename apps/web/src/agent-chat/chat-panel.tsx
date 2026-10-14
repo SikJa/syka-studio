@@ -26,6 +26,8 @@ import { prepareVisualReview } from './prepare-visual-review';
 import { prepareReferences } from './prepare-references';
 import { Composer } from "./mirel-composer";
 import { ChatIdentityHeader } from './chat-identity-header';
+import {mascotActivity,mascotTimelineTool} from './mascot-activity';
+import {emitMascotCue} from './mascot-journey';
 import { ChatPlacementControl } from './chat-placement-control';
 import { QuestionCard } from "./question-card";
 import {QuestionNotice} from './question-notice';
@@ -182,6 +184,17 @@ export function ChatPanel() {
 
   const running = () => summary()?.status === "running" || summary()?.status === "waiting" || optimistic() !== null;
   const waiting = () => transcript().pending !== null;
+  const mascot = createMemo(()=>mascotActivity(items(),running(),waiting()));
+  const mascotToolsSeen = new Set<string>();
+  createEffect(()=>{
+    const tool=mascotTimelineTool(items(),running());
+    if(!tool||waiting())return;
+    const id=key()+':'+tool.id;
+    if(mascotToolsSeen.has(id))return;
+    mascotToolsSeen.add(id);
+    if(mascotToolsSeen.size>100)mascotToolsSeen.delete(mascotToolsSeen.values().next().value!);
+    emitMascotCue(project.id(),{kind:'timeline'});
+  });
   const empty = () => items().length === 0;
 
   // The composer's model: in a chat, one of that chat's harness; in a draft,
@@ -359,11 +372,10 @@ export function ChatPanel() {
       onDrop={event => void handleChatDrop(event)}>
       <Show when={fullscreenChatMount()}><button type="button" class="syka-fullscreen-history-toggle" aria-expanded={fullscreenHistory()} onClick={() => setFullscreenHistory(v => !v)}>{fullscreenHistory() ? 'Ocultar conversación' : transcript().pending ? 'Responder al agente' : 'Ver conversación'}</button></Show>
       <div class="syka-chat-history contents">
-      <div class="flex h-12 shrink-0 items-center border-y border-border px-4 [[data-platform=win32]_&]:border-t-0" classList={{hidden:chatFloating()}}>
-        <SidebarTabs />
+      <div class="syka-sidebar-toolbar" data-chat-toolbar>
+        <Show when={!chatFloating()}><SidebarTabs /></Show>
+        <ChatIdentityHeader working={running()} activity={mascot()} projectId={project.id()} blocked={!!questionView()} sessionsOpen={sessionsOpen()} onToggleSessions={()=>setSessionsOpen(v=>!v)} />
       </div>
-
-      <ChatIdentityHeader working={running()} blocked={!!questionView()} sessionsOpen={sessionsOpen()} onToggleSessions={()=>setSessionsOpen(v=>!v)} />
       <Show when={sessionsOpen()}><button class="syka-session-scrim" aria-label="Cerrar sesiones" onClick={()=>setSessionsOpen(false)}/></Show>
       <SessionRail projectId={project.id()} chatId={chatId()} open={sessionsOpen()} running={running()} onClose={()=>setSessionsOpen(false)} onNew={()=>handleNew()} onSelect={id=>{setActiveChat(project.id(),id);setSessionsOpen(false);}} onSkills={()=>{window.location.hash='/?dashboard=settings';}} onScheduled={()=>{setScheduledOpen(true);setSessionsOpen(false);}} onGuide={()=>void handleGuide()}/>
       <Show when={scheduledOpen()}><ScheduledTasks projectId={project.id()} onClose={()=>setScheduledOpen(false)}/></Show>

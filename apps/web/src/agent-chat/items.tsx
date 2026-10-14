@@ -15,7 +15,7 @@ import { SentAttachment } from "./sent-attachment";
 import { ImageGenerationItem } from './image-generation-item';
 
 import "./activity.css";
-import {MirelMessage,MirelTrace,MirelUserText} from "./mirel-messages";
+import {MirelMessage,MirelTrace,MirelUserText,MirelToolMark} from "./mirel-messages";
 
 type Of<K extends Item["kind"]> = Extract<Item, { kind: K }>;
 
@@ -66,7 +66,7 @@ export function ReasoningItem(props: { item: Of<"reasoning"> }) {
 export function WebSearchItem(props: { item: Of<'tool'> }) {
   const url = () => /^https?:\/\/\S+$/i.test(props.item.detail ?? '') ? props.item.detail : undefined;
   return <section class="syka-web-search" aria-label={props.item.title}>
-    <div><Icon name="search" class="size-3.5"/><span>{props.item.title}</span><small>{props.item.status === 'running' ? 'En curso' : props.item.status === 'failed' ? 'Falló' : ''}</small></div>
+    <div><MirelToolMark item={props.item}/><span>{props.item.title}</span><small>{props.item.status === 'running' ? 'En curso' : props.item.status === 'failed' ? 'Falló' : ''}</small></div>
     <Show when={props.item.detail}>
       <Show when={url()} fallback={<p>{props.item.detail}</p>}>
         <a href={url()} target="_blank" rel="noopener noreferrer">{props.item.detail}</a>

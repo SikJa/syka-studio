@@ -9,6 +9,9 @@ lerna-debug.log*
 
 node_modules
 dist
+# Pinned Cuelume ESM is licensed source used to reproduce the sound catalog.
+!scripts/lib/cuelume/dist/
+!scripts/lib/cuelume/dist/**
 .runtime/
 output/
 
@@ -54,5 +57,5 @@ docs/references/skillry/library-location.local.json
 docs/references/skillry/evidence/qa-runtime/
 docs/references/skillry/scripts/__pycache__/
 
-# Machine-local authenticated preview endpoint
+# Endpoint descriptor generated for this machine's real provider preview.
 apps/web/qa/providers-live-endpoint.js

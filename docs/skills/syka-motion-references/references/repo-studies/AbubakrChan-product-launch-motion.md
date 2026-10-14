@@ -19,6 +19,13 @@ Lectura: Documentación seleccionada y lectura estática de tres scripts; no eje
 No se ejecutó el pipeline upstream ni se certificó la calidad de sus videos/audio. Este estudio no instala otro motor y no reproduce el contenido completo de la skill original. Los recursos de producción requieren sus propios derechos.
 
 Documentos consultados:
+
+Adaptación nativa 2026-10-11: syka-product-launch incorpora demos estructuradas,
+recetas de planos, revisión editorial y variantes elegidas. syka_motion_plan acepta
+palabras medidas de una toma y wordCue por índice/borde con trim/rate y revisión
+de tiempos; los prompts corto/extenso salen del mismo brief. Es implementación
+original de Syka, no instalación de los scripts ni redistribución del film.
+El perfil detailed suma microacentos cuando fue elegido y conserva jerarquía/voz.
 - [README.md](https://github.com/AbubakrChan/product-launch-motion/blob/951d6149d2748a15058f79dcf8e8c4bf00824121/README.md)
 - [references/03-word-locked-sync.md](https://github.com/AbubakrChan/product-launch-motion/blob/951d6149d2748a15058f79dcf8e8c4bf00824121/references/03-word-locked-sync.md)
 - [references/07-sound-and-master.md](https://github.com/AbubakrChan/product-launch-motion/blob/951d6149d2748a15058f79dcf8e8c4bf00824121/references/07-sound-and-master.md)

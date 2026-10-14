@@ -15,7 +15,7 @@ const TABS: { id: SidebarTab; label: string }[] = [
 /** "Assets  Chat" as plain text labels, the unselected one muted. The choice persists. */
 export function SidebarTabs() {
   return (
-    <div class="relative z-30 flex items-center gap-4" style="-webkit-app-region: no-drag;" role="tablist">
+    <div class="syka-sidebar-tabs relative z-30 flex items-center gap-4" style="-webkit-app-region: no-drag;" role="tablist">
       <For each={TABS}>
         {(tab) => (
           <button

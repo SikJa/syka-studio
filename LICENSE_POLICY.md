@@ -34,6 +34,7 @@ Una futura extensión cerrada debería usar una interfaz documentada y archivos 
 | Chewy | Apache-2.0 | Binario de fuente y su aviso |
 | Logos SVGL/LobeHub | MIT sobre los archivos cubiertos; marcas de sus titulares | Conservar bytes, origen y avisos; no implica derechos de marca |
 | Sonidos Kenney | CC0 | Packs identificados en los avisos del catálogo |
+| Cuelume | MIT | Recetas y renderer de Daniel Belyi, snapshot fijado, 168 WAV derivados y notices conservados; no incluye el agente fx |
 | Sonidos de Syka y opus-sound-layer | MIT según cada aviso | Material indicado en el catálogo y referencias; no licencia general para bibliotecas privadas |
 | FFmpeg/FFprobe y yt-dlp | Licencias específicas de sus builds | Herramientas descargadas directamente de upstream por el bootstrap; distinguir descarga del usuario de binarios redistribuidos en un instalador Syka |
 

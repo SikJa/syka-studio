@@ -65,7 +65,8 @@ type HtmlElementTags = Omit<SolidJSX.HTMLElementTags, "canvas" | "audio" | "vide
 type ImgTag = Omit<SolidJSX.HTMLElementTags["img"], "src"> & { src?: AssetInput };
 
 // The shared names are re-declared below as unions with the composition props.
-type SvgElementTags = Omit<SolidJSX.SVGElementTags, "rect" | "text" | "image">;
+// `mask` is a composition-only tag below; its SceneNode ref is not an SVG ref.
+type SvgElementTags = Omit<SolidJSX.SVGElementTags, "rect" | "text" | "image" | "mask">;
 
 export declare namespace JSX {
   // Solid's Element type keeps Solid's control flow (<For>, <Show>, …) and

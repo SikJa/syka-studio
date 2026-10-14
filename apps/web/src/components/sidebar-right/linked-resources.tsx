@@ -14,6 +14,7 @@ import { referenceInChat, selectionContext, linkedReferenceInstruction } from '@
 import { MotionThumbnail, MotionPreview } from './motion-preview';
 import { AgentReferenceMenu } from './agent-reference-menu';
 import { referenceThumbnail } from '@/agent-chat/reference-attachments';
+import type {MascotRect} from '@/agent-chat/mascot-journey';
 import { t } from '@/i18n';
 
 function LogoPreview(props: { path: string }) {
@@ -27,9 +28,9 @@ export function LinkedResources(props: { kind: ResourceKind; query: string; onIn
   const world = useWorld(), library = useLibrary();
   const project = useProject();
   const [motionPreview,setMotionPreview]=createSignal<ResourceEntry>();
-  const askAgent = (entry: ResourceEntry, preview?: string) => referenceInChat(project.id(),
+  const askAgent = (entry: ResourceEntry, preview?: string,origin?:MascotRect) => referenceInChat(project.id(),
     linkedReferenceInstruction(props.kind),
-    {kind:props.kind,path:entry.path,name:entry.title ?? entry.name,brand:entry.brand,audioType:entry.audioType,componentPath:entry.componentPath,componentFiles:entry.componentFiles,usage:entry.usage,...selectionContext(world)}, preview);
+    {kind:props.kind,path:entry.path,name:entry.title ?? entry.name,brand:entry.brand,audioType:entry.audioType,componentPath:entry.componentPath,componentFiles:entry.componentFiles,usage:entry.usage,...selectionContext(world)}, preview,undefined,origin);
   const [offset, setOffset] = createSignal(0), [busy, setBusy] = createSignal(false);
   const [audioType, setAudioType] = createSignal<ResourceEntry['audioType']>('sfx');
   const [audioFamily, setAudioFamily] = createSignal<ResourceEntry['audioFamily']>();
@@ -104,13 +105,13 @@ export function LinkedResources(props: { kind: ResourceKind; query: string; onIn
     <Show when={props.kind==='sounds'&&audioFamily()}><div class="syka-audio-breadcrumb"><button aria-label="Volver a categorías de sonido" onClick={()=>setAudioFamily(undefined)}>‹ Categorías</button><strong>{familyTitle()}</strong></div></Show>
     <Show when={data()?.total&&!categoryOverview()}><div class="syka-section-label">{data()!.total} {props.kind==='sounds'?'sonidos':'recursos'}</div></Show>
     <div classList={{'t-panel-slide':props.kind==='sounds','syka-audio-detail':props.kind==='sounds'}} data-open={revealed()}>
-    <Show when={categoryOverview()} fallback={<div class="syka-resource-grid"><For each={data()?.entries}>{entry => <AgentReferenceMenu onUse={preview => askAgent(entry, preview)}><div class="syka-resource-reference"><Show when={props.kind==='sounds'} fallback={<button class="syka-resource-card syka-linked-draggable" draggable={!!library()&&!busy()} onDragStart={event=>drag(event,entry)} onDragEnd={endLinkedResourceDrag} disabled={!library() || busy()} title={(entry.title ?? entry.brand) + ' / ' + entry.name + (props.kind === 'motions' ? ' · Arrastrar al chat para adaptar' : ' · Arrastrar al chat o a la timeline')} onClick={() => props.kind === 'motions' ? setMotionPreview(entry) : void add(entry)}>
+    <Show when={categoryOverview()} fallback={<div class="syka-resource-grid"><For each={data()?.entries}>{entry => <AgentReferenceMenu onUse={(preview,origin) => askAgent(entry, preview,origin)}><div class="syka-resource-reference"><Show when={props.kind==='sounds'} fallback={<button class="syka-resource-card syka-linked-draggable" draggable={!!library()&&!busy()} onDragStart={event=>drag(event,entry)} onDragEnd={endLinkedResourceDrag} disabled={!library() || busy()} title={(entry.title ?? entry.brand) + ' / ' + entry.name + (props.kind === 'motions' ? ' · Arrastrar al chat para adaptar' : ' · Arrastrar al chat o a la timeline')} onClick={() => props.kind === 'motions' ? setMotionPreview(entry) : void add(entry)}>
       <span class="syka-resource-thumb syka-linked-thumb" data-logo-theme={props.kind === 'logos' ? entry.theme ?? 'any' : undefined}><Show when={props.kind === 'logos'} fallback={<MotionThumbnail path={entry.path} posterPath={entry.posterPath}/>}><LogoPreview path={entry.path} /></Show></span>
       <span>{props.kind==='motions' ? entry.title ?? entry.name.replace(/\.[^.]+$/, '') : entry.brand}</span><small>{entry.componentPath ? 'Componente editable' : entry.variant ? `${entry.variant === 'symbol' ? 'Símbolo' : 'Nombre'} · ${entry.theme === 'dark' ? 'Fondo oscuro' : entry.theme === 'light' ? 'Fondo claro' : 'Original'}` : entry.name.replace(/\.[^.]+$/, '')}</small>
     </button>}><div class="syka-resource-card syka-audio-card syka-linked-draggable" draggable={!!library()&&!busy()} onDragStart={event=>drag(event,entry)} onDragEnd={endLinkedResourceDrag} title="Arrastrar a la timeline">
       <button class="syka-audio-audition" aria-label={(playing()===entry.path?'Detener ':'Escuchar ')+(entry.title??entry.name)} aria-pressed={playing()===entry.path} aria-busy={previewLoading()===entry.path} onClick={()=>void audition(entry)}><PreviewIcon name={playing()===entry.path?'pause':'play'}/><span>{previewLoading()===entry.path?'Cargando…':entry.duration?`${entry.duration.toFixed(2)} s`:'Escuchar'}</span></button>
       <button class="syka-audio-insert" disabled={!library()||busy()} title={[entry.brand,entry.license,entry.loop?'Loop':''].filter(Boolean).join(' · ')} aria-label={'Agregar '+(entry.title??entry.name)} onClick={()=>void add(entry)}><strong>{entry.title??entry.name.replace(/\.[^.]+$/,'')}</strong><small>{[entry.provider??entry.brand,entry.bpm?`${entry.bpm} BPM`:undefined,entry.loop?'Loop':undefined].filter(Boolean).join(' · ')}</small><span>Agregar en el cabezal</span></button>
-    </div></Show><button type="button" class="syka-resource-ask" aria-label={'Pasar al agente '+(entry.title??entry.name)} onClick={event => askAgent(entry, referenceThumbnail(event.currentTarget.closest('.syka-resource-reference')))}>Usar con el agente ↗</button></div></AgentReferenceMenu>}</For></div>}>
+    </div></Show><button type="button" class="syka-resource-ask" aria-label={'Pasar al agente '+(entry.title??entry.name)} onClick={event => {const source=event.currentTarget.closest('.syka-resource-reference');askAgent(entry,referenceThumbnail(source),source?.getBoundingClientRect());}}>Usar con el agente ↗</button></div></AgentReferenceMenu>}</For></div>}>
       <nav class="syka-audio-categories" aria-label="Categorías de efectos"><For each={data()?.audioCategories}>{category=><button aria-label={category.title+', '+category.count+' sonidos'} onClick={()=>{setFamilyTitle(category.title);setAudioFamily(category.id);}}><span>{category.title}</span><small>{category.count}</small></button>}</For></nav>
     </Show></div>
     <div class="syka-library-folder-actions">

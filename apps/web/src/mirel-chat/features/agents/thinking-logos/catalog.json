@@ -1,0 +1,1505 @@
+[
+  {
+    "id": "syka",
+    "name": "Syka Studio",
+    "tint": "#a6b4c2",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "syka"
+    ],
+    "domains": [],
+    "kind": "project"
+  },
+  {
+    "id": "agent-reach",
+    "name": "Agent Reach",
+    "tint": "#399cff",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "agent-reach"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "openai",
+    "name": "ChatGPT / OpenAI",
+    "tint": "#85bca8",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "openai",
+      "chatgpt"
+    ],
+    "domains": [
+      "chatgpt.com",
+      "openai.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "codex",
+    "name": "Codex",
+    "tint": "#c7c7c7",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "codex"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "claude",
+    "name": "Claude / Claude Code",
+    "tint": "#d97757",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "claude",
+      "claude_code"
+    ],
+    "domains": [
+      "claude.ai",
+      "anthropic.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "gemini",
+    "name": "Gemini",
+    "tint": "#718aff",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "gemini"
+    ],
+    "domains": [
+      "gemini.google.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "antigravity",
+    "name": "Antigravity",
+    "tint": "#7ea8fa",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "antigravity"
+    ],
+    "domains": [
+      "antigravity.google"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "grok",
+    "name": "Grok",
+    "tint": "#c2c2c2",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "grok"
+    ],
+    "domains": [
+      "grok.com",
+      "x.ai"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "cursor",
+    "name": "Cursor",
+    "tint": "#c2c2c2",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "cursor"
+    ],
+    "domains": [
+      "cursor.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "hermes",
+    "name": "Hermes",
+    "tint": "#d6a975",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "hermes"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "opencode",
+    "name": "OpenCode",
+    "tint": "#c2c2c2",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "opencode"
+    ],
+    "domains": [
+      "opencode.ai"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "hugging-face",
+    "name": "Hugging Face",
+    "tint": "#ffca59",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "hugging_face",
+      "huggingface"
+    ],
+    "domains": [
+      "huggingface.co"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "openrouter",
+    "name": "OpenRouter",
+    "tint": "#aaa4ea",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "openrouter"
+    ],
+    "domains": [
+      "openrouter.ai"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "ollama",
+    "name": "Ollama",
+    "tint": "#c2c2c2",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "ollama"
+    ],
+    "domains": [
+      "ollama.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "deepseek",
+    "name": "DeepSeek",
+    "tint": "#688cf5",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "deepseek"
+    ],
+    "domains": [
+      "deepseek.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "qwen",
+    "name": "Qwen",
+    "tint": "#9a87ec",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "qwen"
+    ],
+    "domains": [
+      "qwen.ai"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "mistral",
+    "name": "Mistral",
+    "tint": "#f79b39",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "mistral"
+    ],
+    "domains": [
+      "mistral.ai"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "perplexity",
+    "name": "Perplexity",
+    "tint": "#56b8c1",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "perplexity"
+    ],
+    "domains": [
+      "perplexity.ai"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "github-copilot",
+    "name": "GitHub Copilot",
+    "tint": "#c2c2c2",
+    "category": "Agentes e IA",
+    "added": false,
+    "aliases": [
+      "github_copilot",
+      "copilot"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "youtube",
+    "name": "YouTube",
+    "tint": "#ff4545",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "youtube"
+    ],
+    "domains": [
+      "youtube.com",
+      "youtu.be"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "x",
+    "name": "X",
+    "tint": "#c2c2c2",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "twitter",
+      "x_twitter"
+    ],
+    "domains": [
+      "x.com",
+      "twitter.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "instagram",
+    "name": "Instagram",
+    "tint": "#eb698e",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "instagram"
+    ],
+    "domains": [
+      "instagram.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "whatsapp",
+    "name": "WhatsApp",
+    "tint": "#52ca79",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "whatsapp"
+    ],
+    "domains": [
+      "whatsapp.com",
+      "wa.me"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "linkedin",
+    "name": "LinkedIn",
+    "tint": "#559de2",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "linkedin"
+    ],
+    "domains": [
+      "linkedin.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "discord",
+    "name": "Discord",
+    "tint": "#8590ff",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "discord"
+    ],
+    "domains": [
+      "discord.com",
+      "discord.gg"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "zernio",
+    "name": "Zernio",
+    "tint": "#bba7f8",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "zernio"
+    ],
+    "domains": [
+      "zernio.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "tiktok",
+    "name": "TikTok",
+    "tint": "#69d4da",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "tiktok"
+    ],
+    "domains": [
+      "tiktok.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "facebook",
+    "name": "Facebook",
+    "tint": "#5794ff",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "facebook"
+    ],
+    "domains": [
+      "facebook.com",
+      "fb.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "reddit",
+    "name": "Reddit",
+    "tint": "#ff783f",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "reddit"
+    ],
+    "domains": [
+      "reddit.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "telegram",
+    "name": "Telegram",
+    "tint": "#60b5e6",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "telegram"
+    ],
+    "domains": [
+      "telegram.org",
+      "t.me"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "twitch",
+    "name": "Twitch",
+    "tint": "#b084ff",
+    "category": "Redes y publicación",
+    "added": false,
+    "aliases": [
+      "twitch"
+    ],
+    "domains": [
+      "twitch.tv"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "google",
+    "name": "Google Search",
+    "tint": "#6d9eed",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "google_search"
+    ],
+    "domains": [
+      "google.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "gmail",
+    "name": "Gmail",
+    "tint": "#ea736c",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "gmail"
+    ],
+    "domains": [
+      "mail.google.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "google-drive",
+    "name": "Google Drive",
+    "tint": "#60bd84",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "google_drive",
+      "gdrive"
+    ],
+    "domains": [
+      "drive.google.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "google-docs",
+    "name": "Google Docs",
+    "tint": "#6098f0",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "google_docs",
+      "gdocs"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "google-sheets",
+    "name": "Google Sheets",
+    "tint": "#59bf87",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "google_sheets",
+      "gsheets"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "google-slides",
+    "name": "Google Slides",
+    "tint": "#ecc15e",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "google_slides",
+      "gslides"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "google-calendar",
+    "name": "Google Calendar",
+    "tint": "#75a3f1",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "google_calendar",
+      "gcal"
+    ],
+    "domains": [
+      "calendar.google.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "google-meet",
+    "name": "Google Meet",
+    "tint": "#62be98",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "google_meet"
+    ],
+    "domains": [
+      "meet.google.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "notion",
+    "name": "Notion",
+    "tint": "#c2c2c2",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "notion"
+    ],
+    "domains": [
+      "notion.so",
+      "notion.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "slack",
+    "name": "Slack",
+    "tint": "#cc8dbe",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "slack"
+    ],
+    "domains": [
+      "slack.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "word",
+    "name": "Microsoft Word",
+    "tint": "#77a1e7",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "microsoft_word",
+      "word",
+      "docx"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "excel",
+    "name": "Microsoft Excel",
+    "tint": "#70bb92",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "microsoft_excel",
+      "excel",
+      "xlsx"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "powerpoint",
+    "name": "Microsoft PowerPoint",
+    "tint": "#dc947b",
+    "category": "Google y documentos",
+    "added": false,
+    "aliases": [
+      "microsoft_powerpoint",
+      "powerpoint",
+      "pptx"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "github",
+    "name": "GitHub",
+    "tint": "#c2c2c2",
+    "category": "Desarrollo y servicios",
+    "added": false,
+    "aliases": [
+      "github"
+    ],
+    "domains": [
+      "github.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "supabase",
+    "name": "Supabase",
+    "tint": "#69dba4",
+    "category": "Desarrollo y servicios",
+    "added": false,
+    "aliases": [
+      "supabase"
+    ],
+    "domains": [
+      "supabase.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "cloudflare",
+    "name": "Cloudflare",
+    "tint": "#f4aa57",
+    "category": "Desarrollo y servicios",
+    "added": false,
+    "aliases": [
+      "cloudflare"
+    ],
+    "domains": [
+      "cloudflare.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "vercel",
+    "name": "Vercel",
+    "tint": "#c2c2c2",
+    "category": "Desarrollo y servicios",
+    "added": false,
+    "aliases": [
+      "vercel"
+    ],
+    "domains": [
+      "vercel.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "playwright",
+    "name": "Playwright",
+    "tint": "#81c978",
+    "category": "Desarrollo y servicios",
+    "added": false,
+    "aliases": [
+      "playwright"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "powershell",
+    "name": "PowerShell",
+    "tint": "#78a4e7",
+    "category": "Desarrollo y servicios",
+    "added": false,
+    "aliases": [
+      "powershell",
+      "pwsh"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "graphify",
+    "name": "Graphify",
+    "tint": "#baa0ea",
+    "category": "Desarrollo y servicios",
+    "added": false,
+    "aliases": [
+      "graphify",
+      "syka_code_graph"
+    ],
+    "domains": [],
+    "kind": "functional"
+  },
+  {
+    "id": "exa",
+    "name": "Exa",
+    "tint": "#889ef1",
+    "category": "Desarrollo y servicios",
+    "added": false,
+    "aliases": [
+      "exa"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "jina",
+    "name": "Jina",
+    "tint": "#8fbdda",
+    "category": "Desarrollo y servicios",
+    "added": false,
+    "aliases": [
+      "jina"
+    ],
+    "domains": [
+      "jina.ai"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "firecrawl",
+    "name": "Firecrawl",
+    "tint": "#ed9862",
+    "category": "Desarrollo y servicios",
+    "added": false,
+    "aliases": [
+      "firecrawl"
+    ],
+    "domains": [
+      "firecrawl.dev"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "canva",
+    "name": "Canva",
+    "tint": "#69c5d8",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "canva"
+    ],
+    "domains": [
+      "canva.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "higgsfield",
+    "name": "Higgsfield",
+    "tint": "#b7cc85",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "higgsfield"
+    ],
+    "domains": [
+      "higgsfield.ai"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "blender",
+    "name": "Blender",
+    "tint": "#f1a65b",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "blender"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "remotion",
+    "name": "Remotion",
+    "tint": "#77a5ed",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "remotion"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "hyperframes",
+    "name": "HyperFrames",
+    "tint": "#c2c2c2",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "hyperframes"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "elevenlabs",
+    "name": "ElevenLabs",
+    "tint": "#c2c2c2",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "elevenlabs",
+      "eleven_labs"
+    ],
+    "domains": [
+      "elevenlabs.io"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "obs",
+    "name": "OBS Studio",
+    "tint": "#c2c2c2",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "obs",
+      "obs_studio"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "figma",
+    "name": "Figma",
+    "tint": "#ae97ee",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "figma"
+    ],
+    "domains": [
+      "figma.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "ffmpeg",
+    "name": "FFmpeg",
+    "tint": "#81c974",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "ffmpeg",
+      "ffprobe"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "suno",
+    "name": "Suno",
+    "tint": "#e9a582",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "suno"
+    ],
+    "domains": [
+      "suno.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "runway",
+    "name": "Runway",
+    "tint": "#c2c2c2",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "runway"
+    ],
+    "domains": [
+      "runwayml.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "spotify",
+    "name": "Spotify",
+    "tint": "#6ccb87",
+    "category": "Imagen, video y audio",
+    "added": false,
+    "aliases": [
+      "spotify"
+    ],
+    "domains": [
+      "spotify.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "apple",
+    "name": "Apple",
+    "tint": "#c2c2c2",
+    "category": "Sistemas y navegación",
+    "added": false,
+    "aliases": [
+      "apple"
+    ],
+    "domains": [
+      "apple.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "windows",
+    "name": "Windows",
+    "tint": "#77b6ee",
+    "category": "Sistemas y navegación",
+    "added": false,
+    "aliases": [
+      "windows"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "chrome",
+    "name": "Chrome",
+    "tint": "#e2b667",
+    "category": "Sistemas y navegación",
+    "added": false,
+    "aliases": [
+      "chrome",
+      "chromium"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "edge",
+    "name": "Edge",
+    "tint": "#76b8d2",
+    "category": "Sistemas y navegación",
+    "added": false,
+    "aliases": [
+      "edge",
+      "microsoft_edge"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "git",
+    "name": "Git",
+    "tint": "#f09779",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "git"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "docker",
+    "name": "Docker",
+    "tint": "#7aaae5",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "docker"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "nodejs",
+    "name": "Node.js",
+    "tint": "#8fc67a",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "node",
+      "nodejs"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "python",
+    "name": "Python",
+    "tint": "#dbc071",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "python",
+      "python3"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "typescript",
+    "name": "TypeScript",
+    "tint": "#7ca5df",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "typescript",
+      "tsc"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "react",
+    "name": "React",
+    "tint": "#8bd5e8",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "react"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "nextjs",
+    "name": "Next.js",
+    "tint": "#c2c2c2",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "nextjs",
+      "next_js"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "vscode",
+    "name": "Visual Studio Code",
+    "tint": "#79b9e9",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "vscode",
+      "visual_studio_code"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "npm",
+    "name": "npm",
+    "tint": "#d48a8a",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "npm"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "pnpm",
+    "name": "pnpm",
+    "tint": "#e6bd61",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "pnpm"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "bun",
+    "name": "Bun",
+    "tint": "#e0cab6",
+    "category": "Ampliación · desarrollo",
+    "added": true,
+    "aliases": [
+      "bun"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "postgresql",
+    "name": "PostgreSQL",
+    "tint": "#80a7d0",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "postgresql",
+      "postgres"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "sqlite",
+    "name": "SQLite",
+    "tint": "#8dbad4",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "sqlite",
+      "sqlite3"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "redis",
+    "name": "Redis",
+    "tint": "#db8d88",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "redis"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "mongodb",
+    "name": "MongoDB",
+    "tint": "#91bd77",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "mongodb"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "firebase",
+    "name": "Firebase",
+    "tint": "#edbd65",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "firebase"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "railway",
+    "name": "Railway",
+    "tint": "#bdade0",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "railway"
+    ],
+    "domains": [
+      "railway.com",
+      "railway.app"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "render",
+    "name": "Render",
+    "tint": "#b4afd4",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "render_com"
+    ],
+    "domains": [
+      "render.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "aws",
+    "name": "Amazon Web Services",
+    "tint": "#e6b474",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "aws",
+      "amazon_web_services"
+    ],
+    "domains": [
+      "aws.amazon.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "google-cloud",
+    "name": "Google Cloud",
+    "tint": "#86ace3",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "google_cloud",
+      "gcloud"
+    ],
+    "domains": [
+      "cloud.google.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "azure",
+    "name": "Microsoft Azure",
+    "tint": "#80b9df",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "microsoft_azure",
+      "azure"
+    ],
+    "domains": [
+      "azure.microsoft.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "netlify",
+    "name": "Netlify",
+    "tint": "#87ccc5",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "netlify"
+    ],
+    "domains": [
+      "netlify.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "n8n",
+    "name": "n8n",
+    "tint": "#d995af",
+    "category": "Ampliación · infraestructura",
+    "added": true,
+    "aliases": [
+      "n8n"
+    ],
+    "domains": [
+      "n8n.io"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "outlook",
+    "name": "Microsoft Outlook",
+    "tint": "#79afe5",
+    "category": "Ampliación · trabajo",
+    "added": true,
+    "aliases": [
+      "microsoft_outlook",
+      "outlook"
+    ],
+    "domains": [
+      "outlook.com",
+      "outlook.live.com",
+      "outlook.office.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "onedrive",
+    "name": "OneDrive",
+    "tint": "#7cafe2",
+    "category": "Ampliación · trabajo",
+    "added": true,
+    "aliases": [
+      "microsoft_onedrive",
+      "onedrive"
+    ],
+    "domains": [
+      "onedrive.live.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "teams",
+    "name": "Microsoft Teams",
+    "tint": "#a8a1dc",
+    "category": "Ampliación · trabajo",
+    "added": true,
+    "aliases": [
+      "microsoft_teams"
+    ],
+    "domains": [
+      "teams.microsoft.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "zoom",
+    "name": "Zoom",
+    "tint": "#80a6e9",
+    "category": "Ampliación · trabajo",
+    "added": true,
+    "aliases": [
+      "zoom"
+    ],
+    "domains": [
+      "zoom.us"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "dropbox",
+    "name": "Dropbox",
+    "tint": "#7fa5ec",
+    "category": "Ampliación · trabajo",
+    "added": true,
+    "aliases": [
+      "dropbox"
+    ],
+    "domains": [
+      "dropbox.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "linear",
+    "name": "Linear",
+    "tint": "#a3a4e4",
+    "category": "Ampliación · trabajo",
+    "added": true,
+    "aliases": [
+      "linear"
+    ],
+    "domains": [
+      "linear.app"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "trello",
+    "name": "Trello",
+    "tint": "#7ba4de",
+    "category": "Ampliación · trabajo",
+    "added": true,
+    "aliases": [
+      "trello"
+    ],
+    "domains": [
+      "trello.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "obsidian",
+    "name": "Obsidian",
+    "tint": "#b09ae0",
+    "category": "Ampliación · trabajo",
+    "added": true,
+    "aliases": [
+      "obsidian"
+    ],
+    "domains": [
+      "obsidian.md"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "adobe",
+    "name": "Adobe",
+    "tint": "#e59a91",
+    "category": "Ampliación · creación",
+    "added": true,
+    "aliases": [
+      "adobe"
+    ],
+    "domains": [
+      "adobe.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "photoshop",
+    "name": "Photoshop",
+    "tint": "#7cb7ed",
+    "category": "Ampliación · creación",
+    "added": true,
+    "aliases": [
+      "photoshop"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "illustrator",
+    "name": "Illustrator",
+    "tint": "#edb56b",
+    "category": "Ampliación · creación",
+    "added": true,
+    "aliases": [
+      "illustrator"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "after-effects",
+    "name": "After Effects",
+    "tint": "#b6a2ec",
+    "category": "Ampliación · creación",
+    "added": true,
+    "aliases": [
+      "after_effects",
+      "aftereffects"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "premiere",
+    "name": "Premiere Pro",
+    "tint": "#b5a2eb",
+    "category": "Ampliación · creación",
+    "added": true,
+    "aliases": [
+      "premiere"
+    ],
+    "domains": [],
+    "kind": "brand"
+  },
+  {
+    "id": "capcut",
+    "name": "CapCut",
+    "tint": "#c2c2c2",
+    "category": "Ampliación · creación",
+    "added": true,
+    "aliases": [
+      "capcut"
+    ],
+    "domains": [
+      "capcut.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "kling",
+    "name": "Kling",
+    "tint": "#abcc86",
+    "category": "Ampliación · creación",
+    "added": true,
+    "aliases": [
+      "kling"
+    ],
+    "domains": [
+      "klingai.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "sora",
+    "name": "Sora",
+    "tint": "#a2b8de",
+    "category": "Ampliación · creación",
+    "added": true,
+    "aliases": [
+      "sora"
+    ],
+    "domains": [
+      "sora.com"
+    ],
+    "kind": "brand"
+  },
+  {
+    "id": "replicate",
+    "name": "Replicate",
+    "tint": "#c2c2c2",
+    "category": "Ampliación · creación",
+    "added": true,
+    "aliases": [
+      "replicate"
+    ],
+    "domains": [
+      "replicate.com"
+    ],
+    "kind": "brand"
+  }
+]

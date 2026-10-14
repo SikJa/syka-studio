@@ -63,7 +63,8 @@ export function sourcePolicy(path, isDirectory = false) {
   if (!normalized || normalized.startsWith('/') || parts.includes('..')) return { include: false, reason: 'invalid-path' };
   // This tracked editor module is source; private user project directories are not.
   const editorProjectSource = normalized === 'apps/web/src/projects' || normalized.startsWith('apps/web/src/projects/');
-  if (parts.some(part => DENIED_PARTS.has(part.toLowerCase()) && !(part === 'projects' && editorProjectSource))) return { include: false, reason: 'private-or-generated' };
+  const pinnedCuelume = normalized === 'scripts/lib/cuelume/dist' || normalized.startsWith('scripts/lib/cuelume/dist/');
+  if (parts.some(part => DENIED_PARTS.has(part.toLowerCase()) && !(part === 'projects' && editorProjectSource) && !(part === 'dist' && pinnedCuelume))) return { include: false, reason: 'private-or-generated' };
   const name = parts.at(-1);
   if (/^\.env(?:\.|$)/i.test(name) && !/^\.env(?:\.[^.]+)*\.example$/i.test(name)) return { include: false, reason: 'private-environment' };
   if (/\.(?:log|sqlite(?:3)?|db|db-wal|db-shm|cpuprofile|tsbuildinfo|pyc|pdb|map)$/i.test(name) || name === '.DS_Store' || name === '.gitkeep') return { include: false, reason: 'generated-data' };
