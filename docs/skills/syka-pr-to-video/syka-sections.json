@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": []
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-editorial-motion",
+          "sectionId": "build",
+          "when": "Sólo si un antes/después o diagrama lo requiere"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": []
+    }
+  ]
+}

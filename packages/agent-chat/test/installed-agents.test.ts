@@ -9,6 +9,16 @@ const roots: string[] = [];
 async function setup() { const root = await mkdtemp(join(tmpdir(), 'syka-installed-agents-')); roots.push(root); return root; }
 afterEach(async () => { for (const root of roots.splice(0)) await rm(root, { recursive: true, force: true }); });
 describe('reuse installed accounts without credential copies', () => {
+  it('finds a relocated profile beside its published launcher without a fixed user path', async () => {
+    const root = await setup(); await writeFile(join(root, 'config.yaml'), 'model: {}');
+    expect(await installedHermesHome({}, join(root, 'user'), join(root, 'bin', 'hermes.exe'))).toBe(root);
+  });
+  it('follows a named profile even when the default profile has no config', async () => {
+    const root = await setup(), selected = join(root, 'profiles', 'work');
+    await mkdir(selected, { recursive: true }); await writeFile(join(selected, 'config.yaml'), 'model: {}');
+    await writeFile(join(root, 'active_profile'), 'work');
+    expect(await installedHermesHome({ HERMES_HOME: root }, root)).toBe(selected);
+  });
   it('follows the active Hermes profile instead of creating a signed-out profile', async () => {
     const root = await setup(), selected = join(root, 'profiles', 'editing');
     await mkdir(selected, { recursive: true });

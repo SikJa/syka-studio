@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": [
+        {
+          "name": "syka-editorial-motion",
+          "sectionId": "brief",
+          "file": "references/visual-profiles.md",
+          "when": "Sólo si falta elegir el perfil del gráfico"
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-editorial-motion",
+          "sectionId": "build",
+          "file": "examples/EditorialCallout.tsx",
+          "when": "Sólo si se necesita un callout con ancla y evidencia"
+        },
+        {
+          "name": "syka-editorial-motion",
+          "sectionId": "build",
+          "file": "examples/EditorialComparison.tsx",
+          "when": "Sólo comparación coordinada"
+        },
+        {
+          "name": "syka-editorial-motion",
+          "sectionId": "build",
+          "file": "examples/motion-clock.ts",
+          "when": "Si se copió un ejemplo que depende de su reloj"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": []
+    }
+  ]
+}

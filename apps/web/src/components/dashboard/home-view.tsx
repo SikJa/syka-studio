@@ -48,6 +48,7 @@ import {
   pickProjectFolder,
   projectKey,
   projectsRevision,
+  rescanProjectsRootOnce,
   type ProjectInfo,
 } from "@/projects";
 
@@ -135,6 +136,8 @@ export function DashboardHomeView() {
     projectsRevision,
     () => listProjects(),
   );
+  // Projects added to the root (or its batch folders) since it was picked join the list.
+  rescanProjectsRootOnce();
   // The model is shared with the chat panel and remembered across sessions;
   // the picker is fed by the agent host's probes, so what it offers is what
   // is installed and signed in.
@@ -278,14 +281,14 @@ export function DashboardHomeView() {
         class="flex min-h-0 flex-1 flex-col overflow-y-auto"
         onClick={clearSelection}
       >
-        <div class="flex flex-1 flex-col items-center justify-center gap-6.5 px-6 py-8 pt-[15%]">
+        <div class="syka-home-hero">
           <div class="syka-home-intro">
             <div class="syka-home-orb"><SykaChatOrb working={false} variant="hero" paused={systemReduced() || motionPreference()==='reduced'}/></div>
             <h1 class="syka-home-heading w-full text-center font-450 tracking-[0.0864px] text-foreground">{homeGreeting(auth.localProfile().displayName,now())}</h1>
           </div>
 
-          <div class="flex flex-col items-center">
-            <div class="flex w-139 flex-col items-start rounded-t-xl border border-b-0 border-border bg-accent/50 px-1 pt-1 pb-0.5">
+          <div class="syka-home-prompt-stack">
+            <div class="syka-home-project-target flex flex-col items-start rounded-t-xl border border-b-0 border-border bg-accent/50 px-1 pt-1 pb-0.5">
               <DropdownMenu placement="bottom-start">
                 <DropdownMenuTrigger
                   as="button"

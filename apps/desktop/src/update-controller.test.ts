@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events';
 import { describe, expect, it, vi } from 'vitest';
-import { UpdateController, newerVersion, validUpdateRepo } from './update-controller';
+import { UpdateController, UpdateSourceError, newerVersion, validUpdateRepo } from './update-controller';
 
 function setup(load = vi.fn(async () => ({ tag_name: 'v1.1.0', assets: [{ name: 'RELEASES' }, { name: 'SykaStudio-1.1.0-full.nupkg' }] }))) {
   const driver = Object.assign(new EventEmitter(), { setFeedURL: vi.fn(), checkForUpdates: vi.fn(), quitAndInstall: vi.fn() });
@@ -9,6 +9,14 @@ function setup(load = vi.fn(async () => ({ tag_name: 'v1.1.0', assets: [{ name: 
   return { controller, driver, load, changed };
 }
 describe('Syka update lifecycle', () => {
+  it('discovers a stable installer without Squirrel and never invokes its native downloader',async()=>{
+    const {driver,changed}=setup();
+    const controller=new UpdateController({version:'1.0.0',repo:'SikJa/syka-studio',enabled:true,externalInstaller:true,driver,changed,
+      loadRelease:async()=>({tag_name:'v1.1.0',assets:[{name:'Syka-Studio-x64-Setup.exe'}]})});
+    expect(await controller.check()).toMatchObject({phase:'available',installation:'installer',availableVersion:'1.1.0'});
+    expect(()=>controller.download()).toThrow('instalador oficial');
+    expect(driver.checkForUpdates).not.toHaveBeenCalled();controller.stop();
+  });
   it('checks metadata without downloading, downloads once on request and only installs when ready', async () => {
     const { controller, driver } = setup();
     expect(() => controller.install()).toThrow();
@@ -42,6 +50,13 @@ describe('Syka update lifecycle', () => {
     }
     const { controller } = setup(vi.fn(async () => ({ tag_name: 'v1.1.0', assets: [] })));
     expect((await controller.check()).phase).toBe('error'); controller.stop();
+  });
+  it('reports an unreadable update repository instead of claiming the app is up to date', async () => {
+    const { controller } = setup(vi.fn(async () => { throw new UpdateSourceError('repositorio privado'); }));
+    const state = await controller.check();
+    expect(state.phase).toBe('error');
+    expect(state.message).toBe('repositorio privado');
+    controller.stop();
   });
   it('recovers from download failures without surfacing raw native errors', async () => {
     const { controller, driver } = setup();

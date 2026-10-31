@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runCliLogin, loginPageFromOutput } from '../src/host/cli-login';
+import { runCliLogin, loginPageFromOutput, antigravityGoogleLoginPrompt } from '../src/host/cli-login';
 import type { CliLoginOptions } from '../src/host/cli-login';
 
 const browser = vi.hoisted(() => ({ opened: [] as string[] }));
@@ -19,6 +19,29 @@ function options(mode: string, extra: Partial<CliLoginOptions> = {}): CliLoginOp
   return { provider: 'codex', command: process.execPath, args: [fixture, mode, join(cwd, 'receipt.txt')], cwd, env: process.env as Record<string, string>, signal: new AbortController().signal, timeoutMs: 5000, ...extra };
 }
 describe('official CLI login subprocess', () => {
+  it('recognizes the official Google choice without accepting a Cloud or workspace prompt', () => {
+    expect(antigravityGoogleLoginPrompt('Select login method:\r\n > 1. Google OAuth\r\n   2. Use a Google Cloud project\r\n\r\n   ↑/↓ Navigate · enter Select')).toBe(true);
+    expect(antigravityGoogleLoginPrompt('Select login method:\n 1. Google OAuth\n > 2. Use a Google Cloud project\n ↑/↓ Navigate · enter Select')).toBe(false);
+    expect(antigravityGoogleLoginPrompt('Trust this workspace? > 1. Yes\n enter Select')).toBe(false);
+  });
+  it('advances the hidden Antigravity OAuth selector once and exposes its real URL', async () => {
+    const moduleDir=join(cwd,'google-terminal'); await mkdir(moduleDir);
+    await writeFile(join(moduleDir,'package.json'),'{"main":"index.cjs"}');
+    await writeFile(join(moduleDir,'index.cjs'), `
+      const {writeFileSync}=require('node:fs');
+      const screen='Select login method:\\r\\n > 1. Google OAuth\\r\\n   2. Use a Google Cloud project\\r\\n   ↑/↓ Navigate · enter Select';
+      exports.spawn=()=>{ let data, exits=new Set(), keys=[];
+        return {write(key){keys.push(key);writeFileSync(${JSON.stringify(join(cwd,'keys.json'))},JSON.stringify(keys));setTimeout(()=>{data(screen);data('\\nhttps://accounts.google.com/o/oauth2/v2/auth?state=fixture\\n');},5);},
+          kill(){for(const fn of [...exits])fn({exitCode:0});},
+          onData(fn){data=fn;setTimeout(()=>{fn(screen.slice(0,40));fn(screen.slice(40));},10);return {dispose(){}};},
+          onExit(fn){exits.add(fn);return {dispose(){exits.delete(fn);}};}};
+      };`);
+    const update=vi.fn(), verify=vi.fn().mockResolvedValueOnce(false).mockResolvedValue(true);
+    await runCliLogin(options('wait',{provider:'antigravity',terminal:true,env:{...process.env,SYKA_AUTH_TERMINAL_MODULE:moduleDir} as Record<string,string>,verify,hooks:{update,requestCode:vi.fn()}}));
+    expect(JSON.parse(await readFile(join(cwd,'keys.json'),'utf8'))).toEqual(['\r']);
+    expect(browser.opened).toEqual(['https://accounts.google.com/o/oauth2/v2/auth?state=fixture']);
+    expect(update).toHaveBeenCalledWith(expect.objectContaining({phase:'waiting',url:browser.opened[0]}));
+  });
   it('waits for a complete URL across chunks and keeps stderr separate', async () => {
     const update = vi.fn();
     await runCliLogin(options('split', { hooks: { update, requestCode: vi.fn() } }));

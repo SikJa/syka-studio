@@ -6,7 +6,7 @@ export type PreviewJob = { project: DapiProjectTarget; tool: string; args: unkno
 /** Keep existing long media budgets; ordinary reviews fail quickly if their renderer hangs. */
 export function previewExecutionTimeout(tool: string): number {
   if (tool === 'media_segment') return 3_600_000;
-  if (['capture', 'media_transcribe', 'media_listen'].includes(tool)) return 600_000;
+  if (['capture', 'gate', 'media_transcribe', 'media_listen'].includes(tool)) return 600_000;
   return 120_000;
 }
 type Entry = {
@@ -18,37 +18,40 @@ type Entry = {
   timer: ReturnType<typeof setTimeout>;
 };
 export type PreviewQueueOptions = {
-  /** Metadata only; worlds/decoders are created exclusively for the active job. */
+  /** Worlds/decoders exist only for active jobs, not for every waiting project. */
+  concurrency?: number;
   maxPending?: number;
   maxPerProject?: number;
   waitTimeoutMs?: number;
   executionTimeoutMs?: number;
 };
 
-/** One executor, round-robin project lanes. Cancel/timeout resets it before releasing the slot. */
+/** Bounded executors, round-robin project lanes. A project never overlaps itself. */
 export class ProjectPreviewQueue {
   private readonly lanes = new Map<string, Entry[]>();
   private waiting = 0;
-  private active: { entry: Entry; controller: AbortController } | null = null;
+  private readonly active = new Map<number, { entry: Entry; controller: AbortController; key: string }>();
   private pumping = false;
   private closed = false;
   private readonly limits: Required<Omit<PreviewQueueOptions, 'executionTimeoutMs'>>;
   private readonly executionTimeout?: number;
 
-  private readonly execute: (job: PreviewJob, signal: AbortSignal) => Promise<unknown>;
-  private readonly reset: () => void | Promise<void>;
+  private readonly execute: (job: PreviewJob, signal: AbortSignal, slot: number) => Promise<unknown>;
+  private readonly reset: (slot: number) => void | Promise<void>;
   constructor(
-    execute: (job: PreviewJob, signal: AbortSignal) => Promise<unknown>,
-    reset: () => void | Promise<void>,
+    execute: (job: PreviewJob, signal: AbortSignal, slot: number) => Promise<unknown>,
+    reset: (slot: number) => void | Promise<void>,
     options: PreviewQueueOptions = {},
   ) {
     this.execute = execute; this.reset = reset;
-    this.limits = { maxPending: 512, maxPerProject: 32, waitTimeoutMs: 15 * 60_000, ...options };
+    this.limits = { maxPending: 512, maxPerProject: 32, waitTimeoutMs: 15 * 60_000, ...options,
+      concurrency: Math.max(1, Math.min(4, Math.trunc(options.concurrency || 1))) };
     this.executionTimeout = options.executionTimeoutMs;
   }
 
   status() {
-    return { active: this.active ? { projectId: this.active.entry.job.project.id, tool: this.active.entry.job.tool } : null,
+    const running = [...this.active].map(([slot, { entry }]) => ({ slot, projectId: entry.job.project.id, tool: entry.job.tool }));
+    return { active: running[0] ?? null, running, capacity: this.limits.concurrency,
       waiting: this.waiting, projectsWaiting: this.lanes.size, closed: this.closed };
   }
 
@@ -62,9 +65,9 @@ export class ProjectPreviewQueue {
     }
     return new Promise((resolve, reject) => {
       const cancel = () => {
-        if (this.active?.entry === entry) {
-          this.active.controller.abort(new DapiError('canceled', 'Se canceló la revisión.'));
-        } else this.remove(key, entry, new DapiError('canceled', 'Se canceló la revisión en espera.'));
+        const active = [...this.active.values()].find(task => task.entry === entry);
+        if (active) active.controller.abort(new DapiError('canceled', 'Se canceló la revisión.'));
+        else this.remove(key, entry, new DapiError('canceled', 'Se canceló la revisión en espera.'));
       };
       const entry: Entry = { job: { ...job, project: Object.freeze({ ...job.project }) }, caller, resolve, reject,
         detach: () => caller.removeEventListener('abort', cancel),
@@ -85,7 +88,7 @@ export class ProjectPreviewQueue {
     for (const lane of this.lanes.values()) for (const entry of lane) this.finish(entry, error);
     this.lanes.clear();
     this.waiting = 0;
-    this.active?.controller.abort(error);
+    for (const task of this.active.values()) task.controller.abort(error);
   }
 
   private remove(key: string, entry: Entry, error: Error): void {
@@ -105,7 +108,8 @@ export class ProjectPreviewQueue {
   }
 
   private take(): Entry | undefined {
-    const first = this.lanes.entries().next().value;
+    const busy = new Set([...this.active.values()].map(task => task.key));
+    const first = [...this.lanes].find(([key]) => !busy.has(key));
     if (!first) return;
     const [key, lane] = first;
     this.lanes.delete(key);
@@ -116,38 +120,48 @@ export class ProjectPreviewQueue {
     return entry;
   }
 
-  private async pump(): Promise<void> {
+  private pump(): void {
     if (this.pumping) return;
     this.pumping = true;
     try {
-      for (let entry; !this.closed && (entry = this.take());) {
+      while (!this.closed && this.active.size < this.limits.concurrency) {
+        const entry = this.take();
+        if (!entry) break;
+        let slot = 0;
+        while (this.active.has(slot)) slot++;
         const controller = new AbortController();
-        this.active = { entry, controller };
-        const timer = setTimeout(() => controller.abort(new DapiError('busy',
-          'La revisión agotó su tiempo. Se liberó la preview interna para los demás proyectos.')), this.executionTimeout ?? previewExecutionTimeout(entry.job.tool));
-        timer.unref?.();
-        let cancel!: () => void;
-        const aborted = new Promise<never>((_, reject) => {
-          cancel = () => reject(controller.signal.reason);
-          controller.signal.addEventListener('abort', cancel, { once: true });
-        });
-        try {
-          if (entry.caller.aborted) controller.abort(new DapiError('canceled', 'Se canceló la revisión.'));
-          const result = await Promise.race([aborted, this.execute(entry.job, controller.signal)]);
-          entry.resolve(result);
-        } catch (error) {
-          // A stuck decoder or renderer must be gone before the next job starts.
-          try { await this.reset(); } catch { this.stop(); } // Never overlap an executor whose reset failed.
-          entry.reject(error);
-        } finally {
-          clearTimeout(timer);
-          controller.signal.removeEventListener('abort', cancel);
-          entry.detach();
-          this.active = null;
-        }
+        this.active.set(slot, { entry, controller, key: projectKey(entry.job.project) });
+        void this.run(entry, controller, slot);
       }
     } finally {
       this.pumping = false;
+    }
+  }
+
+  private async run(entry: Entry, controller: AbortController, slot: number): Promise<void> {
+    const timer = setTimeout(() => controller.abort(new DapiError('busy',
+      'La revisión agotó su tiempo. Se liberó la preview interna para los demás proyectos.')), this.executionTimeout ?? previewExecutionTimeout(entry.job.tool));
+    timer.unref?.();
+    let cancel!: () => void;
+    const aborted = new Promise<never>((_, reject) => {
+      cancel = () => reject(controller.signal.reason);
+      controller.signal.addEventListener('abort', cancel, { once: true });
+    });
+    try {
+      if (entry.caller.aborted) controller.abort(new DapiError('canceled', 'Se canceló la revisión.'));
+      const result = await Promise.race([aborted, controller.signal.aborted
+        ? Promise.reject(controller.signal.reason) : this.execute(entry.job, controller.signal, slot)]);
+      entry.resolve(result);
+    } catch (error) {
+      // A stuck decoder or renderer must be gone before the next job starts.
+      try { await this.reset(slot); } catch { this.stop(); } // Never reuse an executor whose reset failed.
+      entry.reject(error);
+    } finally {
+      clearTimeout(timer);
+      controller.signal.removeEventListener('abort', cancel);
+      entry.detach();
+      this.active.delete(slot);
+      this.pump();
     }
   }
 }

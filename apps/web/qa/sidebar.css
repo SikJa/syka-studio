@@ -1,0 +1,60 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+.qa-editor {
+  height: 100%;
+  display: flex;
+  background: var(--background);
+  color: var(--foreground);
+}
+.qa-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.qa-main header {
+  height: 48px;
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.qa-main header span {
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+.qa-stage {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+.qa-stage canvas {
+  width: 100%;
+  height: 100%;
+}
+.qa-main footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+}
+.qa-clips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.qa-clips button {
+  padding: 8px 12px;
+  background: var(--secondary);
+  border-radius: 5px;
+}
+.qa-sidebar {
+  width: 280px;
+  border-left: 1px solid var(--border);
+}

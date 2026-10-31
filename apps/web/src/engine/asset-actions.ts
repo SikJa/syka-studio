@@ -10,6 +10,8 @@ import { importFiles as importFilesInto, pickFiles, saveAssetAs as saveAs } from
 import { insertAsset } from "./insert-asset";
 import { forgetAssetMedia } from "./timeline/media";
 import { forgetAssetPeaks } from "./timeline/peaks";
+import { mainBridge } from '@/lib/ipc';
+import { MAIN_CHANNELS } from '@desktop/main-channels';
 
 import type { World } from "koota";
 
@@ -42,6 +44,17 @@ export async function importFiles(library: AssetLibrary, files: ReadonlyArray<Fi
 /** Opens the file picker and imports what the user picks into `folder`. */
 export async function pickAndImport(library: AssetLibrary, folder: string): Promise<Asset[]> {
   return importFiles(library, await pickFiles(), folder);
+}
+
+/** Native directory selection keeps its hierarchy and links the original files. */
+export async function pickAndImportFolder(library: AssetLibrary, folder: string): Promise<Asset[]> {
+  const source = await mainBridge.call(MAIN_CHANNELS.ASSETS_PICK_FOLDER, {});
+  if (!source) return [];
+  const report = await library.import([source], { folder, recordHistory: true, directory: true });
+  for (const { source: failed, error } of report.failed) {
+    toast.error(`No se pudo importar ${failed.split(/[\\/]/).pop()}`, { description: error.message });
+  }
+  return report.assets;
 }
 
 /**

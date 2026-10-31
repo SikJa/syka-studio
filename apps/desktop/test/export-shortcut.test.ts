@@ -27,10 +27,18 @@ vi.mock('@diffusionstudio/koota-solid', () => ({
   useWorld: () => ({ get: () => ({ exportOf: (scene: unknown) => scene === state.otherScene ? state.otherSaved : state.saved }) }),
   useQuery: () => () => [state.otherScene],
 }));
-vi.mock('@diffusionstudio/runtime', () => ({
-  Computed: 'computed', getActiveEntity: () => state.scene,
-  AssetId: 'asset', ChildOf: () => 'child', Name: 'name', Root: 'root', Scene: 'scene', getAssetFile: () => {}, sortByItemIndex: () => 0,
-}));
+// Keep the real runtime (the reconciler reads its enums at import time) and override only what these menus touch.
+vi.mock('@diffusionstudio/runtime', async (importOriginal) => {
+  for (const name of ['DOMMatrix', 'DOMRect', 'Path2D']) (globalThis as Record<string, unknown>)[name] ??= class {};
+  Object.assign(globalThis, { requestAnimationFrame: () => 0, cancelAnimationFrame: () => {} });
+  (globalThis as Record<string, unknown>).document ??= { addEventListener: () => {}, removeEventListener: () => {}, fonts: { addEventListener: () => {} } };
+  (globalThis as Record<string, unknown>).window ??= {};
+  return {
+    ...await importOriginal<typeof import('@diffusionstudio/runtime')>(),
+    Computed: 'computed', getActiveEntity: () => state.scene,
+    AssetId: 'asset', ChildOf: () => 'child', Name: 'name', Root: 'root', Scene: 'scene', getAssetFile: () => {}, sortByItemIndex: () => 0,
+  };
+});
 vi.mock('@diffusionstudio/encoder', () => ({ computeOutputSize: () => ({ width: 1280, height: 720 }) }));
 vi.mock('@/engine/traits', () => ({ ProjectConfig: 'project-config' }));
 vi.mock('@/engine/formats/output', () => ({ sceneFormatOutput: () => ({ publicationStatus: 'draft', output: { width: 1280, height: 720 } }) }));
@@ -49,7 +57,7 @@ vi.mock('@/components/ui/dropdown-menu', () => ({
 vi.mock('@solidjs/router', () => ({ useLocation: () => ({}), useNavigate: () => () => {} }));
 vi.mock('@/lib/db', () => ({ forgetProjectBundle: () => {}, generateProjectName: () => 'Test' }));
 vi.mock('@/projects', () => ({ createProject: () => {}, deleteProject: () => {}, duplicateProject: () => {}, ensureProjectsRoot: () => {} }));
-vi.mock('@diffusionstudio/assets', () => ({ assetName: () => 'asset' }));
+vi.mock('@diffusionstudio/assets', async (importOriginal) => ({ ...await importOriginal<typeof import('@diffusionstudio/assets')>(), assetName: () => 'asset' }));
 vi.mock('@/engine/library', () => ({ useLibrary: () => () => undefined }));
 vi.mock('@/engine/asset-actions', () => ({ pickAndImport: () => {} }));
 vi.mock('@/hooks/use-project-route', () => ({ projectRoute: () => '/' }));

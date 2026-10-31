@@ -24223,6 +24223,17 @@
       "url": "https://lobehub.com/icons",
       "upstreamPath": "icons/zhipu.svg",
       "sha256": "d4c3fe5ff92820b2ae5e3ddaaa30e6fc622cb746b75baad97f4bb2428fa25c5d"
+    },
+    {
+      "path": "higgsfield/higgsfield.svg",
+      "provider": "Higgsfield",
+      "brand": "Higgsfield",
+      "variant": "symbol",
+      "theme": "light",
+      "category": "AI",
+      "url": "https://higgsfield.ai/",
+      "upstreamPath": "docs/resources/thinking-logos/sources/higgsfield.svg",
+      "sha256": "ebe84e5db7a19e2cb7e79eb846c72d95da4a7374ddf93666748e6d0d958c092b"
     }
   ],
   "excluded": [

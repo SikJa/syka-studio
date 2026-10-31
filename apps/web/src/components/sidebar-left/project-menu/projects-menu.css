@@ -1,5 +1,6 @@
 .syka-projects-submenu { width: 300px; max-width: calc(100vw - 24px); max-height: min(420px, var(--kb-popper-content-available-height, 70vh)); gap: 2px; }
 .syka-project-menu-row { min-width: 0; gap: 8px; }
+.syka-project-actions-anchor { position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; }
 .syka-project-menu-current { flex: 0 0 12px; width: 12px; text-align: center; }
 .syka-project-menu-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .syka-project-menu-activity { display: grid; place-items: center; flex: 0 0 16px; width: 16px; color: var(--syka-accent-text, var(--primary)); }

@@ -109,10 +109,10 @@ it('keeps attached photos on a continued answer after the original turn ended', 
 it('only publishes delivery from real nonempty project files and invokes the cross-provider callback', async () => {
   const f = await fixture(), published: unknown[] = [], tools = new WorkspaceTools(f.root, undefined, undefined, undefined, undefined, undefined, notice => published.push(notice));
   await expect(tools.call('syka_delivery', { status: 'review', message: 'Listo', artifact: 'missing.tsx' })).rejects.toThrow();
-  await writeFile(join(f.root, 'scene.tsx'), 'export default function Scene() {}');
-  await expect(tools.call('syka_delivery', { status: 'ready', message: 'Listo', artifact: 'scene.tsx' })).rejects.toThrow('evidencia');
+  await writeFile(join(f.root, 'index.tsx'), 'export default function Scene() {}');
+  await expect(tools.call('syka_delivery', { status: 'ready', message: 'Listo', artifact: 'index.tsx' })).rejects.toThrow('evidencia');
   expect(published).toHaveLength(0);
-  await tools.call('syka_delivery', { status: 'review', message: 'Falta escuchar el audio', artifact: 'scene.tsx' });
-  expect(published).toHaveLength(1); expect(published[0]).toMatchObject({ kind: 'review', artifact: join(f.root, 'scene.tsx') });
+  await tools.call('syka_delivery', { status: 'review', message: 'Falta escuchar el audio', artifact: 'index.tsx' });
+  expect(published).toHaveLength(1); expect(published[0]).toMatchObject({ kind: 'review', artifact: join(f.root, 'index.tsx') });
   await tools.close();
 });

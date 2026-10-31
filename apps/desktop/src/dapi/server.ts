@@ -9,9 +9,11 @@ import { DapiHttpServer } from "./http";
 import { instructions } from "./docs";
 import { RendererCalls } from "./renderer-calls";
 import { serveCatalog } from "./tools-session";
-import { projectTarget } from './project-target';
+import { projectTarget, canonicalPreviewJob } from './project-target';
 import { ProjectPreviewQueue } from './preview-queue';
 import { InternalPreviewWorker } from './preview-worker';
+import { availableParallelism, totalmem } from 'node:os';
+import { previewCapacity } from './preview-capacity';
 import type { PreviewWorkerOptions } from './preview-worker';
 import type { BrowserWindow } from 'electron';
 
@@ -57,7 +59,7 @@ export type DapiServerDeps = {
 export class DapiServer {
   private readonly deps: DapiServerDeps;
   private readonly renderer: RendererCalls;
-  private readonly previewWorker: InternalPreviewWorker | null;
+  private readonly previewWorkers: InternalPreviewWorker[];
   private readonly previewQueue: ProjectPreviewQueue | null;
   private readonly http: DapiHttpServer;
   private instructionsText: string | null = null;
@@ -67,9 +69,11 @@ export class DapiServer {
   constructor(deps: DapiServerDeps) {
     this.deps = deps;
     this.renderer = new RendererCalls(deps.editorWindow);
-    this.previewWorker = deps.preview ? new InternalPreviewWorker(this.renderer, deps.preview) : null;
-    this.previewQueue = this.previewWorker ? new ProjectPreviewQueue(
-      (job, signal) => this.previewWorker!.run(job, signal), () => this.previewWorker!.reset()) : null;
+    const capacity = deps.preview ? previewCapacity(totalmem(), availableParallelism(), process.env.SYKA_PREVIEW_CONCURRENCY) : 0;
+    this.previewWorkers = Array.from({ length: capacity }, () => new InternalPreviewWorker(this.renderer, deps.preview!));
+    this.previewQueue = capacity ? new ProjectPreviewQueue(
+      (job, signal, slot) => this.previewWorkers[slot]!.run(job, signal),
+      slot => this.previewWorkers[slot]!.reset(), { concurrency: capacity }) : null;
     for (const tool of tools) {
       if (tool.environment === "main" && !(tool.name in mainHandlers)) {
         throw new Error(`Main-process tool "${tool.name}" has no handler`);
@@ -118,7 +122,7 @@ export class DapiServer {
 
   stop(): void {
     this.previewQueue?.stop();
-    this.previewWorker?.reset();
+    for (const worker of this.previewWorkers) worker.reset();
     this.renderer.stop?.();
     this.http.stop();
     this.httpReady = Promise.resolve(false);
@@ -126,7 +130,8 @@ export class DapiServer {
 
   /** One MCP server over the whole catalog. The docs and skills are plain files; the instructions say where. */
   previewStatus() {
-    return { queue: this.previewQueue?.status() ?? null, worker: this.previewWorker?.status() ?? null };
+    const workers = this.previewWorkers.map((worker, slot) => ({ slot, ...worker.status() }));
+    return { queue: this.previewQueue?.status() ?? null, worker: workers[0] ?? null, workers };
   }
   isBusy(): boolean {
     const queue = this.previewQueue?.status();
@@ -136,21 +141,27 @@ export class DapiServer {
   private createSession(url: URL): McpServer {
     const project = projectTarget(url);
     this.instructionsText ??= instructions(this.deps.docsDir);
+    const progressive = url.searchParams.get('sykaContext') === 'progressive-v1';
+    const sessionInstructions = progressive
+      ? instructions(this.deps.docsDir, 'progressive') : this.instructionsText;
     // `name` is the machine identity, and matches the key we write into agent
     // configs; `title` is what a client shows a person.
-    const session = new McpServer({ name: SERVER_NAME, title: "Syka Studio", version: this.deps.version }, { instructions: this.instructionsText });
+    const session = new McpServer({ name: SERVER_NAME, title: "Syka Studio", version: this.deps.version }, { instructions: sessionInstructions });
     serveCatalog(session, (tool, args, signal) =>
       tool.environment === "main" ?
         this.runInMain(tool.name as MainToolName, args, signal)
         : project ? this.runInPreview({ project, tool: tool.name, args }, signal)
           : this.renderer.call(tool.name, args, signal),
+      // Code-mode text(JSON.stringify(result)) must never ingest PNG base64.
+      // Every presented image already has an actual local file receipt.
+      { inlineImages: !progressive },
     );
     return session;
   }
 
-  private runInPreview(job: import('./preview-queue').PreviewJob, signal: AbortSignal): Promise<unknown> {
+  private async runInPreview(job: import('./preview-queue').PreviewJob, signal: AbortSignal): Promise<unknown> {
     if (!this.previewQueue) return Promise.reject(new Error('Esta instancia no tiene preview interna; no se usará el proyecto visible como reemplazo.'));
-    return this.previewQueue.call(job, signal);
+    return this.previewQueue.call(await canonicalPreviewJob(job), signal);
   }
 
   private runInMain(name: MainToolName, args: unknown, signal: AbortSignal): Promise<unknown> {

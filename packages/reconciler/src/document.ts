@@ -279,6 +279,14 @@ export const CAPTION_PRESETS: Record<string, CaptionType> = {
 	'bridgeclip-editorial': CaptionType.BRIDGECLIP_EDITORIAL,
 	'bridgeclip-boxed': CaptionType.BRIDGECLIP_BOXED,
 	'bridgeclip-spotlight': CaptionType.BRIDGECLIP_SPOTLIGHT,
+	'hyperframes-clip-wipe': CaptionType.HYPERFRAMES_CLIP_WIPE,
+	'hyperframes-kinetic-slam': CaptionType.HYPERFRAMES_KINETIC_SLAM,
+	'hyperframes-weight-shift': CaptionType.HYPERFRAMES_WEIGHT_SHIFT,
+	'hyperframes-neon-glow': CaptionType.HYPERFRAMES_NEON_GLOW,
+	'hyperframes-glitch-rgb': CaptionType.HYPERFRAMES_GLITCH_RGB,
+	'hyperframes-gradient-fill': CaptionType.HYPERFRAMES_GRADIENT_FILL,
+	'hyperframes-parallax-layers': CaptionType.HYPERFRAMES_PARALLAX_LAYERS,
+	'hyperframes-editorial-emphasis': CaptionType.HYPERFRAMES_EDITORIAL_EMPHASIS,
 };
 
 export const CAPTION_ALIGNS: Record<string, CaptionAlign> = {
@@ -390,6 +398,11 @@ function toSeconds(value: unknown): number | undefined {
 export class RuntimeDocument implements ProjectDocument<SceneNode> {
 	public readonly stage: SceneNode;
 	private readonly world: World;
+
+	/** HTML/SVG refs follow DOM types; composition refs retain their SceneNode. */
+	public applyRef(node: SceneNode, ref: (target: unknown) => void): void {
+		ref(node.native ? node : node.element);
+	}
 
 	public constructor(world: World) {
 		this.world = world;

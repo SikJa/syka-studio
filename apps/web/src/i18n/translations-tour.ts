@@ -1,5 +1,18 @@
 /** UI copy for the editor guide; Spanish is the exact authored source. */
 export const translationsTour: readonly (readonly [string, string, string])[] = [
+  ["Arrastrá para usar un recurso", "Drag to use a resource", "Arraste para usar um recurso"],
+  ["Al chat, como referencia para editar. A la timeline, para colocarlo en el video cuando sea compatible. Las skills se arrastran al chat.", "Into the chat as an editing reference. Onto the timeline to place it in your video when supported. Drag skills into the chat.", "Para o chat, como referência de edição. Para a linha do tempo, para colocar no vídeo quando compatível. Arraste skills para o chat."],
+  ["Destino del arrastre", "Drag destination", "Destino do arraste"],
+  ["Al chat", "Into chat", "Para o chat"],
+  ["A la timeline", "Onto timeline", "Para a timeline"],
+  ["Demostración · tu proyecto no cambia", "Demo · your project stays unchanged", "Demonstração · seu projeto não muda"],
+  ["Repetir demostración", "Replay demo", "Repetir demonstração"],
+  ["Ver animación", "Play animation", "Ver animação"],
+  ["Pausar demostración", "Pause demo", "Pausar demonstração"],
+  ["Continuar demostración", "Resume demo", "Continuar demonstração"],
+  ["Dejá visibles la biblioteca y el destino para ver la demostración.", "Keep the library and destination visible to see the demo.", "Mantenha a biblioteca e o destino visíveis para ver a demonstração."],
+  ["Soltá como referencia", "Drop as a reference", "Solte como referência"],
+  ["Soltá para agregar el texto", "Drop to add the text", "Solte para adicionar o texto"],
   ["Todo empieza en tu proyecto", "It all starts with your project", "Tudo começa no seu projeto"],
   ["Este menú reúne archivos, ajustes y exportación. El video se guarda como proyecto local: podés cerrarlo y volver a editarlo.", "This menu brings together files, settings and export. Your video is saved as a local project: you can close it and come back to edit it.", "Este menu reúne arquivos, configurações e exportação. O vídeo é salvo como projeto local: você pode fechar e voltar a editá-lo."],
   ["Contale qué querés hacer", "Tell it what you want to do", "Diga o que você quer fazer"],

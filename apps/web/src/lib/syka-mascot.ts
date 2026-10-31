@@ -1,5 +1,5 @@
 import { BotEngine, type BotFrame, type RenderedEye } from './vendor/bloub/engine';
-import { EXPRESSION_BY_ID } from './vendor/bloub/expressions';
+import { EXPRESSION_BY_ID, type BotExpression } from './vendor/bloub/expressions';
 import { MODE_DRAWS, resolvePreset } from 'thinking-orbs/engine';
 import {DEFAULT_ACCENT, parseColor} from './appearance/color';
 
@@ -17,6 +17,17 @@ const expressions: Record<MascotActivity, string> = {
 };
 const ribbonPreset = resolvePreset('composing', 64);
 const ribbonDraw = MODE_DRAWS[ribbonPreset.mode];
+// Bloub's face was projected onto a full sphere. On Syka's ribbon orb its
+// upward gaze and long capsules looked detached, especially at 32px. Keep
+// expression/blink interpolation, with a compact face that stays in front.
+const faceExpressions = new Map<string, BotExpression>();
+for (const id of new Set(Object.values(expressions))) {
+  const source = EXPRESSION_BY_ID.get(id)!;
+  faceExpressions.set(id, { ...source, split: 18,
+    gaze: { yaw: Math.max(-5, Math.min(5, source.gaze.yaw)), pitch: 0, roll: Math.max(-3, Math.min(3, source.gaze.roll)) },
+    eyes: source.eyes.map(eye => ({ ...eye, w: Math.max(.22, Math.min(.26, eye.w)), h: Math.min(.34, eye.h), tilt: (eye.tilt ?? 0) * .5 })) as BotExpression['eyes'],
+  });
+}
 /** One actor per canvas. Timestamped changes preserve Bloub's expression morph.
  * A backwards seek resets the actor. No timers or playback side effects. */
 export function createMascotActor() {
@@ -26,14 +37,14 @@ export function createMascotActor() {
   return {
     sample(activity: MascotActivity, seconds: number, reduced = false, pointer: MascotPointer = null) {
       const t = reduced ? .6 : Math.max(0, Number.isFinite(seconds) ? seconds : 0);
-      const expression = EXPRESSION_BY_ID.get(expressions[activity])!;
+      const expression = faceExpressions.get(expressions[activity])!;
       if (t < last || reduced || last < 0) {
         engine = new BotEngine(100, 'idle', null, expression);
         pointerKey = '';
       } else if (activity !== previous) engine.setExpression(expression, t);
       const look = !reduced && pointer ? {
-        yaw: Math.max(-1, Math.min(1, pointer.x)) * 22,
-        pitch: -Math.max(-1, Math.min(1, pointer.y)) * 15,
+        yaw: Math.max(-1, Math.min(1, pointer.x)) * 12,
+        pitch: -Math.max(-1, Math.min(1, pointer.y)) * 8,
         mix: .85, spin: 0, wander: .08,
       } : null;
       const key = look ? `${look.yaw},${look.pitch}` : 'rest';
@@ -116,7 +127,7 @@ export function drawSykaMascot(ctx: CanvasRenderingContext2D, size: number, seco
     ctx.save();ctx.transform(m[0],m[1],m[2],m[3],m[4],m[5]);
     const path=new Path2D(eye.d);
     ctx.globalAlpha=eye.alpha*(finish==='glass'?.66:.94);
-    ctx.lineJoin='round';ctx.lineWidth=finish==='glass'||finish==='grok'?3:5;
+    ctx.lineJoin='round';ctx.lineWidth=3;
     ctx.strokeStyle=dark?palette.outline:'#edf0ecc0';ctx.stroke(path);
     const material=ctx.createLinearGradient(-15,-28,18,30);
     if(!dark){material.addColorStop(0,'#657776');material.addColorStop(1,'#223a36');}

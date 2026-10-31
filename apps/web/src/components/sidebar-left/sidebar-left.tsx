@@ -8,7 +8,7 @@ import { useLayout } from "@/context/layout";
 import { useEditorApi } from "@/dapi";
 import { createSignal, Show } from "solid-js";
 import { Portal } from 'solid-js/web';
-import { fullscreenChatMount, floatingChatMount, chatFloating } from '@/agent-chat/chat-presentation';
+import { fullscreenChatMount, floatingChatMount, chatFloating, chatDockReady } from '@/agent-chat/chat-presentation';
 import { FloatingChat } from '@/agent-chat/floating-chat';
 import { toast } from "somoto";
 import { Button } from "../ui/button";
@@ -24,7 +24,8 @@ import { EditorShortcuts } from '../canvas/editor-shortcuts';
 export function SidebarLeft() {
   let chatMount!: HTMLDivElement;
   return (
-    <div class="flex flex-col h-full overflow-hidden">
+    <div class="flex flex-col h-full overflow-hidden relative" data-chat-dock>
+      <Show when={chatFloating()&&chatDockReady()}><div class="syka-chat-dock-target" role="status">Soltá para acoplar acá</div></Show>
       {/* On Windows the title bar carries the menu, the toggles and the name. */}
       <Show when={!isWindowsDesktop()}>
         <ElectronHeader />

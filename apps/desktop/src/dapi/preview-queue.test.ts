@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ProjectPreviewQueue } from './preview-queue';
 import type { PreviewJob } from './preview-queue';
+import { previewCapacity } from './preview-capacity';
 
 const job = (id: string, sequence = 0): PreviewJob => ({ project: { id, dir: `${process.cwd()}/${id}` }, tool: 'capture', args: { sequence } });
 function deferred<T = void>() { let resolve!: (value: T) => void; const promise = new Promise<T>(r => { resolve = r; }); return { promise, resolve }; }
@@ -107,5 +108,71 @@ describe('single internal preview queue', () => {
     stuck.resolve(); await Promise.all([rejectedA, rejectedB]);
     expect(begun).toEqual(['a']);
     expect(queue.status()).toMatchObject({ closed: true, waiting: 0, active: null });
+  });
+});
+
+describe('parallel project previews', () => {
+  it('reviews ten independent projects concurrently, keeping each project ordered and results isolated', async () => {
+    const gates = Array.from({length: 10}, () => deferred());
+    const live = new Set<string>(), slots = new Set<number>(), order: string[] = [];
+    let peak = 0;
+    const queue = new ProjectPreviewQueue(async (task, _signal, slot) => {
+      expect(live.has(task.project.id)).toBe(false);
+      expect(slots.has(slot)).toBe(false);
+      live.add(task.project.id); slots.add(slot); peak = Math.max(peak, live.size);
+      const sequence = (task.args as { sequence: number }).sequence;
+      order.push(`${task.project.id}:${sequence}`);
+      await gates[Number(task.project.id)]!.promise;
+      live.delete(task.project.id); slots.delete(slot);
+      return {project: task.project.id, sequence};
+    }, () => {}, {concurrency: 4});
+    const signal = new AbortController().signal;
+    const calls = [queue.call(job('0', 0), signal), queue.call(job('0', 1), signal)];
+    for (let i = 1; i < 10; i++) calls.push(queue.call(job(String(i)), signal));
+    expect(queue.status()).toMatchObject({capacity: 4, waiting: 7});
+    expect(queue.status().running.map(task => task.projectId)).toEqual(['0', '1', '2', '3']);
+    gates[1]!.resolve();
+    await vi.waitFor(() => expect(order).toContain('4:0'));
+    expect(order).not.toContain('0:1'); // Another project's progress cannot overlap project 0.
+    gates.forEach(gate => gate.resolve());
+    const result = await Promise.all(calls);
+    expect(result).toEqual([{project: '0', sequence: 0}, {project: '0', sequence: 1},
+      ...Array.from({length: 9}, (_, i) => ({project: String(i + 1), sequence: 0}))]);
+    expect(peak).toBe(4);
+    expect(queue.status()).toMatchObject({active: null, running: [], waiting: 0});
+    queue.stop();
+  });
+
+  it('cancels one worker without resetting or interrupting another project', async () => {
+    const a = deferred(), b = deferred(), resetting = deferred(), reset = vi.fn(() => resetting.promise);
+    const started: string[] = [];
+    const queue = new ProjectPreviewQueue(async task => {
+      started.push(task.project.id);
+      if (task.project.id === 'a') await a.promise;
+      if (task.project.id === 'b') await b.promise;
+      return task.project.id;
+    }, reset, {concurrency: 2});
+    const canceled = new AbortController(), signal = new AbortController().signal;
+    const first = queue.call(job('a'), canceled.signal), second = queue.call(job('b'), signal);
+    const rejected = expect(first).rejects.toMatchObject({code: 'canceled'});
+    const next = queue.call(job('c'), signal);
+    canceled.abort();
+    await vi.waitFor(() => expect(reset).toHaveBeenCalledWith(0));
+    expect(started).toEqual(['a', 'b']); // Slot stays reserved until reset completes.
+    b.resolve();
+    expect(await second).toBe('b');
+    expect(await next).toBe('c');
+    expect(reset).toHaveBeenCalledTimes(1);
+    resetting.resolve(); await rejected; a.resolve(); queue.stop();
+  });
+
+  it('bounds automatic capacity and validates explicit overrides', () => {
+    const gib = 1024 ** 3;
+    expect(previewCapacity(8*gib, 8)).toBe(1);
+    expect(previewCapacity(16*gib, 8)).toBe(2);
+    expect(previewCapacity(32*gib, 16)).toBe(4);
+    expect(previewCapacity(64*gib, 2)).toBe(1);
+    expect(previewCapacity(32*gib, 16, '2')).toBe(2);
+    for (const value of ['0','5','Infinity','2.5','oops']) expect(() => previewCapacity(32*gib, 16, value)).toThrow();
   });
 });

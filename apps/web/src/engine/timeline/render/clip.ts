@@ -295,6 +295,14 @@ const CAPTION_PRESETS: Record<CaptionType, string> = {
 	[CaptionType.BRIDGECLIP_EDITORIAL]: 'Editorial · BridgeClip',
 	[CaptionType.BRIDGECLIP_BOXED]: 'Boxed · BridgeClip',
 	[CaptionType.BRIDGECLIP_SPOTLIGHT]: 'Spotlight · BridgeClip',
+	[CaptionType.HYPERFRAMES_CLIP_WIPE]: 'Clip Wipe',
+	[CaptionType.HYPERFRAMES_KINETIC_SLAM]: 'Kinetic Slam',
+	[CaptionType.HYPERFRAMES_WEIGHT_SHIFT]: 'Weight Shift',
+	[CaptionType.HYPERFRAMES_NEON_GLOW]: 'Neon Glow',
+	[CaptionType.HYPERFRAMES_GLITCH_RGB]: 'Glitch RGB',
+	[CaptionType.HYPERFRAMES_GRADIENT_FILL]: 'Gradient Fill',
+	[CaptionType.HYPERFRAMES_PARALLAX_LAYERS]: 'Parallax Layers',
+	[CaptionType.HYPERFRAMES_EDITORIAL_EMPHASIS]: 'Editorial Emphasis',
 };
 
 

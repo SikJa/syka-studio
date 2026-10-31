@@ -7,15 +7,33 @@ import { which, type HostEnv } from './env';
 import type { Harness, OpenOptions } from './harness';
 import { HARNESS_LABELS } from '../protocol';
 import { AntigravityCliHarness } from './antigravity-cli';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+
+const execFileAsync = promisify(execFile);
+
+/** Modern Hermes publishes its runtime command; do not hardcode its Python version. */
+export async function hermesRuntimeCommand(binary: string, env: HostEnv): Promise<string[] | undefined> {
+  if (!isAbsolute(binary) || /\.(cmd|bat|ps1)$/i.test(binary)) return;
+  try {
+    const { stdout } = await execFileAsync(binary, ['--print-runtime-command', '--module', 'acp_adapter.entry'], {
+      env: env.env, windowsHide: true, timeout: 10_000, maxBuffer: 64 * 1024,
+    });
+    const command: unknown = JSON.parse(stdout.trim());
+    if (Array.isArray(command) && command.length > 0 && command.length < 64 && command.every(arg => typeof arg === 'string')
+      && isAbsolute(command[0]) && !/\.(cmd|bat|ps1)$/i.test(command[0]) && await file(command[0])) return command;
+  } catch { /* Older releases use a standalone ACP executable or `hermes acp`. */ }
+}
 
 const file = (path: string) => stat(path).then(s => s.isFile()).catch(() => false);
 /** Follow the profile selected by the official Hermes CLI without changing it. */
-export async function installedHermesHome(env: Record<string, string>, userHome: string): Promise<string | undefined> {
+export async function installedHermesHome(env: Record<string, string>, userHome: string, binary?: string | null): Promise<string | undefined> {
   const candidates = [env.SYKA_HERMES_HOME ?? env.HERMES_HOME,
+    binary ? dirname(dirname(binary)) : undefined,
     env.LOCALAPPDATA ? join(env.LOCALAPPDATA, 'hermes') : undefined, join(userHome, '.hermes')];
   for (const root of candidates) {
-    if (!root || !isAbsolute(root) || !await file(join(root, 'config.yaml'))) continue;
-    if (basename(dirname(root)) === 'profiles') return realpath(root);
+    if (!root || !isAbsolute(root)) continue;
+    if (basename(dirname(root)) === 'profiles' && await file(join(root, 'config.yaml'))) return realpath(root);
     let active = '';
     try { active = (await readFile(join(root, 'active_profile'), 'utf8')).trim(); } catch { /* Default profile. */ }
     if (active && active !== 'default') {
@@ -24,7 +42,7 @@ export async function installedHermesHome(env: Record<string, string>, userHome:
       if (!await file(join(selected, 'config.yaml'))) throw Error('No se encontró el perfil activo de Hermes.');
       return realpath(selected);
     }
-    return realpath(root);
+    if (await file(join(root, 'config.yaml'))) return realpath(root);
   }
 }
 
@@ -34,17 +52,24 @@ export async function discoverInstalledAcp(id: 'hermes' | 'antigravity', profile
   const installedSession: NonNullable<AcpHarnessConfig['installedSession']> = { userHome, appData: env.env.APPDATA, localAppData: env.env.LOCALAPPDATA };
   let command: string | null | undefined;
   let args: string[] = [];
+  let sharedRuntime = false;
   if (id === 'hermes') {
-    const binary = which('hermes', env);
-    const hermesHome = await installedHermesHome(env.env, userHome);
+    const home = env.env.SYKA_HERMES_HOME ?? env.env.HERMES_HOME;
+    const binary = env.env.SYKA_HERMES_PATH ?? which('hermes', { ...env, extraDirs: [...env.extraDirs, ...(home ? [join(home, 'bin')] : [])] });
+    const hermesHome = await installedHermesHome(env.env, userHome, binary);
     if (!hermesHome) return undefined;
     installedSession.hermesHome = hermesHome;
     const acp = binary ? join(dirname(binary), process.platform === 'win32' ? 'hermes-acp.exe' : 'hermes-acp') : '';
     const standard = env.env.LOCALAPPDATA ? join(env.env.LOCALAPPDATA, 'hermes', 'hermes-agent', 'venv', 'Scripts', 'hermes-acp.exe') : '';
-    if (acp && await file(acp)) command = acp;
+    const runtime = binary ? await hermesRuntimeCommand(binary, env) : undefined;
+    if (runtime) { command = runtime[0]; args = runtime.slice(1); sharedRuntime = true; }
+    else if (acp && await file(acp)) command = acp;
     else if (standard && await file(standard)) command = standard;
-    else if (which('hermes-acp', env)) command = which('hermes-acp', env);
-    else { command = binary; args = ['acp']; }
+    else {
+      const standalone = which('hermes-acp', env);
+      if (standalone && !/\.(cmd|bat|ps1)$/i.test(standalone)) command = standalone;
+      else { command = binary; args = ['acp']; }
+    }
   } else {
     const prepared = join(profilesRoot, '..', 'providers', 'antigravity', process.platform === 'win32' ? 'agy_acp_server.exe' : 'agy_acp_server.par');
     command = await file(prepared) ? prepared : which('agy_acp_server', env);
@@ -52,7 +77,7 @@ export async function discoverInstalledAcp(id: 'hermes' | 'antigravity', profile
   if (!command || !isAbsolute(command) || /\.(cmd|bat|ps1)$/i.test(command) || !await file(command)) return undefined;
   // Changing the installed profile must not resume a conversation under another account.
   const identity = createHash('sha256').update(installedSession.hermesHome ?? userHome).digest('hex').slice(0, 16);
-  return new AcpHarness({ id, command: await realpath(command), args, profileDir: join(profilesRoot, id, identity), installedSession });
+  return new AcpHarness({ id, command: await realpath(command), args, sharedRuntime, profileDir: join(profilesRoot, id, identity), installedSession });
 }
 
 export function installedAcpHarness(id: 'hermes' | 'antigravity', profilesRoot: string): Harness {

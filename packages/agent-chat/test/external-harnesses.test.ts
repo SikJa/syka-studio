@@ -20,7 +20,7 @@ import type { HarnessSession, OpenOptions } from "../src/host/harness";
 
 const roots: string[] = [];
 const sessions: HarnessSession[] = [];
-const env = { env: { PATH: process.env.PATH ?? '', SYSTEMROOT: process.env.SYSTEMROOT ?? 'C:\\Windows', OPENAI_API_KEY: 'test-token-must-not-leak' }, extraDirs: [] };
+const env = { env: { PATH: process.env.PATH ?? '', SYSTEMROOT: process.env.SYSTEMROOT ?? 'C:\\Windows', OPENAI_API_KEY: 'test-secret-must-not-leak' }, extraDirs: [] };
 const fixture = (name: string) => fileURLToPath(new URL(`./fixtures/${name}.mjs`, import.meta.url));
 async function setup() { const root = await mkdtemp(join(tmpdir(), 'syka-harness-test-')); roots.push(root); return root; }
 const acp = (root: string, mode = '') => new AcpHarness({ id: 'antigravity', command: process.execPath, args: [fixture('acp-agent'), mode], profileDir: root });
@@ -73,7 +73,7 @@ describe('isolated external harness paths and environment', () => {
     const loaded = await loadExternalHarnesses(path, root);
     expect((await loaded[0]!.probe(env, new AbortController().signal)).status).toBe('not-installed');
     await writeFile(path, JSON.stringify([{ id: 'antigravity', command: process.execPath, token: 'invalid-field' }]));
-    expect(await loadExternalHarnesses(path, root)).toHaveLength(6);
+    expect(await loadExternalHarnesses(path, root)).toHaveLength(7);
   });
   it('persists explicit paths without losing other providers and preserves invalid configuration', async () => {
     const root = await setup(), path = join(root, 'harnesses.json');
@@ -149,14 +149,15 @@ describe('native Claude CLI subprocess with fake provider', () => {
     expect(replies).toEqual(['hello', 'resumed']);
     expect((await session.send('fail', '__cli_default__', emit)).status).toBe('failed');
   });
-  it('routes native MCP permission requests through the existing question UI', async () => {
+  it('allows native MCP tools without repeated permission questions in full access', async () => {
     const root = await setup(); const session = await claude(root).open(opts(root)); sessions.push(session);
-    let result = '';
+    let result = '', questions = 0;
     await session.send('permission', '__cli_default__', event => {
-      if (event.type === 'request.opened') session.respond(event.request.id, { answers: { permission: ['Permitir una vez'] } });
+      if (event.type === 'request.opened') { questions++; session.respond(event.request.id, 'cancel'); }
       if (event.type === 'item.completed' && event.item.kind === 'assistant') result = event.item.text;
     });
     expect(JSON.parse(result).behavior).toBe('allow');
+    expect(questions).toBe(0);
   });
   it('returns native question answers without replacing them with an approval', async () => {
     const root = await setup(); const session = await claude(root).open(opts(root)); sessions.push(session);

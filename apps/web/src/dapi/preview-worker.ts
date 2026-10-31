@@ -110,7 +110,7 @@ async function review(call: DapiCall, signal: AbortSignal): Promise<unknown> {
     checkCanceled();
     // Asset/media/font tools need no compiled scene. Broken syntax must not
     // prevent importing assets or probing footage to repair the composition.
-    const needsScene = ['context', 'capture', 'check', 'motion_events'].includes(call.tool)
+    const needsScene = ['context', 'capture', 'check', 'gate', 'motion_events'].includes(call.tool)
       || (call.tool === 'assets' && (call.args as { action?: string }).action === 'rename');
     let sourceRevision: string | undefined;
     if (needsScene) {

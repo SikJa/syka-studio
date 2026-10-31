@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 import { execFile } from "node:child_process";
-import { mkdir, mkdtemp, readFile, rm, rmdir, symlink, unlink, utimes, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, realpath, rm, rmdir, symlink, unlink, utimes, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -24,6 +24,7 @@ beforeEach(async () => {
   fixture = await mkdtemp(join(qaRoot, "journal-test-"));
   dir = join(fixture, "Proyecto 🧩 Demo");
   await mkdir(dir);
+  dir = await realpath(dir); // Hooks receive canonical paths, including relocated QA roots.
   file = join(dir, "index.tsx");
   await writeFile(file, initial);
 });

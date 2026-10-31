@@ -4,11 +4,11 @@ import { ComposerAddMenu } from './composer-add-menu';
 import {AgentExternalUrl} from './agent-rich-text';
 import {composeWebDraft,splitWebDraft,mergeWebDraft} from '@/lib/web-links';
 import { DictationControl } from "./dictation-control.js";
-import { EffortSlider } from './effort-slider.js';
+import { StudioModelMenu, type AgentComposerProviderOption } from './model-picker-menu';
+import { useModelPickerPreferences } from './model-picker-preferences';
 import { useComposerMetalAppearance } from "../../shared/use-metal-appearance.js";
 import {
   ArrowUp,
-  Check,
   ChevronDown,
   ChevronRight,
   CornerDownLeft,
@@ -25,7 +25,6 @@ import {
   Rows3,
   Square,
   Trash2,
-  Zap,
   X,
 } from "lucide-react";
 import {
@@ -74,6 +73,10 @@ export interface AgentComposerModelOption {
   supportsFast?: boolean;
   logoSvg?: string;
   routeLabel?: string;
+  providerLabel?: string;
+  providerId?: string;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 export interface AgentComposerEffortOption {
@@ -142,13 +145,16 @@ export interface AgentComposerProps {
   onDeleteQueued?: (messageId: string) => void;
   onDisableQueue?: () => void;
   models?: readonly AgentComposerModelOption[];
+  providers?: readonly AgentComposerProviderOption[];
   selectedModelId?: string;
   /** Existing chats retain their model even when its catalog is hidden. */
   selectedModelOption?: AgentComposerModelOption;
   onModelChange?: (modelId: string) => void;
   onConfigureProviders?: () => void;
+  modelMenuPlacement?: 'top' | 'bottom';
   efforts?: readonly AgentComposerEffortOption[];
   selectedEffortId?: string;
+  defaultEffortId?: string;
   onEffortChange?: (effortId: string) => void;
   fast?: boolean;
   fastAvailable?: boolean;
@@ -221,12 +227,15 @@ export function AgentComposer({
   onEditQueued,
   onDeleteQueued,
   models = EMPTY_MODELS,
+  providers,
   selectedModelId,
   selectedModelOption,
   onModelChange,
   onConfigureProviders,
+  modelMenuPlacement = 'top',
   efforts = EMPTY_EFFORTS,
   selectedEffortId,
+  defaultEffortId,
   onEffortChange,
   fast = false,
   fastAvailable = false,
@@ -257,14 +266,11 @@ export function AgentComposer({
   const suggestionsMenuId = `agent-composer-suggestions-${useId().replace(/[^a-zA-Z0-9]/gu, "")}`;
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const [modelMenuOpen, setModelMenuOpen] = useState(false);
+  const { orientation: effortOrientation } = useModelPickerPreferences();
   const [suggestionsMenuOpen, setSuggestionsMenuOpen] = useState(false);
   const [attachmentLightboxIndex, setAttachmentLightboxIndex] = useState<number | null>(null);
   const selectedModel = models.find((model) => model.id === selectedModelId) ??
     (selectedModelOption?.id === selectedModelId ? selectedModelOption : undefined);
-  const selectedEffortIndex = efforts.findIndex((effort) => effort.id === selectedEffortId);
-  const safeEffortIndex = getAgentComposerEffortIndex(efforts, selectedEffortId);
-  const selectedEffort = selectedEffortIndex >= 0 ? efforts[selectedEffortIndex] : undefined;
-  const ultraMode = isAgentComposerCrtWarpEffort(selectedEffortId);
   const hasModelControl = models.length > 0 || efforts.length > 0 || Boolean(onConfigureProviders);
   const modelTriggerLabel = selectedModel?.label ?? (hasModelControl ? "Modelo" : modelFallbackLabel);
   const hasAvailableAddAction = Boolean(onFiles) || menuActions.some((action) => !action.disabled);
@@ -385,6 +391,8 @@ export function AgentComposer({
       data-variant={variant}
       onKeyDownCapture={(event) => {
         if (event.key !== "Escape" || (!addMenuOpen && !modelMenuOpen && !suggestionsMenuOpen)) return;
+        // A portalled model menu owns Escape and restores its trigger's focus.
+        if (modelMenuOpen && modelMenuRef.current?.contains(event.target as Node)) return;
         event.preventDefault();
         closeMenus();
         inputRef.current?.focus();
@@ -395,79 +403,11 @@ export function AgentComposer({
       <ComposerAddMenu open={addMenuOpen} anchor={addTriggerRef} panelRef={addMenuRef} id={addMenuId} actions={menuActions} onFiles={onFiles ? () => fileInputRef.current?.click() : undefined} onClose={() => setAddMenuOpen(false)}/>
 
       {modelMenuOpen ? (
-        <ModelMenuPortal anchor={modelTriggerRef}>
-        <div ref={modelMenuRef} id={modelMenuId} className="agent-composer-popover agent-composer-model-menu" role="dialog" aria-label="Ajustes de modelo">
-          <div className="agent-composer-model-catalog">
-          {models.length > 0 ? (
-            <>
-              <small>Modelos</small>
-              <div className="agent-composer-model-options" role="radiogroup" aria-label="Modelo" onKeyDown={event => {
-                if (!['ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
-                const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('button[role="radio"]'));
-                const current = buttons.indexOf(event.target as HTMLButtonElement);
-                const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : (current + (event.key === 'ArrowDown' ? 1 : -1) + buttons.length) % buttons.length;
-                if (buttons[next] && models[next]) { event.preventDefault(); buttons[next].focus(); onModelChange?.(models[next].id); }
-              }}>
-                {models.map((model) => {
-                  const selected = model.id === selectedModelId;
-                  return (
-                    <button
-                      key={model.id}
-                      type="button"
-                      role="radio"
-                      aria-checked={selected}
-                      disabled={!onModelChange}
-                      data-selected={selected}
-                      onClick={() => onModelChange?.(model.id)}
-                    >
-                      <span className="syka-provider-model-icon" data-provider={model.id.split(':')[0]} aria-hidden="true">{model.logoSvg ? <span dangerouslySetInnerHTML={{__html:model.logoSvg}}/> : model.description?.slice(0,1)}</span>
-                      <span className="syka-model-label"><strong>{model.label}</strong>{model.description ? <em>{model.description}</em> : null}</span>
-                      <span className="agent-composer-model-check" aria-hidden="true">
-                        {selected ? <Check size={13} strokeWidth={2.7} /> : null}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </>
-          ) : null}
-          </div>
-          {efforts.length > 0 ? (
-            <div className="agent-composer-effort" data-ultra={ultraMode}>
-              <div><span>Esfuerzo</span><strong>{selectedEffort?.label ?? "Automático"}</strong></div>
-              <div className="agent-composer-effort-ends" aria-hidden="true"><span>Más rápido</span><span>Más profundo</span></div>
-              <EffortSlider efforts={efforts} index={safeEffortIndex} label={selectedEffort?.label ?? 'Automático'} ultra={ultraMode} onChange={onEffortChange} />
-            </div>
-          ) : null}
-          <div className="agent-composer-fast" data-active={fast && fastAvailable} data-available={fastAvailable}>
-            <div className="agent-composer-fast-header">
-              <span>Modo rápido</span>
-              <MetalFx
-                className="agent-composer-fast-metal"
-                data-disabled={!onFastChange || !fastAvailable ? "true" : "false"}
-                variant="button"
-                preset="chromatic"
-                strength={1}
-                theme={appearance.theme}
-                paused={appearance.reducedMotion}
-                borderRadius={8}
-                reflectionTargets={metalReflectionTargets}
-              >
-                <button
-                  type="button"
-                  aria-label="Modo rápido"
-                  aria-pressed={fast && fastAvailable}
-                  title={fastAvailable ? `${fast ? 'Desactivar' : 'Activar'} modo rápido. Consume 2,5× del cupo incluido o 2× de créditos; aplica al próximo envío.` : fastUnavailableReason}
-                  disabled={!onFastChange || !fastAvailable}
-                  onClick={() => onFastChange?.(!fast)}
-                >
-                  <Zap size={14} fill={fast && fastAvailable ? "currentColor" : "none"} />
-                </button>
-              </MetalFx>
-            </div>
-          </div>
-          {onConfigureProviders ? <button type="button" className="agent-composer-configure" onClick={() => { setModelMenuOpen(false); onConfigureProviders(); }}>Configurar agentes y modelos <ChevronRight size={13}/></button> : null}
-        </div>
+        <ModelMenuPortal anchor={modelTriggerRef} placement={modelMenuPlacement} orientation={effortOrientation}>
+          <StudioModelMenu id={modelMenuId} panelRef={modelMenuRef} models={models} providers={providers} selectedModel={selectedModel} selectedModelId={selectedModelId}
+            efforts={efforts} selectedEffortId={selectedEffortId} defaultEffortId={defaultEffortId} fast={fast} fastAvailable={fastAvailable} fastUnavailableReason={fastUnavailableReason}
+            onModelChange={onModelChange} onEffortChange={onEffortChange} onFastChange={onFastChange} onConfigureProviders={onConfigureProviders}
+            onClose={() => { setModelMenuOpen(false); modelTriggerRef.current?.focus(); }}/>
         </ModelMenuPortal>
       ) : null}
 
@@ -612,7 +552,7 @@ export function AgentComposer({
                   onClick={() => { setAddMenuOpen(false); setSuggestionsMenuOpen(false); setModelMenuOpen((open) => !open); }}
                 >
                   <span className="syka-provider-model-icon" data-provider={selectedModel?.id.split(':')[0]} aria-hidden="true">{selectedModel?.logoSvg ? <span dangerouslySetInnerHTML={{__html:selectedModel.logoSvg}}/> : <Globe2 size={15}/>}</span><span className="syka-model-trigger-label"><span>{modelTriggerLabel}</span>{selectedModel?.routeLabel?<small>{selectedModel.routeLabel}</small>:null}</span>
-                  <ChevronDown size={12} />
+                  <ChevronDown size={12} style={{ transform: modelMenuOpen && modelMenuPlacement === 'top' ? 'rotate(180deg)' : 'none' }} />
                 </button> : null}
 
                 {dictationContext !== undefined ? <DictationControl key={dictationContext} disabled={disabled} onText={(text) => {
@@ -647,7 +587,7 @@ export function AgentComposer({
                     preset="chromatic"
                     strength={1}
                     theme={appearance.theme}
-                    paused={appearance.reducedMotion}
+                    paused={appearance.paused}
                     borderRadius={8}
                     ringCssPx={1.4}
                     reflectionTargets={metalReflectionTargets}

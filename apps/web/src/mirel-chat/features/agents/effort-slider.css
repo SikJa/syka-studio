@@ -1,84 +1,15 @@
-/* transitions.dev: measured sliding pill + panel reveal. Scoped motion tokens. */
-.syka-effort-motion {
-  --tabs-dur: 250ms;
-  --tabs-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --panel-open-dur: 320ms;
-  --panel-close-dur: 200ms;
-  --panel-translate-y: 4px;
-  --panel-blur: 2px;
-  --panel-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --tabs-pill-bg: var(--agent-composer-control);
-}
-@scope (.syka-effort-motion) {
-.t-tabs-pill {
-  position: absolute;
-  top: 3px;
-  left: 0;
-  height: 30px;
-  width: 0;
-  background: var(--tabs-pill-bg);
-  border-radius: 48px;
-  transform: translateX(0);
-  transition:
-    transform var(--tabs-dur) var(--tabs-ease),
-    width     var(--tabs-dur) var(--tabs-ease);
-  will-change: transform, width;
-  z-index: 0;
-  pointer-events: none;
-}
-.t-panel-slide {
-  transform: translateY(var(--panel-translate-y));
-  opacity: 0;
-  filter: blur(var(--panel-blur));
-  pointer-events: none;
-  transition:
-    transform var(--panel-close-dur) var(--panel-ease),
-    opacity   var(--panel-close-dur) var(--panel-ease),
-    filter    var(--panel-close-dur) var(--panel-ease);
-  will-change: transform, opacity, filter;
-}
-.t-panel-slide[data-open="true"] {
-  transform: translateY(0);
-  opacity: 1;
-  filter: blur(0);
-  pointer-events: auto;
-  transition:
-    transform var(--panel-open-dur) var(--panel-ease),
-    opacity   var(--panel-open-dur) var(--panel-ease),
-    filter    var(--panel-open-dur) var(--panel-ease);
-}
-@media (prefers-reduced-motion: reduce) {
-  .t-panel-slide { transition: none !important; }
-  .t-tabs-pill, .t-tab { transition: none !important; }
-}
-}
-.agent-composer-effort-slider .syka-effort-effect {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-.syka-effort-effect-base { position:absolute; inset:0; background:radial-gradient(ellipse at 70% 50%,#63277f,#05010a 75%); }
-.syka-effort-effect .agent-composer-effort-crt-warp { position:absolute; inset:0; }
-.agent-composer-effort-slider > .syka-effort-thumb {
-  inset: 2px auto auto 0;
-  height: 25px;
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  box-sizing: border-box;
-  z-index: 2;
-  display: block;
-  box-shadow: 0 3px 9px rgba(0,0,0,.2);
-  transition: transform var(--tabs-dur) var(--tabs-ease), width var(--tabs-dur) var(--tabs-ease),
-    background-color var(--tabs-dur) var(--tabs-ease), border-color var(--tabs-dur) var(--tabs-ease);
-}
-.syka-effort-motion[data-ultra="true"] > .syka-effort-thumb { background-color:#20202c; border-color:#c68fe7; }
-.agent-composer-effort[data-ultra] .agent-composer-effort-slider.syka-effort-motion { background:transparent; isolation:isolate; box-shadow:none; }
-.agent-composer-effort-slider.syka-effort-motion > .syka-effort-ticks { inset:0 18px; }
-.agent-composer-effort-slider.syka-effort-motion input { opacity:0; z-index:3; height:29px; }
-.syka-effort-motion:has(input:focus-visible) > .syka-effort-thumb { outline:2px solid var(--agent-composer-accent); outline-offset:2px; }
-.syka-effort-motion:has(input:disabled) > .syka-effort-thumb { opacity:.45; }
-.syka-effort-motion[data-dragging="true"] > .syka-effort-thumb { transition:none; }
-:root[data-theme="light"] .agent-composer-effort-slider.syka-effort-motion { background:transparent; }
-[data-syka-motion="reduced"] .syka-effort-motion > .t-panel-slide,
-[data-syka-motion="reduced"] .syka-effort-motion > .t-tabs-pill { transition:none !important; }
+/* AICSS geometry and timing live in reasoning-effort; this is Studio's adapter. */
+.syka-studio-model-picker .syka-effort{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;min-width:0}
+.syka-studio-model-picker .syka-effort-head{display:grid;grid-template-columns:minmax(0,1fr) 20px;align-items:center;width:100%;font-size:10px;line-height:16px;gap:3px;color:var(--color-muted-foreground,var(--text-soft))}
+.syka-studio-model-picker .syka-effort-title{text-align:right}
+.syka-studio-model-picker .syka-effort-value{grid-column:1/-1;margin:3px 0 4px;text-align:center;font-size:12px;color:var(--color-foreground,var(--text))}
+.syka-studio-model-picker .syka-effort-reset{display:grid;place-items:center;width:20px;height:20px;padding:0;border:0;border-radius:50%;background:transparent;color:inherit;cursor:pointer}
+.syka-studio-model-picker .syka-effort-reset:disabled{opacity:.35;cursor:default}
+.syka-studio-model-picker .syka-effort-reset:hover:not(:disabled){background:var(--syka-composer-row-hover)}
+.syka-studio-model-picker .syka-effort-endpoint{font-size:10px;line-height:16px;color:var(--color-muted-foreground,var(--text-soft))}
+.syka-studio-model-picker .syka-effort-control{display:flex;justify-content:center;position:relative;flex-shrink:0}
+.syka-studio-model-picker [data-orientation="vertical"] .syka-effort-control{width:32px;height:184px;margin:2px 0}
+.syka-studio-model-picker [data-orientation="vertical"] .syka-effort-control>div{position:absolute;left:-20px;top:184px;transform-origin:0 0;transform:rotate(-90deg);max-width:none}
+.syka-studio-model-picker[data-effort-layout="horizontal"] .syka-effort-head{display:flex;padding-right:64px;gap:5px;box-sizing:border-box}
+.syka-studio-model-picker[data-effort-layout="horizontal"] .syka-effort-value{width:auto;margin:0 0 0 auto;order:3;font-size:11px}
+.syka-studio-model-picker[data-effort-layout="horizontal"] .syka-effort-control{width:184px;height:52px;margin:0}

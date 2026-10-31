@@ -1,3 +1,4 @@
+import { SKILL_DRAG_TYPE, readSkillDrop, skillInstruction } from './skill-drag';
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -60,10 +61,12 @@ import {
   setDraftAttachments,
   setDraftText,
   setStoredModel,
-  storedModel,
+  chatModelSelection,
+  setChatModelSelection,
   summaryOf,
   transcriptOf,
 } from "./store";
+import { resolveChatModel } from './chat-model-selection';
 import {SessionRail} from './session-rail';
 import {ScheduledTasks} from './scheduled-tasks';
 import {setScheduleContext} from './local-schedules';
@@ -195,14 +198,12 @@ export function ChatPanel() {
     if(mascotToolsSeen.size>100)mascotToolsSeen.delete(mascotToolsSeen.values().next().value!);
     emitMascotCue(project.id(),{kind:'timeline'});
   });
-  const empty = () => items().length === 0;
 
   // The composer's model: in a chat, one of that chat's harness; in a draft,
   // whatever is remembered and ready.
   const model = createMemo<ModelRef | null>(() => {
     const chat = summary();
-    const remembered = storedModel();
-    if (chat) return remembered && remembered.harness === chat.harness ? remembered : { harness: chat.harness, model: chat.model };
+    if (chat) return resolveChatModel(chat, chatModelSelection(chat.id));
     return currentModel();
   });
 
@@ -214,15 +215,17 @@ export function ChatPanel() {
   const handleModel = (ref: ModelRef) => {
     setStoredModel(ref);
     const chat = summary();
+    if (chat && chat.harness === ref.harness) setChatModelSelection(chat.id, ref);
     // A chat keeps its harness: another harness means a new draft, with the
     // typed text carried over.
-    if (chat && chat.harness !== ref.harness && !empty()) {
+    if (chat && chat.harness !== ref.harness) {
       const carried = current();
+      const previousKey = key();
       setActiveChat(project.id(), null);
       const next = draftKey(project.id(), null);
       setDraftText(next, carried.text);
       setDraftAttachments(next, carried.attachments);
-      clearDraft(key());
+      clearDraft(previousKey);
     }
   };
 
@@ -337,6 +340,8 @@ export function ChatPanel() {
   };
 
   const referenceDrop = (transfer: DataTransfer | null): boolean => {
+    const skill=readSkillDrop(transfer);
+    if(skill){referenceInChat(project.id(),skillInstruction,{kind:'skill',...skill,...selectionContext(world)},undefined,composerKey());return true;}
     const linked = readLinkedResourceDrop(transfer);
     if (linked) {
       referenceInChat(project.id(), linkedReferenceInstruction(linked.kind), {kind:linked.kind,path:linked.path,name:linked.title,brand:linked.brand,audioType:linked.audioType,componentPath:linked.componentPath,componentFiles:linked.componentFiles,usage:linked.usage,...selectionContext(world)}, linked.previewUrl, composerKey());
@@ -348,7 +353,7 @@ export function ChatPanel() {
     referenceInChat(project.id(), 'Usá este preset como referencia visual para mi edición. Revisá la selección y proponé cómo adaptarlo.', {preset:{id:preset.id,label:preset.label,kind:preset.kind,value:preset.value,textStyle:preset.textStyle},...selectionContext(world)}, transfer?.getData(RESOURCE_PREVIEW_DRAG_TYPE), composerKey());
     return true;
   };
-  const isReferenceDrag = (transfer: DataTransfer | null) => Array.from(transfer?.types ?? []).some(type => type === LINKED_RESOURCE_DRAG_TYPE || type === RESOURCE_DRAG_TYPE);
+  const isReferenceDrag = (transfer: DataTransfer | null) => Array.from(transfer?.types ?? []).some(type => type === SKILL_DRAG_TYPE || type === LINKED_RESOURCE_DRAG_TYPE || type === RESOURCE_DRAG_TYPE);
   const isChatDrag = (transfer: DataTransfer | null) => isReferenceDrag(transfer) || Array.from(transfer?.types ?? []).includes('Files');
   const handleChatDrop = async (event: DragEvent) => {
     if (!isChatDrag(event.dataTransfer)) return;

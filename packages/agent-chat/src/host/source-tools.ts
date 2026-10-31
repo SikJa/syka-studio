@@ -6,18 +6,20 @@ import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, realpath, stat, writeFile } from "node:fs/promises";
 import { extname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { commitSourceEdit, redoSourceEdit, undoSourceEdit } from "./edit-journal";
+import { boundedTextRead, extendTextReadCoverage, invalidateTextSnapshot, readTextSnapshot, TEXT_READ_KEYS, TEXT_READ_SCHEMA, type TextReadCoverage, type TextReadOptions } from "./bounded-text";
 
 const MAX_BYTES = 16 * 1024 * 1024;
 const EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".json", ".md", ".css", ".html", ".svg", ".yaml", ".yml", ".txt", ".toml"]);
 const RESERVED = new Set(["node_modules", "01 crudos", "01crudos", "02 finales", "02finales", "03 assets reutilizables", "03assetsreutilizables", "90 descartable", "90descartable"]);
 const string = { type: "string" };
-const schema = (properties: Record<string, unknown>) => ({ type: "object", properties, required: Object.keys(properties), additionalProperties: false });
+const schema = (properties: Record<string, unknown>, required = Object.keys(properties)) => ({ type: "object", properties, required, additionalProperties: false });
 
 export const SOURCE_TOOLS = [
-  { type: "function", name: "syka_read_reference", description: "Read the editor's bundled reference and code examples, relative to its docs folder. Use reference/jsx/captions.md before authoring subtitles; INSTRUCTIONS.md and skills/editor.md describe the editing workflow. Read-only; cannot access project files or arbitrary paths.", inputSchema: schema({ path: string }) },
-  { type: "function", name: "syka_read_source", description: "Read an existing authoring source, stylesheet, document, configuration or skill file in the open Syka project. Returns content and SHA-256; cannot access outside files or media folders.", inputSchema: schema({ path: string }) },
+  { type: "function", name: "syka_read_reference", description: "Read bundled editor reference/code examples relative to docs. Supports bounded text, outline, literal search, line ranges and sections. Returns full-file SHA and explicit coverage/next; partial content is incomplete. Use reference/jsx/captions.md before subtitles. Read-only; cannot access arbitrary paths.", inputSchema: schema({ path: string, ...TEXT_READ_SCHEMA }, ['path']) },
+  { type: "function", name: "syka_read_source", description: "Read authoring source in the open project with full-file SHA, coverage and next. Supports full/range/outline/search/section; 24000 result characters by default, hard ceiling 96000. Reuse returned ranges for small corrections. Full replacement requires complete content; use syka_patch_source after a partial read. Cannot access outside files or media folders.", inputSchema: schema({ path: string, ...TEXT_READ_SCHEMA }, ['path']) },
   { type: "function", name: "syka_read_transcript", description: "Read a page of real timed words from a transcript JSON inside the open project's 03 Assets reutilizables/Transcripciones folder. Read-only, no transcription/provider request and no source edit. Use the path returned by media_transcribe. offset starts at 0; limit is 1-500 words. Returns text, word timestamps, totalWords and nextOffset (null when complete).", inputSchema: schema({ path: string, offset: { type: "integer", minimum: 0 }, limit: { type: "integer", minimum: 1, maximum: 500 } }) },
   { type: "function", name: "syka_edit_source", description: "Replace an existing authoring file with a reversible edit. Must supply SHA-256 from syka_read_source; stale edits fail. Source backup and historyId are returned. No shell or network.", inputSchema: schema({ path: string, expectedSha256: string, content: string }) },
+  { type: "function", name: "syka_patch_source", description: "Reversibly replace one unique exact source fragment after a bounded read. Requires the full-file SHA and nonempty oldText matching exactly once; ambiguity/stale SHA fails. Preserves all unread bytes. Uses the same backup and shared undo/redo journal as syka_edit_source.", inputSchema: schema({ path: string, expectedSha256: string, oldText: string, newText: string }) },
   { type: "function", name: "syka_undo_source", description: "Undo the latest shared source edit from its Syka historyId. Must supply current SHA-256. Refuses to overwrite newer manual edits or undo an older history entry; participates in the same undo/redo history as the editor.", inputSchema: schema({ historyId: string, expectedSha256: string }) },
   { type: "function", name: "syka_redo_source", description: "Redo the shared source edit previously undone, using the same Syka historyId and current SHA-256. Refuses stale or superseded edits.", inputSchema: schema({ historyId: string, expectedSha256: string }) },
 ];
@@ -36,31 +38,34 @@ function fields(value: unknown, names: string[]): Record<string, string> {
 
 export class SourceTools {
   private pending = Promise.resolve();
+  // Coverage is authority local to this tool/session, never shared through the text cache.
+  // Unknown coverage retains compatibility with existing SHA-only integrations.
+  private readonly sourceCoverage = new Map<string, TextReadCoverage>();
   private readonly cwd: string;
   private readonly docsDir?: string;
   constructor(cwd: string, docsDir?: string) { this.cwd = cwd; this.docsDir = docsDir; }
 
   async call(tool: string, raw: unknown): Promise<unknown> {
     if (tool === "syka_read_reference") {
-      const args = fields(raw, ["path"]);
+      const args = this.readArgs(raw);
       if (!this.docsDir) throw new Error("Bundled editor documentation is not configured");
       const root = await realpath(this.docsDir);
       const candidate = resolve(root, args.path!);
       if (!inside(root, candidate) || !EXTENSIONS.has(extname(candidate).toLowerCase())) throw new Error("Only bundled reference files are allowed");
       const file = await realpath(candidate);
       if (!inside(root, file)) throw new Error("Reference path escapes the bundled docs");
-      const info = await stat(file);
-      if (!info.isFile() || info.size > 16 * 1024 * 1024) throw new Error("Reference exceeds 16 MiB");
-      const content = await readFile(file, "utf8");
-      if (Buffer.byteLength(content) > 16 * 1024 * 1024) throw new Error("Reference exceeds 16 MiB");
-      return { path: relative(root, file), content };
+      return boundedTextRead(await readTextSnapshot(root, file), args, { path: relative(root, file) });
     }
     if (tool === "syka_read_transcript") return this.readTranscript(raw);
     if (tool === "syka_read_source") {
-      const args = fields(raw, ["path"]);
+      const args = this.readArgs(raw);
       const file = await this.sourcePath(args.path!);
-      const content = await this.read(file);
-      return { path: relative(await realpath(this.cwd), file), content: content.toString("utf8"), sha256: hash(content) };
+      const root = await realpath(this.cwd);
+      const result = boundedTextRead(await readTextSnapshot(root, file), args, { path: relative(root, file) });
+      const ranges = ['full', 'range', 'section'].includes(result.mode) ? [result.coverage] : [];
+      // Exact ranges accumulate, including paginated reads, only in this tool/session.
+      this.sourceCoverage.set(file, extendTextReadCoverage(this.sourceCoverage.get(file), result.sha256, result.characters, ranges));
+      return result;
     }
     let result!: unknown;
     let failure: unknown;
@@ -68,7 +73,10 @@ export class SourceTools {
       try {
         if (tool === "syka_edit_source") {
           const args = fields(raw, ["path", "expectedSha256", "content"]);
-          result = await this.edit(args.path!, args.expectedSha256!, args.content!);
+          result = await this.edit(args.path!, args.expectedSha256!, args.content!, true);
+        } else if (tool === "syka_patch_source") {
+          const args = fields(raw, ["path", "expectedSha256", "oldText", "newText"]);
+          result = await this.patch(args.path!, args.expectedSha256!, args.oldText!, args.newText!);
         } else if (tool === "syka_undo_source" || tool === "syka_redo_source") {
           const args = fields(raw, ["historyId", "expectedSha256"]);
           if (!/^[a-f0-9-]{36}$/i.test(args.historyId!)) throw new Error("Invalid historyId");
@@ -80,7 +88,14 @@ export class SourceTools {
           if (!metadata.journalEntryId) throw new Error("This legacy backup predates shared undo. Its original source is preserved, but use the current editor history to avoid overwriting newer edits.");
           await this.sourcePath(metadata.path);
           const restore = tool === "syka_redo_source" ? redoSourceEdit : undoSourceEdit;
-          result = { ...await restore({ projectDir: this.cwd, expectedEntryId: metadata.journalEntryId, expectedSha256: args.expectedSha256, expectedFilePath: metadata.path }), historyId: args.historyId };
+          const restored = await restore({ projectDir: this.cwd, expectedEntryId: metadata.journalEntryId, expectedSha256: args.expectedSha256, expectedFilePath: metadata.path });
+          result = { ...restored, historyId: args.historyId };
+          const file = await this.sourcePath(metadata.path);
+          invalidateTextSnapshot(await realpath(this.cwd), file);
+          // Restore returns a revision, not all source text. Do not turn known
+          // partial coverage into legacy/unknown permission to replace everything.
+          if (this.sourceCoverage.has(file) && restored.sha256) this.sourceCoverage.set(file, { revision: restored.sha256, ranges: [], full: false });
+          else this.sourceCoverage.delete(file);
         } else throw new Error("Unknown source tool");
       } catch (error) { failure = error; }
     });
@@ -88,6 +103,13 @@ export class SourceTools {
     await task;
     if (failure) throw failure;
     return result;
+  }
+
+  private readArgs(raw: unknown): TextReadOptions & { path: string } {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw Error('Invalid tool arguments');
+    const args = raw as Record<string, unknown>;
+    if (typeof args.path !== 'string' || Object.keys(args).some(key => key !== 'path' && !TEXT_READ_KEYS.includes(key))) throw Error('Invalid tool arguments');
+    return args as TextReadOptions & { path: string };
   }
 
   private async readTranscript(raw: unknown): Promise<unknown> {
@@ -175,11 +197,28 @@ export class SourceTools {
     return this.read(file);
   }
 
-  private async edit(path: string, expected: string, content: string): Promise<unknown> {
+  private async patch(path: string, expected: string, oldText: string, newText: string): Promise<unknown> {
+    if (!oldText || Buffer.byteLength(oldText) > MAX_BYTES || Buffer.byteLength(newText) > MAX_BYTES) throw Error('Patch requires a nonempty exact fragment within 16 MiB');
+    if (Buffer.from(oldText).toString('utf8') !== oldText || Buffer.from(newText).toString('utf8') !== newText) throw Error('Patch fragments must contain well-formed Unicode text');
+    const file = await this.sourcePath(path);
+    const before = await this.read(file);
+    if (!/^[a-f0-9]{64}$/i.test(expected) || hash(before) !== expected) throw Error('Source changed since it was read. Read it again before editing');
+    const content = before.toString('utf8');
+    if (!Buffer.from(content).equals(before)) throw Error('Source is not valid UTF-8');
+    const start = content.indexOf(oldText);
+    if (start < 0) throw Error('Exact source fragment was not found; read the target range again');
+    if (content.indexOf(oldText, start + 1) >= 0) throw Error('Exact source fragment is ambiguous; include more surrounding text');
+    return this.edit(path, expected, content.slice(0, start) + newText + content.slice(start + oldText.length));
+  }
+
+  private async edit(path: string, expected: string, content: string, requireComplete = false): Promise<unknown> {
     if (!/^[a-f0-9]{64}$/i.test(expected) || Buffer.byteLength(content) > MAX_BYTES) throw new Error("Invalid source hash or oversized edit");
+    if (content.includes('\0') || Buffer.from(content).toString('utf8') !== content) throw Error('Source edit must contain valid UTF-8 text without binary NUL bytes');
     const file = await this.sourcePath(path);
     const before = await this.read(file);
     if (hash(before) !== expected) throw new Error("Source changed since it was read. Read it again before editing");
+    const coverage = this.sourceCoverage.get(file);
+    if (requireComplete && coverage?.revision === expected && !coverage.full) throw Error('Only partial source content was read. Use syka_patch_source with an exact fragment, or read the complete file before replacing it');
     const nextHash = hash(content);
     if (nextHash === expected) return { path, sha256: expected, changed: false };
     const history = await this.historyPath();
@@ -188,6 +227,10 @@ export class SourceTools {
     await writeFile(join(history, historyId + ".source"), before, { flag: "wx" });
     const committed = await commitSourceEdit({ projectDir: this.cwd, filePath: canonicalPath, before, after: content, origin: "chat", label: "Edición de Codex" });
     await writeFile(join(history, historyId + ".json"), JSON.stringify({ path: canonicalPath, previousSha256: expected, nextSha256: nextHash, journalEntryId: committed.entryId, createdAt: new Date().toISOString() }), { flag: "wx" });
+    invalidateTextSnapshot(await realpath(this.cwd), file);
+    // A successful fragment patch does not grant knowledge of the remaining source.
+    const full = requireComplete || coverage?.full === true;
+    this.sourceCoverage.set(file, { revision: nextHash, ranges: full ? [{ startOffset: 0, endOffset: content.length }] : [], full });
     return { ...committed, path: canonicalPath, sha256: nextHash, historyId };
   }
 }

@@ -23,7 +23,8 @@
   "dependencies": {
     "@diffusionstudio/dapi": "*",
     "playwright-core": "1.63.0",
-    "ws": "^8.21.3"
+    "ws": "^8.21.3",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",

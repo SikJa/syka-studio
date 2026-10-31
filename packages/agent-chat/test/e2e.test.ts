@@ -28,6 +28,17 @@ const clients: AgentChatClient[] = [];
 const PROJECT = { projectId: "proj", cwd: "/tmp/proj" };
 const MODEL = { harness: "codex" as const, model: "fake-fast" };
 
+it('returns each chat selection, including effort and Fast, without borrowing another chat', async () => {
+  const client = await connect();
+  const a = { ...MODEL, effort: 'high', fast: false };
+  const b = { ...MODEL, effort: 'low', fast: true };
+  const first = await client.request('chats.create', { ...PROJECT, model: a, title: 'Own selection A' });
+  const second = await client.request('chats.create', { ...PROJECT, model: b, title: 'Own selection B' });
+  expect((await client.request('chats.open', { chatId: first.id })).chat.modelRef).toEqual(a);
+  expect((await client.request('chats.open', { chatId: second.id })).chat.modelRef).toEqual(b);
+  expect((await client.request('chats.open', { chatId: first.id })).chat.modelRef).toEqual(a);
+});
+
 beforeAll(async () => {
   dir = mkdtempSync(join(tmpdir(), "agent-chat-e2e-"));
   fake = new FakeHarness({ tickMs: 2 });

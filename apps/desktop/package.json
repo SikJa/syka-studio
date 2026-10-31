@@ -2,7 +2,7 @@
   "name": "@diffusionstudio/desktop",
   "productName": "Syka Studio",
   "private": true,
-  "version": "0.209.0",
+  "version": "0.210.0",
   "license": "MPL-2.0",
   "repository": {
     "type": "git",
@@ -13,7 +13,8 @@
     "build:preload": "esbuild src/preload.ts src/screen-region-preload.ts --bundle --platform=node --format=cjs --external:electron --outdir=dist",
     "build:main": "esbuild src/main.ts --bundle --platform=node --format=cjs --external:electron --external:esbuild --external:@babel/core --external:@babel/preset-typescript --external:babel-preset-solid --outfile=dist/main.js",
     "build:native": "node scripts/build-native.mjs",
-    "build": "npm run check && npm run build:main && npm run build:preload && npm run build:agent-host && npm run build:native",
+    "build": "npm run check && npm run build:main && npm run build:resource-worker && npm run build:preload && npm run build:agent-host && npm run build:native",
+    "build:resource-worker": "esbuild src/resource-worker.ts --bundle --platform=node --format=cjs --external:electron --outfile=dist/resource-worker.js",
     "build:web": "npm --prefix ../web run build:desktop",
     "stage:cli": "npm --prefix ../cli run build && node scripts/stage-cli.mjs",
     "stage:runtime": "node scripts/stage-runtime.mjs",

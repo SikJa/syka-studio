@@ -62,6 +62,10 @@ export interface ImportResult {
 }
 
 export interface ImportOptions {
+  /** One reversible manifest step for a manual import; generated imports omit this. */
+  recordHistory?: boolean;
+  /** An explicitly picked directory stays a folder, including numbered images. */
+  directory?: boolean;
   /** Copy local files into assets/ for portability; default keeps existing links. */
   copy?: boolean;
 	/** Library folder to place the asset in; root by default. */
@@ -444,15 +448,23 @@ export class AssetLibrary {
 	 * asset. Every source is tried; the result says which were refused and why.
 	 */
 	public import(sources: readonly string[], options: ImportOptions = {}): Promise<ImportResult> {
+		if (options.recordHistory && options.copy) return Promise.reject(new Error('Reversible manual imports link original media; copy imports use their own asset workflow.'));
 		if (!this.loadRequested) void this.load();
-		return this.serialize(() => this.importSources(sources, options));
+		return this.serialize(async () => {
+      // A batch can take longer than the autosave debounce. Commit before the
+      // queued autosave runs, so ten files become one import step, not ten.
+      if (options.recordHistory) await this.flushNow();
+      const result = await this.importSources(sources, options);
+      if (options.recordHistory) await this.flushNow(true);
+      return result;
+    });
 	}
 
-	private async importSources(sources: readonly string[], options: ImportOptions): Promise<ImportResult> {
-		const result: ImportResult = { assets: [], failed: [] };
+	private async importSources(sources: readonly string[], options: ImportOptions, failures: ImportResult['failed'] = []): Promise<ImportResult> {
+		const result: ImportResult = { assets: [], failed: failures };
 		await Promise.all(sources.map(async (source) => {
 			try {
-				result.assets.push(...await this.importOne(source, options));
+				result.assets.push(...await this.importOne(source, options, failures));
 			} catch (error) {
 				result.failed.push({ source, error: error instanceof Error ? error : new Error(String(error)) });
 			}
@@ -460,7 +472,7 @@ export class AssetLibrary {
 		return result;
 	}
 
-	private async importOne(source: string, options: ImportOptions): Promise<Asset[]> {
+	private async importOne(source: string, options: ImportOptions, failures: ImportResult['failed']): Promise<Asset[]> {
 		if (isUrlSource(source)) {
 			const response = await fetch(source);
 			if (!response.ok) throw new Error(`Failed to fetch ${source}: ${response.status}`);
@@ -470,7 +482,11 @@ export class AssetLibrary {
 		}
 
 		const entries = await this.fs.list(source);
-    if (!entries.length || isSequenceListing(entries.map((entry) => entry.name))) {
+    if (options.directory && !entries.length) {
+      this.createFolder(joinPath(options.folder ?? '', options.name ?? basename(source)));
+      return [];
+    }
+    if (!entries.length || (!options.directory && isSequenceListing(entries.map((entry) => entry.name)))) {
       if (options.copy) {
         if (entries.length) throw Error('Copy import supports files and ordinary folders; image sequences must be linked.');
         return [await this.copyFile(source, options)];
@@ -480,8 +496,13 @@ export class AssetLibrary {
 
 		// A folder of files: a folder here, with each of them in it.
 		const folder = this.createFolder(joinPath(options.folder ?? '', options.name ?? basename(source)));
-		const children = entries.filter((entry) => !entry.name.startsWith('.')).map((entry) => joinPath(source, entry.name));
-    return (await this.importSources(children, { folder, copy: options.copy })).assets;
+		const children = entries.filter((entry) => !entry.name.startsWith('.') && !(entry.link && entry.kind === 'directory'));
+    const imported = await Promise.all(children.map(async entry => {
+      const child = joinPath(source, entry.name);
+      try { return await this.importOne(child, { folder, copy: options.copy, directory: options.directory && entry.kind === 'directory' }, failures); }
+      catch (error) { failures.push({ source: child, error: error instanceof Error ? error : new Error(String(error)) }); return []; }
+    }));
+    return imported.flat();
   }
 
   /** Materialize a linked asset without changing its identity or library name. */
@@ -788,13 +809,17 @@ export class AssetLibrary {
 		return this.serialize(() => this.flushNow());
 	}
 
-	private flushNow(): Promise<void> {
+	private flushNow(recordHistory = false): Promise<void> {
 		clearTimeout(this.saveTimer);
 		if (!this.dirty) return this.saving;
 		this.dirty = false;
-		this.saving = this.saving
-			.then(() => this.fs.writeManifest(this.manifest()))
-			.catch((error: unknown) => console.error('[assets] could not write the manifest:', error));
+		this.saving = this.saving.catch(() => {})
+			.then(() => this.fs.writeManifest(this.manifest(), { recordHistory }))
+			.catch((error: unknown) => {
+        this.dirty = true;
+        if (recordHistory) throw error;
+        console.error('[assets] could not write the manifest:', error);
+      });
 		return this.saving;
 	}
 

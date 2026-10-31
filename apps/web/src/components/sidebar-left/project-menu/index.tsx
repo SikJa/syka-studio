@@ -18,21 +18,34 @@ import {
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { useLocation, useNavigate } from "@solidjs/router";
-import { onCleanup, onMount } from "solid-js";
+import { createSignal, onCleanup, onMount } from "solid-js";
 import { isInputTarget } from "@/utils";
 import type { ProjectRouteState } from "@/hooks/use-project-route";
-import { FileMenu } from "./file-menu";
+import { FileMenu, useNewProjectAction } from "./file-menu";
 import { EditMenu } from "./edit-menu";
 import { ViewMenu } from "./view-menu";
 import { ToolMenu } from "./tool-menu";
 import { HelpMenu } from "./help-menu";
 import { ProjectsMenu } from "./projects-menu";
+import { ProjectActions, type ProjectActionTarget } from './project-actions';
+import { DeleteProjectDialog, type DeletableProject } from '@/components/dashboard/delete-project-dialog';
+import { useProject } from '@/context/project';
+import { chatState } from '@/agent-chat/store';
+import { renderOverlay } from '@/context/render';
+import { useLibrary } from '@/engine/library';
 import { EditorTour } from '@/components/onboarding/editor-tour';
 
 export function ProjectMenu() {
   let menuAnchor: HTMLButtonElement | undefined;
   const navigate = useNavigate();
   const location = useLocation<ProjectRouteState>();
+  const [open, setOpen] = createSignal(false);
+  const [actionTarget, setActionTarget] = createSignal<ProjectActionTarget | null>(null);
+  const handleNewProject = useNewProjectAction();
+  const project = useProject();
+  const library = useLibrary();
+  const [pendingDelete, setPendingDelete] = createSignal<DeletableProject | null>(null);
+  const deleteCurrent = () => setPendingDelete({ id: project.id(), dir: project.dir(), displayName: project.name() });
 
   const handleOpenDashboard = () => {
     (document.activeElement as HTMLElement)?.blur?.();
@@ -68,7 +81,7 @@ export function ProjectMenu() {
 
   return (
     <>
-      <DropdownMenu placement="bottom-start">
+      <DropdownMenu placement="bottom-start" open={open()} onOpenChange={setOpen}>
         <DropdownMenuTrigger
           ref={menuAnchor}
           as="button"
@@ -83,23 +96,27 @@ export function ProjectMenu() {
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuPortal>
-          <DropdownMenuContent class="w-[196px]">
+          <DropdownMenuContent class="w-[196px]" onCloseAutoFocus={event => { if (actionTarget()) event.preventDefault(); }}>
             <DropdownMenuGroup>
               <DropdownMenuItem onSelect={handleOpenDashboard}>
                 Volver al inicio
                 <DropdownMenuShortcut>⇧⌘D</DropdownMenuShortcut>
               </DropdownMenuItem>
+              <DropdownMenuItem onSelect={handleNewProject}>Nuevo proyecto</DropdownMenuItem>
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <ProjectsMenu />
+              <ProjectsMenu onContextRequest={(project, point) => {
+                setOpen(false);
+                queueMicrotask(() => setActionTarget({ project, ...point }));
+              }} />
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Archivo</DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent class="w-[196px]">
-                    <FileMenu />
+                    <FileMenu onDeleteRequested={deleteCurrent} />
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
@@ -145,12 +162,20 @@ export function ProjectMenu() {
               </DropdownMenuSub>
 
               <DropdownMenuItem onSelect={handleOpenAccount}>Perfil local</DropdownMenuItem>
-              <DropdownMenuItem onSelect={handleOpenGlossary}>Configuración / Glosario</DropdownMenuItem>
+              <DropdownMenuItem onSelect={handleOpenGlossary}>Configuración</DropdownMenuItem>
             </DropdownMenuGroup>
 
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
+      <ProjectActions target={actionTarget()} onClose={() => setActionTarget(null)} onDelete={setPendingDelete} />
+      <DeleteProjectDialog project={pendingDelete()} onClose={() => setPendingDelete(null)}
+        beforeDelete={async entry => {
+          if (renderOverlay()) throw Error('Esperá a que termine la exportación antes de eliminar el proyecto.');
+          if (chatState.lists[entry.id]?.some(chat => chat.status === 'running' || chat.status === 'waiting')) throw Error('Esperá a que termine el turno de este proyecto antes de eliminarlo.');
+          if (entry.id === project.id()) await library()?.flush();
+        }}
+        onDeleted={entry => { if (entry.id === project.id()) navigate('/?dashboard=projects'); }} />
       <EditorTour menuAnchor={() => menuAnchor} />
     </>
   );

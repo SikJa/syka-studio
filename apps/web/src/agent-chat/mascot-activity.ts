@@ -32,7 +32,7 @@ export function mascotActivity(items: readonly Item[], running: boolean, waiting
   const name = tool.name.replace(/^.*__/, '').toLowerCase();
   if (['media_transcribe', 'syka_read_transcript', 'captions_create', 'captions_update'].includes(name)) return 'captions';
   if (['syka_audio_analyze', 'syka_audio_enhance', 'audio_analyze', 'audio_mix', 'syka_local_audio'].includes(name)) return 'audio';
-  if (['syka_motion_review', 'check', 'capture', 'syka_check', 'syka_capture'].includes(name)) return 'review';
+  if (['syka_motion_review', 'check', 'capture', 'gate', 'syka_check', 'syka_capture', 'syka_gate'].includes(name)) return 'review';
   if (['syka_edit_source', 'syka_undo_source', 'syka_redo_source', 'apply_patch', 'filechange', 'source_update', 'source_create'].includes(name)) return 'editing';
   return 'thinking';
 }

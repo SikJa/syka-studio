@@ -14,4 +14,18 @@
 @keyframes syka-chat-menu-close{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.99)}}
 .syka-chat-resize{position:absolute;right:3px;bottom:3px;width:20px;height:20px;padding:3px;cursor:nwse-resize;color:#ffffff50;border-radius:6px;touch-action:none}
 .syka-chat-resize svg{width:100%;height:100%}
+.syka-chat-resize{inset:auto;padding:0;border:0;background:transparent;z-index:4;border-radius:3px}
+.syka-chat-resize[data-chat-resize=n],.syka-chat-resize[data-chat-resize=s]{left:18px;right:18px;width:auto;height:7px;cursor:ns-resize}
+.syka-chat-resize[data-chat-resize=n]{top:-3px}.syka-chat-resize[data-chat-resize=s]{bottom:-3px}
+.syka-chat-resize[data-chat-resize=e],.syka-chat-resize[data-chat-resize=w]{top:18px;bottom:18px;height:auto;width:7px;cursor:ew-resize}
+.syka-chat-resize[data-chat-resize=e]{right:-3px}.syka-chat-resize[data-chat-resize=w]{left:-3px}
+.syka-chat-resize[data-chat-resize=ne]{top:-2px;right:-2px;cursor:nesw-resize}
+.syka-chat-resize[data-chat-resize=nw]{top:-2px;left:-2px;cursor:nwse-resize}
+.syka-chat-resize[data-chat-resize=se]{bottom:2px;right:2px;cursor:nwse-resize;color:#aaa}
+.syka-chat-resize[data-chat-resize=sw]{bottom:-2px;left:-2px;cursor:nesw-resize}
+.syka-chat-resize:focus-visible{outline:2px solid var(--color-primary,#0096ff);outline-offset:2px}
+.syka-chat-dock-target{position:absolute;inset:8px;z-index:20;display:grid;place-items:center;padding:24px;text-align:center;border:2px solid var(--color-primary,#0096ff);border-radius:12px;background:color-mix(in srgb,var(--color-primary,#0096ff) 12%,#171717ee);color:var(--color-foreground,#eee);pointer-events:none;font-size:13px}
+.syka-chat-width-handle{position:absolute;inset:0 -4px;z-index:12;cursor:ew-resize;touch-action:none}
+.syka-chat-width-handle:hover,.syka-chat-width-handle[data-active=true],.syka-chat-width-handle:focus-visible{background:color-mix(in srgb,var(--color-primary,#0096ff) 55%,transparent);outline:none}
+[data-chat-resizing=true] .grid{transition:none!important;user-select:none}
 @media(prefers-reduced-motion:reduce){.syka-floating-chat{transition:none!important}.syka-chat-placement-menu{animation:none!important}}

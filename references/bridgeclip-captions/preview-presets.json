@@ -1,0 +1,261 @@
+[
+  {
+    "id": "pop",
+    "name": "Pop",
+    "description": "The all-rounder",
+    "font": "\"Montserrat\", \"Montserrat Black\", system-ui, sans-serif",
+    "weight": 900,
+    "size": 15,
+    "primary": "#FFFFFF",
+    "highlight": "#FFE234",
+    "stroke": 6,
+    "shadow": "soft",
+    "uppercase": true,
+    "words": [
+      "this",
+      "changed",
+      "everything"
+    ]
+  },
+  {
+    "id": "spotlight",
+    "name": "Spotlight",
+    "description": "Word on a pill",
+    "font": "\"Poppins\", \"Poppins Black\", system-ui, sans-serif",
+    "weight": 900,
+    "size": 14,
+    "primary": "#FFFFFF",
+    "highlight": "#FFFFFF",
+    "stroke": 5,
+    "shadow": "soft",
+    "uppercase": true,
+    "pill": "#7C5CFF",
+    "words": [
+      "the",
+      "real",
+      "secret"
+    ]
+  },
+  {
+    "id": "impact",
+    "name": "Impact",
+    "description": "Tall, two words at a time",
+    "font": "\"Anton\", \"Impact\", \"Arial Narrow\", sans-serif",
+    "weight": 400,
+    "size": 21,
+    "primary": "#FFFFFF",
+    "highlight": "#FFD60A",
+    "stroke": 7,
+    "shadow": "hard",
+    "uppercase": true,
+    "future": "hide",
+    "maxWords": 2,
+    "words": [
+      "ten",
+      "million",
+      "views"
+    ]
+  },
+  {
+    "id": "glow",
+    "name": "Glow",
+    "description": "Cyan bloom, tech & gaming",
+    "font": "\"Montserrat\", \"Montserrat ExtraBold\", system-ui, sans-serif",
+    "weight": 800,
+    "size": 15,
+    "primary": "#FFFFFF",
+    "highlight": "#7DF9FF",
+    "stroke": 0,
+    "shadow": "halo",
+    "uppercase": true,
+    "glow": "#00C8FF",
+    "words": [
+      "level",
+      "up",
+      "now"
+    ]
+  },
+  {
+    "id": "boxed",
+    "name": "Boxed",
+    "description": "Readable on any footage",
+    "font": "\"Archivo Black\", \"Arial Black\", system-ui, sans-serif",
+    "weight": 400,
+    "size": 13,
+    "primary": "#FFFFFF",
+    "highlight": "#FFD23F",
+    "stroke": 0,
+    "shadow": "none",
+    "uppercase": true,
+    "plate": "rgb(0 0 0 / 0.62)",
+    "words": [
+      "ship it",
+      "faster",
+      "today"
+    ]
+  },
+  {
+    "id": "sweep",
+    "name": "Sweep",
+    "description": "Colour follows the voice",
+    "font": "\"Poppins\", \"Poppins ExtraBold\", system-ui, sans-serif",
+    "weight": 800,
+    "size": 14,
+    "primary": "#FFFFFF",
+    "highlight": "#FF5FA2",
+    "stroke": 5,
+    "shadow": "soft",
+    "uppercase": true,
+    "karaoke": true,
+    "maxWords": 4,
+    "entrancePop": false,
+    "words": [
+      "sing",
+      "along",
+      "now"
+    ]
+  },
+  {
+    "id": "editorial",
+    "name": "Editorial",
+    "description": "Serif for podcasts & stories",
+    "font": "\"Instrument Serif\", \"Georgia\", serif",
+    "weight": 400,
+    "italic": true,
+    "size": 20,
+    "primary": "#FFFFFF",
+    "highlight": "#FFE6B8",
+    "stroke": 0,
+    "shadow": "halo",
+    "uppercase": false,
+    "future": "dim",
+    "maxWords": 4,
+    "entrancePop": false,
+    "dimOpacity": 0.6,
+    "words": [
+      "and that is",
+      "why",
+      "it works"
+    ]
+  },
+  {
+    "id": "hype",
+    "colorTransition": true,
+    "name": "Hype",
+    "description": "Heavy stroke, high energy",
+    "font": "\"Montserrat\", \"Montserrat Black\", system-ui, sans-serif",
+    "weight": 900,
+    "size": 16,
+    "primary": "#FFFFFF",
+    "highlight": "#39FF6A",
+    "stroke": 8,
+    "shadow": "hard",
+    "uppercase": true,
+    "words": [
+      "let’s",
+      "go",
+      "now"
+    ]
+  },
+  {
+    "id": "punch",
+    "maxWords": 1,
+    "name": "Punch",
+    "description": "One huge word at a time",
+    "font": "\"Anton\", \"Impact\", \"Arial Narrow\", sans-serif",
+    "weight": 400,
+    "size": 28,
+    "primary": "#FFFFFF",
+    "highlight": "#FFFFFF",
+    "stroke": 8,
+    "shadow": "hard",
+    "uppercase": true,
+    "words": [
+      "",
+      "boom",
+      ""
+    ]
+  },
+  {
+    "id": "neon",
+    "name": "Neon",
+    "description": "Magenta bloom, music & lifestyle",
+    "font": "\"Poppins\", \"Poppins ExtraBold\", system-ui, sans-serif",
+    "weight": 800,
+    "size": 14,
+    "primary": "#FFFFFF",
+    "highlight": "#FF9CEB",
+    "stroke": 0,
+    "shadow": "halo",
+    "uppercase": true,
+    "glow": "#FF2EC4",
+    "words": [
+      "feel",
+      "the",
+      "beat"
+    ]
+  },
+  {
+    "id": "headline",
+    "name": "Headline",
+    "description": "Word on a red news tag",
+    "font": "\"Archivo Black\", \"Arial Black\", system-ui, sans-serif",
+    "weight": 400,
+    "size": 13,
+    "primary": "#FFFFFF",
+    "highlight": "#FFFFFF",
+    "stroke": 4,
+    "shadow": "soft",
+    "uppercase": true,
+    "pill": "#E5202E",
+    "words": [
+      "this",
+      "just",
+      "in"
+    ]
+  },
+  {
+    "id": "paper",
+    "maxWords": 4,
+    "entrancePop": false,
+    "name": "Paper",
+    "description": "Dark type on a white card",
+    "font": "\"Poppins\", \"Poppins ExtraBold\", system-ui, sans-serif",
+    "weight": 800,
+    "size": 13,
+    "primary": "#111111",
+    "highlight": "#6D28D9",
+    "stroke": 0,
+    "shadow": "none",
+    "uppercase": false,
+    "plate": "rgb(255 255 255 / 0.94)",
+    "words": [
+      "here is",
+      "how",
+      "it works"
+    ]
+  },
+  {
+    "id": "subtle",
+    "maxWords": 4,
+    "entrancePop": false,
+    "colorTransition": true,
+    "dimOpacity": 0.55,
+    "name": "Subtle",
+    "description": "Light touch for interviews & vlogs",
+    "font": "\"Montserrat\", \"Montserrat ExtraBold\", system-ui, sans-serif",
+    "weight": 800,
+    "size": 13,
+    "primary": "#FFFFFF",
+    "highlight": "#C4F1FF",
+    "stroke": 0,
+    "shadow": "halo",
+    "uppercase": false,
+    "future": "dim",
+    "words": [
+      "I think",
+      "that’s",
+      "fair"
+    ]
+  }
+]

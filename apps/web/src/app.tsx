@@ -22,6 +22,7 @@ import { DashboardPage } from '@/pages/dashboard';
 import { SykaSettingsRoot } from '@/components/settings/modal';
 import { DesktopNotificationBridge } from '@/components/desktop-notification-bridge';
 import { AutomaticUpdateNotice } from '@/components/dashboard/update-menu';
+import { WhatsNewHost } from '@/components/whats-new/whats-new';
 
 function BootSplash() {
   const auth = useAuth();
@@ -58,6 +59,7 @@ function App() {
               <SykaSettingsRoot />
               <DesktopNotificationBridge />
               <AutomaticUpdateNotice />
+              <WhatsNewHost />
               <BootSplash />
               <EditorApi />
             </AuthProvider>

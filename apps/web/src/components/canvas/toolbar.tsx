@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SceneSwitcher } from './scene-switcher';
 import { CanvasTransport } from './transport';
+import { DockButton } from './dock-button';
 import { PreviewIcon } from './preview-icon';
 import { ActionBar } from "../genai/action-bar";
 import { ObjectMaskBar } from "./object-mask-bar";
@@ -82,11 +83,14 @@ export function Toolbar(props: { fullscreen: boolean; onFullscreen: () => void; 
       </Show>
       <div ref={dock} class="syka-canvas-dock">
         <CanvasTransport fullscreen={props.fullscreen} onFullscreen={props.onFullscreen} portalMount={props.portalMount} />
-        <Show when={props.fullscreen}><Button size="icon-square" variant="ghost" aria-label="Luz ambiental" title="Activar o apagar la luz ambiental" aria-pressed={ambientLight()} onClick={()=>setAmbientLight(!ambientLight())}><PreviewIcon name="ambient"/></Button></Show>
-        <Button size="icon-square" variant="ghost" data-tour-target="visual-select" aria-label="Señalar componente editable" aria-keyshortcuts="Control+Shift+S Meta+Shift+S" title={`Señalar componente · ${VISUAL_SELECT_SHORTCUT}`} aria-pressed={visualPickMode()==='element'} onClick={()=>setVisualPickMode(visualPickMode()==='element'?null:'element')}><PreviewIcon name="inspect"/></Button>
-        <Button size="icon-square" variant="ghost" data-tour-target="visual-capture" aria-label="Capturar zona para el agente" title="Marcar y capturar una zona del video" aria-pressed={visualPickMode()==='region'} onClick={()=>setVisualPickMode(visualPickMode()==='region'?null:'region')}><PreviewIcon name="camera"/></Button>
-        <Button size="icon-square" variant="ghost" aria-label="Grabar una zona de la pantalla" title="Grabar una zona de la pantalla" onClick={()=>{setVisualPickMode(null);requestScreenRecording({region:true,chatKey:draftKey(project.id(),activeChatId(project.id()))});}}><PreviewIcon name="record"/></Button>
-        <Show when={hasSelection()}><Button size="icon-square" variant="ghost" aria-label="Consultar selección con el agente" title="Consultar selección con el agente" onClick={() => referenceInChat(project.id(), 'Quiero consultar o modificar estos elementos. Preguntame qué cambio quiero antes de editar.', selectionContext(world))}><PreviewIcon name="chat" /></Button></Show>
+        <Show when={props.fullscreen}><DockButton label="Luz ambiental" icon="ambient" pressed={ambientLight()} onClick={()=>setAmbientLight(!ambientLight())}/></Show>
+        <DockButton label="Señalar un componente" icon="inspect" shortcut={VISUAL_SELECT_SHORTCUT} pressed={visualPickMode()==='element'}
+          data-tour-target="visual-select" aria-keyshortcuts="Control+Shift+S Meta+Shift+S"
+          onClick={()=>setVisualPickMode(visualPickMode()==='element'?null:'element')}/>
+        <DockButton label="Capturar una zona para el agente" icon="camera" pressed={visualPickMode()==='region'} data-tour-target="visual-capture"
+          onClick={()=>setVisualPickMode(visualPickMode()==='region'?null:'region')}/>
+        <DockButton label="Grabar una zona de la pantalla" icon="record" onClick={()=>{setVisualPickMode(null);requestScreenRecording({region:true,chatKey:draftKey(project.id(),activeChatId(project.id()))});}}/>
+        <Show when={hasSelection()}><DockButton label="Consultar la selección con el agente" icon="chat" onClick={() => referenceInChat(project.id(), 'Quiero consultar o modificar estos elementos. Preguntame qué cambio quiero antes de editar.', selectionContext(world))}/></Show>
         <Show when={!props.fullscreen}>
         <div role="toolbar" aria-label="Herramientas del lienzo" class="syka-canvas-tools">
         <div class="flex gap-1">

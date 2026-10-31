@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": [
+        {
+          "name": "syka-local-audio",
+          "sectionId": "brief",
+          "file": "references/mixkit.md",
+          "when": "Sólo antes de descargar/reutilizar música o SFX de Mixkit"
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-local-audio",
+          "sectionId": "build",
+          "file": "references/measured-sync.md",
+          "when": "Sólo al alinear ataques medidos, trim/rate o grilla musical"
+        },
+        {
+          "name": "syka-local-audio",
+          "sectionId": "build",
+          "file": "references/sound-layer.md",
+          "when": "Sólo diseño sonoro/foley o mezcla exigente"
+        },
+        {
+          "name": "syka-local-audio",
+          "sectionId": "build",
+          "file": "references/native-mixing.md",
+          "when": "Sólo curvas nativas de fade/ducking contra voz"
+        },
+        {
+          "name": "syka-local-audio",
+          "sectionId": "build",
+          "file": "references/earshot-launch.md",
+          "when": "Sólo kit de lanzamiento con música"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": [
+        {
+          "name": "syka-local-audio",
+          "sectionId": "review",
+          "file": "references/sound-layer.md",
+          "when": "Sólo mix exportado autorizado ya disponible y cues a diagnosticar"
+        }
+      ]
+    }
+  ]
+}

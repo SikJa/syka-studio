@@ -20,6 +20,7 @@ import { duplicateProject, renameProject, type ProjectRecord } from "@/projects"
 import { DashboardCardButton, DashboardCardPreview, DashboardProjectThumbnail } from "./shared";
 import { formatEditedAt } from "./utils";
 import { ProjectTokenUsageLabel } from './project-token-usage';
+import { prefetchProjectChats } from '@/agent-chat/store';
 
 type DashboardProjectCardProps = {
   project: ProjectRecord;
@@ -141,7 +142,11 @@ export function DashboardProjectCard(props: DashboardProjectCardProps) {
       <ContextMenuTrigger as="div" class="contents">
         <DashboardCardButton
           active={props.active}
-          onClick={props.onSelect}
+          onClick={() => {
+            props.onSelect();
+            // A selected card is usually opened next: its chat starts loading now.
+            prefetchProjectChats(props.project.id);
+          }}
           onDoubleClick={handleOpen}
           onEscape={props.onDeselect}
           onDelete={props.onDelete}
@@ -169,7 +174,7 @@ export function DashboardProjectCard(props: DashboardProjectCardProps) {
                     onBlur={handleBlurRenameInput}
                     onKeyDown={handleKeyDownRenameInput}
                     placeholder="Project name"
-                    aria-label="Project name"
+                    aria-label="Nombre del proyecto"
                     class="absolute inset-x-0 top-1/2 h-5 w-full -translate-y-1/2 border border-ring bg-input px-1 py-0 ring-1 ring-inset ring-ring"
                   />
                 </TextField>

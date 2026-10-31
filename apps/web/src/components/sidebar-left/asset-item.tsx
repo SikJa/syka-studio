@@ -26,7 +26,9 @@ import type { Asset } from "@diffusionstudio/assets";
 export type LazyAssetItemProps = {
   asset: Asset;
   selected: boolean;
-  onSelect(): void;
+  onSelect(event: MouseEvent): void;
+  onDelete?(): void | Promise<void>;
+  selectedIds?: readonly string[];
 };
 
 /**
@@ -57,6 +59,7 @@ export function LazyAssetItem(props: LazyAssetItemProps) {
 
   const handleDeleteAsset = async () => {
     try {
+      if (props.onDelete) { await props.onDelete(); return; }
       await library()?.remove([props.asset]);
     } catch (e) {
       toast.error("Failed to delete", { description: (e as Error).message });
@@ -64,7 +67,8 @@ export function LazyAssetItem(props: LazyAssetItemProps) {
   };
 
   const handleDragStart = (event: DragEvent) => {
-    event.dataTransfer?.setData(ASSET_DRAG_TYPE, props.asset.id);
+    const ids = props.selected && props.selectedIds?.length ? props.selectedIds : [props.asset.id];
+    event.dataTransfer?.setData(ASSET_DRAG_TYPE, ids.join(','));
   };
 
   const commitRename = (nextName: string) => {
@@ -107,6 +111,9 @@ export function LazyAssetItem(props: LazyAssetItemProps) {
         as="div"
         class="flex flex-col gap-1 text-left"
         data-asset-id={props.asset.id}
+        data-library-key={props.asset.id}
+        role="option"
+        aria-selected={props.selected}
         draggable={true}
         onDragStart={handleDragStart}
         onClick={props.onSelect}

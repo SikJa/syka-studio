@@ -5,11 +5,21 @@ description: Diseñar la dirección visual y el storyboard de un lanzamiento Saa
 
 # Dirección de motion
 
+## Contract
+
+Syka entrega una composición audiovisual nativa editable dentro del proyecto. El pedido actual manda: conservá originales, voz, estilo/geometría aprobados y edición nativa. Un plan sólo es entrega si se pidió plan; al editar, aplicá la composición y comprobala. Un fallo deja verificaciones pendientes o bloqueadas, nunca habilita otra app, juego, web o motor como sustituto. Exportá sólo ante pedido explícito.
+
+La pieza sostiene una idea visual y una progresión; no impone estética, duración ni número de tarjetas. Continuá desde el brief y consulta resueltos; una dirección definida/delegada ya autoriza producción reversible.
+
+Leé sólo la fase necesaria. Las dependencias del índice son condicionales, nunca lecturas recursivas. Una corrección puntual reutiliza decisiones vigentes y su source; no repite brief, investigación ni consulta de producción nueva.
+
+## Brief
+
 El resultado es una pieza con una idea visual y progresión, no un catálogo de efectos. Adaptá la profundidad al pedido: un título no necesita el proceso de un lanzamiento completo. El estilo sale del brief, referencias y producto real; ninguna estética ni preset de captions está fijado.
 
-## Antes de animar
+### Antes de animar
 
-Entrá por `syka-motion-brief`: consulta útil para cada nueva pieza y decisión de
+Sólo si la producción es nueva y su consulta/brief no están resueltos, usá la sección brief de `syka-motion-brief`: consulta útil para cada nueva pieza y decisión de
 música/efectos/voz/silencio en todos los casos. Compilá `syka_motion_plan` desde
 respuestas reales, referencias y beats para obtener JSON y superprompt detallado.
 Reels, storyboards, tipografía y captions con cámara tienen rutas propias; no
@@ -26,7 +36,15 @@ es una demostración del método; su formato, copy y estética no son defaults.
 
 Para una pieza sustancial, leé [references/production-prompt.md](references/production-prompt.md). Es la estructura predeterminada del prompt de producción: **inputs, direction, structure, build, gotchas y start/review**. Guardá `production-prompt.md` en el proyecto y enlazalo en la receta. Cambiá su contenido con el brief; ninguna paleta, guion o cantidad de escenas queda fijada por esa estructura.
 
-## Construcción
+## Build
+
+### Construcción
+
+Para una pieza nueva o mejora amplia, `syka-motion-references` incluye las técnicas
+de Cinetic: buscá 2–3 por función/formato, leé la elegida y registrá ID y adaptación
+en `frame.md`. Combiná mecanismo y referencia visual sin duplicar investigación;
+una corrección puntual mantiene las decisiones aprobadas. Su receta original de
+otro motor es referencia, no una dependencia a instalar ni un componente nativo.
 
 Para un lanzamiento cargá `syka-product-launch`: doce criterios editoriales,
 demostraciones estructuradas, prompts breves derivados del mismo brief y componentes
@@ -46,13 +64,15 @@ Para tarjetas, comparaciones o callouts sobre footage, cargá `syka-editorial-mo
 - Componé sonido desde el beat sheet con `syka-local-audio`: eventos principales, textura discreta, música con espacio para voz y silencios con intención. No pongas un click en cada elemento por costumbre.
 - Conservá edición: texto y logos nativos, grupos/componentes con nombres y parámetros; `<html>` con timeline pausado si simplifica UI compleja. No hornees todo en un MP4 cuando el pedido sea una composición editable.
 
-## Iteración
+## Review
+
+### Iteración
 
 Para un lanzamiento o motion ambicioso, hacé dos o tres pasadas proporcionales usando `syka-edit-review`: primero concepto/legibilidad, luego continuidad/timing/sonido y finalmente comprobar la preview y los seeks. Después de cada pasada corregí los problemas de mayor impacto; no agregues decoración para disimularlos. El presupuesto temporal del usuario limita las rondas. Exportá únicamente si el usuario lo pidió; de otro modo dejá la composición lista para su export manual.
 
 Entregá composición, assets utilizados, preview/export solicitado y una nota breve de lo realmente validado. Analizar referencias y escribir skills no equivale a entrenar pesos de un modelo.
 
-## Procedencia técnica
+### Procedencia técnica
 
 Adaptación editorial para el motor Diffusion de Syka. Referencias de método: [HyperFrames](https://github.com/heygen-com/hyperframes) (continuidad y dirección), [Remotion skills](https://github.com/remotion-dev/skills) (composición reproducible, tiempo y verificación), [motion-graphic-skill](https://github.com/JakeB-5/motion-graphic-skill) (storyboard y crítica). Consultá su documentación si trabajás en esos motores; sus APIs no son intercambiables con JSX de Diffusion. Esta skill no depende de instalarlos ni ejecutarlos.
 

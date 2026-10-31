@@ -73,3 +73,32 @@ test('catalog preserves every publication identity and all skill identities once
   assert.equal(catalog.entries.filter(e => e.kind === 'video').length, catalog.coverage.uniqueVideoPublications);
   assert.equal(catalog.entries.filter(e => e.kind === 'skill').length, 387);
 });
+
+test('ships both new reference libraries with compact discovery and non-overlapping source pages', async () => {
+  const craft = JSON.parse(await readFile(resolve(skillRoot, 'references/motion-craft-index.json'), 'utf8'));
+  assert.equal(new Set(craft.entries.map(row => row.id)).size, 216);
+  assert.equal(craft.entries.filter(row => row.id.startsWith('motion-lab-')).length, 160);
+  assert.equal(craft.entries.filter(row => row.id.startsWith('huashu-art-motion-')).length, 56);
+  for (const [query, expected] of [['mask reveal', 'motion-lab-mask-reveal'], ['revelado con máscara', 'motion-lab-mask-reveal'], ['Bauhaus', 'huashu-art-motion-12_bauhaus']]) {
+    const found = await retrieveLibrary({ query, kind: 'skill', limit: 3, collection: expected.startsWith('motion-lab-') ? 'motion-lab' : 'huashu' });
+    assert.equal(found.results[0].id, expected);
+    assert.ok(JSON.stringify(found, null, 2).length + 1 <= 4000);
+    assert.ok(found.results.every(row => !row.sourceText));
+    const page = await retrieveLibrary({ id: expected, includeText: true, textLength: 256 });
+    const next = await retrieveLibrary({ id: expected, includeText: true, textLength: 256, textOffset: page.results[0].nextTextOffset });
+    const original = await readFile(page.results[0].sourcePath, 'utf8');
+    assert.equal(page.results[0].sourceText + next.results[0].sourceText, original.slice(0, 512));
+    assert.equal(page.results[0].sourceSha256, next.results[0].sourceSha256);
+    assert.equal(page.results[0].sourceTextLicense, 'MIT');
+    assert.ok(JSON.stringify(page, null, 2).length + 1 <= 6000);
+  }
+});
+
+test('candidate pagination and explicit exclusions expose alternatives without repeating the first page', async () => {
+  const first = await retrieveLibrary({ query: 'reveal', kind: 'skill', limit: 2 });
+  assert.equal(first.nextOffset, 2);
+  const next = await retrieveLibrary({ query: 'reveal', kind: 'skill', limit: 2, offset: first.nextOffset });
+  const excluded = await retrieveLibrary({ query: 'reveal', kind: 'skill', limit: 2, excludeIds: first.results.map(row => row.id) });
+  assert.deepEqual(next.results.map(row => row.id), excluded.results.map(row => row.id));
+  assert.ok(next.results.every(row => !first.results.some(previous => previous.id === row.id)));
+});

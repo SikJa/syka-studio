@@ -17,6 +17,7 @@ declare global {
       send(channel: string, payload: unknown): void;
       on(channel: string, cb: (payload: unknown) => void): (() => void);
       getPathForFile(file: File): string;
+      preferences?: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
     };
     showOpenFilePicker(options?: OpenFilePickerOptions): Promise<FileSystemFileHandle[]>;
     EyeDropper?: {

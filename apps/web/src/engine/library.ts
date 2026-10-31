@@ -15,6 +15,7 @@ import type { Accessor } from 'solid-js';
 
 import { createProjectFS } from '@/projects/fs';
 import { getDocumentEditor } from './editor';
+import { getEditHistory } from './history';
 
 import type { Asset } from '@diffusionstudio/assets';
 import type { AssetInput } from '@diffusionstudio/jsx';
@@ -27,7 +28,7 @@ import type { World } from 'koota';
  * disposer that flushes the manifest and detaches it.
  */
 export function attachLibrary(world: World, dir: string) {
-	const library = new AssetLibrary(createProjectFS(dir), {
+	const library = new AssetLibrary(createProjectFS(dir, () => getEditHistory(world).refresh()), {
 		onRename: (asset, from) => followRename(world, asset, from),
 		onRelink: (asset, from) => followRelink(world, asset, from),
 	});

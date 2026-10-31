@@ -59,3 +59,13 @@ docs/references/skillry/scripts/__pycache__/
 
 # Endpoint descriptor generated for this machine's real provider preview.
 apps/web/qa/providers-live-endpoint.js
+
+# Local-only: runtime profiles (browser caches, agent sessions), generated
+# indexes, agent scratch reads, upstream branding left on disk, run logs.
+**/profile-root/
+graphify-out/
+.syka/
+.codex/
+/assets/
+apps/desktop/assets/
+docs/historial-runtime/

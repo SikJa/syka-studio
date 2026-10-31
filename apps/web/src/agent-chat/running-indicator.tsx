@@ -14,4 +14,4 @@ export function runningLabel(last: Item | undefined): string {
   return last?.kind === "assistant" ? "Writing" : "Thinking";
 }
 
-export function RunningIndicator(props: { last: Item | undefined }) {return <MirelTrace item={{id:'current-thinking',kind:'reasoning',text:props.last?.kind==='assistant'?'Escribiendo la respuesta':'Analizando el proyecto'}}/>;}
+export function RunningIndicator(props: { last: Item | undefined }) {return <MirelTrace item={{id:'current-thinking',kind:'reasoning',text:props.last?.kind==='assistant'?'Escribiendo la respuesta':'Esperando respuesta del modelo'}}/>;}

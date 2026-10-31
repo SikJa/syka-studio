@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "provider": "Bencho",
+  "repository": "https://github.com/cabralorenzo/bencho",
+  "commit": "30ab35a575eb83eed8f086a6893d4d6426f4fa91",
+  "license": "MIT",
+  "freeOnly": true,
+  "sounds": 24,
+  "files": [
+    {
+      "source": "sounds/sounds.ts",
+      "path": "sounds.ts",
+      "sha256": "1e873dcb2a65f77fefe5f969f13b68eabdf02c88b5f8ad7e93cbd6cda6043915"
+    },
+    {
+      "source": "LICENSE",
+      "path": "LICENSE",
+      "sha256": "9f9d2eedd3383d018e343db1205e9b41f07fa49632050482fb40cc1a03dd64fe"
+    },
+    {
+      "source": "THIRD_PARTY.md",
+      "path": "THIRD_PARTY.md",
+      "sha256": "5a06fa88b258e8f876f93d900fda3b7efd8a17908fbdab5f557eb2f3f1eef969"
+    }
+  ]
+}

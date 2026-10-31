@@ -12,8 +12,8 @@ export function createStoredSignal<S>(storageItem: StorageItem<S>) {
   const updateValue = (newValue: S) => {
     if (newValue === value()) return;
 
-    setValue(() => newValue);
     storageItem.value = newValue;
+    setValue(() => newValue);
   };
 
   return [value, updateValue] as const;

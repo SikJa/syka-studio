@@ -11,24 +11,24 @@ import { isDesktop } from '@/projects';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverPortal, PopoverTrigger } from '@/components/ui/popover';
 import { locale, t } from '@/i18n';
+import { openWhatsNew } from '@/components/whats-new/whats-new-store';
 import './update-menu.css';
 
 const [update, setUpdate] = createRoot(() => createSignal<UpdateState>({ phase: 'disabled', currentVersion: APP_VERSION }));
+const [announcement, setAnnouncement] = createRoot(() => createSignal<UpdateState | null>(null));
+let announcementTimer: ReturnType<typeof setTimeout> | undefined;
 let connected = false;
 let statusPoll: ReturnType<typeof setTimeout> | undefined;
 const announced = new Set<string>();
 function applyUpdate(next: UpdateState) {
   setUpdate(next);
-  if (next.availableVersion && ['available', 'ready'].includes(next.phase)) {
+  if (!document.hidden && next.availableVersion && ['available', 'ready'].includes(next.phase)) {
     const key = `${next.phase}:${next.availableVersion}`;
     if (!announced.has(key)) {
       announced.add(key);
-      const ready = next.phase === 'ready';
-      toast(t(ready ? 'Actualización lista para instalar' : 'Actualización disponible'), {
-        id: 'syka-automatic-update', duration: 15_000, closeButton: true,
-        description: `Syka Studio ${next.availableVersion}. ${t(ready ? 'Reiniciá cuando te venga bien.' : 'Podés descargarla desde acá.')}`,
-        action: { label: t(ready ? 'Reiniciar e instalar' : 'Descargar actualización'), onClick: () => void command(ready ? 'install' : 'download') },
-      });
+      setAnnouncement(next);
+      clearTimeout(announcementTimer);
+      announcementTimer = setTimeout(() => setAnnouncement(null), 20_000);
     }
   }
   clearTimeout(statusPoll); statusPoll = undefined;
@@ -43,6 +43,7 @@ function connect() {
   if (connected || !isDesktop()) return;
   connected = true;
   mainBridge.handle(MAIN_CHANNELS.SYKA_UPDATES_CHANGED, applyUpdate);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) applyUpdate(update()); });
   void command('status');
 }
 async function command(action: UpdateRequest['action']) {
@@ -73,11 +74,12 @@ function UpdateDetails() {
     <Show when={update().phase === 'ready'}><p class="text-xs text-muted-foreground">{t('Reiniciá cuando te venga bien. Tus proyectos y preferencias se conservan.')}</p></Show>
     <div class="flex flex-wrap items-center gap-2 pt-1">
       <Show when={update().phase === 'available' || update().phase === 'error' && !!update().availableVersion}>
-        <Button onClick={() => void command('download')}>{t('Descargar actualización')}</Button>
+        <Button onClick={() => void command('download')}>{t(update().installation === 'installer' ? 'Descargar instalador' : 'Descargar actualización')}</Button>
       </Show>
       <Show when={update().phase === 'ready'}><Button onClick={() => void command('install')}>{t('Reiniciar e instalar')}</Button></Show>
       <Show when={['idle', 'error'].includes(update().phase)}><Button variant="secondary" onClick={() => void command('check')}>{t('Buscar actualizaciones')}</Button></Show>
       <Show when={update().releaseUrl && !update().simulation}><button type="button" class="text-xxs text-muted-foreground hover:text-foreground focus-ring" onClick={() => void command('notes')}>{t('Ver cambios')} ↗</button></Show>
+      <button type="button" class="text-xxs text-muted-foreground hover:text-foreground focus-ring" onClick={openWhatsNew}>Novedades</button>
       <Show when={update().simulation === 'complete'}><Button variant="secondary" onClick={() => void command('demo-reset')}>{t('Repetir simulación')}</Button></Show>
     </div>
   </div>;
@@ -101,4 +103,12 @@ export function UpdateSettings() {
 }
 
 /** Mounted once at app level, including direct launches into the editor. */
-export function AutomaticUpdateNotice() { onMount(connect); return null; }
+export function AutomaticUpdateNotice() {
+  onMount(connect);
+  return <Show when={announcement()}>{notice => <aside class="syka-automatic-update-notice" data-automatic-update-notice role="status" aria-live="polite">
+    <button type="button" class="syka-update-dismiss" aria-label="Cerrar aviso de actualización" onClick={() => setAnnouncement(null)}>×</button>
+    <strong>{t(notice().phase === 'ready' ? 'Actualización lista para instalar' : 'Actualización disponible')}</strong>
+    <p>Syka Studio {notice().availableVersion}</p>
+    <Button variant="secondary" onClick={() => { const state = notice(); setAnnouncement(null); void command(state.phase === 'ready' ? 'install' : 'download'); }}>{t(notice().phase === 'ready' ? 'Reiniciar e instalar' : notice().installation === 'installer' ? 'Descargar instalador' : 'Descargar actualización')}</Button>
+  </aside>}</Show>;
+}

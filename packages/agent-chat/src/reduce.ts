@@ -99,6 +99,50 @@ export function reduce(state: Transcript, event: ChatEvent): Transcript {
   }
 }
 
+/**
+ * Same result as folding `reduce` over `events`, for a whole log: it mutates
+ * private copies instead of copying the item list on every event, which made
+ * opening a 4,000-item chat quadratic.
+ */
+export function foldEvents(events: Iterable<ChatEvent>, initial: Transcript = emptyTranscript()): Transcript {
+  const state: Transcript = { ...initial, items: initial.items.slice() };
+  const items = state.items;
+  const positions = new Map<string, number>();
+  items.forEach((item, index) => positions.set(item.id, index));
+  const put = (item: Item) => {
+    const index = positions.get(item.id);
+    if (index === undefined) { positions.set(item.id, items.length); items.push(item); }
+    else items[index] = item;
+  };
+  for (const event of events) {
+    switch (event.type) {
+      case "usage.reported": break;
+      case "queue.updated": state.queue = event.queue; break;
+      case "context.updated": state.contextUsage = event.usage; break;
+      case "turn.started": state.contextUsage = undefined; put(event.user); state.turnId = event.turnId; state.pending = null; break;
+      case "item.started": case "item.completed": put(event.item); break;
+      case "item.delta": {
+        const index = positions.get(event.itemId);
+        const item = index === undefined ? undefined : items[index];
+        if (item && (item.kind === "assistant" || item.kind === "reasoning")) items[index!] = { ...item, text: item.text + event.text };
+        break;
+      }
+      case "turn.completed":
+        if (event.status !== "completed") for (let i = 0; i < items.length; i++) {
+          const item = items[i]!;
+          if (item.kind === "tool" && item.status === "running") items[i] = { ...item, status: "failed" };
+        }
+        state.turnId = null;
+        if (event.status !== "completed") state.pending = null;
+        break;
+      case "request.opened": state.pending = event.request; break;
+      case "request.resolved": if (state.pending?.id === event.requestId) state.pending = null; break;
+      case "chat.updated": state.chat = event.chat; break;
+    }
+  }
+  return state;
+}
+
 /** Folds many events, in order. */
 export function reduceAll(state: Transcript, events: Iterable<ChatEvent>): Transcript {
   let next = state;

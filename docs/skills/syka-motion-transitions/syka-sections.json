@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": []
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-motion-transitions",
+          "sectionId": "build",
+          "file": "references/native-motion.md",
+          "when": "Sólo si faltan tokens/traducción o límites del renderer"
+        },
+        {
+          "name": "syka-motion-transitions",
+          "sectionId": "build",
+          "file": "examples/NativeReveal.tsx",
+          "when": "Sólo si el reveal nativo resuelve el efecto pedido"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": [
+        {
+          "name": "syka-edit-review",
+          "sectionId": "review",
+          "file": "references/motion-evidence.md",
+          "when": "Sólo diagnóstico de una pieza completa con export autorizado existente"
+        }
+      ]
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import { context } from "./tools/context";
 import { motionEvents } from './tools/motion-events';
 import { capture } from "./tools/capture";
 import { check } from "./tools/check";
+import { gate } from "./tools/gate";
 import { exportScene } from "./tools/export";
 import { models } from "./tools/models";
 import { voices } from "./tools/voices";
@@ -38,6 +39,7 @@ export const catalog = [
   motionEvents,
   capture,
   check,
+  gate,
   exportScene,
   mediaProbe,
   mediaGrab,

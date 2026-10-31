@@ -8,8 +8,9 @@
 // owns (chats, transcripts, questions) is a view here; what is ours alone
 // is the draft per chat, which tab is up, and which chat each project shows.
 
-import { batch, createRoot } from "solid-js";
+import { batch, createRoot, createSignal } from "solid-js";
 import { createStore, produce } from "solid-js/store";
+import type { ChatModelSelection } from './chat-model-selection';
 import { toast } from "somoto";
 
 import {
@@ -77,9 +78,10 @@ export { state as chatState };
 const root = createRoot(() => {
   const [tab, setTab] = createStoredSignal(settings.define<SidebarTab>("leftSidebar.tab", "assets"));
   const [model, setModel] = createStoredSignal(settings.define<ModelRef | null>("agentChat.model", null));
+  const [chatModels, setChatModels] = createStoredSignal(settings.define<Record<string, ChatModelSelection>>('agentChat.modelsByChat', {}));
   const [active, setActive] = createStoredSignal(settings.define<Record<string, string>>("agentChat.active", {}));
   const [visibility, setVisibility] = createStoredSignal(settings.define<ModelVisibility>('agentChat.modelVisibility', DEFAULT_MODEL_VISIBILITY, parseModelVisibility));
-  return { tab, setTab, model, setModel, active, setActive, visibility, setVisibility };
+  return { tab, setTab, model, setModel, chatModels, setChatModels, active, setActive, visibility, setVisibility };
 });
 
 export const modelVisibility = root.visibility;
@@ -90,6 +92,9 @@ export function setHarnessVisible(id: HarnessId, visible: boolean): void {
 }
 export function setHermesProviderVisible(id: string, visible: boolean): void {
   root.setVisibility({ ...root.visibility(), hermesProviders: { ...root.visibility().hermesProviders, [id]: visible } });
+}
+export function setOpenCodeProviderVisible(id: string, visible: boolean): void {
+  root.setVisibility({ ...root.visibility(), opencodeProviders: { ...root.visibility().opencodeProviders, [id]: visible } });
 }
 export function setModelsVisible(harness: HarnessId, ids: readonly string[], visible: boolean): void {
   const current=root.visibility(),entries={...current.models?.[harness]};
@@ -104,6 +109,10 @@ export const setSidebarTab = root.setTab;
 /** The remembered model, whether or not its harness is currently ready. */
 export const storedModel = root.model;
 export const setStoredModel = root.setModel;
+export const chatModelSelection = (chatId: string) => root.chatModels()[chatId];
+export function setChatModelSelection(chatId: string, ref: ModelRef) {
+  root.setChatModels({ ...root.chatModels(), [chatId]: { ref, chosenAt: Date.now() } });
+}
 
 /** Sentinel for "the empty draft chat" in the per-project active map. */
 const DRAFT = "";
@@ -112,8 +121,44 @@ const DRAFT = "";
 export function activeChatId(projectId: string): string | null {
   const remembered = root.active()[projectId];
   if (remembered === DRAFT) return null;
-  if (remembered && (state.chats[remembered] || state.lists[projectId]?.some((chat) => chat.id === remembered))) return remembered;
-  return state.lists[projectId]?.[0]?.id ?? null;
+  // Before the history arrives the remembered chat is opened on trust, so its
+  // snapshot and the list travel together; a list without it falls back.
+  const list = state.lists[projectId];
+  if (remembered && (state.chats[remembered] || !list || list.some((chat) => chat.id === remembered))) return remembered;
+  return list?.[0]?.id ?? null;
+}
+
+/**
+ * Starts loading what a project's chat panel will show, before the editor is
+ * up: its history and the chat it will open. Safe to call more than once.
+ */
+export function prefetchProjectChats(projectId: string): void {
+  if (!hasHost()) return;
+  ensureConnected();
+  void refreshChats(projectId).then(() => {
+    const id = activeChatId(projectId);
+    if (id) openChat(id);
+  });
+  const id = activeChatId(projectId);
+  if (id) openChat(id);
+}
+
+// --- open timings ---------------------------------------------------------
+
+export type ChatOpenTiming = { chatId: string; title: string; requestedAt: number; ms: number; items: number };
+
+const openRequestedAt = new Map<string, number>();
+const [openTimings, setOpenTimings] = createSignal<ChatOpenTiming[]>([]);
+
+/** How long the last chats took from being asked for to their transcript, newest first. */
+export { openTimings as chatOpenTimings };
+
+function recordOpenTiming(snapshot: ChatSnapshot): void {
+  const requestedAt = openRequestedAt.get(snapshot.chat.id);
+  if (requestedAt === undefined) return;
+  openRequestedAt.delete(snapshot.chat.id);
+  const timing = { chatId: snapshot.chat.id, title: snapshot.chat.title, requestedAt, ms: Math.round(performance.now() - requestedAt), items: snapshot.items.length };
+  setOpenTimings((list) => [timing, ...list].slice(0, 12));
 }
 
 export function setActiveChat(projectId: string, chatId: string | null): void {
@@ -157,11 +202,11 @@ function whenOpen(): Promise<void> {
   });
 }
 
-/** Re-runs the probes when the cached ones are older than a minute. */
+/** Automatic refreshes honor the cache; an explicit retry also bypasses the host cache. */
 export function refreshHarnesses(force = false): void {
   if (client.state !== "open" || !force && Date.now() - harnessesAt < PROBE_MAX_AGE_MS) return;
   harnessesAt = Date.now();
-  void client.request("harnesses.list", { refresh: true }).catch(() => {});
+  void client.request("harnesses.list", { refresh: true, ...(force ? { force: true } : {}) }).catch(() => {});
 }
 
 export async function authenticateHarness(harness: HarnessId, methodId = 'connect'): Promise<void> {
@@ -177,6 +222,27 @@ export async function cancelProviderAuth(harness: HarnessId, flowId: string): Pr
   await whenOpen();
   await client.request('harnesses.auth.cancel', { harness, flowId });
 }
+/**
+ * A project still carrying a name nobody chose gets a real title from the first
+ * message of a chat, in the background; the folder stays where it is.
+ */
+async function titleProjectFromMessage(dir: string, harness: HarnessId, text: string): Promise<void> {
+  try {
+    const { getProject, renameProject } = await import('@/projects');
+    const { isPlaceholderProjectName } = await import('@/lib/db');
+    const project = await getProject(dir);
+    if (!project || !isPlaceholderProjectName(project.displayName ?? project.name)) return;
+    const title = await suggestTitle(harness, text);
+    if (title) await renameProject(dir, title, true);
+  } catch { /* The placeholder name stays. */ }
+}
+
+/** A short title from the chosen provider's small model; null when it is not available. */
+export async function suggestTitle(harness: HarnessId, text: string): Promise<string | null> {
+  try { await whenOpen(); return (await client.request('titles.suggest', { harness, text })).title; }
+  catch { return null; }
+}
+
 export async function providerAuthMethods(harness: HarnessId) {
   await whenOpen();
   return client.request('harnesses.auth.methods', { harness });
@@ -191,6 +257,9 @@ export async function saveProviderSettings(entry: import('@diffusionstudio/agent
   return client.request('harnesses.configure', entry);
 }
 
+/** Ready, or showing its last confirmed catalog while the startup check runs; the host waits for that check before sending. */
+export const pickableHarness = (harness: HarnessInfo): boolean => harness.status === 'ready' || harness.status === 'checking' && harness.catalogSource === 'cache';
+
 export const readyHarnesses = (): HarnessInfo[] => state.harnesses.filter((harness) => harness.id !== 'muse' && harness.status === "ready");
 
 /** Families picked before anything is remembered, best first, across every ready harness. */
@@ -201,9 +270,13 @@ const PREFERRED_MODELS = [/astra/i, /sol/i, /fable/i, /opus/i];
  * ready, else the best preferred family on offer, else the first ready default.
  */
 export function currentModel(): ModelRef | null {
-  const ready = pickerHarnesses().filter(h => h.status === 'ready' && h.models.length > 0);
+  const ready = pickerHarnesses().filter(h => pickableHarness(h) && h.models.length > 0);
   const remembered = root.model();
   if (remembered) {
+    // Incremental discovery must not silently select a different provider
+    // while the saved connection is being checked or its last catalog awaits
+    // recovery. The host rejects sends until that provider is ready again.
+    if (pickerHarnesses().some(entry => entry.id === remembered.harness && (entry.status === 'checking' || entry.catalogSource === 'cache'))) return remembered;
     const harness = ready.find((entry) => entry.id === remembered.harness);
     if (harness && harness.models.some((model) => model.id === remembered.model)) return remembered;
   }
@@ -280,9 +353,11 @@ const subscriptions = new Map<string, () => void>();
 export function openChat(chatId: string): void {
   ensureConnected();
   if (subscriptions.has(chatId)) return;
+  openRequestedAt.set(chatId, performance.now());
   const unsubscribe = client.open(chatId, (message) => {
     if (message.type === "snapshot") {
       applySnapshot(message.snapshot);
+      recordOpenTiming(message.snapshot);
       const key = awaitingSnapshot.get(chatId);
       if (key) {
         awaitingSnapshot.delete(chatId);
@@ -372,7 +447,9 @@ export async function send(options: SendOptions): Promise<string> {
     if (!options.chatId) {
       awaitingSnapshot.set(chatId, key);
       setActiveChat(options.projectId, chatId);
+      void titleProjectFromMessage(options.cwd, options.model.harness, options.text);
     }
+    setChatModelSelection(chatId, options.model);
     openChat(chatId);
     flush();
     if (options.chatId) setState("sending", key, null);
@@ -488,14 +565,19 @@ export { attachmentPaths };
 export const ASSETS_SIDEBAR_WIDTH = 264;
 export const CHAT_SIDEBAR_WIDTH = 340;
 
-export const leftSidebarWidth = (): number => (sidebarTab() === "chat" ? CHAT_SIDEBAR_WIDTH : ASSETS_SIDEBAR_WIDTH);
+const CHAT_WIDTH_KEY='syka:chat-sidebar-width:v1';
+const storedChatWidth=Number(localStorage.getItem(CHAT_WIDTH_KEY));
+export const [chatSidebarWidth,updateChatSidebarWidth]=createSignal(Number.isFinite(storedChatWidth)&&storedChatWidth>=280?Math.min(800,storedChatWidth):CHAT_SIDEBAR_WIDTH);
+export function setChatSidebarWidth(value:number){const next=Math.round(Math.min(Math.max(280,innerWidth-550),800,Math.max(280,value)));updateChatSidebarWidth(next);localStorage.setItem(CHAT_WIDTH_KEY,String(next));}
+export const leftSidebarWidth = (): number => (sidebarTab() === "chat" ? chatSidebarWidth() : ASSETS_SIDEBAR_WIDTH);
 
 /** For the empty state: why nothing can be sent right now, or null. */
 export function blockedReason(): string | null {
   if (state.connection === "unavailable") return "El chat funciona en la aplicación de escritorio.";
   if (state.connection !== "open") return "Conectando con tus modelos…";
-  if (state.harnesses.length && state.harnesses.every((harness) => harness.status === "checking")) return "Comprobando los modelos conectados…";
-  if (!readyHarnesses().length) {
+  const pickable = state.harnesses.some(harness => harness.id !== 'muse' && pickableHarness(harness));
+  if (!pickable && state.harnesses.length && state.harnesses.every((harness) => harness.status === "checking")) return "Comprobando los modelos conectados…";
+  if (!pickable) {
     return "Conectá un modelo en Configuración para empezar.";
   }
   return null;

@@ -4,15 +4,18 @@ import { isAbsolute, relative, resolve, sep } from 'node:path';
 import { resolveLocalTool, type ToolSearch } from './local-tools';
 
 /** Bounded local decoding, shared by audio and visual diagnostics. No shell or writes. */
-export function mediaProcess(binary: string, args: string[], maxBytes: number, timeoutMs = 90_000) {
+export function mediaProcess(binary: string, args: string[], maxBytes: number, timeoutMs = 90_000, signal?: AbortSignal, env?: NodeJS.ProcessEnv) {
+  signal?.throwIfAborted();
   return new Promise<{ stdout: Buffer; stderr: string }>((ok, fail) => {
-    const child = spawn(binary, args, { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn(binary, args, { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], ...(env ? {env} : {}) });
     const chunks: Buffer[] = []; let bytes = 0, stderr = '', settled = false;
     const finish = (error?: Error) => {
-      if (settled) return; settled = true; clearTimeout(timer);
+      if (settled) return; settled = true; clearTimeout(timer); signal?.removeEventListener('abort', abort);
       error ? fail(error) : ok({ stdout: Buffer.concat(chunks), stderr });
     };
     const timer = setTimeout(() => { child.kill(); finish(Error(`El análisis superó ${timeoutMs / 1000} segundos; elegí un tramo más corto.`)); }, timeoutMs);
+    const abort = () => { child.kill(); finish(Error('Análisis cancelado.')); };
+    signal?.addEventListener('abort', abort, {once:true});
     child.stdout.on('data', (chunk: Buffer) => {
       if (settled) return;
       bytes += chunk.length;

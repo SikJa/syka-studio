@@ -31,7 +31,7 @@ export function checkDistributionLayout({ appDir, resourcesDir = appDir, platfor
     if (!info.isFile() || info.size === 0 || !inside(root, absolute)) throw Error(`Missing, empty or redirected file: ${path}`);
     return absolute;
   }
-  for (const path of ['dist/main.js', 'dist/preload.js', 'dist/screen-region-preload.js', 'dist/agent-host.mjs',
+  for (const path of ['dist/main.js', 'dist/preload.js', 'dist/screen-region-preload.js', 'dist/agent-host.mjs', 'dist/resource-worker.js',
     'web/index.html', 'web/notifications.html', 'web/preview-worker.html']) check(path, () => file(appDir, path));
   if (platform === 'darwin') check('native window style', () => file(appDir, 'dist/corner_radius.node'));
   check('cli/dapi.js', () => file(resourcesDir, 'cli/dapi.js'));

@@ -35,6 +35,18 @@ describe("instructions", () => {
     expect(text).not.toContain("skills/editor.md");
   });
 
+  it('offers compact embedded context without removing the full manual or default client behavior', () => {
+    const full = instructions(repoDocs);
+    const compact = instructions(repoDocs, 'progressive');
+    expect(compact).toContain('INSTRUCTIONS.md');
+    expect(compact).toContain('syka_read_reference/syka_skills');
+    expect(compact).toContain('preserve originals');
+    expect(compact).toContain('export is manual');
+    expect(compact).toContain(JSON.stringify(repoDocs));
+    expect(compact.length).toBeLessThan(full.length / 4);
+    expect(instructions(repoDocs)).toBe(full);
+  });
+
   it("builds from the repo's own docs without broken instructions", () => {
     if (!existsSync(repoDocs)) return;
     const text = instructions(repoDocs);

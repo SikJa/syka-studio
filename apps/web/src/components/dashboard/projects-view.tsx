@@ -35,6 +35,7 @@ import {
   listProjects,
   projectKey,
   projectsRevision,
+  rescanProjectsRootOnce,
   type ProjectInfo,
 } from "@/projects";
 
@@ -46,6 +47,8 @@ export function DashboardProjectsView() {
   const [search, setSearch] = createSignal("");
   const [sort, setSort] = createSignal<ProjectSortOption>("last-viewed");
   const [projects, { refetch: refetchProjects }] = createResource(projectsRevision, () => listProjects());
+  // Projects added to the root (or its batch folders) since it was picked join the list.
+  rescanProjectsRootOnce();
   const [selectedProject, setSelectedProject] = createSignal<string | null>(null);
   const [creating, setCreating] = createSignal(false);
   const [pendingDelete, setPendingDelete] = createSignal<ProjectInfo | null>(null);
@@ -141,7 +144,7 @@ export function DashboardProjectsView() {
                 </SelectItem>
               )}
             >
-              <SelectTrigger aria-label="Sort projects">
+              <SelectTrigger aria-label="Ordenar proyectos">
                 <SelectValue<(typeof SORT_OPTIONS)[number]>>
                   {(state) => state.selectedOption()?.label}
                 </SelectValue>
@@ -160,7 +163,7 @@ export function DashboardProjectsView() {
               class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-muted-foreground"
             />
           </DashboardCardPreview>
-          <DashboardCardMeta title="New project" />
+          <DashboardCardMeta title="Nuevo proyecto" />
         </DashboardCardButton>
         <For each={visibleProjects()}>
           {(project) => (
@@ -189,9 +192,9 @@ export function DashboardProjectsView() {
 }
 
 const SORT_OPTIONS: Array<{ id: ProjectSortOption; label: string }> = [
-  { id: "last-viewed", label: "Last modified" },
-  { id: "alphabetical", label: "Alphabetical" },
-  { id: "date-created", label: "Date created" },
+  { id: "last-viewed", label: "Última modificación" },
+  { id: "alphabetical", label: "Alfabético" },
+  { id: "date-created", label: "Fecha de creación" },
 ];
 
 const PROJECTS_PER_PAGE = 11;

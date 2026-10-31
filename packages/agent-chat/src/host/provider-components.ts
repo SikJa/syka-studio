@@ -83,12 +83,24 @@ async function receiptAt(provider: string, runtimeDir: string): Promise<{ root: 
 }
 /** Reuse a verified component at startup; never downloads or starts a login. */
 export async function resolveManagedComponent(provider: HarnessId, env: HostEnv, runtimeDir: string): Promise<ProviderComponent | undefined> {
+  const component = await findManagedComponent(provider, env, runtimeDir);
+  if (component) activate(provider, env, component);
+  return component;
+}
+
+/** Same as resolveManagedComponent without touching env; callers activate in a fixed order. */
+export async function findManagedComponent(provider: HarnessId, env: HostEnv, runtimeDir: string): Promise<ProviderComponent | undefined> {
   const current = override(provider, env);
   if (current !== undefined && !current.startsWith(componentRoot(runtimeDir) + (process.platform === 'win32' ? '\\' : '/'))) return undefined;
   const installed = await receiptAt(provider, runtimeDir); if (!installed) return undefined;
   if (MINIMUM[provider] && compareVersions(installed.receipt.version, MINIMUM[provider]!) < 0) return undefined;
-  const component: ProviderComponent = { command: childPath(installed.root, installed.receipt.command), ...(installed.receipt.args?.length ? { args: installed.receipt.args.map(arg => childPath(installed.root, arg)) } : {}), version: installed.receipt.version, source: 'managed' };
-  activate(provider, env, component); return component;
+  return { command: childPath(installed.root, installed.receipt.command), ...(installed.receipt.args?.length ? { args: installed.receipt.args.map(arg => childPath(installed.root, arg)) } : {}), version: installed.receipt.version, source: 'managed' };
+}
+
+/** Receipts are read in parallel; env is updated in the given order, as a sequential resolve would. */
+export async function resolveManagedComponents(providers: readonly HarnessId[], env: HostEnv, runtimeDir: string): Promise<void> {
+  const found = await Promise.all(providers.map(provider => findManagedComponent(provider, env, runtimeDir).catch(() => undefined)));
+  providers.forEach((provider, index) => { const component = found[index]; if (component) activate(provider, env, component); });
 }
 
 async function installedComponent(provider: HarnessId, env: HostEnv): Promise<{ command: string; args?: string[] } | undefined> {
@@ -204,10 +216,11 @@ async function installPlan(provider: string, plan: Plan, runtimeDir: string, sig
   const archive = await safeDirectory(base, `.download-${provider}-${randomUUID()}`);
   await mkdir(stage); let backedUp = false, promoted = false;
   try {
-    progress?.(`Descargando ${LABELS[provider] ?? provider}…`); let last = -1;
+    const downloadLabel = provider === 'opencode' ? 'la CLI oficial de OpenCode para Syka' : LABELS[provider] ?? provider;
+    progress?.(`Descargando ${downloadLabel}…`); let last = -1;
     const artifactSha256 = await downloadArtifact(plan.artifact, archive, signal, options.fetcher, (received, size) => {
       const percent = size ? Math.floor(received / size * 100) : undefined;
-      if (percent !== undefined && percent !== last) { last = percent; progress?.(`Descargando ${LABELS[provider] ?? provider}: ${percent}%`); }
+      if (percent !== undefined && percent !== last) { last = percent; progress?.(`Descargando ${downloadLabel}: ${percent}%`); }
     });
     signal.throwIfAborted(); progress?.(`Verificando ${LABELS[provider] ?? provider}…`);
     if (plan.artifact.format === 'binary') {

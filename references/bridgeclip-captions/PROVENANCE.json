@@ -1,0 +1,49 @@
+{
+  "repository": "https://github.com/bridge-mind/bridgeclip",
+  "commit": "b996820ef80fa324a3ad233bef1aac5cc6936804",
+  "sourceFiles": [
+    "src/shared/caption-presets.ts",
+    "src/renderer/components/CaptionPresetPicker.tsx",
+    "engine/clip_engine/config.py"
+  ],
+  "pickerSHA256": "f32aed3cc602e7b7ca33d106c45664f2ec0b704807ee690d4b425e85bde6f2b3",
+  "presets": [
+    "pop",
+    "spotlight",
+    "impact",
+    "glow",
+    "boxed",
+    "sweep",
+    "editorial",
+    "hype",
+    "punch",
+    "neon",
+    "headline",
+    "paper",
+    "subtle"
+  ],
+  "fonts": [
+    "Anton-OFL.txt",
+    "Anton-Regular.ttf",
+    "ArchivoBlack-OFL.txt",
+    "ArchivoBlack-Regular.ttf",
+    "InstrumentSerif-Italic.ttf",
+    "InstrumentSerif-OFL.txt",
+    "Montserrat-Black.ttf",
+    "Montserrat-ExtraBold.ttf",
+    "Montserrat-OFL.txt",
+    "Poppins-Black.ttf",
+    "Poppins-ExtraBold.ttf",
+    "Poppins-OFL.txt"
+  ],
+  "codeLicense": "MIT",
+  "fontsLicense": "SIL OFL 1.1 (per-family notices included)",
+  "integratedIntoSykaCaptionRenderer": true,
+  "integratedPresets": [
+    "bridgeclip-subtle",
+    "bridgeclip-editorial",
+    "bridgeclip-boxed",
+    "bridgeclip-spotlight"
+  ],
+  "implementation": "packages/runtime/src/media/caption/bridgeclip.ts (native adaptation; not pixel-equivalent to ASS)"
+}

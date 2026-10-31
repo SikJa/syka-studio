@@ -8,6 +8,7 @@ import { context } from "./context";
 import { motionEvents } from './motion-events';
 import { capture } from "./capture";
 import { check } from "./check";
+import { gate } from "./gate";
 import { exportScene } from "./export";
 import { models } from "./models";
 import { voices } from "./voices";
@@ -31,6 +32,7 @@ export const handlers: Handlers = {
   motion_events: motionEvents,
   capture,
   check,
+  gate,
   export: exportScene,
   models,
   voices,

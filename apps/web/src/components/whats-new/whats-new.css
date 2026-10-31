@@ -1,0 +1,532 @@
+/* What's new in Syka: a short paged story in one card. The hero is inset with
+   a concentric radius and every page tints it with its own pair of hues; the
+   hues are registered so they glide from page to page instead of cutting. */
+@property --syka-wn-ha {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 292;
+}
+@property --syka-wn-hb {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 246;
+}
+@property --syka-wn-level {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 62%;
+}
+
+.syka-wn {
+  --syka-wn-radius: 24px;
+  --syka-wn-inset: 8px;
+  --syka-wn-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --syka-wn-accent: var(--syka-accent, var(--primary));
+  --syka-wn-ink: var(--foreground);
+  --syka-wn-quiet: color-mix(in oklab, var(--foreground) 74%, var(--popover));
+  --syka-wn-soft: color-mix(in oklab, var(--foreground) 9%, transparent);
+  --syka-wn-glass: color-mix(in oklab, var(--popover) 74%, transparent);
+  --syka-wn-glass-edge: color-mix(in oklab, var(--foreground) 10%, transparent);
+  display: flex;
+  flex-direction: column;
+  width: min(420px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  gap: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--syka-wn-radius);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--foreground) 8%, transparent),
+    0 36px 90px -30px rgb(0 0 0 / 50%);
+  scrollbar-width: none;
+}
+[data-kb-theme="dark"] .syka-wn {
+  --syka-wn-glass: color-mix(in oklab, var(--popover) 66%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--foreground) 9%, transparent),
+    0 40px 100px -30px rgb(0 0 0 / 80%);
+}
+.syka-wn:focus {
+  outline: none;
+}
+.syka-wn :focus-visible {
+  outline: 2px solid var(--syka-wn-accent);
+  outline-offset: 2px;
+}
+.syka-wn-stage {
+  user-select: none;
+  touch-action: pan-y;
+}
+
+/* Hero. The hue pair is set per page on this element, so every color that
+   derives from it is resolved here rather than on the card. */
+.syka-wn-hero {
+  --syka-wn-hue-a: oklch(84% 0.075 var(--syka-wn-ha));
+  --syka-wn-hue-b: oklch(87% 0.065 var(--syka-wn-hb));
+  --syka-wn-tint: oklch(94% 0.03 var(--syka-wn-hb));
+  --syka-wn-glow-color: var(--syka-accent, oklch(66% 0.16 var(--syka-wn-ha)));
+  position: relative;
+  isolation: isolate;
+  height: 228px;
+  margin: var(--syka-wn-inset) var(--syka-wn-inset) 0;
+  border-radius: calc(var(--syka-wn-radius) - var(--syka-wn-inset));
+  overflow: hidden;
+  background: var(--syka-wn-tint);
+  transition:
+    --syka-wn-ha 760ms var(--syka-wn-ease),
+    --syka-wn-hb 760ms var(--syka-wn-ease);
+}
+[data-kb-theme="dark"] .syka-wn-hero {
+  --syka-wn-hue-a: oklch(50% 0.095 var(--syka-wn-ha));
+  --syka-wn-hue-b: oklch(44% 0.085 var(--syka-wn-hb));
+  --syka-wn-tint: oklch(25% 0.025 var(--syka-wn-hb));
+  --syka-wn-glow-color: var(--syka-accent, oklch(76% 0.14 var(--syka-wn-ha)));
+}
+.syka-wn-glow {
+  position: absolute;
+  inset: -24%;
+  z-index: -1;
+  filter: blur(34px) saturate(1.1);
+}
+.syka-wn-glow > span {
+  position: absolute;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: syka-wn-drift 19s ease-in-out infinite alternate;
+}
+.syka-wn-glow > [data-blob="a"] {
+  left: 8%;
+  top: 6%;
+  background: var(--syka-wn-hue-a);
+}
+.syka-wn-glow > [data-blob="b"] {
+  right: 6%;
+  top: 22%;
+  background: var(--syka-wn-hue-b);
+  animation-duration: 23s;
+  animation-direction: alternate-reverse;
+}
+.syka-wn-glow > [data-blob="c"] {
+  left: 34%;
+  bottom: 2%;
+  width: 42%;
+  opacity: 0.7;
+  background: color-mix(in oklch, var(--syka-wn-hue-a), var(--syka-wn-hue-b));
+  animation-duration: 27s;
+}
+@keyframes syka-wn-drift {
+  from {
+    translate: -6% -4%;
+    scale: 1;
+  }
+  to {
+    translate: 7% 5%;
+    scale: 1.08;
+  }
+}
+.syka-wn-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  color: var(--syka-wn-ink);
+  background: color-mix(in oklab, var(--popover) 52%, transparent);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease-out,
+    scale 160ms ease-out;
+}
+.syka-wn-close:hover {
+  background: color-mix(in oklab, var(--popover) 82%, transparent);
+}
+.syka-wn-close:active {
+  scale: 0.94;
+}
+.syka-wn-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Page motion: the art and the copy slide in from the side you travel to. */
+.syka-wn-art {
+  --syka-wn-travel: 26px;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--syka-wn-ink);
+  pointer-events: none;
+  animation: syka-wn-art-in 560ms var(--syka-wn-ease) both;
+}
+.syka-wn-copy-page {
+  --syka-wn-travel: 14px;
+  animation: syka-wn-art-in 460ms var(--syka-wn-ease) 40ms both;
+}
+[data-direction="back"] :is(.syka-wn-art, .syka-wn-copy-page) {
+  --syka-wn-travel: -26px;
+}
+[data-direction="back"] .syka-wn-copy-page {
+  --syka-wn-travel: -14px;
+}
+@keyframes syka-wn-art-in {
+  from {
+    opacity: 0;
+    translate: var(--syka-wn-travel) 0;
+    scale: 0.985;
+  }
+}
+
+/* Copy and controls */
+.syka-wn-body {
+  padding: 22px 32px 0;
+  text-align: center;
+}
+.syka-wn-eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  color: var(--syka-wn-quiet);
+}
+.syka-wn-copy {
+  min-height: 150px;
+}
+.syka-wn-heading {
+  margin-top: 8px;
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 650;
+  letter-spacing: -0.022em;
+  color: var(--syka-wn-ink);
+  text-wrap: balance;
+}
+.syka-wn-text {
+  margin-top: 10px;
+  font-size: 14.5px;
+  line-height: 22px;
+  color: var(--syka-wn-quiet);
+  text-wrap: pretty;
+}
+.syka-wn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 20px;
+  color: var(--syka-wn-ink);
+  cursor: pointer;
+  transition: background-color 160ms ease-out;
+}
+.syka-wn-link:hover {
+  background: var(--syka-wn-soft);
+}
+.syka-wn-link svg {
+  width: 14px;
+  height: 14px;
+  transition: translate 220ms var(--syka-wn-ease);
+}
+.syka-wn-link:hover svg {
+  translate: 2px 0;
+}
+.syka-wn-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 24px 16px;
+}
+.syka-wn-dots {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.syka-wn-dot {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: width 420ms var(--syka-wn-ease);
+}
+.syka-wn-dot::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--foreground) 22%, transparent);
+  transition:
+    width 420ms var(--syka-wn-ease),
+    background-color 200ms ease-out;
+}
+.syka-wn-dot:hover::before {
+  background: color-mix(in oklab, var(--foreground) 42%, transparent);
+}
+.syka-wn-dot[aria-current="step"] {
+  width: 30px;
+}
+.syka-wn-dot[aria-current="step"]::before {
+  width: 20px;
+  background: var(--syka-wn-ink);
+}
+.syka-wn-primary,
+.syka-wn-secondary {
+  width: 100%;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease-out,
+    scale 160ms ease-out;
+}
+.syka-wn-primary {
+  height: 44px;
+  background: var(--foreground);
+  color: var(--background);
+}
+.syka-wn-primary:hover {
+  background: color-mix(in oklab, var(--foreground) 86%, var(--background));
+}
+.syka-wn-secondary {
+  height: 40px;
+  margin-top: 6px;
+  font-weight: 550;
+  color: var(--syka-wn-ink);
+}
+.syka-wn-secondary:hover {
+  background: var(--syka-wn-soft);
+}
+:is(.syka-wn-primary, .syka-wn-secondary):active {
+  scale: 0.985;
+}
+
+/* Shared mock pieces: the same glass, inlay and radius family as the app. */
+.syka-wn-glass {
+  background: var(--syka-wn-glass);
+  box-shadow:
+    inset 0 0 0 1px var(--syka-wn-glass-edge),
+    inset 0 1px 0 color-mix(in oklab, #fff 8%, transparent),
+    0 18px 42px -24px rgb(0 0 0 / 55%);
+}
+.syka-wn-i {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.syka-wn-icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  color: var(--syka-wn-quiet);
+}
+.syka-wn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 24px;
+  padding-inline: 8px 6px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.syka-wn-chip .syka-wn-i {
+  width: 12px;
+  height: 12px;
+  opacity: 0.7;
+}
+.syka-wn-chip[data-pressed] {
+  background: color-mix(in oklab, var(--foreground) 9%, transparent);
+}
+.syka-wn-chip[data-quiet] {
+  padding-inline: 8px;
+  color: var(--syka-wn-quiet);
+  background: color-mix(in oklab, var(--foreground) 6%, transparent);
+}
+.syka-wn-send {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--foreground);
+  color: var(--background);
+}
+.syka-wn-send .syka-wn-i {
+  width: 13px;
+  height: 13px;
+}
+.syka-wn-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 26px;
+  white-space: nowrap;
+}
+.syka-wn-row > .syka-wn-i {
+  color: var(--syka-wn-quiet);
+}
+.syka-wn-row-meta {
+  margin-left: auto;
+  color: var(--syka-wn-quiet);
+  font-size: 11px;
+}
+
+/* Syka Studio: the card is its own fixed layer over a dimmed app. */
+.syka-wn-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgb(0 0 0 / 46%);
+  animation: syka-wn-fade-in 220ms ease-out both;
+}
+.syka-wn {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 61;
+  translate: -50% -50%;
+  animation: syka-wn-card-in 420ms var(--syka-wn-ease) both;
+}
+@keyframes syka-wn-fade-in { from { opacity: 0; } }
+@keyframes syka-wn-card-in { from { opacity: 0; scale: 0.96; } }
+.syka-wn button { border: 0; background-color: transparent; font: inherit; }
+.syka-wn .syka-wn-primary { background: var(--foreground); }
+.syka-wn .syka-wn-primary:hover { background: color-mix(in oklab, var(--foreground) 86%, var(--background)); }
+.syka-wn .syka-wn-close { background: color-mix(in oklab, var(--popover) 52%, transparent); }
+.syka-wn .syka-wn-close:hover { background: color-mix(in oklab, var(--popover) 82%, transparent); }
+
+/* The art of each page: small glass mocks of what changed. */
+.syka-wn-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 268px;
+  padding: 10px 12px;
+  border-radius: 16px;
+}
+.syka-wn-card-head {
+  display: flex;
+  align-items: center;
+  padding-bottom: 4px;
+  font-weight: 600;
+}
+.syka-wn-row[data-picked] { font-weight: 600; }
+.syka-wn-row[data-picked] > .syka-wn-i { color: var(--syka-wn-ink); }
+.syka-wn-row[data-tone="error"],
+.syka-wn-row[data-tone="error"] > .syka-wn-i { color: oklch(58% 0.19 22); }
+[data-kb-theme="dark"] .syka-wn-row[data-tone="error"],
+[data-kb-theme="dark"] .syka-wn-row[data-tone="error"] > .syka-wn-i { color: oklch(74% 0.15 22); }
+.syka-wn-options {
+  display: flex;
+  gap: 6px;
+  padding-top: 4px;
+}
+.syka-wn-options > span {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--foreground) 7%, transparent);
+}
+.syka-wn-options > [data-picked] {
+  background: var(--foreground);
+  color: var(--background);
+}
+.syka-wn-frame {
+  position: relative;
+  width: 236px;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--foreground) 10%, transparent);
+  overflow: hidden;
+}
+.syka-wn-frame-ui {
+  position: absolute;
+  inset: 18% 14%;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 8px;
+  transform-origin: 78% 72%;
+  animation: syka-wn-push 3.2s var(--syka-wn-ease) 400ms infinite alternate;
+}
+.syka-wn-frame-ui > span {
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--foreground) 12%, transparent);
+}
+.syka-wn-frame-ui > [data-target] {
+  grid-column: 2;
+  height: 14px;
+  align-self: end;
+  background: var(--syka-wn-ink);
+}
+@keyframes syka-wn-push {
+  0%, 30% { scale: 1; }
+  70%, 100% { scale: 2.1; }
+}
+.syka-wn-dock-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.syka-wn-tip {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--popover);
+  box-shadow: inset 0 0 0 1px var(--syka-wn-glass-edge);
+  font-size: 11.5px;
+}
+.syka-wn-tip kbd {
+  margin-left: 4px;
+  font: inherit;
+  color: var(--syka-wn-quiet);
+}
+.syka-wn-dock {
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 12px;
+}
+.syka-wn-dock > span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  color: var(--syka-wn-quiet);
+}
+.syka-wn-dock > [data-pressed] {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+}
+
+@media (max-width: 480px) {
+  .syka-wn { width: calc(100vw - 16px); }
+  .syka-wn-body { padding-inline: 20px; }
+}
+[data-motion="reduced"] .syka-wn *,
+[data-motion="reduced"] .syka-wn { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .syka-wn, .syka-wn *, .syka-wn-overlay { animation: none !important; transition: none !important; }
+}

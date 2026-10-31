@@ -8,7 +8,7 @@ const categories = [
   ['Dirección y motion', ['syka-visual-direction','syka-editorial-motion','syka-motion-brief','syka-motion-direction','syka-product-launch','syka-motion-storyboard','syka-motion-reels','syka-motion-typography','syka-motion-transitions','syka-faceless-explainer','syka-slideshow','syka-pr-to-video']],
   ['Subtítulos', ['syka-captions','syka-camera-3d-captions']],
   ['Música y sonido', ['syka-local-audio','syka-music-video']],
-  ['Referencias y recursos', ['syka-media-use','syka-video-references','syka-motion-reference','syka-motion-references']],
+  ['Referencias y recursos', ['syka-media-use','syka-video-references','syka-motion-reference','syka-motion-references','syka-motion-lab','syka-huashu-motion']],
   ['Entrega y publicación', ['syka-content-package']],
 ];
 export async function bundledSkills(docsDir) {

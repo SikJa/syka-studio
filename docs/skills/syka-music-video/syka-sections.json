@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": []
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-local-audio",
+          "sectionId": "build",
+          "file": "references/measured-sync.md",
+          "when": "Sólo cues musicales medidos o mezcla nativa"
+        },
+        {
+          "name": "syka-visual-direction",
+          "sectionId": "build",
+          "when": "Sólo escenas cuya composición no está resuelta"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": []
+    }
+  ]
+}

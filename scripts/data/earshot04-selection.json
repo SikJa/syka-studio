@@ -1,0 +1,347 @@
+{
+  "version": 3,
+  "commit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+  "sourceTreeSha256": "f7e44e82ab47496d12af5cc19072cb0d264786cf8b9135ff4408517448837f49",
+  "selectionReason": "26 complementary soft mid-register launch/UI cues; no whole-bank import. Retain all existing 53 WAVs. Technical approval is not artistic listening.",
+  "entries": [
+    {
+      "id": "ui_pop/soft",
+      "title": "Pop suave",
+      "audioFamily": "pop",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "ui_pop",
+        "soft",
+        "pop suave"
+      ]
+    },
+    {
+      "id": "ui_pop/step",
+      "title": "Pop escalonado",
+      "audioFamily": "pop",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "ui_pop",
+        "step",
+        "pop escalonado"
+      ]
+    },
+    {
+      "id": "ui_pop/boop",
+      "title": "Pop redondo",
+      "audioFamily": "pop",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "ui_pop",
+        "boop",
+        "pop redondo"
+      ]
+    },
+    {
+      "id": "ui_pop/wide",
+      "title": "Pop abierto",
+      "audioFamily": "pop",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "ui_pop",
+        "wide",
+        "pop abierto"
+      ]
+    },
+    {
+      "id": "knock/wood",
+      "title": "Toque de madera",
+      "audioFamily": "tap",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "knock",
+        "wood",
+        "toque de madera"
+      ]
+    },
+    {
+      "id": "knock/plastic",
+      "title": "Toque de plástico",
+      "audioFamily": "tap",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "knock",
+        "plastic",
+        "toque de plástico"
+      ]
+    },
+    {
+      "id": "knock/snap",
+      "title": "Contacto seco",
+      "audioFamily": "click",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "knock",
+        "snap",
+        "contacto seco"
+      ]
+    },
+    {
+      "id": "knock/double",
+      "title": "Doble toque",
+      "audioFamily": "tap",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "knock",
+        "double",
+        "doble toque"
+      ]
+    },
+    {
+      "id": "cut_hit/kick",
+      "title": "Golpe de corte",
+      "audioFamily": "impact",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "cut_hit",
+        "kick",
+        "golpe de corte"
+      ]
+    },
+    {
+      "id": "cut_hit/punch",
+      "title": "Impacto compacto",
+      "audioFamily": "impact",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "cut_hit",
+        "punch",
+        "impacto compacto"
+      ]
+    },
+    {
+      "id": "cut_hit/air",
+      "title": "Impacto con aire",
+      "audioFamily": "impact",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "cut_hit",
+        "air",
+        "impacto con aire"
+      ]
+    },
+    {
+      "id": "mallet/glock",
+      "title": "Campana corta",
+      "audioFamily": "chime",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "mallet",
+        "glock",
+        "campana corta"
+      ]
+    },
+    {
+      "id": "mallet/pluck",
+      "title": "Nota suave",
+      "audioFamily": "chime",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "mallet",
+        "pluck",
+        "nota suave"
+      ]
+    },
+    {
+      "id": "mallet/marimba",
+      "title": "Marimba corta",
+      "audioFamily": "chime",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "mallet",
+        "marimba",
+        "marimba corta"
+      ]
+    },
+    {
+      "id": "shutter/dslr",
+      "title": "Obturador de cámara",
+      "audioFamily": "click",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "shutter",
+        "dslr",
+        "obturador de cámara"
+      ]
+    },
+    {
+      "id": "shutter/snap",
+      "title": "Clic de zoom",
+      "audioFamily": "click",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "shutter",
+        "snap",
+        "clic de zoom"
+      ]
+    },
+    {
+      "id": "shutter/film",
+      "title": "Obturador de película",
+      "audioFamily": "click",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "shutter",
+        "film",
+        "obturador de película"
+      ]
+    },
+    {
+      "id": "reverse_swell/dark",
+      "title": "Entrada inversa oscura",
+      "audioFamily": "riser",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "reverse_swell",
+        "dark",
+        "entrada inversa oscura"
+      ]
+    },
+    {
+      "id": "reverse_swell/breath",
+      "title": "Entrada inversa de aire",
+      "audioFamily": "riser",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "reverse_swell",
+        "breath",
+        "entrada inversa de aire"
+      ]
+    },
+    {
+      "id": "whoosh_big/thump",
+      "title": "Transición con cuerpo",
+      "audioFamily": "whoosh",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "whoosh_big",
+        "thump",
+        "transición con cuerpo"
+      ]
+    },
+    {
+      "id": "whoosh_big/thump_airy",
+      "title": "Transición de aire y cuerpo",
+      "audioFamily": "whoosh",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "whoosh_big",
+        "thump_airy",
+        "transición de aire y cuerpo"
+      ]
+    },
+    {
+      "id": "riser/dark",
+      "title": "Crecimiento oscuro",
+      "audioFamily": "riser",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "riser",
+        "dark",
+        "crecimiento oscuro"
+      ]
+    },
+    {
+      "id": "swish/bright",
+      "title": "Deslizamiento claro",
+      "audioFamily": "whoosh",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "swish",
+        "bright",
+        "deslizamiento claro"
+      ]
+    },
+    {
+      "id": "swish/flick",
+      "title": "Barrido corto",
+      "audioFamily": "whoosh",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "swish",
+        "flick",
+        "barrido corto"
+      ]
+    },
+    {
+      "id": "notify/mid_tine",
+      "title": "Confirmación media",
+      "audioFamily": "notification",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "notify",
+        "mid_tine",
+        "confirmación media"
+      ]
+    },
+    {
+      "id": "notify/mid_wood",
+      "title": "Confirmación de madera",
+      "audioFamily": "notification",
+      "tags": [
+        "earshot 0.4",
+        "launch",
+        "lanzamiento",
+        "notify",
+        "mid_wood",
+        "confirmación de madera"
+      ]
+    }
+  ]
+}
+

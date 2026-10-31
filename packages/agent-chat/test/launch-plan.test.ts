@@ -33,7 +33,8 @@ describe('native launch and measured narration plan', () => {
     expect(result.plan?.events[0]?.plannedSeconds).toBe(2.75);
     const path = resolve('docs/skills/syka-product-launch');
     for (const file of ['SKILL.md', 'references/twelve-rules.md', 'references/narration-sync.md', 'examples/ProductDemo.tsx', 'examples/ProductFocus.tsx', 'examples/LaunchCover.tsx', 'examples/launch-time.ts']) {
-      const actual = await tools.call('syka_skills', { action: 'read', path, file }) as { content: string };
+      // A bundled SKILL.md defaults to its section outline; mode "full" returns the exact file.
+      const actual = await tools.call('syka_skills', { action: 'read', path, file, ...(file === 'SKILL.md' ? { mode: 'full' } : {}) }) as { content: string };
       expect(actual.content).toBe(await readFile(resolve(path, file), 'utf8'));
     }
     const knowledge = await tools.call('syka_motion_knowledge', { id: 'stack-amanda-sartini-launch-rules', includeText: true }) as { results: { sourceAccessible: boolean; sourceStorage: string }[] };
@@ -90,7 +91,7 @@ describe('native launch and measured narration plan', () => {
     expect(() => narrationCues({ asset: 'Audio/voice.wav', words: [{ word: 'hola', start: 1, end: .8 }] })).toThrow('rango');
     expect(() => narrationCues({ asset: 'Audio/voice.wav', words: [{ word: 'hola', start: NaN, end: 2 }] })).toThrow('rango');
     expect(() => narrationCues({ asset: '../voice.wav', words: [] })).toThrow('portable');
-    expect(() => narrationCues({ asset: '  C:/Users/Example/voice.wav', words: [] })).toThrow('portable');
+    expect(() => narrationCues({ asset: '  C:/Users/voice.wav', words: [] })).toThrow('portable');
     expect(() => narrationCues({ asset: 'file:///outside.wav', words: [] })).toThrow('portable');
     expect(() => narrationCues({ asset: 'Audio/voice.wav', words: [{ word: 'a', start: 2, end: 3 }, { word: 'b', start: 1, end: 2 }] })).toThrow('ordenar');
     expect(() => narrationCues({ asset: 'Audio/voice.wav', words: [{ word: 'hola' }] })).toThrow('rango');

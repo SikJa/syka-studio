@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { basename, dirname } from "@diffusionstudio/assets";
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import { batch, createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import { SidebarTabs } from "@/agent-chat";
 import { Button } from "../ui/button";
 import { Icon } from "../ui/icon";
@@ -31,8 +31,11 @@ import { PartialAssetItem } from "./partial-asset-item";
 import { FolderItem, handleFolderDrop, isAssetOrFolderDrag, ASSET_DRAG_TYPE, FOLDER_DRAG_TYPE } from "./folder-item";
 import { useLibrary } from "@/engine/library";
 import { useAssetSelection } from "@/engine/hooks";
-import { droppedFiles, importFiles, pickAndImport } from "@/engine/asset-actions";
+import { droppedFiles, importFiles, pickAndImport, pickAndImportFolder } from "@/engine/asset-actions";
 import { isInputTarget } from "@/utils";
+import { clickedSelection, selectionIntersects, type SelectionRect } from './asset-selection';
+import { useWorld } from '@diffusionstudio/koota-solid';
+import { getEditHistory } from '@/engine/history';
 
 import type { AssetLibrary } from "@diffusionstudio/assets";
 
@@ -46,14 +49,21 @@ function ancestorsOf(path: string): string[] {
 export function Assets() {
   let root: HTMLDivElement | undefined;
   let dragCounter = 0;
+  let scroller: HTMLDivElement | undefined;
+  let anchor: string | null = null;
+  let suppressClick = false;
+  let selectionDrag: { id: number; x: number; y: number; base: string[]; moved: boolean } | null = null;
 
   const library = useLibrary();
+  const world = useWorld();
   const { id: selectedAssetId, select: setSelectedAssetId } = useAssetSelection();
   const [query, setQuery] = createSignal("");
   const [assetFilter, setAssetFilter] = createSignal<AssetFilter>("ALL");
   const [isDragging, setIsDragging] = createSignal(false);
   const [renamingFolder, setRenamingFolder] = createSignal<string | null>(null);
   const [currentFolder, setCurrentFolder] = createSignal("");
+  const [selectedKeys, setSelectedKeys] = createSignal<string[]>([]);
+  const [selectionBox, setSelectionBox] = createSignal<SelectionRect | null>(null);
 
   const allAssets = createMemo(() => library()?.list().filter((asset) => asset.type !== "SCRIPT") ?? []);
   const allPartials = createMemo(() => library()?.partials() ?? []);
@@ -86,6 +96,25 @@ export function Assets() {
   });
 
   const itemCount = createMemo(() => visibleFolders().length + filteredPartials().length + filteredAssets().length);
+  const visibleKeys = createMemo(() => [
+    ...visibleFolders().map(folder => `folder:${folder}`),
+    ...filteredPartials().map(asset => asset.id), ...filteredAssets().map(asset => asset.id),
+  ]);
+  const selectedIds = () => selectedKeys().filter(key => !key.startsWith('folder:'));
+  const selectKeys = (keys: string[]) => batch(() => {
+    setSelectedKeys(keys);
+    setSelectedAssetId(keys.find(key => !key.startsWith('folder:')) ?? null);
+  });
+  // The inspector keeps a primary item; external canvas selection can clear it.
+  createEffect(() => {
+    const id = selectedAssetId();
+    if (id && !selectedKeys().includes(id)) setSelectedKeys([id]);
+  });
+  createEffect(() => {
+    const visible = new Set(visibleKeys());
+    const next = selectedKeys().filter(key => visible.has(key));
+    if (next.length !== selectedKeys().length) selectKeys(next);
+  });
 
   // Deep paths collapse like the breadcrumbs docs example:
   // All assets / … / parent / current, with the hidden folders in a dropdown.
@@ -100,17 +129,14 @@ export function Assets() {
   });
 
   const openFolder = (path: string) => {
+    selectKeys([]);
+    anchor = null;
     setQuery("");
     setCurrentFolder(path);
   };
 
   const handleGoToParent = () => {
     if (currentFolder()) openFolder(dirname(currentFolder()));
-  };
-
-  const getAssetIdFromTarget = (target: EventTarget | null) => {
-    const element = target instanceof Element ? target : null;
-    return element?.closest("[data-asset-id]")?.getAttribute("data-asset-id") ?? null;
   };
 
   // A folder that went away (deleted, moved) closes to the nearest one left.
@@ -131,7 +157,9 @@ export function Assets() {
     return run(lib);
   };
 
-  const handleImportAssets = () => withLibrary((lib) => pickAndImport(lib, currentFolder()).then(() => {}));
+  const reportImportFailure = (error: unknown) => { toast.error('No se pudo guardar la importación', { description: (error as Error).message }); };
+  const handleImportAssets = () => withLibrary((lib) => pickAndImport(lib, currentFolder()).then(() => {}, reportImportFailure));
+  const handleImportFolder = () => withLibrary((lib) => pickAndImportFolder(lib, currentFolder()).then(() => {}, reportImportFailure));
 
   const handleDrop = async (event: DragEvent) => {
     event.preventDefault();
@@ -144,7 +172,7 @@ export function Assets() {
     const lib = library();
     if (!lib) return;
     if (handleFolderDrop(lib, event, currentFolder())) return;
-    await importFiles(lib, droppedFiles(event), currentFolder());
+    await importFiles(lib, droppedFiles(event), currentFolder()).catch(reportImportFailure);
   };
 
   const handleDragOver = (event: DragEvent) => {
@@ -181,9 +209,62 @@ export function Assets() {
   };
 
 
-  const handleSelectAsset = (assetId: string) => {
-    setSelectedAssetId(assetId);
+  const handleSelectAsset = (key: string, event?: MouseEvent) => {
+    if (suppressClick) return;
+    // Right-click keeps a multiple selection intact for its Delete action.
+    if (event?.type === 'contextmenu' && selectedKeys().includes(key)) return;
+    selectKeys(clickedSelection(visibleKeys(), selectedKeys(), key, anchor, event ?? {}));
+    if (!event?.shiftKey) anchor = key;
     root?.focus();
+  };
+
+  const deleteSelected = async () => {
+    const lib = library();
+    if (!lib) return;
+    const keys = [...selectedKeys()];
+    try {
+      const entries = keys.filter(key => !key.startsWith('folder:')).flatMap(id => lib.get(id) ?? lib.getPartial(id) ?? []);
+      if (entries.length) await lib.remove(entries);
+      for (const key of keys.filter(key => key.startsWith('folder:'))) await lib.deleteFolder(key.slice(7));
+      selectKeys([]);
+    } catch (error) { toast.error('No se pudieron quitar los recursos', { description: (error as Error).message }); }
+  };
+
+  const handleSelectionDown = (event: PointerEvent) => {
+    if (event.button !== 0 || !scroller || (event.target instanceof Element && event.target.closest('[data-library-key],button,input,[role="menu"]'))) return;
+    const bounds = scroller.getBoundingClientRect();
+    selectionDrag = { id: event.pointerId, x: event.clientX - bounds.left + scroller.scrollLeft,
+      y: event.clientY - bounds.top + scroller.scrollTop, base: event.ctrlKey || event.metaKey || event.shiftKey ? [...selectedKeys()] : [], moved: false };
+    scroller.setPointerCapture(event.pointerId);
+    root?.focus();
+    event.preventDefault();
+  };
+  const handleSelectionMove = (event: PointerEvent) => {
+    if (!selectionDrag || !scroller) return;
+    const bounds = scroller.getBoundingClientRect();
+    if (event.clientY > bounds.bottom) scroller.scrollTop += Math.min(24, event.clientY - bounds.bottom);
+    else if (event.clientY < bounds.top) scroller.scrollTop -= Math.min(24, bounds.top - event.clientY);
+    const x = event.clientX - bounds.left + scroller.scrollLeft, y = event.clientY - bounds.top + scroller.scrollTop;
+    if (!selectionDrag.moved && Math.hypot(x - selectionDrag.x, y - selectionDrag.y) < 4) return;
+    selectionDrag.moved = true;
+    const box = { left: Math.min(x, selectionDrag.x), right: Math.max(x, selectionDrag.x),
+      top: Math.min(y, selectionDrag.y), bottom: Math.max(y, selectionDrag.y) };
+    setSelectionBox(box);
+    const hits = [...scroller.querySelectorAll<HTMLElement>('[data-library-key]')].filter(item => {
+      const rect = item.getBoundingClientRect();
+      return selectionIntersects(box, { left: rect.left - bounds.left + scroller!.scrollLeft,
+        right: rect.right - bounds.left + scroller!.scrollLeft, top: rect.top - bounds.top + scroller!.scrollTop,
+        bottom: rect.bottom - bounds.top + scroller!.scrollTop });
+    }).map(item => item.dataset.libraryKey!);
+    selectKeys([...new Set([...selectionDrag.base, ...hits])]);
+  };
+  const handleSelectionUp = (event: PointerEvent) => {
+    if (!selectionDrag) return;
+    suppressClick = selectionDrag.moved;
+    if (!selectionDrag.moved) selectKeys(selectionDrag.base);
+    selectionDrag = null;
+    setSelectionBox(null);
+    if (scroller?.hasPointerCapture(event.pointerId)) scroller.releasePointerCapture(event.pointerId);
   };
 
   const moveSelection = (delta: number) => {
@@ -206,7 +287,8 @@ export function Assets() {
     const nextId = nextItem?.dataset.assetId;
     if (!nextId) return;
 
-    setSelectedAssetId(nextId);
+    selectKeys([nextId]);
+    anchor = nextId;
     nextItem.scrollIntoView({ block: "nearest" });
   };
 
@@ -220,13 +302,25 @@ export function Assets() {
       return;
     }
 
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'a') {
+      event.preventDefault(); event.stopPropagation(); selectKeys([...visibleKeys()]); return;
+    }
+    if ((event.ctrlKey || event.metaKey) && ['z', 'y'].includes(event.key.toLowerCase())) {
+      event.preventDefault(); event.stopPropagation();
+      const history = getEditHistory(world);
+      if (event.shiftKey || event.key.toLowerCase() === 'y') history.redo(); else history.undo();
+      return;
+    }
+    if (event.key === 'Escape') { selectKeys([]); return; }
+    if (event.key === 'Enter' && selectedKeys().length === 1 && selectedKeys()[0].startsWith('folder:')) {
+      event.preventDefault(); openFolder(selectedKeys()[0].slice(7)); return;
+    }
+
     if (event.key === "Backspace" || event.key === "Delete") {
-      const selected = selectedAssetId();
-      const entry = selected ? (library()?.get(selected) ?? library()?.getPartial(selected)) : undefined;
-      if (entry) {
+      if (selectedKeys().length) {
         event.preventDefault();
         event.stopPropagation();
-        void library()?.remove([entry]);
+        void deleteSelected();
         return;
       }
 
@@ -253,8 +347,9 @@ export function Assets() {
   };
 
   const handleBackgroundClick = (event: MouseEvent) => {
-    if (!getAssetIdFromTarget(event.target)) {
-      setSelectedAssetId(null);
+    if (suppressClick) { suppressClick = false; return; }
+    if (!(event.target instanceof Element && event.target.closest('[data-library-key]'))) {
+      selectKeys([]);
     }
   };
 
@@ -386,6 +481,9 @@ export function Assets() {
                   Import assets
                   <DropdownMenuShortcut>⌘I</DropdownMenuShortcut>
                 </DropdownMenuItem>
+                <DropdownMenuItem tone="neutral" onSelect={handleImportFolder}>
+                  Importar carpeta
+                </DropdownMenuItem>
                 <DropdownMenuItem tone="neutral" onSelect={handleCreateFolder}>
                   Create folder
                   <DropdownMenuShortcut>⇧⌘N</DropdownMenuShortcut>
@@ -479,9 +577,23 @@ export function Assets() {
           </div>
         </Show>
         <div
-          class="flex-1 min-h-0 overflow-y-auto p-4 pt-3"
+          ref={scroller}
+          class="relative flex-1 min-h-0 overflow-y-auto p-4 pt-3 select-none"
+          role="listbox"
+          aria-label="Recursos del proyecto"
+          aria-multiselectable="true"
           onClick={handleBackgroundClick}
+          onPointerDown={handleSelectionDown}
+          onPointerMove={handleSelectionMove}
+          onPointerUp={handleSelectionUp}
+          onPointerCancel={handleSelectionUp}
         >
+          <Show when={selectedKeys().length > 1}>
+            <div class="absolute inset-x-3 bottom-2 z-20 flex h-7 items-center justify-between gap-2 rounded bg-popover px-2 text-xxs text-muted-foreground shadow-sm" aria-live="polite">
+              <span>{selectedKeys().length} seleccionados</span>
+              <button class="rounded px-1.5 py-1 hover:bg-accent focus-ring" onClick={() => void deleteSelected()}>Quitar recursos</button>
+            </div>
+          </Show>
           <Show when={isEmptyView() && !isFiltering()}>
             <div class="h-full flex flex-col items-center justify-center gap-4 px-6 pb-[88px] pt-4">
               <div class="flex flex-col items-center gap-1">
@@ -515,6 +627,9 @@ export function Assets() {
                     onRenameStart={() => setRenamingFolder(folder)}
                     onRenameEnd={() => setRenamingFolder(null)}
                     onOpen={() => openFolder(folder)}
+                    selected={selectedKeys().includes(`folder:${folder}`)}
+                    onSelect={event => handleSelectAsset(`folder:${folder}`, event)}
+                    onDelete={deleteSelected}
                   />
                 )}
               </For>
@@ -522,8 +637,9 @@ export function Assets() {
                 {(partial) => (
                   <PartialAssetItem
                     partial={partial}
-                    selected={selectedAssetId() === partial.id}
-                    onSelect={() => handleSelectAsset(partial.id)}
+                    selected={selectedKeys().includes(partial.id)}
+                    onSelect={event => handleSelectAsset(partial.id, event)}
+                    onDelete={deleteSelected}
                   />
                 )}
               </For>
@@ -531,12 +647,18 @@ export function Assets() {
                 {(asset) => (
                   <LazyAssetItem
                     asset={asset}
-                    selected={selectedAssetId() === asset.id}
-                    onSelect={() => handleSelectAsset(asset.id)}
+                    selected={selectedKeys().includes(asset.id)}
+                    onSelect={event => handleSelectAsset(asset.id, event)}
+                    onDelete={deleteSelected}
+                    selectedIds={selectedIds()}
                   />
                 )}
               </For>
             </div>
+          </Show>
+          <Show when={selectionBox()} keyed>
+            {box => <div aria-hidden="true" class="pointer-events-none absolute z-30 border border-primary bg-primary/15"
+              style={{ left: `${box.left}px`, top: `${box.top}px`, width: `${box.right - box.left}px`, height: `${box.bottom - box.top}px` }} />}
           </Show>
         </div>
       </div>

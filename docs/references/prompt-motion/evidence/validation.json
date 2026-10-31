@@ -1,0 +1,78 @@
+{
+  "dateLocal": "2026-10-06",
+  "retrieverTests": {
+    "passed": 9,
+    "failed": 0
+  },
+  "hostTests": {
+    "passed": 3,
+    "failed": 0,
+    "files": 2
+  },
+  "skillValidation": "passed",
+  "privateBundleCompilation": "main, preload, agent-host passed",
+  "sharedHostChange": "exactly one additive instruction; original instructions verified against pre-change copy",
+  "nativeAgent": {
+    "model": "gpt-6.1-sol",
+    "effort": "high",
+    "outcome": "completed",
+    "firstPart": "Max interrupted at user request; same project and chat resumed in Alto"
+  },
+  "editable": {
+    "file": "F:\\Coding Proyects\\Syka Clips\\Pruebas Syka\\QA-prompt-motion-2026-10-06\\index.tsx",
+    "nativeTextNodes": 6,
+    "nativeRectNodes": 30,
+    "nativeGroups": 7,
+    "nativeKeyframes": 58,
+    "htmlNodes": 0,
+    "videoNodes": 0
+  },
+  "nativeStructure": {
+    "stats": {
+      "nodes": 44,
+      "byKind": {
+        "scene": 1,
+        "text": 6,
+        "group": 7,
+        "shape": 30
+      },
+      "depth": 4,
+      "duration": 8
+    },
+    "issues": []
+  },
+  "liveBackwardSeek": {
+    "seconds": [
+      3.6,
+      1.2,
+      5.666666666666667,
+      2.566666666666667,
+      3.6
+    ],
+    "repeatPixelsEqual": true,
+    "firstPixelHash": "8bfad02f9fdf6dc104895071a7109f6714c94ae4213b387948765884c8c04d21"
+  },
+  "export": {
+    "path": "F:\\Coding Proyects\\Syka Clips\\Pruebas Syka\\QA-prompt-motion-2026-10-06\\02 Finales\\qa_motion.mp4",
+    "sha256": "d8fb8445f6de61f00dfe056375538fd917bb715e995c2e4d684ffae26641b276",
+    "sourceSha256": "2ec9512946926b7322274d6cf13eb40683ef66fb3421fca315b4a1439b679038",
+    "width": 1920,
+    "height": 1080,
+    "seconds": 8,
+    "fps": 60,
+    "frames": 480,
+    "audioTracks": 0,
+    "adjacentGeometryChanged": true,
+    "lastFrameInspected": true
+  },
+  "scope": "Local dev/QA validation. This task did not restart the main editor. No artistic approval, Opus validation, production release or weights training.",
+  "mainActivationObserved": {
+    "method": "Read-only bundle text and process creation metadata; no connection to its CDP or MCP",
+    "bundle": "apps/desktop/dist/agent-host.mjs",
+    "containsNewRoute": true,
+    "bundleBuiltLocal": "2026-10-06 21:24:30 America/Buenos_Aires",
+    "mainAppStartedLocal": "2026-10-06 21:24:41 America/Buenos_Aires",
+    "startedAfterBundle": true,
+    "scope": "Main restart was performed outside this QA harness. Full behavior validated on the isolated instance only."
+  }
+}

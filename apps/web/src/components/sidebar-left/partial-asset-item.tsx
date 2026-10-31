@@ -30,7 +30,8 @@ import type { PartialAsset } from "@diffusionstudio/assets";
 export type PartialAssetItemProps = {
   partial: PartialAsset;
   selected: boolean;
-  onSelect(): void;
+  onSelect(event: MouseEvent): void;
+  onDelete?(): void | Promise<void>;
 };
 
 export function PartialAssetItem(props: PartialAssetItemProps) {
@@ -51,6 +52,7 @@ export function PartialAssetItem(props: PartialAssetItemProps) {
 
   const handleDelete = async () => {
     try {
+      if (props.onDelete) { await props.onDelete(); return; }
       await library()?.remove([props.partial]);
     } catch (e) {
       toast.error("Failed to delete", { description: (e as Error).message });
@@ -63,6 +65,9 @@ export function PartialAssetItem(props: PartialAssetItemProps) {
         as="div"
         class="flex flex-col gap-1 text-left"
         data-asset-id={props.partial.id}
+        data-library-key={props.partial.id}
+        role="option"
+        aria-selected={props.selected}
         onClick={props.onSelect}
         onContextMenu={props.onSelect}>
         <Tooltip placement="bottom" openDelay={400}>

@@ -49,6 +49,14 @@ export const CAPTION_PRESET_OPTIONS: CaptionPresetOption[] = [
   { name: "bridgeclip-editorial", label: "Editorial · BridgeClip", slots: [{ label: "Énfasis", defaultColor: 0xFFE6B8 }] },
   { name: "bridgeclip-boxed", label: "Boxed · BridgeClip", slots: [{ label: "Énfasis", defaultColor: 0xFFD23F }, { label: "Fondo", defaultColor: 0x000000 }] },
   { name: "bridgeclip-spotlight", label: "Spotlight · BridgeClip", slots: [{ label: "Píldora", defaultColor: 0x7C5CFF }] },
+  { name: "hyperframes-clip-wipe", label: "Clip Wipe · HyperFrames", slots: [{ label: "Énfasis", defaultColor: 0x67E8F9 }] },
+  { name: "hyperframes-kinetic-slam", label: "Kinetic Slam · HyperFrames", slots: [{ label: "Énfasis", defaultColor: 0x67E8F9 }] },
+  { name: "hyperframes-weight-shift", label: "Weight Shift · HyperFrames", slots: [{ label: "Énfasis", defaultColor: 0x67E8F9 }] },
+  { name: "hyperframes-neon-glow", label: "Neon Glow · HyperFrames", slots: [{ label: "Neón", defaultColor: 0x67E8F9 }] },
+  { name: "hyperframes-glitch-rgb", label: "Glitch RGB · HyperFrames", slots: [{ label: "Canal 1", defaultColor: 0x67E8F9 }, { label: "Canal 2", defaultColor: 0xC4B5FD }] },
+  { name: "hyperframes-gradient-fill", label: "Gradient Fill · HyperFrames", slots: [{ label: "Inicio", defaultColor: 0x67E8F9 }, { label: "Final", defaultColor: 0xC4B5FD }] },
+  { name: "hyperframes-parallax-layers", label: "Parallax Layers · HyperFrames", slots: [{ label: "Estela", defaultColor: 0x67E8F9 }] },
+  { name: "hyperframes-editorial-emphasis", label: "Editorial Emphasis · HyperFrames", slots: [{ label: "Énfasis", defaultColor: 0xFFE1A6 }] },
 ];
 
 /** The preset a caption with no `preset` of its own plays. */

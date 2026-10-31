@@ -57,11 +57,18 @@ export class JsonRpcPeer {
     child.on("error", (error: Error) => { this.diagnostic = error.message.slice(0, 1600); this.end(null); });
   }
 
-  request<T = unknown>(method: string, params?: unknown): Promise<T> {
+  request<T = unknown>(method: string, params?: unknown, signal?: AbortSignal): Promise<T> {
     if (this.closed) return Promise.reject(new Error("JSON-RPC peer is closed"));
+    if (signal?.aborted) return Promise.reject(new Error("JSON-RPC request cancelled"));
     const id = this.nextId++;
     return new Promise<T>((resolve, reject) => {
-      this.pending.set(id, { resolve: resolve as (value: unknown) => void, reject });
+      const cleanup = () => signal?.removeEventListener('abort', abort);
+      const abort = () => { this.pending.delete(id); cleanup(); reject(new Error('JSON-RPC request cancelled')); };
+      signal?.addEventListener('abort', abort, { once: true });
+      this.pending.set(id, {
+        resolve: value => { cleanup(); resolve(value as T); },
+        reject: error => { cleanup(); reject(error); },
+      });
       this.write({ jsonrpc: "2.0", id, method, params: params ?? {} });
     });
   }

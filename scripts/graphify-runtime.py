@@ -11,6 +11,8 @@ import hashlib
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 import threading
 import time
@@ -19,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 SCHEMA = 1
-PIPELINE_VERSION = 1
+PIPELINE_VERSION = 2
 DENIED = {'.git', '.runtime', 'node_modules', 'worktrees', 'references', 'projects',
           'media', 'credentials', 'profiles', 'conversations', 'documents', 'private',
           'secrets', 'browser', '__pycache__'}
@@ -27,6 +29,47 @@ DENIED = {'.git', '.runtime', 'node_modules', 'worktrees', 'references', 'projec
 
 def now():
     return datetime.now(timezone.utc).isoformat()
+
+
+def install_typescript_import_compat():
+    """0.9.76's TS grammar misparses import('module').Type[] in object types.
+
+    Ask TypeScript's parser for actual type-import nodes, never regex-rewrite
+    runtime imports or accept broken source. Mask only the staging AST input;
+    byte/line positions and the original source files remain unchanged.
+    """
+    import graphify.extract as extractor
+    if getattr(extractor, '_syka_import_compat', False):
+        return
+    original = extractor._normalize_ts_import_types
+
+    def normalize(source, *, tsx=False):
+        normalized = original(source, tsx=tsx)
+        candidate = normalized or source
+        if b'import' not in candidate:
+            return normalized
+        import tree_sitter_typescript as grammar
+        from tree_sitter import Language, Parser
+        parser = Parser(Language(grammar.language_tsx() if tsx else grammar.language_typescript()))
+        if not parser.parse(candidate).root_node.has_error:
+            return normalized
+        node = os.environ.get('SYKA_NODE_PATH') or shutil.which('node')
+        if not node:
+            return normalized
+        try:
+            result = subprocess.run([node, str(Path(__file__).with_name('graphify-ts-imports.mjs'))],
+                                    input=json.dumps({'source': source.decode('utf-8'), 'tsx': tsx}),
+                                    text=True, encoding='utf-8', capture_output=True, timeout=20,
+                                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
+            repaired = json.loads(result.stdout) if result.returncode == 0 else None
+            if repaired and not parser.parse(repaired.encode('utf-8')).root_node.has_error:
+                return repaired.encode('utf-8')
+        except (ValueError, OSError, subprocess.TimeoutExpired):
+            pass
+        return normalized
+
+    extractor._normalize_ts_import_types = normalize
+    extractor._syka_import_compat = True
 
 
 def sha(data):
@@ -245,6 +288,7 @@ class Runtime:
         parsed = sorted(affected & set(files))
         kept_nodes = [n for n in graph['nodes'] if n.get('source_file') not in affected]
         kept_edges = [e for e in graph['links'] if e.get('source_file') not in affected]
+        install_typescript_import_compat()
         from graphify.extract import extract, extract_js
         # Graphify can recover a broken TS parse without adding failed_sources.
         # Do not replace a good graph with the partial AST of an in-progress save.

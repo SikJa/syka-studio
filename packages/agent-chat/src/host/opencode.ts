@@ -34,7 +34,7 @@ export async function findOpenCode(env: HostEnv, profilesRoot: string): Promise<
 /** Official OpenCode owns authentication. Only profile paths cross into Syka. */
 export function installedOpenCodeEnvironment(profile: string, source: Record<string, string>, accountMode: 'installed' | 'syka' = 'installed'): Record<string, string> {
   const original = variables(source), env: Record<string, string> = {};
-  for (const key of ['PATH', 'PATHEXT', 'SYSTEMROOT', 'WINDIR', 'COMSPEC', 'PROGRAMFILES', 'PROGRAMFILES(X86)', 'LANG', 'LC_ALL']) if (original[key]) env[key] = original[key];
+  for (const key of ['PATH', 'PATHEXT', 'SYSTEMROOT', 'SYSTEMDRIVE', 'WINDIR', 'COMSPEC', 'PROGRAMFILES', 'PROGRAMFILES(X86)', 'PROGRAMDATA', 'ALLUSERSPROFILE', 'LANG', 'LC_ALL']) if (original[key]) env[key] = original[key];
   const home = accountMode === 'installed' ? original.USERPROFILE ?? original.HOME ?? homedir() : profile;
   if (!isAbsolute(home)) throw Error('La carpeta de la cuenta de OpenCode debe ser absoluta.');
   const inheritedPath = (key: string, fallback: string) => accountMode === 'installed' && original[key] && isAbsolute(original[key]) ? original[key] : fallback;
@@ -71,7 +71,8 @@ export function openCodeHarness(profilesRoot: string, explicit?: OpenCodeRoute):
       const profileDir = join(profilesRoot, 'opencode', account);
       delegate = new AcpHarness({ id: 'opencode', command: route.command, args, profileDir, openCodeAccount: route.accountMode ?? 'installed', openCodeConfigDir: join(profilesRoot, 'opencode', 'config', 'opencode') });
       const info = await delegate.probe(env, signal);
-      return { ...info, version, detail: info.status === 'ready' ? 'Instalación detectada. Se usa la cuenta configurada en OpenCode, incluidos sus modelos gratuitos. Go requiere una suscripción y Zen puede cobrar por uso. El acceso y la cuota se comprueban al enviar un mensaje.' : info.detail };
+      const models = info.models.filter(model => !model.id.startsWith('gemini-web-syka/'));
+      return { ...info, models, defaultModel: models.some(model => model.id === info.defaultModel) ? info.defaultModel : models[0]?.id, version, detail: info.status === 'ready' ? `CLI de OpenCode ${version} detectada. Ejecutable: ${route.command}. Se usa la cuenta configurada en OpenCode, incluidos sus modelos gratuitos. El acceso y la cuota se comprueban al enviar un mensaje.` : info.detail };
     },
     async authMethods(_env, signal) {
       if (!login) throw Error('Comprobá la instalación de OpenCode antes de ver sus conexiones.');

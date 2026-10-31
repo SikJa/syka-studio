@@ -30,7 +30,7 @@ describe("reversible authoring bridge", () => {
     await mkdir(docs);
     await writeFile(join(docs, "captions.md"), "Use captions src with real timed words.");
     const reference = new SourceTools(cwd, docs);
-    expect(await reference.call("syka_read_reference", { path: "captions.md" })).toEqual({ path: "captions.md", content: "Use captions src with real timed words." });
+    expect(await reference.call("syka_read_reference", { path: "captions.md" })).toMatchObject({ path: "captions.md", content: "Use captions src with real timed words.", sha256: expect.stringMatching(/^[a-f0-9]{64}$/), coverage: { fullFile: true }, next: null });
     await expect(reference.call("syka_read_reference", { path: "../project/index.tsx" })).rejects.toThrow();
     await expect(reference.call("syka_read_reference", { path: join(cwd, "index.tsx") })).rejects.toThrow();
     await expect(tools.call("syka_read_reference", { path: "captions.md" })).rejects.toThrow(/not configured/);

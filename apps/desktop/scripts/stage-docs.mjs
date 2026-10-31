@@ -13,6 +13,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { bundledSkills } from '../../../scripts/bundled-skills.mjs';
 import { checkSoundCatalog } from '../../../scripts/check-sound-catalog.mjs';
+import { checkMotionCraft } from '../../../scripts/check-motion-craft.mjs';
 import { assertStagingDirectory } from '../../../scripts/lib/staging-path.mjs';
 import { execFileSync } from 'node:child_process';
 
@@ -28,6 +29,7 @@ assertStagingDirectory(desktopDir, stageDir, 'docs');
 
 await bundledSkills(join(repoRoot,'docs'));
 await checkSoundCatalog(join(repoRoot, 'docs'));
+await checkMotionCraft(join(repoRoot, 'docs'));
 rmSync(stageDir, { recursive: true, force: true });
 mkdirSync(stageDir, { recursive: true });
 for (const entry of publicEntries) cpSync(join(repoRoot, 'docs', entry), join(stageDir, entry), {
@@ -42,5 +44,7 @@ execFileSync(process.execPath, [join(desktopDir, 'scripts/stage-licenses.mjs')],
 
 const inventory=await bundledSkills(stageDir);
 const sounds=await checkSoundCatalog(stageDir);
+const references=await checkMotionCraft(stageDir);
 console.log(`stage-docs: staged ${inventory.count} bundled skills and the public docs at ${stageDir}`);
 console.log(`stage-docs: verified ${sounds.count} sounds (${sounds.mebibytes} MiB), hashes and licenses`);
+console.log(`stage-docs: verified ${references.references} Motion Lab/Huashu references and their original notices`);

@@ -1,0 +1,18 @@
+{
+  "integratedAt": "2026-10-28",
+  "sources": [
+    {
+      "name": "AICSS Reasoning Effort",
+      "license": "MIT",
+      "url": "https://www.aicss.dev/components/reasoning-effort",
+      "registry": "https://www.aicss.dev/r/reasoning-effort.json",
+      "source": "src/mirel-chat/features/agents/reasoning-effort/source.json"
+    },
+    {
+      "name": "React Bits Pixel Card",
+      "license": "MIT + Commons Clause",
+      "url": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Components/PixelCard",
+      "source": "src/mirel-chat/features/agents/reasoning-effort/pixel-card/source.json"
+    }
+  ]
+}

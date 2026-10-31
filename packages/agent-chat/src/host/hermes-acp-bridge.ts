@@ -1,5 +1,6 @@
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
+import { HERMES_GATEWAY_BRIDGE } from './hermes-gateway-bridge';
 
 /** Runs inside Hermes's own interpreter; the installed sources/profile stay intact. */
 export const HERMES_ACP_BRIDGE = String.raw`
@@ -134,7 +135,19 @@ if __name__ == '__main__':
 `;
 
 /** Only known native Hermes venv entrypoints use the shim; arbitrary ACP stays native. */
-export async function hermesAcpLaunch(command: string, args: string[], profileDir: string): Promise<{ command: string; args: string[] } | undefined> {
+export async function hermesAcpLaunch(command: string, args: string[], profileDir: string, sharedRuntime = false): Promise<{ command: string; args: string[] } | undefined> {
+  if (sharedRuntime) {
+    const entry = "runpy.run_module('acp_adapter.entry', run_name='__main__', alter_sys=True)";
+    const index = args.indexOf('-c') + 1;
+    // Only the official bootstrap obtained from --print-runtime-command is adapted.
+    if (index < 1 || !args[index]?.endsWith(entry)) throw Error('Formato del runtime de Hermes no compatible.');
+    await mkdir(profileDir, { recursive: true });
+    const script = join(profileDir, 'syka-hermes-gateway-acp-v1.py');
+    if (await readFile(script, 'utf8').catch(() => '') !== HERMES_GATEWAY_BRIDGE) await writeFile(script, HERMES_GATEWAY_BRIDGE, 'utf8');
+    const launch = [...args];
+    launch[index] = args[index]!.slice(0, -entry.length) + `runpy.run_path(${JSON.stringify(script)}, run_name='__main__')`;
+    return { command, args: launch };
+  }
   const binary = basename(command).toLowerCase();
   if (!(binary === 'hermes-acp.exe' || binary === 'hermes-acp') || args.length) return undefined;
   const python = join(dirname(command), process.platform === 'win32' ? 'python.exe' : 'python');

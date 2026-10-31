@@ -29,7 +29,7 @@ export interface FsEntry {
 export interface ProjectFS {
 	/** The manifest as plain data, or null when the project has none yet. */
 	readManifest(): Promise<unknown>;
-	writeManifest(manifest: Manifest): Promise<void>;
+	writeManifest(manifest: Manifest, options?: { recordHistory?: boolean }): Promise<void>;
 	/** Entries of a directory (project-relative or absolute); [] when missing. */
 	list(source: string): Promise<FsEntry[]>;
 	/** Size and mtime of a file, or null when it does not exist. */

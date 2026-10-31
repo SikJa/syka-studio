@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": [
+        {
+          "name": "syka-motion-references",
+          "sectionId": "brief",
+          "when": "Sólo producción nueva o referencia/dirección aún no resuelta"
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-motion-direction",
+          "sectionId": "build",
+          "when": "Si el plan resuelto requiere construir motion de varios beats"
+        },
+        {
+          "name": "syka-product-launch",
+          "sectionId": "build",
+          "when": "Sólo anuncios o demos de lanzamiento"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": [
+        {
+          "name": "syka-edit-review",
+          "sectionId": "review",
+          "when": "Cuando revisar la pieza completa requiere criterios adicionales"
+        }
+      ]
+    }
+  ]
+}

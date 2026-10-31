@@ -57,7 +57,6 @@ export async function transcribeWithGroq(blob: Blob, signal?: AbortSignal, proje
     // Correct once after merging, so a phrase can straddle caption groups or
     // ten-minute chunks. Raw provider timing stays in the reusable disk cache.
     const result = await mainBridge.call(MAIN_CHANNELS.SYKA_GLOSSARY_APPLY_TRANSCRIPT, { segments });
-    if (project) void notifyOperation(project, { kind: 'transcription', operationId, message: 'La transcripción está lista en el proyecto.' });
     return result;
   } catch (error) {
     if (project && !signal?.aborted) void notifyOperation(project, { kind: isAuthenticationError((error as Error).message) ? 'auth' : 'blocked', provider: 'groq', operationId, message: (error as Error).message });

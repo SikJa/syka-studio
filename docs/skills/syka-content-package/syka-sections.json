@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": [
+        {
+          "name": "syka-content-package",
+          "sectionId": "brief",
+          "file": "references/approved-context.md",
+          "when": "Sólo si la memoria del chat no entrega contexto suficiente"
+        },
+        {
+          "name": "syka-content-package",
+          "sectionId": "brief",
+          "file": "references/persistence.md",
+          "when": "Sólo si no existe integración de memoria y se usa ese único backend"
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": []
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": []
+    }
+  ]
+}

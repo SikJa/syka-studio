@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { motionPlan, MOTION_USES } from '../src/host/motion-plan';
 import { WorkspaceTools, WORKSPACE_TOOLS } from '../src/host/workspace-tools';
 import { chatInstructions } from '../src/host/harness';
+import { motionReviewSchedule } from '../src/host/motion-review-schedule';
 
 export const fixture = () => ({
   brief: { purpose: 'Mostrar que el silencio comunica', audience: 'Personas que ven un reel en el móvil', useCase: 'typography', language: 'es',
@@ -17,6 +18,28 @@ export const fixture = () => ({
 });
 
 describe('production plan compiler', () => {
+  it('discloses omitted checkpoints for long beat maps and never treats a named anchor as resolved timing', () => {
+    const beats = Array.from({ length: 20 }, (_, i) => ({ id: 'beat-' + i, start: i * 3, end: i * 3 + 3, holdStart: i * 3 + .4, holdEnd: i * 3 + 2.5, copy: ['Leer'], review: [] }));
+    const events = beats.map((beat, i) => ({ id: 'event-' + i, plannedSeconds: beat.end, kind: 'review', nativeAnchor: { element: beat.id } }));
+    const schedule = motionReviewSchedule(beats, events, 60, 30);
+    expect(schedule.coverage).toMatchObject({ selectedEvents: 12, omittedEvents: 8, selectedReadingTimes: 12, omittedReadingBeats: 8, omittedTransitions: 8 });
+    expect(schedule.events[0]).toMatchObject({ hasNativeAnchor: true, timingEvidence: 'planned' });
+  });
+  it('derives review and playback checkpoints from reading holds and retimed events', () => {
+    const input = fixture();
+    const before = motionPlan(input).plan!.reviewSchedule;
+    expect(before).toMatchObject({ timebase: 'composition-seconds', focusTime: 11.5, opening: 0,
+      events: [{ id: 'phrase-exit', seconds: 11.5 }], playbackContract: { status: 'needs_runtime_evidence', sourceExportCorrespondence: 'unverified' } });
+    expect(before.readingTimes[0]).toBeCloseTo(5.9667, 3);
+    input.beats[0]!.holdEnd = 1.2;
+    const revised = motionPlan(input);
+    expect(revised.plan!.reviewSchedule.focusTime).toBe(1.2);
+    expect(revised.plan!.reviewSchedule.readingTimes).toEqual([.8]);
+    expect(revised.warnings!.some(warning => warning.includes('revisar lectura'))).toBe(true);
+    const seeks = revised.plan!.reviewSchedule.playbackContract.seekSequence;
+    expect(seeks[1]).toBe(seeks[3]);
+    expect(revised.productionPrompt).toContain('No revisar cada tres segundos');
+  });
   it('asks for sound and delivery in every use case without silently choosing them', () => {
     for (const useCase of MOTION_USES) {
       const result = motionPlan({ brief: { purpose: 'Una idea', useCase } });

@@ -1,0 +1,45 @@
+{
+  "provider": "OpenDesign",
+  "ref": "open-design-v0.25.0",
+  "license": "Apache-2.0",
+  "licenseSha256": "9d95806a26532623360eb84bb17d298f394b55ef73fb4c0796d99b4319b2b0da",
+  "originalProceduralScores": true,
+  "originalReferencePostAudio": false,
+  "files": [
+    {
+      "path": "opendesign/product-promo.mp3",
+      "sha256": "74520960e8bec189417cc873395d296a9a94feb81697b5d15d3431968909ba4e",
+      "gitBlob": "dee302412e99efd14b3762caf33d1ebf95a1c5da",
+      "sourceUrl": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-product-promo/assets/soundtrack.mp3",
+      "packageManifest": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-product-promo/open-design.json"
+    },
+    {
+      "path": "opendesign/showreel.mp3",
+      "sha256": "04c3ddb8f08024ac35a1fc4be9e2ed604859039c5a3c57f4c93585afaa53532d",
+      "gitBlob": "28a5b5ca2f03962d6b77a198fce8494f7c1f7079",
+      "sourceUrl": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-showreel/assets/soundtrack.mp3",
+      "packageManifest": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-showreel/open-design.json"
+    },
+    {
+      "path": "opendesign/ui-morph.mp3",
+      "sha256": "2dfacaac7bdc41cab4db549cbfdefd6ea875d4da383c7121aab21b5697d55ca3",
+      "gitBlob": "fb05f6465b72e3300b6f2c8501d306783ca2e3e2",
+      "sourceUrl": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-ui-morph/assets/soundtrack.mp3",
+      "packageManifest": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-ui-morph/open-design.json"
+    },
+    {
+      "path": "opendesign/visual-lesson.mp3",
+      "sha256": "1edb7ec6de8f0600c2d6a0e4212344fbd54bb81dac71100ec3ecf9d5cef1dc47",
+      "gitBlob": "350d921c5236bb4df05c1c8caaee51555c3f122d",
+      "sourceUrl": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-visual-lesson/assets/soundtrack.mp3",
+      "packageManifest": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-visual-lesson/open-design.json"
+    },
+    {
+      "path": "opendesign/future.mp3",
+      "sha256": "131d9e1832be0d41531fadbf35bbe9e8edae06c788c7929843b510697dc25375",
+      "gitBlob": "37447f0d4053d5620b4fb64582c6aac1c3069d27",
+      "sourceUrl": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-future/assets/soundtrack.mp3",
+      "packageManifest": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-future/open-design.json"
+    }
+  ]
+}

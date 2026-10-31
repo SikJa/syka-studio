@@ -2,6 +2,14 @@ const args = process.argv.slice(2);
 if (args.includes('--version')) { console.log(args.includes('wrong-binary') ? '1.3.14' : args.includes('old-usage') ? '2.1.276 (Claude Code)' : '2.1.289 (Claude Code)'); process.exit(0); }
 if (args.includes('status')) { console.log(JSON.stringify({ loggedIn: !args.includes('signed-out') })); process.exit(0); }
 if (args.includes('login')) process.exit(0);
+if (args.includes('--input-format')) {
+  const {createInterface}=await import('node:readline');
+  const lines=createInterface({input:process.stdin});
+  for await(const line of lines){const request=JSON.parse(line);if(request.request?.subtype==='initialize'){
+    console.log(JSON.stringify({type:'control_response',response:{request_id:request.request_id,response:{models:[]}}}));break;
+  }}
+  process.exit(0);
+}
 let input = ''; for await (const c of process.stdin) input += c;
 const send = m => process.stdout.write(JSON.stringify(m) + '\n');
 const sessionId = args[args.indexOf(args.includes('--resume') ? '--resume' : '--session-id') + 1];
@@ -21,8 +29,8 @@ else {
     send({ type: 'assistant', session_id: sessionId, message: { id: 'native-api-response', model: 'claude-opus', content: [], usage: { input_tokens: 10, output_tokens: 1, cache_read_input_tokens: 30, cache_creation_input_tokens: 5 } } });
     const multiplier = args.includes('--resume') && !args.includes('old-usage') ? 2 : 1;
     send({ type: 'result', session_id: sessionId, is_error: input === 'fail', modelUsage: {
-      'claude-opus': { inputTokens: 10 * multiplier, outputTokens: 20 * multiplier, cacheReadInputTokens: 30 * multiplier, cacheCreationInputTokens: 5 * multiplier },
-      'claude-haiku': { inputTokens: 4 * multiplier, outputTokens: 6 * multiplier, cacheReadInputTokens: 0, cacheCreationInputTokens: 0 },
+      'claude-opus': { inputTokens: 10 * multiplier, outputTokens: 20 * multiplier, cacheReadInputTokens: 30 * multiplier, cacheCreationInputTokens: 5 * multiplier, contextWindow:1000 },
+      'claude-haiku': { inputTokens: 4 * multiplier, outputTokens: 6 * multiplier, cacheReadInputTokens: 0, cacheCreationInputTokens: 0, contextWindow:200 },
     }, usage: { input_tokens: 10, output_tokens: 20, cache_read_input_tokens: 30, cache_creation_input_tokens: 5 } });
   } else send({ type: 'result', is_error: input === 'fail' });
 }

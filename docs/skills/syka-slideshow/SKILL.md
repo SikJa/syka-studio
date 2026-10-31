@@ -3,16 +3,24 @@ name: syka-slideshow
 description: Diseñar una presentación por diapositivas o convertirla en video editable dentro de Syka, conservando marca, ritmo de lectura y revelados por idea.
 ---
 
-# Presentación y video son entregables distintos
+# Presentaciones audiovisuales editables
 
-Confirmá desde el pedido si se busca un video de diapositivas o un deck navegable. No prometas un presenter mode integrado a Syka: no existe ese contrato nativo. Si está claro que quiere video, avanzá sin preguntar de nuevo. Una presentación interactiva puede entregarse como HTML local separado si fue solicitada; no se convierte en función del editor por crear ese archivo.
+## Contract
 
-Leé la receta y `syka-visual-direction`. Construí un argumento con títulos concretos, una idea principal por estado y evidencia legible. Conservá texto exacto, fuentes de datos y marca. Usá un layout por tipo de información: comparación, proceso, dato, imagen o resumen. No fuerces toda la presentación al mismo rectángulo.
+Syka entrega una composición audiovisual nativa editable dentro del proyecto. El pedido actual manda: conservá originales, voz, estilo/geometría aprobados y edición nativa. Un plan sólo es entrega si se pidió plan; al editar, aplicá la composición y comprobala. Un fallo deja verificaciones pendientes o bloqueadas, nunca habilita otra app, juego, web o motor como sustituto. Exportá sólo ante pedido explícito.
 
-Para video, traducí cada diapositiva a un grupo/secuencia nombrado dentro de la composición actual. El fondo y elementos persistentes conservan identidad; los revelados siguen la lectura o la voz. Leé JSX/sequence/timing y `syka-motion-transitions` para su implementación real. Mantené todos los elementos editables y no importes un MP4 generado en otro motor.
+En Syka la entrega es una presentación audiovisual con escenas nativas editables. No existe presenter mode, deck navegable ni export de ramas/hotspots en el runtime. Si se pidió una app/deck interactivo, explicá el alcance antes de construir; nunca sustituyas un video pedido por un HTML separado.
 
-Para deck HTML separado, usá navegación de teclado accesible, índice y notas sólo si hacen falta; deshabilitá animación automática para movimiento reducido. Indicá el archivo y el modo de abrirlo, diferenciándolo del video. No afirmes exportar ramas/hotspots a MP4 ni que la timeline maneja interactividad.
+Leé sólo la fase necesaria. Las dependencias del índice son condicionales, nunca lecturas recursivas. Una corrección puntual reutiliza decisiones vigentes y su source; no repite brief, investigación ni consulta de producción nueva.
 
-Comprobá texto, contraste, avance y tiempo de lectura. Para una variante video, comprobá además duración y transiciones en preview/export.
+## Brief
 
-Adaptación original de `slideshow` de HyperFrames; la presentación navegable upstream no está portada al runtime Diffusion.
+Reutilizá la receta y la dirección aprobadas. Si está claro que quiere video, avanzá sin preguntar de nuevo. Resolvé argumento, texto exacto, fuentes de datos, marca y destino. Cada estado comunica una idea con evidencia legible; el contenido define la cantidad de escenas.
+
+## Build
+
+Traducí cada diapositiva a un grupo/secuencia nombrado dentro de la composición actual. Conservá fondos y objetos persistentes; los revelados siguen lectura o voz. Elegí layout por comparación, proceso, dato, imagen o resumen. Leé sólo la referencia JSX/sequence/timing necesaria y la sección build de syka-motion-transitions si falta implementar una transición. Mantené todos los elementos editables, sin importar un MP4 de otro motor.
+
+## Review
+
+Comprobá copy, contraste, jerarquía, duración de lectura y transiciones en preview nativa. Verificá seek directo y hacia atrás al mismo tiempo. Revisá un export sólo si fue solicitado y existe. Adaptación de la intención audiovisual de slideshow/HyperFrames; su presentación interactiva no está portada a Diffusion.

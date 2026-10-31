@@ -17,7 +17,7 @@ export default defineConfig(() => {
   return {
     esbuild: { jsx: 'automatic' as const, jsxImportSource: 'react' },
     publicDir: './syka-public',
-    build: { emptyOutDir: true, rollupOptions: { input: { index: resolve(__dirname, 'index.html'), notifications: resolve(__dirname, 'notifications.html') } } },
+    build: { emptyOutDir: true, rollupOptions: { input: { index: resolve(__dirname, 'index.html'), notifications: resolve(__dirname, 'notifications.html'), preview: resolve(__dirname, 'preview-worker.html') } } },
     plugins: [
       uiI18nPlugin(),
       solid({ exclude: /mirel-chat|boardui-react/ }),

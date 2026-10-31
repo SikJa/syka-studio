@@ -5,12 +5,16 @@ import { createEngine } from '@/engine/create-engine';
 vi.mock('somoto', () => ({toast: vi.fn()}));
 
 // Rendering is not exercised, but the renderer allocates its identity matrix.
+// Module-level code also reads window (UI stores) and schedules animation frames (animejs).
 vi.hoisted(() => {
   vi.stubGlobal('DOMMatrix', class {});
   vi.stubGlobal('DOMRect', class {});
   vi.stubGlobal('Path2D', class {});
   vi.stubGlobal('localStorage', {getItem: () => null, setItem: () => {}, removeItem: () => {}});
-  vi.stubGlobal('document', {fonts: {addEventListener: () => {}}});
+  vi.stubGlobal('document', {fonts: {addEventListener: () => {}}, addEventListener: () => {}, removeEventListener: () => {}});
+  vi.stubGlobal('window', {});
+  vi.stubGlobal('requestAnimationFrame', () => 0);
+  vi.stubGlobal('cancelAnimationFrame', () => {});
 });
 
 afterEach(() => vi.unstubAllGlobals());
@@ -19,7 +23,10 @@ beforeEach(() => {
   vi.stubGlobal('DOMRect', class {});
   vi.stubGlobal('Path2D', class {});
   vi.stubGlobal('localStorage', {getItem: () => null, setItem: () => {}, removeItem: () => {}});
-  vi.stubGlobal('document', {fonts: {addEventListener: () => {}}});
+  vi.stubGlobal('document', {fonts: {addEventListener: () => {}}, addEventListener: () => {}, removeEventListener: () => {}});
+  vi.stubGlobal('window', {});
+  vi.stubGlobal('requestAnimationFrame', () => 0);
+  vi.stubGlobal('cancelAnimationFrame', () => {});
 });
 
 describe('canvas releases and floating editor controls', () => {

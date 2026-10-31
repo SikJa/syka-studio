@@ -20,7 +20,7 @@ import {
 import './projects-menu.css';
 
 export type ProjectActivity = 'running' | 'waiting' | 'idle' | 'unknown';
-export type SwitcherProject = Pick<ProjectInfo, 'id' | 'name' | 'dir' | 'displayName' | 'modifiedAt'>;
+export type SwitcherProject = Pick<ProjectInfo, 'id' | 'name' | 'dir' | 'displayName' | 'modifiedAt' | 'trialOf'>;
 
 const activityLabels: Record<ProjectActivity, string> = {
   running: 'Trabajando', waiting: 'Esperando tu respuesta', idle: '', unknown: 'Estado no disponible',
@@ -35,6 +35,7 @@ export function ProjectsMenuList(props: {
   error?: boolean;
   switchingId?: string | null;
   onSelect: (project: SwitcherProject) => void;
+  onContextRequest?: (project: SwitcherProject, point: { x: number; y: number }) => void;
 }) {
   const sorted = createMemo(() => {
     const rank = { running: 0, waiting: 1, idle: 2, unknown: 2 };
@@ -62,6 +63,17 @@ export function ProjectsMenuList(props: {
         title={`${entry.displayName}\n${entry.dir}${activityLabels[activity()] ? '\n' + activityLabels[activity()] : ''}`}
         disabled={!!props.switchingId}
         onSelect={() => props.onSelect(entry)}
+        onContextMenu={event => {
+          if (!props.onContextRequest || props.switchingId) return;
+          event.preventDefault(); event.stopPropagation();
+          props.onContextRequest(entry, { x: event.clientX, y: event.clientY });
+        }}
+        onKeyDown={event => {
+          if (!props.onContextRequest || props.switchingId || !(event.key === 'ContextMenu' || event.shiftKey && event.key === 'F10')) return;
+          event.preventDefault(); event.stopPropagation();
+          const rect = event.currentTarget.getBoundingClientRect();
+          props.onContextRequest(entry, { x: rect.left + 20, y: rect.bottom });
+        }}
       >
         <span class="syka-project-menu-current" aria-hidden="true">{current() ? '✓' : ''}</span>
         <span class="syka-project-menu-name">{entry.displayName}</span>
@@ -76,7 +88,7 @@ export function ProjectsMenuList(props: {
 }
 
 /** Reads project/chat summaries; changing projects never cancels a chat turn. */
-export function ProjectsMenu() {
+export function ProjectsMenu(props: { onContextRequest?: (project: SwitcherProject, point: { x: number; y: number }) => void } = {}) {
   const project = useProject();
   const navigate = useNavigate();
   const location = useLocation();
@@ -138,7 +150,7 @@ export function ProjectsMenu() {
     <DropdownMenuPortal>
       <DropdownMenuSubContent class="syka-projects-submenu" aria-label="Cambiar de proyecto">
         <ProjectsMenuList projects={projects() ?? []} currentId={project.id()} activity={activity}
-          loading={projects.loading} error={!!projects.error} switchingId={switchingId()} onSelect={entry => { void switchTo(entry); }} />
+          loading={projects.loading} error={!!projects.error} switchingId={switchingId()} onSelect={entry => { void switchTo(entry); }} onContextRequest={props.onContextRequest} />
       </DropdownMenuSubContent>
     </DropdownMenuPortal>
   </DropdownMenuSub>;

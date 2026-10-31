@@ -104,7 +104,7 @@ export function MessageBubble({ sectionId, agent, message, renderBody, sending, 
     <SelectionActions onDescribe={context=>onCommand('Explicá este texto: '+context.text)} onChange={context=>onCommand((context.instruction??'Mejorá el texto seleccionado')+'\n\n'+context.text)}><article id={sectionId} className={`agent-chat-message ${assistant ? "assistant" : "user"}`}>
       <header className="agent-message-header">
         {assistant ? hideIdentityOrb ? <span className="syka-orb-anchor" data-chat-orb-anchor="response" aria-hidden="true" /> : <><AgentResponseOrb agent={agent} reducedMotion={reducedMotion}/><strong>{agent.name}</strong></> : <strong>Vos</strong>}
-        <time>{formatTime(message.createdAt)}</time>
+        {message.createdAt&&Number.isFinite(Date.parse(message.createdAt))?<time dateTime={message.createdAt}>{formatTime(message.createdAt)}</time>:null}
       </header>
       {assistant ? <div className="agent-message-surface"><>{sending?<ParticleStreamingText body={responseBody}/>:<AgentRichText body={responseBody}/>}</></div> : <AgentRichText body={message.content}/>}
       {!sending && responseBody.length > 600 ? <AgentTextDocumentButton body={responseBody}/> : null}

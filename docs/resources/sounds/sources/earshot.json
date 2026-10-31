@@ -1,0 +1,5081 @@
+{
+  "version": 3,
+  "provider": "Earshot",
+  "commit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+  "sourceTreeSha256": "f7e44e82ab47496d12af5cc19072cb0d264786cf8b9135ff4408517448837f49",
+  "selectionSha256": "69c77d15fa307d8b3871f5c6d2fcbb70b23848be323aadef9164090f7c075cec",
+  "repository": "https://github.com/Leonxlnx/earshot",
+  "render": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "bitDepth": 24,
+    "modelsLoaded": false,
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "adaptation": "Unmodified bank.render and kit.render_take; PCM WAV packaging by Syka"
+  },
+  "files": [
+    {
+      "path": "earshot/fit/bell/small_bell.wav",
+      "sha256": "103fbf58e580018e83a80cadc8f7e93d124e21f1ccbb62d4d5580e81eb3491bf",
+      "sourceCue": "fit/bell/small_bell",
+      "recipeSha256": "1284a1f684f59a0d8caef401c0bdf2f465a31b5ee02bcc35a0bcde54f4e15896",
+      "recordingSource": {
+        "id": "fs-452379",
+        "title": "Small Bell #2",
+        "author": "steffcaffrey",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/steffcaffrey/sounds/452379/"
+      },
+      "measurements": {
+        "id": "fit/bell/small_bell",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0012,
+        "peak_s": 0.0625,
+        "end_s": 0.89,
+        "dur_s": 1.66,
+        "peak_db": -6,
+        "lufs_m_max": -14.4,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/bell/small_bell: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -92.2,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -216.4,
+            "ring_z": 14.6,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 3.5,
+            "attack_ms": 48.5,
+            "t40_ms": 630,
+            "crest_db": 1.8,
+            "res_db": 60,
+            "res_hz": 4032,
+            "peak_dbfs": -6,
+            "live_ms": 650.25
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0.1,
+            "from_s": 0.026,
+            "to_s": 0.046
+          },
+          "layers": {
+            "attacks": [
+              0.058
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/bell/small_bell"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/click/floss_lid.wav",
+      "sha256": "b554ca1fbb115dc50437fc098edbad396b16b6e9bec1e68096589fb20d64eb62",
+      "sourceCue": "fit/click/floss_lid",
+      "recipeSha256": "9c458aeeedc95dd53bd6eb50c8b5f8384eb081293e6580fb56d8715516a611d1",
+      "recordingSource": {
+        "id": "fs-167829",
+        "title": "Plastic Clicks.flac",
+        "author": "qubodup",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/qubodup/sounds/167829/"
+      },
+      "measurements": {
+        "id": "fit/click/floss_lid",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.004,
+        "peak_s": 0.0075,
+        "end_s": 0.069,
+        "dur_s": 0.132,
+        "peak_db": -6,
+        "lufs_m_max": -30.2,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/click/floss_lid: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -87.1,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -117.6,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 0.75,
+            "t40_ms": 60,
+            "crest_db": 17.5,
+            "res_db": 9.1,
+            "res_hz": 2892,
+            "peak_dbfs": -6,
+            "live_ms": 49.5
+          },
+          "glide": {
+            "tonal_share": 0.2,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/click/floss_lid"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/hit/bamboo_tok.wav",
+      "sha256": "670a7b24b63a5d21a2140a110a5c6b66c140f3b044873e22013bba2d435d1df7",
+      "sourceCue": "fit/hit/bamboo_tok",
+      "recipeSha256": "642ce8711002c52e620c6d65691dd08aa8c1b99f50ab455d0a4821e00cb4975e",
+      "recordingSource": {
+        "id": "fs-386888",
+        "title": "Bamboo hit",
+        "author": "michorvath",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/michorvath/sounds/386888/"
+      },
+      "measurements": {
+        "id": "fit/hit/bamboo_tok",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.007,
+        "peak_s": 0.0115,
+        "end_s": 0.102,
+        "dur_s": 0.17,
+        "peak_db": -6,
+        "lufs_m_max": -32.77,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/hit/bamboo_tok: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -82.1,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -107.4,
+            "ring_z": 6.3,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 2,
+            "t40_ms": 100,
+            "crest_db": 17.1,
+            "res_db": 10.6,
+            "res_hz": 483,
+            "peak_dbfs": -6,
+            "live_ms": 80
+          },
+          "glide": {
+            "tonal_share": 0,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/hit/bamboo_tok"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/key.space/thock_space.wav",
+      "sha256": "d16674974e9d203a35a128e6a5804252b60b49a98e4c62d75a6df44d0766eb4b",
+      "sourceCue": "fit/key.space/thock_space",
+      "recipeSha256": "35b0e76bb6fe492f3ea8fd8c6c17dc5c4e8481ac07cd03af0ac341a92d5be6a0",
+      "recordingSource": {
+        "id": "fs-789630",
+        "title": "Keychron k10 space_bar",
+        "author": "Sadiquecat",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/Sadiquecat/sounds/789630/"
+      },
+      "measurements": {
+        "id": "fit/key.space/thock_space",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0065,
+        "peak_s": 0.0205,
+        "end_s": 0.277,
+        "dur_s": 0.39,
+        "peak_db": -6,
+        "lufs_m_max": -29.16,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/key.space/thock_space: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -125.8,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -162,
+            "ring_z": 4.3,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 4.3,
+            "attack_ms": 2,
+            "t40_ms": 230,
+            "crest_db": 14.7,
+            "res_db": 7.9,
+            "res_hz": 2263,
+            "peak_dbfs": -6,
+            "live_ms": 196.25
+          },
+          "glide": {
+            "tonal_share": 0.74,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.028
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/key.space/thock_space"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/key/lubed.wav",
+      "sha256": "83aa26a7dc32d68912ffcbff94d7b4bdf43c4412656da7fdb3b52281f49a6a57",
+      "sourceCue": "fit/key/lubed",
+      "recipeSha256": "dc714a2ac75837d58a663d469a71e4bd5a7e292b69961d078087aad85e837ae8",
+      "recordingSource": {
+        "id": "fs-665075",
+        "title": "Keyboard typing sounds: Unidentified Technics keyboard",
+        "author": "zrrion",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/zrrion/sounds/665075/"
+      },
+      "measurements": {
+        "id": "fit/key/lubed",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0622,
+        "peak_s": 0.0755,
+        "end_s": 0.323,
+        "dur_s": 0.4245,
+        "peak_db": -6,
+        "lufs_m_max": -27.64,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "tail",
+              "msg": "the tail rises again by 12 dB (a second event, a roll or a double member)"
+            }
+          ],
+          "summary": "fit/key/lubed: clean (the tail rises again by 12 dB (a second event, a roll or a double member))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -67.7,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -125.1,
+            "ring_z": 14.2,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 12.1,
+            "attack_ms": 1,
+            "t40_ms": 240,
+            "crest_db": 16.3,
+            "res_db": 9.5,
+            "res_hz": 8667,
+            "peak_dbfs": -6,
+            "live_ms": 212.75
+          },
+          "glide": {
+            "tonal_share": 0.5,
+            "rise_st": 0.3,
+            "from_s": 0.151,
+            "to_s": 0.156
+          },
+          "layers": {
+            "attacks": [
+              0.077,
+              0.158
+            ],
+            "count": 2,
+            "pre_swell_ms": 10
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/key/lubed"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/key/medium.wav",
+      "sha256": "ba70e8a2999252517c6ccc4fc4d1de75c6720fb223a6d4ede6fb46f31871c81d",
+      "sourceCue": "fit/key/medium",
+      "recipeSha256": "f9092c44ec0ec99b0ce8dbb49e840380bf3dd32a97260d2f46cfb2972c789c86",
+      "recordingSource": {
+        "id": "fs-378084",
+        "title": "mechanical key medium.wav",
+        "author": "bigmonmulgrew",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/bigmonmulgrew/sounds/378084/"
+      },
+      "measurements": {
+        "id": "fit/key/medium",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0932,
+        "peak_s": 0.1035,
+        "end_s": 0.372,
+        "dur_s": 0.4265,
+        "peak_db": -6,
+        "lufs_m_max": -29.95,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "tail",
+              "msg": "the tail rises again by 10 dB (a second event, a roll or a double member)"
+            }
+          ],
+          "summary": "fit/key/medium: clean (the tail rises again by 10 dB (a second event, a roll or a double member))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -62,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -111.6,
+            "ring_z": 6.6,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 9.5,
+            "attack_ms": 0.75,
+            "t40_ms": 270,
+            "crest_db": 17.4,
+            "res_db": 5.7,
+            "res_hz": 2614,
+            "peak_dbfs": -6,
+            "live_ms": 194.5
+          },
+          "glide": {
+            "tonal_share": 0,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.107
+            ],
+            "count": 1,
+            "pre_swell_ms": 75
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/key/medium"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/key/thock.wav",
+      "sha256": "4e3a60ae95b5598e57b57c31fb76de33a581380cc1662c0486bf6a504bb5d821",
+      "sourceCue": "fit/key/thock",
+      "recipeSha256": "bca7bf12aa92dd150ef49586f90632c4866897f8b59879d437a0f8df15db9597",
+      "recordingSource": {
+        "id": "fs-789628",
+        "title": "Keychron k10 A to + individual keys",
+        "author": "Sadiquecat",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/Sadiquecat/sounds/789628/"
+      },
+      "measurements": {
+        "id": "fit/key/thock",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0048,
+        "peak_s": 0.0145,
+        "end_s": 0.31,
+        "dur_s": 0.4541,
+        "peak_db": -6,
+        "lufs_m_max": -31.41,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/key/thock: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -79.6,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -179.5,
+            "ring_z": 12.1,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 3.2,
+            "attack_ms": 0.75,
+            "t40_ms": 270,
+            "crest_db": 18.2,
+            "res_db": 8.1,
+            "res_hz": 1252,
+            "peak_dbfs": -6,
+            "live_ms": 228
+          },
+          "glide": {
+            "tonal_share": 0.82,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.022
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/key/thock"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/land.light/finger_phone.wav",
+      "sha256": "9b9d94065f7ce1f7507f6842eeba9ff306e8aec8ee9c05ed99792402d7a81c39",
+      "sourceCue": "fit/land.light/finger_phone",
+      "recipeSha256": "92c589401c1e6221753271b40e720f17565757a074c7fa4cca15de2caaac9370",
+      "recordingSource": {
+        "id": "fs-704862",
+        "title": "Finger Tapping Phone",
+        "author": "jentlemen",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/jentlemen/sounds/704862/"
+      },
+      "measurements": {
+        "id": "fit/land.light/finger_phone",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0082,
+        "peak_s": 0.0125,
+        "end_s": 0.155,
+        "dur_s": 0.331,
+        "peak_db": -6,
+        "lufs_m_max": -29.3,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/land.light/finger_phone: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -57.6,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -134.7,
+            "ring_z": 5.1,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.2,
+            "attack_ms": 1.5,
+            "t40_ms": 150,
+            "crest_db": 13.6,
+            "res_db": 5.5,
+            "res_hz": 1671,
+            "peak_dbfs": -6,
+            "live_ms": 85.75
+          },
+          "glide": {
+            "tonal_share": 0.9,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/land.light/finger_phone"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/land.light/finger_wood.wav",
+      "sha256": "78ac8f26ae324fbc7cbc26c82403e5a5a4aeeefd54766b2275e6fa3e03d2381f",
+      "sourceCue": "fit/land.light/finger_wood",
+      "recipeSha256": "35637948dac2e833c595d80cd4941f1ddeb13fd76068c06f863617ecf51de210",
+      "recordingSource": {
+        "id": "fs-452621",
+        "title": "finger tap table counter wood various.wav",
+        "author": "kyles",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/kyles/sounds/452621/"
+      },
+      "measurements": {
+        "id": "fit/land.light/finger_wood",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.005,
+        "peak_s": 0.0095,
+        "end_s": 0.222,
+        "dur_s": 0.339,
+        "peak_db": -6,
+        "lufs_m_max": -24.96,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/land.light/finger_wood: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -70.8,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -121.4,
+            "ring_z": 4.5,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 5.25,
+            "t40_ms": 200,
+            "crest_db": 12.6,
+            "res_db": 6.3,
+            "res_hz": 163,
+            "peak_dbfs": -6,
+            "live_ms": 149
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/land.light/finger_wood"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/land.light/fingertip_book.wav",
+      "sha256": "a480e4cf15ff1641edfb2c2af78d17a490adb94f17dfb3571a19469f59d5358b",
+      "sourceCue": "fit/land.light/fingertip_book",
+      "recipeSha256": "91a55d931f19da1b9b07d300095c505442fe617806049785f84134678e304f31",
+      "recordingSource": {
+        "id": "fs-760337",
+        "title": "Light Footsteps On Book",
+        "author": "IENBA",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/IENBA/sounds/760337/"
+      },
+      "measurements": {
+        "id": "fit/land.light/fingertip_book",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0045,
+        "peak_s": 0.0095,
+        "end_s": 0.192,
+        "dur_s": 0.375,
+        "peak_db": -6,
+        "lufs_m_max": -24.84,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/land.light/fingertip_book: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -69.8,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -163.2,
+            "ring_z": 3.3,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 2.9,
+            "attack_ms": 3.5,
+            "t40_ms": 180,
+            "crest_db": 12.1,
+            "res_db": 4,
+            "res_hz": 146,
+            "peak_dbfs": -6,
+            "live_ms": 88.75
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 1,
+            "from_s": 0.016,
+            "to_s": 0.036
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/land.light/fingertip_book"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/pop/lip_pop.wav",
+      "sha256": "a667f518c57c24275ffb810a2ce934c091ef8a0bba4c3d627a97ef543314942a",
+      "sourceCue": "fit/pop/lip_pop",
+      "recipeSha256": "ceeecc1e1c56c8e08f6a22c5a7ad9f24f4acabb6aca1ec08e45591dc4e61b2b3",
+      "recordingSource": {
+        "id": "fs-202230",
+        "title": "Pop sound",
+        "author": "deraj",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/deraj/sounds/202230/"
+      },
+      "measurements": {
+        "id": "fit/pop/lip_pop",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0052,
+        "peak_s": 0.0095,
+        "end_s": 0.166,
+        "dur_s": 0.221,
+        "peak_db": -6,
+        "lufs_m_max": -22.57,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/pop/lip_pop: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -78.9,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -155.7,
+            "ring_z": 3.8,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 1.5,
+            "t40_ms": 150,
+            "crest_db": 10.1,
+            "res_db": 11.3,
+            "res_hz": 3342,
+            "peak_dbfs": -6,
+            "live_ms": 136
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 2,
+            "from_s": 0.091,
+            "to_s": 0.121
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/pop/lip_pop"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/pop/mouth_plop.wav",
+      "sha256": "986950324da9cb983e5636dfa628b5085ea1cb64c845945df2f4c8e4fd9d1e1e",
+      "sourceCue": "fit/pop/mouth_plop",
+      "recipeSha256": "cc80f2000ed313657f693629cced6d4e3a3fc896549e663cfd2202a6f0a5aea9",
+      "recordingSource": {
+        "id": "fs-181907",
+        "title": "Mouth Plops.wav",
+        "author": "CapsLok",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/CapsLok/sounds/181907/"
+      },
+      "measurements": {
+        "id": "fit/pop/mouth_plop",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.008,
+        "peak_s": 0.0145,
+        "end_s": 0.192,
+        "dur_s": 0.2808,
+        "peak_db": -6,
+        "lufs_m_max": -26.97,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/pop/mouth_plop: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -97.7,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -141,
+            "ring_z": 3.1,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.6,
+            "attack_ms": 1.75,
+            "t40_ms": 140,
+            "crest_db": 11.3,
+            "res_db": 6.4,
+            "res_hz": 860,
+            "peak_dbfs": -6,
+            "live_ms": 87.5
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/pop/mouth_plop"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/snap/switch_flip.wav",
+      "sha256": "56c405cefe5ca4303eaff1194eef661e33ad8f633bbc65881cf542d04974733a",
+      "sourceCue": "fit/snap/switch_flip",
+      "recipeSha256": "3d3ab0f6d7847c411fa1a558373a8bfbd10a9b041e26cc080143e2d5d4801d07",
+      "recordingSource": {
+        "id": "fs-278205",
+        "title": "Switch Flip #1",
+        "author": "IanStarGem",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/IanStarGem/sounds/278205/"
+      },
+      "measurements": {
+        "id": "fit/snap/switch_flip",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0008,
+        "peak_s": 0.0355,
+        "end_s": 0.107,
+        "dur_s": 0.185,
+        "peak_db": -6,
+        "lufs_m_max": -27.31,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/snap/switch_flip: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -64.1,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -124.3,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 4.25,
+            "t40_ms": 70,
+            "crest_db": 13.8,
+            "res_db": 16.5,
+            "res_hz": 3805,
+            "peak_dbfs": -6,
+            "live_ms": 89.75
+          },
+          "glide": {
+            "tonal_share": 0.38,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.043
+            ],
+            "count": 1,
+            "pre_swell_ms": 10
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/snap/switch_flip"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/tick/domino.wav",
+      "sha256": "dbfbc84d1a804184b0d30aa936d66046bf825a5a4aeb94305ae2c52c8993c291",
+      "sourceCue": "fit/tick/domino",
+      "recipeSha256": "6e4fc5dc8a8760f6591f34c4583d1a71abbb4311945eb507e94ea1af398007e1",
+      "recordingSource": {
+        "id": "fs-329098",
+        "title": "Domino pieces hit",
+        "author": "Macif",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/Macif/sounds/329098/"
+      },
+      "measurements": {
+        "id": "fit/tick/domino",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0042,
+        "peak_s": 0.0075,
+        "end_s": 0.077,
+        "dur_s": 0.139,
+        "peak_db": -6,
+        "lufs_m_max": -31.93,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/tick/domino: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -120,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -130.5,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 2.25,
+            "t40_ms": 70,
+            "crest_db": 16.2,
+            "res_db": 8.9,
+            "res_hz": 3020,
+            "peak_dbfs": -6,
+            "live_ms": 58.75
+          },
+          "glide": {
+            "tonal_share": 0.09,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/tick/domino"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/fit/whoosh.short/bamboo_swish.wav",
+      "sha256": "67e718768bf09e9f7b60c9774b0c662f12454d4e87309e04aed7c7355c5dd016",
+      "sourceCue": "fit/whoosh.short/bamboo_swish",
+      "recipeSha256": "4afeb3bc4cfb1a1001892c9f9c47b65a3a9c74fe7574a5e8cf2ac5085d510dca",
+      "recordingSource": {
+        "id": "fs-427979",
+        "title": "Short Whoosh, 13x",
+        "author": "Kinoton",
+        "license": "CC0 1.0",
+        "url": "https://freesound.org/people/Kinoton/sounds/427979/"
+      },
+      "measurements": {
+        "id": "fit/whoosh.short/bamboo_swish",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.087,
+        "peak_s": 0.1295,
+        "end_s": 0.39,
+        "dur_s": 0.477,
+        "peak_db": -6,
+        "lufs_m_max": -19.18,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "fit/whoosh.short/bamboo_swish: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -101.6,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -147.9,
+            "ring_z": 4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 1.9,
+            "attack_ms": 26,
+            "t40_ms": 230,
+            "crest_db": 8.8,
+            "res_db": 6.5,
+            "res_hz": 5460,
+            "peak_dbfs": -6,
+            "live_ms": 232
+          },
+          "glide": {
+            "tonal_share": 0.93,
+            "rise_st": 2.7,
+            "from_s": 0.091,
+            "to_s": 0.131
+          },
+          "layers": {
+            "attacks": [
+              0.128
+            ],
+            "count": 1,
+            "pre_swell_ms": 20
+          },
+          "context": {
+            "category": "fit",
+            "sound": "fit/whoosh.short/bamboo_swish"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_impact/short.wav",
+      "sha256": "66cf902d1c9650c4e46576b893ccc1fab3a9c0f2f5687b8f332afbb8ce33a851",
+      "sourceCue": "pro_impact/short",
+      "recipeSha256": "8987e3b04c46f329a22c57a44d1856cf1cb050a2131d7ac78494beaae08d52d4",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_impact/short",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.1815,
+        "end_s": 0.637,
+        "dur_s": 0.6668,
+        "peak_db": -6,
+        "lufs_m_max": -19.83,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_impact/short: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -76.4,
+            "ring_z": 10.9,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 5.6,
+            "attack_ms": 8.25,
+            "t40_ms": 470,
+            "crest_db": 9.9,
+            "res_db": 1.7,
+            "res_hz": 8667,
+            "peak_dbfs": -6,
+            "live_ms": 603.75
+          },
+          "glide": {
+            "tonal_share": 0.93,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.172
+            ],
+            "count": 1,
+            "pre_swell_ms": 10
+          },
+          "context": {
+            "category": "pro_impact",
+            "sound": "pro_impact/short"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_notify/ding_1822.wav",
+      "sha256": "adb11a39f9fc23c575c729887164054a6954c58d445f8be50b17b91788c623ce",
+      "sourceCue": "pro_notify/ding_1822",
+      "recipeSha256": "8570148df6aa1f35e9e4176de09263b0b23a20d20659ddc983581740f763689d",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_notify/ding_1822",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0055,
+        "end_s": 0.239,
+        "dur_s": 0.26,
+        "peak_db": -6,
+        "lufs_m_max": -16.6,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_notify/ding_1822: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -104.7,
+            "ring_z": 11.6,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 1.25,
+            "t40_ms": 200,
+            "crest_db": 3.9,
+            "res_db": 49.2,
+            "res_hz": 6218,
+            "peak_dbfs": -6,
+            "live_ms": 191.25
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0.1,
+            "from_s": 0.011,
+            "to_s": 0.096
+          },
+          "layers": {
+            "attacks": [
+              0.013
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "pro_notify",
+            "sound": "pro_notify/ding_1822"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_shimmer/m0.wav",
+      "sha256": "57d0b17c084d393767a8009aea348f8b7640523e60bdf3292f098ed8f8a511f6",
+      "sourceCue": "pro_shimmer/m0",
+      "recipeSha256": "66008de99c6b318e9200decb3de2ad2751236e5d84f854ec74189adf368935e2",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_shimmer/m0",
+        "seed": 1826701615,
+        "sr": 48000,
+        "onset_s": 0.1172,
+        "peak_s": 0.8525,
+        "end_s": 1.813,
+        "dur_s": 1.95,
+        "peak_db": -6,
+        "lufs_m_max": -17.55,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "tail",
+              "msg": "the tail rises again by 9 dB (a second event, a roll or a double member)"
+            }
+          ],
+          "summary": "pro_shimmer/m0: clean (the tail rises again by 9 dB (a second event, a roll or a double member))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -96.9,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -234.8,
+            "ring_z": 8.3,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 8.7,
+            "attack_ms": 5,
+            "t40_ms": 840,
+            "crest_db": 9,
+            "res_db": 25.4,
+            "res_hz": 4726,
+            "peak_dbfs": -6,
+            "live_ms": 1404.75
+          },
+          "glide": {
+            "tonal_share": 0.18,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.733,
+              0.902
+            ],
+            "count": 2,
+            "pre_swell_ms": 575
+          },
+          "context": {
+            "category": "pro_shimmer",
+            "sound": "pro_shimmer/m0"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/whoosh_fast/crisp.wav",
+      "sha256": "a85d1f27395fb992bc4d057fbaea4e94214547e3e4b02333cc6fececff51bf43",
+      "sourceCue": "whoosh_fast/crisp",
+      "recipeSha256": "35469ab4096da05cfca38c30ed164f608dc97a073cbaa89bd69b80db86bb465f",
+      "recordingSource": null,
+      "measurements": {
+        "id": "whoosh_fast/crisp",
+        "seed": 420116625,
+        "sr": 48000,
+        "onset_s": 0.0195,
+        "peak_s": 0.1305,
+        "end_s": 0.681,
+        "dur_s": 1.0561,
+        "peak_db": -6,
+        "lufs_m_max": -20.05,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "whoosh_fast/crisp: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -112,
+            "ring_z": 3.7,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 2.9,
+            "attack_ms": 0.75,
+            "t40_ms": 340,
+            "crest_db": 8.1,
+            "res_db": 4.5,
+            "res_hz": 2730,
+            "peak_dbfs": -6,
+            "live_ms": 398.75
+          },
+          "glide": {
+            "tonal_share": 0.8,
+            "rise_st": 0.8,
+            "from_s": 0.261,
+            "to_s": 0.286
+          },
+          "layers": {
+            "attacks": [
+              0.147
+            ],
+            "count": 1,
+            "pre_swell_ms": 105
+          },
+          "context": {
+            "category": "whoosh_fast",
+            "sound": "whoosh_fast/crisp"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/whoosh_big/swell.wav",
+      "sha256": "b4ca73758d85e897293679996d73ba8a349367598b761659a5a59f3514d3d1ec",
+      "sourceCue": "whoosh_big/swell",
+      "recipeSha256": "32a2858ffcea3cd22064a06393691c39ce626e9ca7bf644b71446afa40b7af88",
+      "recordingSource": null,
+      "measurements": {
+        "id": "whoosh_big/swell",
+        "seed": 696394185,
+        "sr": 48000,
+        "onset_s": 0.0592,
+        "peak_s": 0.4365,
+        "end_s": 1.141,
+        "dur_s": 1.3547,
+        "peak_db": -6,
+        "lufs_m_max": -19.41,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "whoosh_big/swell: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -121.8,
+            "ring_z": 3.7,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 2.7,
+            "attack_ms": 17.75,
+            "t40_ms": 500,
+            "crest_db": 10,
+            "res_db": 3.9,
+            "res_hz": 1425,
+            "peak_dbfs": -6,
+            "live_ms": 749.5
+          },
+          "glide": {
+            "tonal_share": 0.68,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.432
+            ],
+            "count": 1,
+            "pre_swell_ms": 285
+          },
+          "context": {
+            "category": "whoosh_big",
+            "sound": "whoosh_big/swell"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_click/mouse.wav",
+      "sha256": "31b10a1383592d304444ed56c315c25fdb6a7954ff4df32ce99d2544cf2f80c0",
+      "sourceCue": "pro_click/mouse",
+      "recipeSha256": "41c014d2ffe527fd61337d65b66fd81fea4f6744bdee7e760bf5ca1ca921b392",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_click/mouse",
+        "seed": 503102719,
+        "sr": 48000,
+        "onset_s": 0.0012,
+        "peak_s": 0.0045,
+        "end_s": 0.029,
+        "dur_s": 0.0537,
+        "peak_db": -6,
+        "lufs_m_max": -27.84,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_click/mouse: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -64,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 1,
+            "t40_ms": 30,
+            "crest_db": 15.1,
+            "res_db": 22.3,
+            "res_hz": 3109,
+            "peak_dbfs": -6,
+            "live_ms": 19.5
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.013
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "pro_click",
+            "sound": "pro_click/mouse"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_click/glass.wav",
+      "sha256": "65ca94cfb036dd3dcd6026bbbf1b35de927f530b5d94add19fcc99f392342d68",
+      "sourceCue": "pro_click/glass",
+      "recipeSha256": "e41d5757e73aa3cc6ef72d977770b8a6bc272f7716ec91b10a8ce6059c1605f3",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_click/glass",
+        "seed": 1825246568,
+        "sr": 48000,
+        "onset_s": 0.0012,
+        "peak_s": 0.0045,
+        "end_s": 0.035,
+        "dur_s": 0.0617,
+        "peak_db": -6,
+        "lufs_m_max": -24.03,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_click/glass: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -110.7,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 0.75,
+            "t40_ms": 30,
+            "crest_db": 11.3,
+            "res_db": 23.6,
+            "res_hz": 8181,
+            "peak_dbfs": -6,
+            "live_ms": 25
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.013
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "pro_click",
+            "sound": "pro_click/glass"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_hover_tick/detent.wav",
+      "sha256": "d24f171095850db6fef47933e2456becf0364f90313436f617dbbaca1b254d90",
+      "sourceCue": "pro_hover_tick/detent",
+      "recipeSha256": "b588a42ad13393fb566fbb21258f4ebd3d971e7f9f44eb6c4a89904ed8370550",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_hover_tick/detent",
+        "seed": 1291544842,
+        "sr": 48000,
+        "onset_s": 0.0012,
+        "peak_s": 0.0045,
+        "end_s": 0.036,
+        "dur_s": 0.0364,
+        "peak_db": -6,
+        "lufs_m_max": -33.02,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_hover_tick/detent: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -69.2,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 0.5,
+            "t40_ms": null,
+            "crest_db": 20.8,
+            "res_db": 3,
+            "res_hz": 2397,
+            "peak_dbfs": -6,
+            "live_ms": 16.5
+          },
+          "glide": {
+            "tonal_share": 0,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.013
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "pro_hover_tick",
+            "sound": "pro_hover_tick/detent"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/toggle/on.wav",
+      "sha256": "277c5785c05ac41434ec4e67b174ee5b0222f8d6ab28607f14d0e3ef0883dc33",
+      "sourceCue": "toggle/on",
+      "recipeSha256": "dfb56ae43d4ccebb18c1dc0584025796123d046d2cde37ba820b279ae42ebe52",
+      "recordingSource": null,
+      "measurements": {
+        "id": "toggle/on",
+        "seed": 198682238,
+        "sr": 48000,
+        "onset_s": 0.0012,
+        "peak_s": 0.0045,
+        "end_s": 0.103,
+        "dur_s": 0.1666,
+        "peak_db": -6,
+        "lufs_m_max": -23.26,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "tail",
+              "msg": "the tail rises again by 7 dB (a second event, a roll or a double member)"
+            }
+          ],
+          "summary": "toggle/on: clean (the tail rises again by 7 dB (a second event, a roll or a double member))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -63.7,
+            "ring_z": 10.4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 7.3,
+            "attack_ms": 0.5,
+            "t40_ms": 90,
+            "crest_db": 11.7,
+            "res_db": 14.1,
+            "res_hz": 3917,
+            "peak_dbfs": -6,
+            "live_ms": 80.25
+          },
+          "glide": {
+            "tonal_share": 0.27,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.013
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "toggle",
+            "sound": "toggle/on"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/toggle/off.wav",
+      "sha256": "cc4e7b47bcbe206c41ff62a32e5acc128792b528fa12d610277d9787161a2ad8",
+      "sourceCue": "toggle/off",
+      "recipeSha256": "52739e59a9d3e02743e365389f80888226236a7ab66ee9e9053d26e0f0307e7f",
+      "recordingSource": null,
+      "measurements": {
+        "id": "toggle/off",
+        "seed": 1995665369,
+        "sr": 48000,
+        "onset_s": 0.0012,
+        "peak_s": 0.0045,
+        "end_s": 0.121,
+        "dur_s": 0.1365,
+        "peak_db": -6,
+        "lufs_m_max": -26.13,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "tail",
+              "msg": "the tail rises again by 14 dB (a second event, a roll or a double member)"
+            }
+          ],
+          "summary": "toggle/off: clean (the tail rises again by 14 dB (a second event, a roll or a double member))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -66.6,
+            "ring_z": 9.4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 14,
+            "attack_ms": 0.5,
+            "t40_ms": 110,
+            "crest_db": 14.9,
+            "res_db": 12.4,
+            "res_hz": 2363,
+            "peak_dbfs": -6,
+            "live_ms": 89.25
+          },
+          "glide": {
+            "tonal_share": 0.41,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.013,
+              0.058
+            ],
+            "count": 2,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "toggle",
+            "sound": "toggle/off"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_pop_in/round.wav",
+      "sha256": "7fdd707f184aa3d5e798cc0fa615fd1fb6c2db80ab4ee70aa0c46784784779ae",
+      "sourceCue": "pro_pop_in/round",
+      "recipeSha256": "22f947cb71b64330295660a150ac07e3f4c754b896f2573b73606c7e36f0f7a7",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_pop_in/round",
+        "seed": 276866903,
+        "sr": 48000,
+        "onset_s": 0.0012,
+        "peak_s": 0.0195,
+        "end_s": 0.166,
+        "dur_s": 0.1716,
+        "peak_db": -6,
+        "lufs_m_max": -24.08,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_pop_in/round: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -94.6,
+            "ring_z": 5,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.2,
+            "attack_ms": 5.25,
+            "t40_ms": 150,
+            "crest_db": 11.3,
+            "res_db": 3.2,
+            "res_hz": 608,
+            "peak_dbfs": -6,
+            "live_ms": 116.5
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.022
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "pro_pop_in",
+            "sound": "pro_pop_in/round"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_pop_in/airy.wav",
+      "sha256": "c1f34c72fe1aaae35b13c99578bd64e870b267e9f31b8957ee3886c1177589b8",
+      "sourceCue": "pro_pop_in/airy",
+      "recipeSha256": "030a50e447c41109cca2bf3b4f866439506925ca7104807dfa37045cd79d4c55",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_pop_in/airy",
+        "seed": 595137824,
+        "sr": 48000,
+        "onset_s": 0.0015,
+        "peak_s": 0.0175,
+        "end_s": 0.126,
+        "dur_s": 0.1701,
+        "peak_db": -6,
+        "lufs_m_max": -23.5,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_pop_in/airy: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -76.5,
+            "ring_z": 3.6,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 5.25,
+            "t40_ms": 90,
+            "crest_db": 10.9,
+            "res_db": 2.9,
+            "res_hz": 271,
+            "peak_dbfs": -6,
+            "live_ms": 83
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.022
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "pro_pop_in",
+            "sound": "pro_pop_in/airy"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_pop/chirp.wav",
+      "sha256": "5fce5f3952c74d06e9d59ecb962dd1daa3eb15b8984235fd4cc8c7998dd2f280",
+      "sourceCue": "pro_pop/chirp",
+      "recipeSha256": "6157727de3cacc4823791b34cfdc03b63e8ebaae8f5a3eb961319a574347ffa1",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_pop/chirp",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0375,
+        "end_s": 0.146,
+        "dur_s": 0.162,
+        "peak_db": -6,
+        "lufs_m_max": -20.4,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_pop/chirp: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -134.2,
+            "ring_z": 5.2,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 8.5,
+            "t40_ms": 90,
+            "crest_db": 7.7,
+            "res_db": 4,
+            "res_hz": 7948,
+            "peak_dbfs": -6,
+            "live_ms": 99.25
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.043
+            ],
+            "count": 1,
+            "pre_swell_ms": 15
+          },
+          "context": {
+            "category": "pro_pop",
+            "sound": "pro_pop/chirp"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/swipe/paper.wav",
+      "sha256": "e924fb75eeb499928ab32c4c06db5a28d431c7cbd99c8e6585a478afd2ce4b4e",
+      "sourceCue": "swipe/paper",
+      "recipeSha256": "ded4d4158f65f009ef0ff21f2fd45a515963c19efd9e0cca3dd06ec1f86da02f",
+      "recordingSource": null,
+      "measurements": {
+        "id": "swipe/paper",
+        "seed": 1264633460,
+        "sr": 48000,
+        "onset_s": 0.0462,
+        "peak_s": 0.1295,
+        "end_s": 0.515,
+        "dur_s": 0.7697,
+        "peak_db": -6,
+        "lufs_m_max": -22.71,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "swipe/paper: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -120.3,
+            "ring_z": 4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 5.7,
+            "attack_ms": 3,
+            "t40_ms": 290,
+            "crest_db": 11.8,
+            "res_db": 5,
+            "res_hz": 4935,
+            "peak_dbfs": -6,
+            "live_ms": 299.75
+          },
+          "glide": {
+            "tonal_share": 0.39,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.138
+            ],
+            "count": 1,
+            "pre_swell_ms": 85
+          },
+          "context": {
+            "category": "swipe",
+            "sound": "swipe/paper"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/swipe/velvet.wav",
+      "sha256": "ab6517e9e2bd25382fad4c081f2d71bab92c8f4c732da1acfc2541259344c30b",
+      "sourceCue": "swipe/velvet",
+      "recipeSha256": "93479de45b8c7cd23af51598fd6dced0386c7dd0df8cb76f88d052a2e24f69b1",
+      "recordingSource": null,
+      "measurements": {
+        "id": "swipe/velvet",
+        "seed": 968699985,
+        "sr": 48000,
+        "onset_s": 0.048,
+        "peak_s": 0.2645,
+        "end_s": 0.895,
+        "dur_s": 1.1496,
+        "peak_db": -6,
+        "lufs_m_max": -21.21,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "swipe/velvet: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -148.8,
+            "ring_z": 4.7,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 5.3,
+            "attack_ms": 5.75,
+            "t40_ms": 440,
+            "crest_db": 10.4,
+            "res_db": 4.9,
+            "res_hz": 2691,
+            "peak_dbfs": -6,
+            "live_ms": 470.25
+          },
+          "glide": {
+            "tonal_share": 0.64,
+            "rise_st": 0.6,
+            "from_s": 0.306,
+            "to_s": 0.311
+          },
+          "layers": {
+            "attacks": [
+              0.263
+            ],
+            "count": 1,
+            "pre_swell_ms": 200
+          },
+          "context": {
+            "category": "swipe",
+            "sound": "swipe/velvet"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/swish/blade.wav",
+      "sha256": "b636cc8f72fbbc95b90b8694682097df8de20e749724f458153ebd83daab56d7",
+      "sourceCue": "swish/blade",
+      "recipeSha256": "bb883aa4f7ae6260b435bfd9934c21b18baf689903457cdf34eb687fcdc9826e",
+      "recordingSource": null,
+      "measurements": {
+        "id": "swish/blade",
+        "seed": 409661535,
+        "sr": 48000,
+        "onset_s": 0.0078,
+        "peak_s": 0.0595,
+        "end_s": 0.287,
+        "dur_s": 0.3685,
+        "peak_db": -6,
+        "lufs_m_max": -20.89,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "swish/blade: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -117.8,
+            "ring_z": 3.4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 12.25,
+            "t40_ms": 180,
+            "crest_db": 8.1,
+            "res_db": 6.8,
+            "res_hz": 3974,
+            "peak_dbfs": -6,
+            "live_ms": 198
+          },
+          "glide": {
+            "tonal_share": 0.28,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.062
+            ],
+            "count": 1,
+            "pre_swell_ms": 30
+          },
+          "context": {
+            "category": "swish",
+            "sound": "swish/blade"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/swish/soft.wav",
+      "sha256": "86bc98cde091d60aeb20e5f570f66187ad65e14b3fffcdaf7fab996485d16a6f",
+      "sourceCue": "swish/soft",
+      "recipeSha256": "923e60bff6d204d8ab474ad56929c5ddc6c04529a2a19f50229d91033898425e",
+      "recordingSource": null,
+      "measurements": {
+        "id": "swish/soft",
+        "seed": 1007119508,
+        "sr": 48000,
+        "onset_s": 0.0205,
+        "peak_s": 0.1095,
+        "end_s": 0.653,
+        "dur_s": 0.8826,
+        "peak_db": -6,
+        "lufs_m_max": -25.73,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "swish/soft: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -120,
+            "ring_z": 4.8,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 5.4,
+            "attack_ms": 7.5,
+            "t40_ms": 350,
+            "crest_db": 12.7,
+            "res_db": 5.1,
+            "res_hz": 2614,
+            "peak_dbfs": -6,
+            "live_ms": 319.75
+          },
+          "glide": {
+            "tonal_share": 0.22,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.102
+            ],
+            "count": 1,
+            "pre_swell_ms": 45
+          },
+          "context": {
+            "category": "swish",
+            "sound": "swish/soft"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_whoosh_big/reverse.wav",
+      "sha256": "21e813dfdeb09c27f46d208e55d16d22fae704095c44f39fb318e39f83804765",
+      "sourceCue": "pro_whoosh_big/reverse",
+      "recipeSha256": "38d1dba24542855f5b79af93341169569245f42dd7f8b52585ca8a25ee4758de",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_whoosh_big/reverse",
+        "seed": 1736358612,
+        "sr": 48000,
+        "onset_s": 0.0345,
+        "peak_s": 0.7045,
+        "end_s": 0.939,
+        "dur_s": 1.0551,
+        "peak_db": -6,
+        "lufs_m_max": -20.4,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_whoosh_big/reverse: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -110.6,
+            "ring_z": 4.6,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 1.5,
+            "attack_ms": 3,
+            "t40_ms": 150,
+            "crest_db": 10.7,
+            "res_db": 2.1,
+            "res_hz": 378,
+            "peak_dbfs": -6,
+            "live_ms": 688.75
+          },
+          "glide": {
+            "tonal_share": 0.99,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.708
+            ],
+            "count": 1,
+            "pre_swell_ms": 615
+          },
+          "context": {
+            "category": "pro_whoosh_big",
+            "sound": "pro_whoosh_big/reverse"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_whoosh_big/long.wav",
+      "sha256": "5b57689cb9a4e52c3b9e79442dda09812f8a6b4a0dd1703f3d79334f81bf182a",
+      "sourceCue": "pro_whoosh_big/long",
+      "recipeSha256": "20fe35ac45991f60456e8c7b69909b0928c1a7ca63103e99ad199e26a092e4cd",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_whoosh_big/long",
+        "seed": 277758907,
+        "sr": 48000,
+        "onset_s": 0.0678,
+        "peak_s": 0.5195,
+        "end_s": 0.994,
+        "dur_s": 1.1199,
+        "peak_db": -6,
+        "lufs_m_max": -17.67,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_whoosh_big/long: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -110.8,
+            "ring_z": 3.9,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 6,
+            "attack_ms": 4.25,
+            "t40_ms": 340,
+            "crest_db": 9.2,
+            "res_db": 3.3,
+            "res_hz": 723,
+            "peak_dbfs": -6,
+            "live_ms": 727.25
+          },
+          "glide": {
+            "tonal_share": 0.98,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.512
+            ],
+            "count": 1,
+            "pre_swell_ms": 245
+          },
+          "context": {
+            "category": "pro_whoosh_big",
+            "sound": "pro_whoosh_big/long"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_riser/air_gate.wav",
+      "sha256": "1365abf13a1e3da8fcf015912b90f801f5ad22375598d0f243268a0c879de186",
+      "sourceCue": "pro_riser/air_gate",
+      "recipeSha256": "1a773886c28648d0b238ea6609fd7bfd041ac11116b9de7347d0b9f329a12105",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_riser/air_gate",
+        "seed": 579362556,
+        "sr": 48000,
+        "onset_s": 0.003,
+        "peak_s": 1.1935,
+        "end_s": 1.2,
+        "dur_s": 1.2,
+        "peak_db": -6,
+        "lufs_m_max": -13.3,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_riser/air_gate: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -94,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 31.75,
+            "t40_ms": 20,
+            "crest_db": 4.6,
+            "res_db": 3.3,
+            "res_hz": 3390,
+            "peak_dbfs": -6,
+            "live_ms": 1178.25
+          },
+          "glide": {
+            "tonal_share": 0.24,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              1.183
+            ],
+            "count": 1,
+            "pre_swell_ms": 1015
+          },
+          "context": {
+            "category": "pro_riser",
+            "sound": "pro_riser/air_gate"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_riser/chop.wav",
+      "sha256": "d19e82689b90f5b2b2ed9d3ebf8018d4c0733239b51f8bb80246ce4e89c0fe36",
+      "sourceCue": "pro_riser/chop",
+      "recipeSha256": "4849784ac785c679181988d38d122b110d8fdcd6b9c6f39a108fd9397d2fcc1c",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_riser/chop",
+        "seed": 1367864807,
+        "sr": 48000,
+        "onset_s": 0.0015,
+        "peak_s": 0.9945,
+        "end_s": 1,
+        "dur_s": 1,
+        "peak_db": -6,
+        "lufs_m_max": -15.47,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_riser/chop: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -84.6,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 7.5,
+            "t40_ms": 20,
+            "crest_db": 5.4,
+            "res_db": 2.8,
+            "res_hz": 6041,
+            "peak_dbfs": -6,
+            "live_ms": 679
+          },
+          "glide": {
+            "tonal_share": 0.22,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.988
+            ],
+            "count": 1,
+            "pre_swell_ms": 890
+          },
+          "context": {
+            "category": "pro_riser",
+            "sound": "pro_riser/chop"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/riser/tension.wav",
+      "sha256": "a0855132da4976a5e4f3642a0153fda830c4059a98b01cd65c1a931f8d2adfdf",
+      "sourceCue": "riser/tension",
+      "recipeSha256": "c0a618872ac77956d333850471c309171114cc030b0f9b771a30cdc1210e972e",
+      "recordingSource": null,
+      "measurements": {
+        "id": "riser/tension",
+        "seed": 1367864807,
+        "sr": 48000,
+        "onset_s": 0.005,
+        "peak_s": 2.7705,
+        "end_s": 2.8,
+        "dur_s": 2.8,
+        "peak_db": -6,
+        "lufs_m_max": -9.74,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "truncated",
+              "msg": "tail cut at -2 dB re peak (the stop is the design)"
+            }
+          ],
+          "summary": "riser/tension: clean (tail cut at -2 dB re peak (the stop is the design))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -103.4,
+            "ring_z": null,
+            "trunc_db": -1.9,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 323.75,
+            "t40_ms": 30,
+            "crest_db": 3.5,
+            "res_db": 7.7,
+            "res_hz": 2230,
+            "peak_dbfs": -6,
+            "live_ms": 2782.75
+          },
+          "glide": {
+            "tonal_share": 0.49,
+            "rise_st": 0.7,
+            "from_s": 2.216,
+            "to_s": 2.246
+          },
+          "layers": {
+            "attacks": [
+              2.783
+            ],
+            "count": 1,
+            "pre_swell_ms": 2420
+          },
+          "context": {
+            "category": "riser",
+            "sound": "riser/tension"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/downlifter/tape.wav",
+      "sha256": "302184499553671135ff8f60944de2d4ff6d18761fbaf614aa50014c626172ad",
+      "sourceCue": "downlifter/tape",
+      "recipeSha256": "81bc2f2bed4fa6a2ec30725d71d12f5ae8bd72b942b77cb5d4725e5f8088cbd0",
+      "recordingSource": null,
+      "measurements": {
+        "id": "downlifter/tape",
+        "seed": 661058652,
+        "sr": 48000,
+        "onset_s": 0.0045,
+        "peak_s": 0.1035,
+        "end_s": 1.368,
+        "dur_s": 1.6303,
+        "peak_db": -6,
+        "lufs_m_max": -13.31,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "downlifter/tape: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -139.9,
+            "ring_z": 3.7,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 1.7,
+            "attack_ms": 48.25,
+            "t40_ms": 1150,
+            "crest_db": 6.6,
+            "res_db": 5.7,
+            "res_hz": 2105,
+            "peak_dbfs": -6,
+            "live_ms": 1167
+          },
+          "glide": {
+            "tonal_share": 0.58,
+            "rise_st": 4.4,
+            "from_s": 0.891,
+            "to_s": 0.921
+          },
+          "layers": {
+            "attacks": [
+              0.092
+            ],
+            "count": 1,
+            "pre_swell_ms": 10
+          },
+          "context": {
+            "category": "downlifter",
+            "sound": "downlifter/tape"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/downlifter/air_fall.wav",
+      "sha256": "dded4d080f050f502622793bb4feccc663f42469ae8f544a55f73ef0f825ffdc",
+      "sourceCue": "downlifter/air_fall",
+      "recipeSha256": "888f92933fe379f1e1e9f3d8881100de8ccea2d72ab3bb3605f85d8f7df9935a",
+      "recordingSource": null,
+      "measurements": {
+        "id": "downlifter/air_fall",
+        "seed": 1367864807,
+        "sr": 48000,
+        "onset_s": 0.015,
+        "peak_s": 0.1485,
+        "end_s": 1.826,
+        "dur_s": 2.0601,
+        "peak_db": -6,
+        "lufs_m_max": -14.96,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "downlifter/air_fall: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -170,
+            "ring_z": 4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 4,
+            "attack_ms": 101.25,
+            "t40_ms": 1420,
+            "crest_db": 8,
+            "res_db": 2.7,
+            "res_hz": 2977,
+            "peak_dbfs": -6,
+            "live_ms": 1330.25
+          },
+          "glide": {
+            "tonal_share": 0.06,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.142
+            ],
+            "count": 1,
+            "pre_swell_ms": 50
+          },
+          "context": {
+            "category": "downlifter",
+            "sound": "downlifter/air_fall"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_sub_drop/quick.wav",
+      "sha256": "8d3337544ef70222e5f758610b7d1d007b41b02aaf975e177e58019f49b70758",
+      "sourceCue": "pro_sub_drop/quick",
+      "recipeSha256": "6a40381102743ea282836f1dc09afe52378244f441dbe462202c6f662c0fdfa7",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_sub_drop/quick",
+        "seed": 1469265226,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.2495,
+        "end_s": 0.953,
+        "dur_s": 1,
+        "peak_db": -6,
+        "lufs_m_max": -13.02,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_sub_drop/quick: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -98.9,
+            "ring_z": 3.3,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.3,
+            "attack_ms": 10.5,
+            "t40_ms": 670,
+            "crest_db": 5.9,
+            "res_db": 2.2,
+            "res_hz": 171,
+            "peak_dbfs": -6,
+            "live_ms": 875.25
+          },
+          "glide": {
+            "tonal_share": 0.99,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.237
+            ],
+            "count": 1,
+            "pre_swell_ms": 110
+          },
+          "context": {
+            "category": "pro_sub_drop",
+            "sound": "pro_sub_drop/quick"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_sub_drop/soft.wav",
+      "sha256": "ccb1e75e2ff00c8a2a668456e2c14fd8428520473eed9870bea4c60069801f37",
+      "sourceCue": "pro_sub_drop/soft",
+      "recipeSha256": "b0e506dd41b9e74372cab7123a0089cf306a30db86333ef258ef8b4d08245afa",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_sub_drop/soft",
+        "seed": 1665772335,
+        "sr": 48000,
+        "onset_s": 0.0002,
+        "peak_s": 0.4935,
+        "end_s": 1.432,
+        "dur_s": 1.4818,
+        "peak_db": -6,
+        "lufs_m_max": -11.46,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_sub_drop/soft: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -124.2,
+            "ring_z": 4.8,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.2,
+            "attack_ms": 4.75,
+            "t40_ms": 1020,
+            "crest_db": 6.3,
+            "res_db": 1.5,
+            "res_hz": 152,
+            "peak_dbfs": -6,
+            "live_ms": 1323.5
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.417
+            ],
+            "count": 1,
+            "pre_swell_ms": 215
+          },
+          "context": {
+            "category": "pro_sub_drop",
+            "sound": "pro_sub_drop/soft"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_impact/deep.wav",
+      "sha256": "ca8111acad017e6eefe5aae210325f04785245fa149665d8b39cc057d2237d05",
+      "sourceCue": "pro_impact/deep",
+      "recipeSha256": "e6b68e600a0ffcb566e936d79c2fb76e06d19c93859d740cea40eb1561f9f787",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_impact/deep",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.0048,
+        "peak_s": 0.2135,
+        "end_s": 1.284,
+        "dur_s": 1.3148,
+        "peak_db": -6,
+        "lufs_m_max": -20.38,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "tail",
+              "msg": "the tail rises again by 10 dB (a second event, a roll or a double member)"
+            },
+            {
+              "code": "stacked",
+              "msg": "2 separate attacks (0.21, 0.41 s): layers stacked where one clean hit reads better"
+            }
+          ],
+          "summary": "pro_impact/deep: clean (the tail rises again by 10 dB (a second event, a roll or a double member); 2 separate attacks (0.21, 0.41 s): layers stacked where one clean hit reads better)",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -94.6,
+            "ring_z": 6.5,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 10,
+            "attack_ms": 3.5,
+            "t40_ms": 1010,
+            "crest_db": 10.8,
+            "res_db": 3.2,
+            "res_hz": 5620,
+            "peak_dbfs": -6,
+            "live_ms": 1134.5
+          },
+          "glide": {
+            "tonal_share": 0.87,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.212,
+              0.407
+            ],
+            "count": 2,
+            "pre_swell_ms": 30
+          },
+          "context": {
+            "category": "pro_impact",
+            "sound": "pro_impact/deep"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_impact/air.wav",
+      "sha256": "3ef668e37f273a5b0d14e142113d7ccaa8ac6b7d6cbef149d468aa32e829a51d",
+      "sourceCue": "pro_impact/air",
+      "recipeSha256": "e4e0ec9a10b6a71231319c91104911dbc9342cc276c5f0f619a7a1cd9c43aadd",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_impact/air",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.1725,
+        "end_s": 0.819,
+        "dur_s": 0.8476,
+        "peak_db": -6,
+        "lufs_m_max": -17.77,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "tail",
+              "msg": "the tail rises again by 6 dB (a second event, a roll or a double member)"
+            }
+          ],
+          "summary": "pro_impact/air: clean (the tail rises again by 6 dB (a second event, a roll or a double member))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -80.1,
+            "ring_z": 4.5,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 6.5,
+            "attack_ms": 3,
+            "t40_ms": 660,
+            "crest_db": 8.7,
+            "res_db": 2.8,
+            "res_hz": 7611,
+            "peak_dbfs": -6,
+            "live_ms": 806
+          },
+          "glide": {
+            "tonal_share": 0.85,
+            "rise_st": 0.6,
+            "from_s": 0.686,
+            "to_s": 0.691
+          },
+          "layers": {
+            "attacks": [
+              0.172
+            ],
+            "count": 1,
+            "pre_swell_ms": 10
+          },
+          "context": {
+            "category": "pro_impact",
+            "sound": "pro_impact/air"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/logo_sting/soft_bloom.wav",
+      "sha256": "8027f7c26a0a0e7fcf29d5381823998d61ef9de2c46f7b3b528ab65d03ffb99e",
+      "sourceCue": "logo_sting/soft_bloom",
+      "recipeSha256": "2868b42edcee292785c54c061b3cf86f0a0c3fd85cce2be712161143834f53c1",
+      "recordingSource": null,
+      "measurements": {
+        "id": "logo_sting/soft_bloom",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0.1393,
+        "peak_s": 0.2985,
+        "end_s": 1.415,
+        "dur_s": 1.85,
+        "peak_db": -6,
+        "lufs_m_max": -15.06,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "logo_sting/soft_bloom: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -196,
+            "ring_z": 13.5,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.4,
+            "attack_ms": 43.25,
+            "t40_ms": 760,
+            "crest_db": 6.1,
+            "res_db": 34.8,
+            "res_hz": 2730,
+            "peak_dbfs": -6,
+            "live_ms": 954.5
+          },
+          "glide": {
+            "tonal_share": 0.18,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.297
+            ],
+            "count": 1,
+            "pre_swell_ms": 100
+          },
+          "context": {
+            "category": "logo_sting",
+            "sound": "logo_sting/soft_bloom"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/logo_sting/whoosh_glass.wav",
+      "sha256": "b307616ae86981f1b08100ea8da1441a9f36e49a657a511c72becb68535f9591",
+      "sourceCue": "logo_sting/whoosh_glass",
+      "recipeSha256": "ab653abbb6cb08aca458892fa32af097f80885e8c2dc2af818d0d90bdf4f468e",
+      "recordingSource": null,
+      "measurements": {
+        "id": "logo_sting/whoosh_glass",
+        "seed": 2029167941,
+        "sr": 48000,
+        "onset_s": 0.106,
+        "peak_s": 0.2005,
+        "end_s": 1.468,
+        "dur_s": 1.9116,
+        "peak_db": -6,
+        "lufs_m_max": -14.95,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "logo_sting/whoosh_glass: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -223.2,
+            "ring_z": 11.2,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.5,
+            "attack_ms": 16.75,
+            "t40_ms": 890,
+            "crest_db": 6.8,
+            "res_db": 29.6,
+            "res_hz": 4591,
+            "peak_dbfs": -6,
+            "live_ms": 985.5
+          },
+          "glide": {
+            "tonal_share": 0.43,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.207
+            ],
+            "count": 1,
+            "pre_swell_ms": 80
+          },
+          "context": {
+            "category": "logo_sting",
+            "sound": "logo_sting/whoosh_glass"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_logo_sting/taps_tone.wav",
+      "sha256": "72bfb5011c66ac241928665c880d276712772cbadc265b026436881d32a44a84",
+      "sourceCue": "pro_logo_sting/taps_tone",
+      "recipeSha256": "24614240d53a5b5e2d1b5f91c93393d23699a713b883a88050cf377d5254af07",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_logo_sting/taps_tone",
+        "seed": 0,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.1565,
+        "end_s": 0.883,
+        "dur_s": 0.95,
+        "peak_db": -6,
+        "lufs_m_max": -15.76,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "pre_swell",
+              "msg": "135 ms of build before the hit (a lead-in stacked onto it)"
+            }
+          ],
+          "summary": "pro_logo_sting/taps_tone: clean (135 ms of build before the hit (a lead-in stacked onto it))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -90.5,
+            "ring_z": 5.2,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 1.2,
+            "attack_ms": 5,
+            "t40_ms": 660,
+            "crest_db": 5.1,
+            "res_db": 12.7,
+            "res_hz": 526,
+            "peak_dbfs": -6,
+            "live_ms": 810.5
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0.3,
+            "from_s": 0.026,
+            "to_s": 0.051
+          },
+          "layers": {
+            "attacks": [
+              0.168
+            ],
+            "count": 1,
+            "pre_swell_ms": 135
+          },
+          "context": {
+            "category": "pro_logo_sting",
+            "sound": "pro_logo_sting/taps_tone"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_glitch/sparse.wav",
+      "sha256": "7452994f6874b6bbd1dbd6684fdb36ae7bb49083bef0ae9448224b93460bbffc",
+      "sourceCue": "pro_glitch/sparse",
+      "recipeSha256": "dff58a5970732b763258e07cc035965320c12590a37840304c031c897feb5745",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_glitch/sparse",
+        "seed": 661058652,
+        "sr": 48000,
+        "onset_s": 0.0762,
+        "peak_s": 0.7035,
+        "end_s": 0.746,
+        "dur_s": 0.7497,
+        "peak_db": -6,
+        "lufs_m_max": -23.96,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_glitch/sparse: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -98.7,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 1.75,
+            "t40_ms": 30,
+            "crest_db": 14.5,
+            "res_db": 5.4,
+            "res_hz": 6879,
+            "peak_dbfs": -6,
+            "live_ms": 280.25
+          },
+          "glide": {
+            "tonal_share": 0.49,
+            "rise_st": 2.3,
+            "from_s": 0.646,
+            "to_s": 0.676
+          },
+          "layers": {
+            "attacks": [
+              0.713
+            ],
+            "count": 1,
+            "pre_swell_ms": 625
+          },
+          "context": {
+            "category": "pro_glitch",
+            "sound": "pro_glitch/sparse"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_glitch/framelock.wav",
+      "sha256": "a3f953cabc139963c19a640416bee021d7410db1302be95f9a444ba3551bd1ab",
+      "sourceCue": "pro_glitch/framelock",
+      "recipeSha256": "7151eafe622e293ce0a172507430bb472071037029631861c249dc1e7ee0ccde",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_glitch/framelock",
+        "seed": 87989972,
+        "sr": 48000,
+        "onset_s": 0.053,
+        "peak_s": 0.6625,
+        "end_s": 0.726,
+        "dur_s": 0.7297,
+        "peak_db": -6,
+        "lufs_m_max": -21.76,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "truncated",
+              "msg": "tail cut at -43 dB re peak (the stop is the design)"
+            }
+          ],
+          "summary": "pro_glitch/framelock: clean (tail cut at -43 dB re peak (the stop is the design))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -68.8,
+            "ring_z": null,
+            "trunc_db": -43.3,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 2.75,
+            "t40_ms": 50,
+            "crest_db": 10.5,
+            "res_db": 9.9,
+            "res_hz": 3861,
+            "peak_dbfs": -6,
+            "live_ms": 346.5
+          },
+          "glide": {
+            "tonal_share": 0.49,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.672
+            ],
+            "count": 1,
+            "pre_swell_ms": 490
+          },
+          "context": {
+            "category": "pro_glitch",
+            "sound": "pro_glitch/framelock"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_shimmer/m1.wav",
+      "sha256": "33f901684f1aa36eb0ffc2d2a0b0bd21c2315a0fc936a4a5551acc4018175126",
+      "sourceCue": "pro_shimmer/m1",
+      "recipeSha256": "93da5f22f88405daf0ed560a99f489e508f3f95d707083f9af6d89ae97410a73",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_shimmer/m1",
+        "seed": 1367864807,
+        "sr": 48000,
+        "onset_s": 0.0752,
+        "peak_s": 0.3625,
+        "end_s": 1.151,
+        "dur_s": 1.4,
+        "peak_db": -6,
+        "lufs_m_max": -22.68,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "tail",
+              "msg": "the tail rises again by 10 dB (a second event, a roll or a double member)"
+            }
+          ],
+          "summary": "pro_shimmer/m1: clean (the tail rises again by 10 dB (a second event, a roll or a double member))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -87.3,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -226.4,
+            "ring_z": 5.1,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 9.5,
+            "attack_ms": 0.75,
+            "t40_ms": 510,
+            "crest_db": 11.6,
+            "res_db": 13.3,
+            "res_hz": 582,
+            "peak_dbfs": -6,
+            "live_ms": 632
+          },
+          "glide": {
+            "tonal_share": 0.23,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.372
+            ],
+            "count": 1,
+            "pre_swell_ms": 175
+          },
+          "context": {
+            "category": "pro_shimmer",
+            "sound": "pro_shimmer/m1"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pluck/kalimba_soft.wav",
+      "sha256": "d07b20362f9824c2cbb6d4f92f6ff5898eb7719eed9c03100b7db66f8fa5d5ea",
+      "sourceCue": "pluck/kalimba_soft",
+      "recipeSha256": "4788e6ae01dd42196b919eaf648375598ca44e06fa849141353ce5c8331dee2e",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pluck/kalimba_soft",
+        "seed": 8009,
+        "sr": 48000,
+        "onset_s": 0.0032,
+        "peak_s": 0.0135,
+        "end_s": 2.063,
+        "dur_s": 3,
+        "peak_db": -6,
+        "lufs_m_max": -13.08,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pluck/kalimba_soft: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -97.8,
+            "ring_z": 2.1,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.1,
+            "attack_ms": 9.25,
+            "t40_ms": 1630,
+            "crest_db": 6,
+            "res_db": 30.1,
+            "res_hz": 1037,
+            "peak_dbfs": -6,
+            "live_ms": 1549.25
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.043
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "pluck",
+            "sound": "pluck/kalimba_soft"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pluck/kalimba_ring.wav",
+      "sha256": "ea801ceb884fcdb8c7c0a376c0798155f9b7c01383864bb6da33b8cd8f08b476",
+      "sourceCue": "pluck/kalimba_ring",
+      "recipeSha256": "9b7a2022c332ff72e7f2de1e6c6bff23cdd8eed7feae2c154178c4c0f7f6c41d",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pluck/kalimba_ring",
+        "seed": 8006,
+        "sr": 48000,
+        "onset_s": 0.0032,
+        "peak_s": 0.0135,
+        "end_s": 2.747,
+        "dur_s": 3,
+        "peak_db": -6,
+        "lufs_m_max": -15.05,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pluck/kalimba_ring: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -73.5,
+            "ring_z": 2.5,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 9.25,
+            "t40_ms": 2390,
+            "crest_db": 8.4,
+            "res_db": 38.7,
+            "res_hz": 2614,
+            "peak_dbfs": -6,
+            "live_ms": 2085.25
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "pluck",
+            "sound": "pluck/kalimba_ring"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_typing_run/soft.wav",
+      "sha256": "8dbec587cd39f889bfb7ffa9599f5c86ea2b570eb4a9a67dc19c8924884c6d2b",
+      "sourceCue": "pro_typing_run/soft",
+      "recipeSha256": "f9246e1836aeb878900d2153fa979ad594f187af31b429d905e7379fd1c936ca",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_typing_run/soft",
+        "seed": 661058652,
+        "sr": 48000,
+        "onset_s": 0.0048,
+        "peak_s": 0.5285,
+        "end_s": 1.749,
+        "dur_s": 1.7549,
+        "peak_db": -6,
+        "lufs_m_max": -21.9,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "tail",
+              "msg": "the tail rises again by 52 dB (a second event, a roll or a double member)"
+            }
+          ],
+          "summary": "pro_typing_run/soft: clean (the tail rises again by 52 dB (a second event, a roll or a double member))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -123.4,
+            "ring_z": null,
+            "trunc_db": -49.7,
+            "silence_ms": 0,
+            "bump_db": 51.8,
+            "attack_ms": 2.25,
+            "t40_ms": 40,
+            "crest_db": 14.6,
+            "res_db": 2.5,
+            "res_hz": 2892,
+            "peak_dbfs": -6,
+            "live_ms": 487.25
+          },
+          "glide": {
+            "tonal_share": 0.19,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.018,
+              0.133,
+              0.263,
+              0.357,
+              0.432
+            ],
+            "count": 5,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "pro_typing_run",
+            "sound": "pro_typing_run/soft"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/pro_zip/down_warm.wav",
+      "sha256": "4ff354ea37006fcd1bdc18895a219b922c013b273397528b136489993d02b45d",
+      "sourceCue": "pro_zip/down_warm",
+      "recipeSha256": "d604f1626c5f64e99f560d4a962ab142b714ec1c3ae764bbbc0e844568aff8c7",
+      "recordingSource": null,
+      "measurements": {
+        "id": "pro_zip/down_warm",
+        "seed": 87989972,
+        "sr": 48000,
+        "onset_s": 0.0008,
+        "peak_s": 0.0345,
+        "end_s": 0.335,
+        "dur_s": 0.3716,
+        "peak_db": -6,
+        "lufs_m_max": -11.53,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "pro_zip/down_warm: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -225.4,
+            "ring_z": 4.4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 34.25,
+            "t40_ms": 270,
+            "crest_db": 1.8,
+            "res_db": 2.5,
+            "res_hz": 3440,
+            "peak_dbfs": -6,
+            "live_ms": 287
+          },
+          "glide": {
+            "tonal_share": 0.95,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.033
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "pro_zip",
+            "sound": "pro_zip/down_warm"
+          }
+        }
+      },
+      "artisticallyAuditioned": false,
+      "sourceCommit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c"
+    },
+    {
+      "path": "earshot/ui_pop/soft.wav",
+      "sha256": "f83f701d625859afe93169f8e15b8bde70877cbbd18fa5f35aea4be8eae34c7a",
+      "sourceCue": "ui_pop/soft",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "1b62615e9d915a086ba01cf656e62cab0ede9889350b51efa1c46049b48e0803",
+      "measurements": {
+        "id": "ui_pop/soft",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0.0025,
+        "peak_s": 0.0415,
+        "end_s": 0.157,
+        "dur_s": 0.1805,
+        "peak_db": -6,
+        "lufs_m_max": -20.37,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "ui_pop/soft: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -130.2,
+            "ring_z": 4.1,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 6.5,
+            "t40_ms": 110,
+            "crest_db": 8.2,
+            "res_db": 19.5,
+            "res_hz": 1115,
+            "peak_dbfs": -6,
+            "live_ms": 126.25
+          },
+          "glide": {
+            "tonal_share": 0.36,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.033
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "ui_pop",
+            "sound": "ui_pop/soft"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/ui_pop/step.wav",
+      "sha256": "8cd48a75004fbdf55c7a56d0c9a7e3d4b40e8a3d8698036cb3b87a6eebdc9dc6",
+      "sourceCue": "ui_pop/step",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "ce2dbf7a5b1ca67a96a7f2004bf6d188d642ccd8422b7f64287b691ba69b1e4a",
+      "measurements": {
+        "id": "ui_pop/step",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0.0025,
+        "peak_s": 0.0445,
+        "end_s": 0.163,
+        "dur_s": 0.1871,
+        "peak_db": -6,
+        "lufs_m_max": -20.94,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "ui_pop/step: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -120.1,
+            "ring_z": 4.6,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 20.75,
+            "t40_ms": 110,
+            "crest_db": 8.3,
+            "res_db": 19.5,
+            "res_hz": 1446,
+            "peak_dbfs": -6,
+            "live_ms": 127.5
+          },
+          "glide": {
+            "tonal_share": 0.43,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.043
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "ui_pop",
+            "sound": "ui_pop/step"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/ui_pop/boop.wav",
+      "sha256": "e5a22076342c9e4e2c9c353d4d00e1f1946689abac7b6352afee39120e46e441",
+      "sourceCue": "ui_pop/boop",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "1a11af2504a4f4015e9c9c61227f4637934e1a2afe6da132a65711a87f1a24ee",
+      "measurements": {
+        "id": "ui_pop/boop",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0.0002,
+        "peak_s": 0.0275,
+        "end_s": 0.168,
+        "dur_s": 0.1949,
+        "peak_db": -6,
+        "lufs_m_max": -23.62,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "ui_pop/boop: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -131.3,
+            "ring_z": 4.9,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 9.25,
+            "t40_ms": 110,
+            "crest_db": 10.6,
+            "res_db": 10.1,
+            "res_hz": 1600,
+            "peak_dbfs": -6,
+            "live_ms": 121.25
+          },
+          "glide": {
+            "tonal_share": 0.79,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.033
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "ui_pop",
+            "sound": "ui_pop/boop"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/ui_pop/wide.wav",
+      "sha256": "de31935f252abea83ac6bca68231f4e154ef7e224d247ef3bc25394f016f2b00",
+      "sourceCue": "ui_pop/wide",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "f69b713053fb73a96e4fd9d2a452c5f87cc9ce54e2fe89700c059bbe73912a65",
+      "measurements": {
+        "id": "ui_pop/wide",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0445,
+        "end_s": 0.143,
+        "dur_s": 0.1904,
+        "peak_db": -6,
+        "lufs_m_max": -20.95,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "ui_pop/wide: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -118.9,
+            "ring_z": 6.2,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 7,
+            "t40_ms": 100,
+            "crest_db": 9.5,
+            "res_db": 29,
+            "res_hz": 2810,
+            "peak_dbfs": -6,
+            "live_ms": 123.25
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0.3,
+            "from_s": 0.016,
+            "to_s": 0.031
+          },
+          "layers": {
+            "attacks": [
+              0.048
+            ],
+            "count": 1,
+            "pre_swell_ms": 15
+          },
+          "context": {
+            "category": "ui_pop",
+            "sound": "ui_pop/wide"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/knock/wood.wav",
+      "sha256": "1865a9c1a698e2e90aac7a9b46c51f0feb67fc77c98e605a597af0149f1ab492",
+      "sourceCue": "knock/wood",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "3e8866230f8d6689efd5366881a7f7eee50ed405fdc3a8b72f89104ecd5036a0",
+      "measurements": {
+        "id": "knock/wood",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0.0122,
+        "peak_s": 0.0155,
+        "end_s": 0.13,
+        "dur_s": 0.1536,
+        "peak_db": -6,
+        "lufs_m_max": -27.85,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "knock/wood: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -122.3,
+            "ring_z": 5.4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 1,
+            "t40_ms": 100,
+            "crest_db": 15.1,
+            "res_db": 4.5,
+            "res_hz": 1165,
+            "peak_dbfs": -6,
+            "live_ms": 77.75
+          },
+          "glide": {
+            "tonal_share": 0.4,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.022
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "knock",
+            "sound": "knock/wood"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/knock/plastic.wav",
+      "sha256": "465b34dbe85afdf34c98d5081dc5f21d9d273f3fd841d95366be56d8f8a8ffb2",
+      "sourceCue": "knock/plastic",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "e936ed2cf3f7d707ff907a775a2eb94f48a8397236a925cd7308bac0eae59d11",
+      "measurements": {
+        "id": "knock/plastic",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0.0015,
+        "peak_s": 0.0525,
+        "end_s": 0.124,
+        "dur_s": 0.1531,
+        "peak_db": -6,
+        "lufs_m_max": -28.02,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "knock/plastic: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -124.6,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 1.5,
+            "t40_ms": 60,
+            "crest_db": 15.2,
+            "res_db": 10.2,
+            "res_hz": 2468,
+            "peak_dbfs": -6,
+            "live_ms": 50.75
+          },
+          "glide": {
+            "tonal_share": 0.7,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.062
+            ],
+            "count": 1,
+            "pre_swell_ms": 30
+          },
+          "context": {
+            "category": "knock",
+            "sound": "knock/plastic"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/knock/snap.wav",
+      "sha256": "a4cd05e5dd7ec1cfcbeb341230e9815c53b6b7cfd1ffa3546ed5066e99962a08",
+      "sourceCue": "knock/snap",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "004d3927d5a71eb1aacdab9d46c0ad9fcb9b0a7a9f8c3ce7a05a9c5b74558843",
+      "measurements": {
+        "id": "knock/snap",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0.0008,
+        "peak_s": 0.0415,
+        "end_s": 0.101,
+        "dur_s": 0.1335,
+        "peak_db": -6,
+        "lufs_m_max": -28.6,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "knock/snap: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -116.3,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 1.25,
+            "t40_ms": 50,
+            "crest_db": 15.8,
+            "res_db": 10.7,
+            "res_hz": 2503,
+            "peak_dbfs": -6,
+            "live_ms": 54.25
+          },
+          "glide": {
+            "tonal_share": 0.5,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.052
+            ],
+            "count": 1,
+            "pre_swell_ms": 20
+          },
+          "context": {
+            "category": "knock",
+            "sound": "knock/snap"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/knock/double.wav",
+      "sha256": "6a1302debbca519409ec4da417260b10160ffc5c0084475610426dff5f9ff358",
+      "sourceCue": "knock/double",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "2f40cf5aaa92ebeb7b7704aa82fb2e3c4f64ddbd0d9d1cbf39500c17742d3eeb",
+      "measurements": {
+        "id": "knock/double",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0575,
+        "end_s": 0.111,
+        "dur_s": 0.1561,
+        "peak_db": -6,
+        "lufs_m_max": -26.94,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [
+            {
+              "code": "tail",
+              "msg": "the tail rises again by 39 dB (a second event, a roll or a double member)"
+            }
+          ],
+          "summary": "knock/double: clean (the tail rises again by 39 dB (a second event, a roll or a double member))",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -134.5,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 38.6,
+            "attack_ms": 2,
+            "t40_ms": 100,
+            "crest_db": 17.2,
+            "res_db": 8.2,
+            "res_hz": 7184,
+            "peak_dbfs": -6,
+            "live_ms": 65.75
+          },
+          "glide": {
+            "tonal_share": 0.77,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.013,
+              0.068
+            ],
+            "count": 2,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "knock",
+            "sound": "knock/double"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/cut_hit/kick.wav",
+      "sha256": "cd186f6edaa8ee10c1f3911c6b610ee11c33bca08fe447ccdd342ea387c13d32",
+      "sourceCue": "cut_hit/kick",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "aebe615abfeed077b4bcd5347995c2a8a3babda9fe23d7880bcb3f63bcde8720",
+      "measurements": {
+        "id": "cut_hit/kick",
+        "seed": 4102,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0135,
+        "end_s": 0.243,
+        "dur_s": 0.325,
+        "peak_db": -6,
+        "lufs_m_max": -21.29,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "cut_hit/kick: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -90,
+            "ring_z": 3.4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 2.5,
+            "t40_ms": 190,
+            "crest_db": 9,
+            "res_db": 2.9,
+            "res_hz": 456,
+            "peak_dbfs": -6,
+            "live_ms": 165
+          },
+          "glide": {
+            "tonal_share": 0.72,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.013
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "cut_hit",
+            "sound": "cut_hit/kick"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/cut_hit/punch.wav",
+      "sha256": "517e0ea3393a44beab8fcd3825474c9bd6efdce58d7022f57f64c623f1a02930",
+      "sourceCue": "cut_hit/punch",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "671487ada410bfa58de26ac3e6e8b52a8f2be4906cd84a5e774f7fe50cf83344",
+      "measurements": {
+        "id": "cut_hit/punch",
+        "seed": 4103,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0575,
+        "end_s": 0.278,
+        "dur_s": 0.2823,
+        "peak_db": -6,
+        "lufs_m_max": -20.46,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "cut_hit/punch: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -96.8,
+            "ring_z": 3.1,
+            "trunc_db": -47.1,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 20.75,
+            "t40_ms": 210,
+            "crest_db": 8.5,
+            "res_db": 3.7,
+            "res_hz": 2230,
+            "peak_dbfs": -6,
+            "live_ms": 211.25
+          },
+          "glide": {
+            "tonal_share": 0.44,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.052
+            ],
+            "count": 1,
+            "pre_swell_ms": 20
+          },
+          "context": {
+            "category": "cut_hit",
+            "sound": "cut_hit/punch"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/cut_hit/air.wav",
+      "sha256": "48ac1b3760c876609f33ecaf0bc8d130b078e00cf44c1fcd6919e1cae3028506",
+      "sourceCue": "cut_hit/air",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "ba6c4baf67f6c4b9cd2214d8235e096899c81b9e7b75525da3c6a0bd46838f00",
+      "measurements": {
+        "id": "cut_hit/air",
+        "seed": 4105,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0435,
+        "end_s": 0.504,
+        "dur_s": 0.5493,
+        "peak_db": -6,
+        "lufs_m_max": -21.52,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "cut_hit/air: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -111.9,
+            "ring_z": 8.7,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 1.6,
+            "attack_ms": 1.75,
+            "t40_ms": 440,
+            "crest_db": 11.2,
+            "res_db": 3.3,
+            "res_hz": 965,
+            "peak_dbfs": -6,
+            "live_ms": 439.25
+          },
+          "glide": {
+            "tonal_share": 0.87,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.048
+            ],
+            "count": 1,
+            "pre_swell_ms": 15
+          },
+          "context": {
+            "category": "cut_hit",
+            "sound": "cut_hit/air"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/mallet/glock.wav",
+      "sha256": "ad177f5206f353d6e657e13ed4ca4aba368fdb690d865d257f3c0990a8844c89",
+      "sourceCue": "mallet/glock",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "4138c9c6336e170e9468c1063b81ff121d737aede22e28e0a2f19d3ce7f7fc39",
+      "measurements": {
+        "id": "mallet/glock",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0105,
+        "end_s": 0.374,
+        "dur_s": 0.4123,
+        "peak_db": -6,
+        "lufs_m_max": -18.44,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "mallet/glock: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -141,
+            "ring_z": 4.9,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 3,
+            "t40_ms": 310,
+            "crest_db": 7.5,
+            "res_db": 60.6,
+            "res_hz": 3540,
+            "peak_dbfs": -6,
+            "live_ms": 299.5
+          },
+          "glide": {
+            "tonal_share": 0.78,
+            "rise_st": 0.1,
+            "from_s": 0.011,
+            "to_s": 0.081
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "mallet",
+            "sound": "mallet/glock"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/mallet/pluck.wav",
+      "sha256": "13e899444b75ca53fa6ff78d9088a38d1b9c992820dc323af8df17c2d1062501",
+      "sourceCue": "mallet/pluck",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "0c4c5cec4a3b84b1eb398a472bcb9b1b164945c3e9d9bc674662b58690242737",
+      "measurements": {
+        "id": "mallet/pluck",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0.0065,
+        "peak_s": 0.0555,
+        "end_s": 0.415,
+        "dur_s": 0.4944,
+        "peak_db": -6,
+        "lufs_m_max": -16.63,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "mallet/pluck: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -157.5,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 19,
+            "t40_ms": 220,
+            "crest_db": 5.7,
+            "res_db": 53.4,
+            "res_hz": 2016,
+            "peak_dbfs": -6,
+            "live_ms": 243.25
+          },
+          "glide": {
+            "tonal_share": 0.71,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.052
+            ],
+            "count": 1,
+            "pre_swell_ms": 15
+          },
+          "context": {
+            "category": "mallet",
+            "sound": "mallet/pluck"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/mallet/marimba.wav",
+      "sha256": "576f44865a4b4da02574a8e901b58c5be25c1c504e0378e649e1131207644133",
+      "sourceCue": "mallet/marimba",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "cb4d13beec71b19c7887bfed2719e7b1e9dce98f47bd1022f948917ab140b1be",
+      "measurements": {
+        "id": "mallet/marimba",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0065,
+        "end_s": 0.385,
+        "dur_s": 0.5643,
+        "peak_db": -6,
+        "lufs_m_max": -18.26,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "mallet/marimba: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -140.8,
+            "ring_z": 5.4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 4.8,
+            "attack_ms": 3.75,
+            "t40_ms": 300,
+            "crest_db": 5.5,
+            "res_db": 52.3,
+            "res_hz": 3861,
+            "peak_dbfs": -6,
+            "live_ms": 292.25
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0.5,
+            "from_s": 0.011,
+            "to_s": 0.116
+          },
+          "layers": {
+            "attacks": [
+              0.018
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "mallet",
+            "sound": "mallet/marimba"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/shutter/dslr.wav",
+      "sha256": "bd19a35ca778d187ddc55b030f683c6a03ad3e32eb94006698dca63ec8f3b5d2",
+      "sourceCue": "shutter/dslr",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "98495270e763f3b506571fa65426a124665d559dc961c96132d1932d31c81e29",
+      "measurements": {
+        "id": "shutter/dslr",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0.0005,
+        "peak_s": 0.0415,
+        "end_s": 0.19,
+        "dur_s": 0.2418,
+        "peak_db": -6,
+        "lufs_m_max": -27.49,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "shutter/dslr: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -113.5,
+            "ring_z": 4.4,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.3,
+            "attack_ms": 2,
+            "t40_ms": 150,
+            "crest_db": 15,
+            "res_db": 7.4,
+            "res_hz": 4658,
+            "peak_dbfs": -6,
+            "live_ms": 127.5
+          },
+          "glide": {
+            "tonal_share": 0.27,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.033
+            ],
+            "count": 1,
+            "pre_swell_ms": 15
+          },
+          "context": {
+            "category": "shutter",
+            "sound": "shutter/dslr"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/shutter/snap.wav",
+      "sha256": "43b87c638f6ab46400bf2d7ed4b544381bf615a2a80bb84a96beea917d3605b6",
+      "sourceCue": "shutter/snap",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "827d84d424341ecbc6920369ee8a5f4dba32863d6fedb3e928f58838ff1c3c59",
+      "measurements": {
+        "id": "shutter/snap",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0615,
+        "end_s": 0.098,
+        "dur_s": 0.137,
+        "peak_db": -6,
+        "lufs_m_max": -28.37,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "shutter/snap: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -108.7,
+            "ring_z": null,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 0.75,
+            "t40_ms": 50,
+            "crest_db": 15.7,
+            "res_db": 15.9,
+            "res_hz": 2045,
+            "peak_dbfs": -6,
+            "live_ms": 83.25
+          },
+          "glide": {
+            "tonal_share": 0.33,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.062
+            ],
+            "count": 1,
+            "pre_swell_ms": 35
+          },
+          "context": {
+            "category": "shutter",
+            "sound": "shutter/snap"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/shutter/film.wav",
+      "sha256": "b05baf883123f4393f0e9fb5d4ed8a2437571a21b8fcbae45ae334f11de3f9f9",
+      "sourceCue": "shutter/film",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "aeddde9ebe0bbda0991ea0f9aed4a00f590ddaf5d8543872d87826c7ec3deda9",
+      "measurements": {
+        "id": "shutter/film",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0,
+        "peak_s": 0.0995,
+        "end_s": 0.256,
+        "dur_s": 0.2835,
+        "peak_db": -6,
+        "lufs_m_max": -24.15,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "shutter/film: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -101.5,
+            "ring_z": 7.7,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 1.75,
+            "t40_ms": 140,
+            "crest_db": 11.9,
+            "res_db": 8,
+            "res_hz": 2296,
+            "peak_dbfs": -6,
+            "live_ms": 203.25
+          },
+          "glide": {
+            "tonal_share": 0.5,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.107
+            ],
+            "count": 1,
+            "pre_swell_ms": 75
+          },
+          "context": {
+            "category": "shutter",
+            "sound": "shutter/film"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/reverse_swell/dark.wav",
+      "sha256": "7d2fdb24db3753aa8609424ca88b3e56f3fb626c93f92cfa7ca45beb8baf6546",
+      "sourceCue": "reverse_swell/dark",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "5c80d55a91505a56347de47ccaefc0286cca610edf29b52c7b2c8a42d6eb013d",
+      "measurements": {
+        "id": "reverse_swell/dark",
+        "seed": 4303,
+        "sr": 48000,
+        "onset_s": 0.0032,
+        "peak_s": 0.5695,
+        "end_s": 0.872,
+        "dur_s": 0.9189,
+        "peak_db": -6,
+        "lufs_m_max": -19.87,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "reverse_swell/dark: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -153.3,
+            "ring_z": 3.8,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 7.75,
+            "t40_ms": 260,
+            "crest_db": 8.8,
+            "res_db": 4.7,
+            "res_hz": 1199,
+            "peak_dbfs": -6,
+            "live_ms": 696
+          },
+          "glide": {
+            "tonal_share": 0.54,
+            "rise_st": 6.2,
+            "from_s": 0.476,
+            "to_s": 0.506
+          },
+          "layers": {
+            "attacks": [
+              0.547
+            ],
+            "count": 1,
+            "pre_swell_ms": 455
+          },
+          "context": {
+            "category": "reverse_swell",
+            "sound": "reverse_swell/dark"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/reverse_swell/breath.wav",
+      "sha256": "0aea2261c289611dfca39be3cdbd3d7a8084951d6ee7405c4021642c025dd585",
+      "sourceCue": "reverse_swell/breath",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "96c739cc09c968b05569a882a47ad727f829c1869ae8263b476b4276029cff72",
+      "measurements": {
+        "id": "reverse_swell/breath",
+        "seed": 4305,
+        "sr": 48000,
+        "onset_s": 0.0905,
+        "peak_s": 0.7325,
+        "end_s": 1.167,
+        "dur_s": 1.235,
+        "peak_db": -6,
+        "lufs_m_max": -18.63,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "reverse_swell/breath: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -164.1,
+            "ring_z": 3.6,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.3,
+            "attack_ms": 9.5,
+            "t40_ms": 350,
+            "crest_db": 8.9,
+            "res_db": 4,
+            "res_hz": 3200,
+            "peak_dbfs": -6,
+            "live_ms": 953.25
+          },
+          "glide": {
+            "tonal_share": 0.47,
+            "rise_st": 1.1,
+            "from_s": 0.896,
+            "to_s": 0.926
+          },
+          "layers": {
+            "attacks": [
+              0.738
+            ],
+            "count": 1,
+            "pre_swell_ms": 445
+          },
+          "context": {
+            "category": "reverse_swell",
+            "sound": "reverse_swell/breath"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/whoosh_big/thump.wav",
+      "sha256": "a6c75add879222e8600f9646cd7ea0d415ac8a6ff7ba9573f16b04ce6c61260f",
+      "sourceCue": "whoosh_big/thump",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "bb4a5567f96457a7d0a5d6fd9ca29bb7000aa641dfd03b2a98d11b2a5d246329",
+      "measurements": {
+        "id": "whoosh_big/thump",
+        "seed": 4201,
+        "sr": 48000,
+        "onset_s": 0.0462,
+        "peak_s": 0.1375,
+        "end_s": 0.88,
+        "dur_s": 1.03,
+        "peak_db": -6,
+        "lufs_m_max": -19.32,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "whoosh_big/thump: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -66.8,
+            "ring_z": 2.9,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 3.5,
+            "attack_ms": 1,
+            "t40_ms": 660,
+            "crest_db": 9.6,
+            "res_db": 4.1,
+            "res_hz": 4150,
+            "peak_dbfs": -6,
+            "live_ms": 614
+          },
+          "glide": {
+            "tonal_share": 0.84,
+            "rise_st": 2.3,
+            "from_s": 0.501,
+            "to_s": 0.546
+          },
+          "layers": {
+            "attacks": [
+              0.142
+            ],
+            "count": 1,
+            "pre_swell_ms": 85
+          },
+          "context": {
+            "category": "whoosh_big",
+            "sound": "whoosh_big/thump"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/whoosh_big/thump_airy.wav",
+      "sha256": "fafeab2a2cd83f4ccedbed7edab52f7e3c5325e276933b163bc4ef769e435fe4",
+      "sourceCue": "whoosh_big/thump_airy",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "19e0f5b8eb197ce271666cc7717c5f2698b5d37d0ad1f8e1ed261da2005b631c",
+      "measurements": {
+        "id": "whoosh_big/thump_airy",
+        "seed": 4203,
+        "sr": 48000,
+        "onset_s": 0.0168,
+        "peak_s": 0.1535,
+        "end_s": 0.798,
+        "dur_s": 0.915,
+        "peak_db": -6,
+        "lufs_m_max": -17.3,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "whoosh_big/thump_airy: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -69.5,
+            "ring_z": 4.1,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 2.9,
+            "attack_ms": 5.25,
+            "t40_ms": 530,
+            "crest_db": 9,
+            "res_db": 3.1,
+            "res_hz": 1958,
+            "peak_dbfs": -6,
+            "live_ms": 578.75
+          },
+          "glide": {
+            "tonal_share": 0.69,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.152
+            ],
+            "count": 1,
+            "pre_swell_ms": 100
+          },
+          "context": {
+            "category": "whoosh_big",
+            "sound": "whoosh_big/thump_airy"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/riser/dark.wav",
+      "sha256": "5a92e4661c016ca5b92adba1b73d2b5bf88f13049108daf890740ea948a7d36d",
+      "sourceCue": "riser/dark",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "b7cda9fcd586ebb8c819453e1a94e6a0311aea91d245d87cd40b7309222527fd",
+      "measurements": {
+        "id": "riser/dark",
+        "seed": 4401,
+        "sr": 48000,
+        "onset_s": 0.1345,
+        "peak_s": 0.6965,
+        "end_s": 0.943,
+        "dur_s": 0.9511,
+        "peak_db": -6,
+        "lufs_m_max": -21.4,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "riser/dark: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -122.9,
+            "ring_z": 3.9,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 6,
+            "t40_ms": 190,
+            "crest_db": 13.2,
+            "res_db": 5.6,
+            "res_hz": 4090,
+            "peak_dbfs": -6,
+            "live_ms": 715
+          },
+          "glide": {
+            "tonal_share": 0.56,
+            "rise_st": 1,
+            "from_s": 0.401,
+            "to_s": 0.411
+          },
+          "layers": {
+            "attacks": [
+              0.517,
+              0.698
+            ],
+            "count": 2,
+            "pre_swell_ms": 350
+          },
+          "context": {
+            "category": "riser",
+            "sound": "riser/dark"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/swish/bright.wav",
+      "sha256": "37196be5ca59d8947d1be42909f6206dce3d23d916fc0a16eb2197425156c781",
+      "sourceCue": "swish/bright",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "4f8720d68a540ec5e5bad563ac848759cf734d917c9ec42f46ba4a9e045d6698",
+      "measurements": {
+        "id": "swish/bright",
+        "seed": 4501,
+        "sr": 48000,
+        "onset_s": 0.0068,
+        "peak_s": 0.1555,
+        "end_s": 0.299,
+        "dur_s": 0.345,
+        "peak_db": -6,
+        "lufs_m_max": -17.41,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "swish/bright: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -114.2,
+            "ring_z": 5.9,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0.1,
+            "attack_ms": 38.5,
+            "t40_ms": 140,
+            "crest_db": 6.9,
+            "res_db": 3.4,
+            "res_hz": 1875,
+            "peak_dbfs": -6,
+            "live_ms": 259.25
+          },
+          "glide": {
+            "tonal_share": 0.53,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.147
+            ],
+            "count": 1,
+            "pre_swell_ms": 105
+          },
+          "context": {
+            "category": "swish",
+            "sound": "swish/bright"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/swish/flick.wav",
+      "sha256": "271673f87a616f359b036246ea59809711df04213e44ceedf36f029dacfe20fe",
+      "sourceCue": "swish/flick",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "da269027056203a53ec00fa831efe8fac6f9f1e879fe129906ef5a75f58e54e2",
+      "measurements": {
+        "id": "swish/flick",
+        "seed": 4502,
+        "sr": 48000,
+        "onset_s": 0.0015,
+        "peak_s": 0.1105,
+        "end_s": 0.255,
+        "dur_s": 0.32,
+        "peak_db": -6,
+        "lufs_m_max": -24.11,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "swish/flick: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -96.2,
+            "ring_z": 6.2,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 6.5,
+            "t40_ms": 130,
+            "crest_db": 12.2,
+            "res_db": 4.5,
+            "res_hz": 8793,
+            "peak_dbfs": -6,
+            "live_ms": 193
+          },
+          "glide": {
+            "tonal_share": 0.04,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.113
+            ],
+            "count": 1,
+            "pre_swell_ms": 85
+          },
+          "context": {
+            "category": "swish",
+            "sound": "swish/flick"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/notify/mid_tine.wav",
+      "sha256": "dd0851be579b71df2b5fc73a5347ee5fad7d4e2d3df1656ffbd3bea254962a95",
+      "sourceCue": "notify/mid_tine",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "06ae404eace0b2418604081ab4ff9730d3e8b1edaad483be9e37846ee56732c4",
+      "measurements": {
+        "id": "notify/mid_tine",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0.0035,
+        "peak_s": 0.0385,
+        "end_s": 0.319,
+        "dur_s": 0.425,
+        "peak_db": -6,
+        "lufs_m_max": -19.46,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "notify/mid_tine: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -192.2,
+            "ring_z": 3.9,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 20.25,
+            "t40_ms": 240,
+            "crest_db": 7.3,
+            "res_db": 33.1,
+            "res_hz": 835,
+            "peak_dbfs": -6,
+            "live_ms": 239.5
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.037
+            ],
+            "count": 1,
+            "pre_swell_ms": 5
+          },
+          "context": {
+            "category": "notify",
+            "sound": "notify/mid_tine"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    },
+    {
+      "path": "earshot/notify/mid_wood.wav",
+      "sha256": "b260b03b46ac4c32e2141d4bcad29901db7aaf32fb919cfacb7761ea3473059b",
+      "sourceCue": "notify/mid_wood",
+      "sourceCommit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "recipeSha256": "ddf2237160346da3bab9e82518161eb4c8807d6c8b8c94273614123b8f78c4ff",
+      "measurements": {
+        "id": "notify/mid_wood",
+        "seed": 1,
+        "sr": 48000,
+        "onset_s": 0.0045,
+        "peak_s": 0.0385,
+        "end_s": 0.294,
+        "dur_s": 0.317,
+        "peak_db": -6,
+        "lufs_m_max": -18.45,
+        "edits": {},
+        "checks": {
+          "ok": true,
+          "warnings": [],
+          "notes": [],
+          "summary": "notify/mid_wood: clean",
+          "measures": {
+            "clicks": 0,
+            "edge_db": -240,
+            "clip_runs": 0,
+            "overs": 0,
+            "dc_db": -179.6,
+            "ring_z": 5,
+            "trunc_db": null,
+            "silence_ms": 0,
+            "bump_db": 0,
+            "attack_ms": 22.25,
+            "t40_ms": 240,
+            "crest_db": 6.4,
+            "res_db": 61.8,
+            "res_hz": 3020,
+            "peak_dbfs": -6,
+            "live_ms": 244.5
+          },
+          "glide": {
+            "tonal_share": 1,
+            "rise_st": 0,
+            "from_s": null,
+            "to_s": null
+          },
+          "layers": {
+            "attacks": [
+              0.037
+            ],
+            "count": 1,
+            "pre_swell_ms": 0
+          },
+          "context": {
+            "category": "notify",
+            "sound": "notify/mid_wood"
+          }
+        }
+      },
+      "artisticallyAuditioned": false
+    }
+  ],
+  "license": "MIT",
+  "licenseSha256": "d9177365c7471d18ecd623ce7b8849e26ab8d7e7fea13e1fcbda62397ecb9db8",
+  "creditsSha256": "14c3e327982530a58ad9a889123a6236842517d94080a0a04dfaff7121651e2e",
+  "releases": [
+    {
+      "commit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c",
+      "sourceTreeSha256": "5b92635b86b2338cdaec661b6b7a2c36cf46323025fed1c3e6854f2b1c1d5f8f"
+    },
+    {
+      "commit": "591fa3e028032e6dce56620a20e932e35667e8d8",
+      "sourceTreeSha256": "f7e44e82ab47496d12af5cc19072cb0d264786cf8b9135ff4408517448837f49",
+      "selectionSha256": "69c77d15fa307d8b3871f5c6d2fcbb70b23848be323aadef9164090f7c075cec"
+    }
+  ],
+  "limitations": [
+    "Selected 79 cues; full bank not bundled.",
+    "Original 53 audio hashes retained; each derivative keeps its own source commit.",
+    "Launch kit is frozen model-free DSP with measured per-role takes; no Python runtime required.",
+    "Technical checks do not certify artistic listening.",
+    "Optional semantic models are not bundled, downloaded or loaded automatically."
+  ]
+}

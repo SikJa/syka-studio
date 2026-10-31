@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-28",
+  "url": "https://www.aicss.dev/r/reasoning-effort.json",
+  "registry_sha256": "3158169f3c1dc79dc579c2dcce942baa68f8fa4e0a7f13aa1a5be4ada305979f",
+  "source_sha256": {
+    "registry/reasoning-effort/ReasoningEffort.tsx": "9f1aa5626ac3c2c4d4ecaca1d34311a617048b9ad6b30b56fc58ac4dad68de71",
+    "registry/reasoning-effort/ReasoningEffort.module.css": "20e13d834742372bcb7459df019da49d50d5e27cebf3086ffbd17cb434ac7fab"
+  },
+  "license_url": "https://raw.githubusercontent.com/kvnkld/aicss/main/LICENSE",
+  "license_sha256": "04df760be634b1e68ef88f2bcb8348647c4dc1d1ff758d82059745eb199cc8e9"
+}

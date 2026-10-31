@@ -1,6 +1,6 @@
 /* MPL-2.0. Claude Code's native metrics, including cache and resumed sessions. */
 import { randomUUID } from 'node:crypto';
-import type { TokenCounts, TokenUsageReport } from '../protocol';
+import type { ContextUsage, TokenCounts, TokenUsageReport } from '../protocol';
 
 const integer = (value: unknown): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
 
@@ -29,6 +29,7 @@ export function claudeCumulativeUsage(version: string): boolean {
 }
 
 type Observation = { model: string; tokens: TokenCounts };
+type ContextReporter = { windows:Map<string,number>; scope?:string; emit:(usage:ContextUsage)=>void };
 
 /** Buffer step input until the final result: assistant output is only a placeholder. */
 export class ClaudeUsageTracker {
@@ -39,19 +40,53 @@ export class ClaudeUsageTracker {
   private sessionId: string;
   private readonly cumulative: boolean;
   private readonly emit: (report: TokenUsageReport) => void;
-  constructor(sessionId: string, cumulative: boolean, emit: (report: TokenUsageReport) => void) {
+  private readonly context?: ContextReporter;
+  private latestInput?: {model:string;usedTokens:number};
+  private publishedContext?: string;
+  constructor(sessionId: string, cumulative: boolean, emit: (report: TokenUsageReport) => void, context?:ContextReporter) {
     this.sessionId = sessionId; this.cumulative = cumulative; this.emit = emit;
+    this.context=context;
   }
   private source(model: string) { return JSON.stringify(['claude-cli', this.sessionId, model]); }
+  private windowKey(model:string){return JSON.stringify([this.context?.scope??'',model]);}
+  private publishContext() {
+    if(!this.context||!this.latestInput)return;
+    const maxTokens=this.context.windows.get(this.windowKey(this.latestInput.model));
+    if(maxTokens===undefined)return;
+    const usage={usedTokens:this.latestInput.usedTokens,maxTokens}, fingerprint=JSON.stringify(usage);
+    if(fingerprint!==this.publishedContext){this.publishedContext=fingerprint;this.context.emit(usage);}
+  }
+  private observeWindows(raw:unknown) {
+    if(!this.context||!raw||typeof raw!=='object'||Array.isArray(raw))return;
+    for(const [model,value] of Object.entries(raw)) {
+      if(!value||typeof value!=='object')continue;
+      const entry=value as Record<string,unknown>;
+      if(!integer(entry.contextWindow)||entry.contextWindow<=0)continue;
+      const names=[model,...(typeof entry.canonicalModel==='string'?[entry.canonicalModel]:[])];
+      for(const name of names) {
+        const key=this.windowKey(name);
+        if(!this.context.windows.has(key)&&this.context.windows.size>=64)this.context.windows.delete(this.context.windows.keys().next().value!);
+        this.context.windows.set(key,entry.contextWindow);
+      }
+    }
+    this.publishContext();
+  }
   observe(message: any): void {
+    if(message.type==='system'&&message.subtype==='compact_boundary')this.latestInput=undefined;
     if ((message.type === 'result' || message.type === 'system' && message.subtype === 'init') && typeof message.session_id === 'string' && message.session_id) this.sessionId = message.session_id;
     if (message.type === 'assistant' && !message.parent_tool_use_id) {
       const { id, model, usage } = message.message ?? {};
       const tokens = claudeTokens(usage, false, true);
-      if (typeof id === 'string' && id && typeof model === 'string' && tokens) this.steps.set(id, { model, tokens });
+      if (typeof id === 'string' && id && typeof model === 'string' && tokens) {
+        this.steps.set(id, { model, tokens });
+        // Match Claude's status-line occupancy: latest request input + cache,
+        // not cumulative modelUsage and not its placeholder output token count.
+        this.latestInput={model,usedTokens:tokens.inputTokens!};this.publishContext();
+      }
     }
     if (message.type !== 'result') return;
     const models = message.modelUsage;
+    this.observeWindows(models);
     const entries = models && typeof models === 'object' && !Array.isArray(models)
       ? Object.entries(models).map(([model, raw]) => ({ model, tokens: claudeTokens(raw, true) })).filter((entry): entry is Observation => entry.tokens !== null) : [];
     // A crashed process can report zeroed totals despite having consumed input.

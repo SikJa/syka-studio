@@ -2,18 +2,25 @@ import {describe,it,expect} from 'vitest';
 import {parseUserQuestions,userQuestionResult} from '../src/host/user-questions';
 import {withAttachments,chatInstructions} from '../src/host/harness';
 describe('model-selected contextual questions',()=>{
-  it('reminds existing sessions to inspect links and attachments before recommending a direction, without classifying intent',()=>{
+  it('keeps the reference contract in session instructions and adds only a compact reminder to links and attachments',()=>{
+    const standing=chatInstructions('project');
+    expect(standing).toContain('Reference inspection contract for ALL links and attachments');
+    expect(standing).toContain('ALWAYS call syka_ask_user and wait');
+    expect(standing).toContain('If a specific purpose was already explicitly supplied');
+    expect(standing).toContain('first briefly inspect the actual reference');
+    expect(standing).toContain('recommend one concrete direction');
     for(const message of ['https://www.instagram.com/p/images/','Analizá https://example.com/document','Tomá la tipografía de https://example.com/page']){
       const input=withAttachments(message,['C:/video.mp4']);
-      expect(input).toContain('Reference inspection contract for ALL links and attachments');
-      expect(input).toContain('ALWAYS call syka_ask_user and wait');
-      expect(input).toContain('If a specific purpose was already explicitly supplied');
+      expect(input).not.toContain('Reference inspection contract for ALL links and attachments');
+      expect(input).toContain('reuse inspected evidence and the standing reference contract');
+      expect(input).toContain('unresolved purpose requires syka_ask_user');
       expect(input).toContain(message+'\n\nAttached files and folders:\nC:/video.mp4');
+      expect(input.length-message.length-'\n\nAttached files and folders:\nC:/video.mp4'.length).toBeLessThan(300);
     }
     expect(withAttachments('Bajá el volumen de la voz',[])).toBe('Bajá el volumen de la voz');
-    expect(withAttachments('¿Qué podemos hacer con esta foto?',['C:/foto.jpg'])).toContain('first briefly inspect the actual reference');
-    expect(withAttachments('Adaptá esta referencia',['C:/brief.md'])).toContain('recommend one concrete direction');
-    expect(chatInstructions('project')).toContain('social posts containing images');
+    expect(withAttachments('¿Qué podemos hacer con esta foto?',['C:/foto.jpg'])).toContain('C:/foto.jpg');
+    expect(withAttachments('Adaptá esta referencia',['C:/brief.md'])).toContain('C:/brief.md');
+    expect(standing).toContain('social posts containing images');
   });
   it('carries observed context and a recommendation without selecting or restricting an answer',()=>{
     const [question]=parseUserQuestions({questions:[{id:'direction',question:'¿Buscás venderlo o explicar su uso?',context:'La foto muestra un producto central sobre fondo limpio.',recommendation:{label:'Presentar dos beneficios',reason:'Mantiene el producto como foco y aprovecha el espacio disponible.'},options:[{label:'Presentar dos beneficios'},{label:'Mostrar cómo funciona'}]}]});

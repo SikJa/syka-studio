@@ -5,28 +5,27 @@ export function transcriptPresentation(items: Item[], active: boolean) {
   const transient = new Set<string>();
   const turnStart = items.findLastIndex(item => item.kind === 'user');
   let laterAssistant = false;
-  let finalSeen = false;
   // Old bridges discarded Codex's phase. Infer intermediate messages from
   // later messages in the SAME turn, never from their wording. Tools can
   // finish after the final answer (for example a subagent completion).
   for (let index = items.length - 1; index >= 0; index--) {
     const item = items[index];
-    if (item.kind === 'user') { laterAssistant = false; finalSeen = false; continue; }
-    if (finalSeen && (item.kind === 'reasoning' || (item.kind === 'assistant' && item.phase === 'commentary'))) {
+    if (item.kind === 'user') { laterAssistant = false; continue; }
+    if (item.kind === 'assistant' && item.phase === 'commentary') {
       transient.add(item.id);
+      continue;
     }
-    if ((item.kind === 'tool' && item.name !== 'webSearch' && item.name !== 'imageGeneration') || item.kind === 'reasoning') {
+    if ((item.kind === 'tool' && item.name !== 'imageGeneration') || item.kind === 'reasoning') {
       transient.add(item.id);
     } else if (item.kind === 'assistant') {
-      if (item.phase === 'final' || (!item.phase && !laterAssistant && (!active || index < turnStart))) finalSeen = true;
       if (!item.phase && laterAssistant) transient.add(item.id);
       laterAssistant = true;
     }
   }
-  const messages = items.filter((item, index) => !transient.has(item.id)
-    && !(active && index > turnStart && item.kind === 'assistant' && !item.phase));
-  const activity = active ? items.slice(turnStart + 1).filter(item => item.kind === 'tool' || item.kind === 'reasoning' || (item.kind === 'assistant' && item.phase === 'commentary') || transient.has(item.id)
-    || (item.kind === 'assistant' && !item.phase)) : [];
+  // ACP/Claude may stream public assistant text without a phase. Display that
+  // text immediately; completed history can still collapse intermediate items.
+  const messages = items.filter(item => !transient.has(item.id));
+  const activity = active ? items.slice(turnStart + 1).filter(item => item.kind === 'tool' || item.kind === 'reasoning' || (item.kind === 'assistant' && item.phase === 'commentary') || transient.has(item.id)) : [];
   return { messages, activity };
 }
 
@@ -48,8 +47,8 @@ export function currentActivity(activity: Item[], waiting = false) {
     text: '',
   };
   if (last?.kind === 'assistant') return { label: 'Preparando la respuesta', text: publicProgressSummary(last.text) };
-  if (last?.kind === 'reasoning' && last.summary) return {label:'Pensando',text:publicProgressSummary(last.text) || 'Analizando el proyecto'};
-  return { label: 'Pensando', text: 'Analizando el proyecto' };
+  if (last?.kind === 'reasoning' && last.summary) return {label:'Pensando',text:publicProgressSummary(last.text)};
+  return { label: 'Esperando al modelo', text: 'Esperando respuesta del modelo' };
 }
 
 /** Only short, explicitly public summaries. Never translate or summarize a

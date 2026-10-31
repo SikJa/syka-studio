@@ -5,12 +5,24 @@ description: Adaptar Camera 3D Captions a Diffusion con texto nativo editable, p
 
 # Captions con profundidad
 
+## Contract
+
+Syka entrega una composición audiovisual nativa editable dentro del proyecto. El pedido actual manda: conservá originales, voz, estilo/geometría aprobados y edición nativa. Un plan sólo es entrega si se pidió plan; al editar, aplicá la composición y comprobala. Un fallo deja verificaciones pendientes o bloqueadas, nunca habilita otra app, juego, web o motor como sustituto. Exportá sólo ante pedido explícito.
+
+Profundidad proyectada en 2D con texto nativo, no oclusiones automáticas ni un renderer 3D. La cámara deriva del reloj absoluto y conserva legibilidad.
+
+Leé sólo la fase necesaria. Las dependencias del índice son condicionales, nunca lecturas recursivas. Una corrección puntual reutiliza decisiones vigentes y su source; no repite brief, investigación ni consulta de producción nueva.
+
+## Brief
+
 Método adaptado de [Camera 3D Captions](https://github.com/heygen-com/hyperframes-community-skills/tree/master/skills/camera-3d-captions).
 La implementación es original de Syka, usa Diffusion y no requiere HyperFrames,
 Remotion ni WebGL. Los presets/recursos/dependencias upstream no son requisitos.
 
 Entrá por `syka-motion-brief`: copy/idioma, foco/destino, cámara y voz/música/SFX/
 silencio. Recuperá `camera-3d-captions` y `typography` como referencias.
+
+## Build
 
 `examples/projection.ts` proyecta posiciones 3D con focal, near/far, yaw/pitch/roll.
 `examples/DepthCaption.tsx` lo convierte en `<text>` editable con entrada, hold y
@@ -28,6 +40,8 @@ real; letras en un anillo requieren otro layout por glifo.
 - Nombrá textos; copy/fuente/color/timing son props. Compartí IDs de eventos con
   audio/revisión y alineá ataques desde recursos reales.
 - Revisá extremos, plano cercano, escala mínima, clipping y lectura en móvil.
+
+## Review
 
 Validar math/compilación demuestra capacidad técnica del ejemplo; la composición
 final necesita styleframes, playback y revisión propios.

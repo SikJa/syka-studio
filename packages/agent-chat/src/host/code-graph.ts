@@ -2,6 +2,7 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFile, readdir, realpath, lstat } from 'node:fs/promises';
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { ensureGraphifyRuntime } from '../../../../scripts/lib/graphify-setup.mjs';
 
 export const CODE_GRAPH_TOOL = {
   type: 'function', name: 'syka_code_graph',
@@ -163,9 +164,9 @@ export function startCodeGraph(root: string, log: (message: string) => void = ()
   root = resolve(root);
   const existing = services.get(root);
   if (existing) { existing.refs++; return () => release(root); }
-  let child: ChildProcess | undefined, stopped = false, launching = false, lastAttempt = 0;
+  let child: ChildProcess | undefined, stopped = false, launching = false, lastAttempt = 0, retryAfter = 0;
   const ensure = async () => {
-    if (stopped || child || launching || Date.now() - lastAttempt < 5000) return;
+    if (stopped || child || launching || Date.now() < retryAfter || Date.now() - lastAttempt < 5000) return;
     launching = true;
     try {
       const status = await json<Status>(join(root, 'graphify-out', 'status.json')).catch(() => ({} as Status));
@@ -174,7 +175,8 @@ export function startCodeGraph(root: string, log: (message: string) => void = ()
       if (alive(status.pid) && status.state !== 'stopped' && Date.now() - Date.parse(status.checkedAt ?? '') < 60_000) return;
       if (stopped) return;
       lastAttempt = Date.now();
-      const python = join(root, '.runtime', 'graphify', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python');
+      const python = await ensureGraphifyRuntime(root, message => log(`[code-graph] ${message}`));
+      if (stopped) return;
       const proc = spawn(python, [join(root, 'scripts', 'graphify-runtime.py'), '--root', root, '--watch', '--parent-stdin'], { cwd: root, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'], env: { ...process.env, PYTHONUTF8: '1', PYTHONUNBUFFERED: '1' } });
       child = proc;
       proc.stdin?.on('error', () => {});
@@ -182,6 +184,10 @@ export function startCodeGraph(root: string, log: (message: string) => void = ()
       proc.stderr?.on('data', data => log(`[code-graph] ${String(data).slice(0, 600).trim()}`));
       proc.once('error', error => { child = undefined; workerErrors.set(root, `No se pudo iniciar Graphify: ${error.message}`); log(`[code-graph] No se pudo iniciar: ${error.message}`); });
       proc.once('exit', () => { if (child === proc) child = undefined; });
+    } catch (error) {
+      retryAfter = Date.now() + 60_000;
+      workerErrors.set(root, `Graphify no está listo: ${(error as Error).message}`);
+      log(`[code-graph] ${(error as Error).message}`);
     } finally { launching = false; }
   };
   const timer = setInterval(() => void ensure().catch(error => log(`[code-graph] ${error.message}`)), 5000);

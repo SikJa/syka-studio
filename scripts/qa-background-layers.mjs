@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import { readFile, writeFile, mkdir, copyFile } from 'node:fs/promises';
+import { resolve, join } from 'node:path';
+import { chromium } from 'playwright-core';
+const root = resolve('../Pruebas Syka/17-recorte-personas-v2'), portrait = resolve('../Pruebas Syka/18-recorte-retrato'), output = resolve('output/background-removal');
+const browser = await chromium.connectOverCDP('http://127.0.0.1:9367'), page = browser.contexts().flatMap(c => c.pages()).find(p => p.url().startsWith('http://127.0.0.1:5417'));
+const errors = []; page.on('pageerror', e => errors.push(e.message));
+try {
+  await page.getByRole('button', { name: 'Deshacer', exact: true }).click(); await page.waitForTimeout(1200);
+  await page.getByText('Tu video · original', { exact: true }).first().click();
+  await page.getByRole('button', { name: 'Quitar fondo', exact: true }).first().click();
+  await page.getByRole('button', { name: 'Separar capas', exact: true }).click();
+  await page.getByRole('button', { name: 'Aplicar dos capas', exact: true }).waitFor({ timeout: 180000 });
+  await page.screenshot({ path: join(output, 'dos-capas-preview.png') });
+  await page.getByRole('button', { name: 'Aplicar dos capas', exact: true }).click(); await page.waitForTimeout(2500);
+  const source = await readFile(join(root, 'index.tsx'), 'utf8');
+  assert.equal((source.match(/<video /g) || []).length, 2); assert.equal((source.match(/<audio /g) || []).length, 1); assert.match(source, /fondo-fotogramas/); assert.match(source, /sujeto-fotogramas/);
+  await page.reload(); await page.getByText('Fondo recortado', { exact: true }).first().waitFor(); await page.waitForTimeout(1000);
+  await page.screenshot({ path: join(output, 'dos-capas-reabiertas.png') });
+  await mkdir(join(portrait, 'assets'), { recursive: true }); await copyFile('.runtime/background-qa/original.png', join(portrait, 'assets/retrato.png'));
+  await writeFile(join(portrait, 'package.json'), JSON.stringify({ name: '18-recorte-retrato', displayName: 'Pruebas Syka · 18 · Retrato y fondo', projectId: '9e4f81b0-77af-441f-a313-98e2ac3d1818', private: true, type: 'module', main: 'index.tsx' }, null, 2));
+  await writeFile(join(portrait, 'index.tsx'), `export default function Film(){return <stage><scene id="main" width={360} height={640} fill="#377b64" active workarea={[0,3]}><image id="retrato" name="Retrato original" src="assets/retrato.png" width={360} height={640} start={0} end={3}/></scene></stage>;}`);
+  const project = await page.evaluate(async dir => (await import('/src/projects/host.ts')).openProjectFolder(dir), portrait);
+  await page.goto('http://127.0.0.1:5417/#/projects/' + project.id);
+  await page.getByText('Retrato original', { exact: true }).first().click();
+  await page.getByRole('button', { name: 'Quitar fondo', exact: true }).first().click(); await page.getByRole('button', { name: 'Separar capas', exact: true }).click();
+  await page.getByRole('button', { name: 'Aplicar dos capas', exact: true }).waitFor({ timeout: 180000 });
+  await page.screenshot({ path: join(output, 'retrato-preview.png') });
+  await page.getByRole('button', { name: 'Aplicar dos capas', exact: true }).click(); await page.waitForTimeout(1500);
+  const portraitSource = await readFile(join(portrait, 'index.tsx'), 'utf8');
+  assert.equal((portraitSource.match(/<image /g) || []).length, 2); assert.match(portraitSource, /sujeto.png/); assert.match(portraitSource, /fondo.png/);
+  await page.getByRole('button', { name: 'Deshacer', exact: true }).click(); await page.waitForTimeout(1000); assert.equal((await readFile(join(portrait, 'index.tsx'), 'utf8')).match(/<image /g).length, 1);
+  await page.getByRole('button', { name: 'Rehacer', exact: true }).click(); await page.waitForTimeout(1000); await page.reload(); await page.getByText('Fondo recortado', { exact: true }).first().waitFor();
+  await page.screenshot({ path: join(output, 'retrato-reabierto.png') });
+  assert.deepEqual(errors, []);
+  const evidence = { verifiedAt: new Date().toISOString(), videoProject: root, portraitProject: portrait, checks: ['Real video: two synchronized native PNG sequences and one original audio layer saved and reopened.', 'Real portrait: transparent subject and inverse-alpha PNG background applied as two image layers; one undo/redo and reopen.'], errors };
+  await writeFile(join(output, 'layers-verification.json'), JSON.stringify(evidence, null, 2)); console.log(JSON.stringify(evidence, null, 2));
+} finally { await browser.close(); }

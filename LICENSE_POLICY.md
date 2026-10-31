@@ -27,6 +27,8 @@ Una futura extensión cerrada debería usar una interfaz documentada y archivos 
 | BridgeClip | MIT | Presets originales y avisos conservados; integración del motor sujeta a MPL |
 | Helper de captura de Whispera | MIT | `apps/desktop/native/screen-recorder`, incluidos los avisos de SikJa y Whispera contributors |
 | HyperFrames y referencias copiadas | Apache-2.0 | Paquete y referencias públicas indicadas en su [aviso de procedencia](docs/THIRD_PARTY_NOTICES_HYPERFRAMES.md) |
+| Reasoning Effort, AICSS | MIT | Slider React/SVG adaptado; avisos, snapshot y hashes originales conservados |
+| React Bits Pixel Card | MIT + Commons Clause | Efecto del selector de modelos; uso dentro de la app, con el texto completo y restricciones conservados |
 | React Bits Depth Carousel | MIT + Commons Clause | Componente adaptado; restricciones sobre redistribuir el componente como producto/pack/port |
 | Rare UI Grid Reveal y Proximity Sidebar | MIT + Commons Clause + Attribution | Componentes adaptados; conservar avisos y enlace visible a [Rare UI](https://rareui.com) |
 | GSAP | Standard License de GSAP | Dependencia independiente; revisar su alcance según el uso |
@@ -35,6 +37,10 @@ Una futura extensión cerrada debería usar una interfaz documentada y archivos 
 | Logos SVGL/LobeHub | MIT sobre los archivos cubiertos; marcas de sus titulares | Conservar bytes, origen y avisos; no implica derechos de marca |
 | Sonidos Kenney | CC0 | Packs identificados en los avisos del catálogo |
 | Cuelume | MIT | Recetas y renderer de Daniel Belyi, snapshot fijado, 168 WAV derivados y notices conservados; no incluye el agente fx |
+| Bencho público | MIT; Beacon y Plop derivados de Cuelume MIT | Sólo los 24 sonidos públicos revisados, WAV con ambos avisos, procedencia y hashes. No incluye Pro, marca, mascota ni fotografías; el renderer es una herramienta de construcción |
+| Earshot | MIT; grabaciones de referencia fitted CC0 | 79 efectos seleccionados, kit launch 0.4 con 72 tomas y adaptación nativa de nivel/alineación; revisiones fijadas, créditos, hashes y mediciones. No incluye samples originales ni modelos CLAP/AST; análisis neuronal opcional independiente |
+| Motion Lab y Huashu Art Motion | MIT según avisos upstream conservados | Fichas de referencia de código/diseño adaptadas desde OpenDesign; atribución, texto y procedencia junto a cada colección |
+| Músicas de plantillas OpenDesign | Apache-2.0 declarada por cada paquete | Cinco partituras originales y aviso completo; no cubre audio de publicaciones externas utilizadas como referencia |
 | Sonidos de Syka y opus-sound-layer | MIT según cada aviso | Material indicado en el catálogo y referencias; no licencia general para bibliotecas privadas |
 | FFmpeg/FFprobe y yt-dlp | Licencias específicas de sus builds | Herramientas descargadas directamente de upstream por el bootstrap; distinguir descarga del usuario de binarios redistribuidos en un instalador Syka |
 

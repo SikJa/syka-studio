@@ -51,4 +51,19 @@ describe('editor MCP instance ownership', () => {
       expect(await server.mcpUrl()).toBeNull();
     } finally { await occupied.close(); }
   });
+
+  it('changes only instruction loading for progressive clients, preserving every tool schema', async () => {
+    const reservation = await reservePort(); await reservation.close();
+    const server = editor(reservation.port);
+    const url = await server.mcpUrl();
+    const full = new Client({name:'full-context-test',version:'1'});
+    const compact = new Client({name:'progressive-context-test',version:'1'});
+    try {
+      await full.connect(new StreamableHTTPClientTransport(new URL(url!)));
+      await compact.connect(new StreamableHTTPClientTransport(new URL(url!+'?sykaContext=progressive-v1')));
+      expect(full.getInstructions()).toContain('The tools are the whole API');
+      expect(compact.getInstructions()).toContain('editable-video deliverable');
+      expect(await compact.listTools()).toEqual(await full.listTools());
+    } finally {await full.close();await compact.close();}
+  });
 });

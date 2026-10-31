@@ -7,6 +7,12 @@ import { cursorRuntimeLaunch } from './provider-components';
 import type { Harness, OpenOptions } from './harness';
 import { HARNESS_LABELS, type HarnessInfo } from '../protocol';
 
+/** Avoid Grok's updater and shared TUI leader stalling an owned ACP process. */
+export function grokAcpArgs(args?: string[]): string[] {
+  return !args?.length || args.length === 2 && args[0] === 'agent' && args[1] === 'stdio'
+    ? ['--no-auto-update', 'agent', '--no-leader', 'stdio'] : args;
+}
+
 /** Official browser login plus ACP, using one consistent provider-owned account. */
 export function browserAcpHarness(id: 'grok' | 'cursor', profilesRoot: string, explicit?: { command: string; args?: string[] }): Harness {
   let delegate: AcpHarness | undefined, config: AcpHarnessConfig | undefined;
@@ -32,7 +38,7 @@ export function browserAcpHarness(id: 'grok' | 'cursor', profilesRoot: string, e
         return delegate.probe(env, signal);
       }
       loginPrefix = runtime?.args ?? [];
-      config = { id, command: runtime?.command ?? command, args: runtime ? [...runtime.args, 'acp'] : explicit?.args ?? (id === 'cursor' ? ['acp'] : ['agent', 'stdio']), profileDir: join(profilesRoot, id), installedSession: { userHome: env.env.USERPROFILE ?? env.env.HOME ?? homedir(), appData: env.env.APPDATA, localAppData: env.env.LOCALAPPDATA } };
+      config = { id, command: runtime?.command ?? command, args: runtime ? [...runtime.args, 'acp'] : id === 'grok' ? grokAcpArgs(explicit?.args) : explicit?.args ?? ['acp'], profileDir: join(profilesRoot, id), installedSession: { userHome: env.env.USERPROFILE ?? env.env.HOME ?? homedir(), appData: env.env.APPDATA, localAppData: env.env.LOCALAPPDATA } };
       delegate = new AcpHarness(config);
       const info = await delegate.probe(env, signal);
       return { ...info, authMethods };

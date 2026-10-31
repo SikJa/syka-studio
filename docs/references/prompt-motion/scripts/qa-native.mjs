@@ -1,0 +1,207 @@
+// Isolated, real Electron/agent/MCP validation. No shared build, profile or ports.
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { mkdir, readFile, writeFile, access } from 'node:fs/promises';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawn } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
+import net from 'node:net';
+import * as esbuild from 'esbuild';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+const require = createRequire(import.meta.url);
+const { _electron } = require('playwright-core');
+const WebSocket = require('ws');
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..');
+const resources = join(root, 'docs/references/prompt-motion');
+const runtime = join(resources, 'evidence/qa-runtime');
+const appDir = join(runtime, 'app');
+const project = resolve(root, '../Pruebas Syka/QA-prompt-motion-2026-10-06');
+const evidenceDir = join(project, 'qa-evidence');
+const url = 'http://127.0.0.1:5317';
+const resultPath = join(resources, 'evidence/native-integration.json');
+const requestedEffort = 'high'; // Sikora explicitly changed Max to Alto during QA.
+let previous;
+try { previous = JSON.parse(await readFile(resultPath, 'utf8')); } catch {}
+if (!previous?.chatId) {
+  try { previous = JSON.parse(await readFile(join(resources, 'evidence/native-integration-previous.json'), 'utf8')); } catch {}
+}
+if (previous?.chatId) await writeFile(join(resources, 'evidence/native-integration-previous.json'), `${JSON.stringify(previous, null, 2)}\n`);
+const result = { startedAt: new Date().toISOString(), project, ports: { web: 5317, mcp: 3317, cdp: 9417 },
+  privateBundleOverride: 'Development docsDir points at the actual repository docs; source files are unchanged.',
+  pageErrors: [], events: [], checks: {} };
+const delay = ms => new Promise(done => setTimeout(done, ms));
+const sanitize = text => String(text).replace(/([?&]token=)[^\s"&]+/g, '$1[redacted]');
+const persist = () => writeFile(resultPath, `${JSON.stringify(result, null, 2)}\n`);
+const log = (label, value = '') => process.stdout.write(`${label} ${sanitize(typeof value === 'string' ? value : JSON.stringify(value))}\n`);
+async function portFree(port) {
+  const server = net.createServer();
+  await new Promise((ok, fail) => { server.once('error', fail); server.listen(port, '127.0.0.1', ok); });
+  await new Promise(ok => server.close(ok));
+}
+await Promise.all([5317, 3317, 9417].map(portFree));
+await mkdir(join(appDir, 'dist'), { recursive: true });
+await mkdir(evidenceDir, { recursive: true });
+await writeFile(join(runtime, 'finish.txt'), 'RUNNING');
+const codex = 'C:/Users/Sikora/AppData/Local/OpenAI/Codex/bin/5ea220ae823df3d7/codex.exe';
+await access(codex);
+await writeFile(join(appDir, 'package.json'), JSON.stringify({ name: 'syka-motion-qa-private', version: '0.207.0', main: 'dist/main.cjs' }));
+const docsExpression = 'const dir = app.isPackaged ? join(process.resourcesPath, "docs") : join(app.getAppPath(), "..", "..", "docs");';
+await esbuild.build({ entryPoints: [join(root, 'apps/desktop/src/main.ts')], bundle: true, platform: 'node', format: 'cjs',
+  external: ['electron', 'esbuild', '@babel/core', '@babel/preset-typescript', 'babel-preset-solid'],
+  outfile: join(appDir, 'dist/main.cjs'), plugins: [{ name: 'isolated-docs-path', setup(build) {
+    build.onLoad({ filter: /[\\/]apps[\\/]desktop[\\/]src[\\/]main\.ts$/ }, async args => {
+      const source = await readFile(args.path, 'utf8');
+      assert.equal(source.split(docsExpression).length, 2, 'Expected one docsDir assignment');
+      return { contents: source.replace(docsExpression, `const dir = ${JSON.stringify(join(root, 'docs'))};`), loader: 'ts', resolveDir: dirname(args.path) };
+    });
+  } }] });
+await esbuild.build({ entryPoints: [join(root, 'apps/desktop/src/preload.ts')], bundle: true, platform: 'node', format: 'cjs',
+  external: ['electron'], outfile: join(appDir, 'dist/preload.js') });
+await esbuild.build({ entryPoints: [join(root, 'packages/agent-chat/src/bin.ts')], bundle: true, platform: 'node', format: 'esm', target: 'node20',
+  external: ['electron', 'playwright-core'], banner: { js: "import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);" },
+  outfile: join(appDir, 'dist/agent-host.mjs') });
+log('PRIVATE_BUILD_READY');
+const vite = spawn(process.execPath, [join(root, 'node_modules/vite/bin/vite.js'), '--port', '5317', '--strictPort', '--host', '127.0.0.1'],
+  { cwd: join(root, 'apps/web'), windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
+vite.stdout.on('data', chunk => { if (String(chunk).includes('ready')) log('VITE_READY'); });
+vite.stderr.on('data', chunk => log('VITE_DIAGNOSTIC', String(chunk).slice(0, 800)));
+let electronApp, mcp, socket;
+try {
+  for (let i = 0; i < 150; i++) {
+    if (vite.exitCode !== null) throw Error(`Isolated Vite exited ${vite.exitCode}`);
+    try { if ((await fetch(url)).ok) break; } catch {}
+    if (i === 149) throw Error('Isolated Vite did not become ready');
+    await delay(200);
+  }
+  const env = { ...process.env, SYKA_RUNTIME_ROOT: join(runtime, 'profile-root'), SYKA_MEDIA_ROOT: dirname(project),
+    SYKA_DEV_URL: url, SYKA_DEV_PORT: '5317', SYKA_MCP_PORT: '3317', SYKA_CODEX_PATH: codex,
+    SYKA_FFMPEG_PATH: 'C:/ffmpeg/bin/ffmpeg.exe', SYKA_FFPROBE_PATH: 'C:/ffmpeg/bin/ffprobe.exe' };
+  delete env.ELECTRON_RUN_AS_NODE; delete env.NODE_OPTIONS; delete env.SYKA_QA_CDP_PORT;
+  electronApp = await _electron.launch({ executablePath: require('electron'), args: [appDir, '--hidden', '--remote-debugging-port=9417'], cwd: root, env, timeout: 60_000 });
+  const page = await electronApp.firstWindow();
+  page.on('pageerror', error => { result.pageErrors.push(error.message); log('PAGE_ERROR', error.message); });
+  await page.waitForLoadState('networkidle', { timeout: 60_000 });
+  await page.setViewportSize({ width: 1500, height: 980 });
+  log('ELECTRON_READY');
+  mcp = new Client({ name: 'syka-motion-reference-qa', version: '1.0' });
+  await mcp.connect(new StreamableHTTPClientTransport(new URL('http://127.0.0.1:3317/mcp')));
+  async function tool(name, args) {
+    const reply = await mcp.callTool({ name, arguments: args }, undefined, { timeout: 180_000 });
+    if (reply.isError) throw Error(`${name}: ${reply.content?.filter(x => x.type === 'text').map(x => x.text).join('\n')}`);
+    if (reply.structuredContent) return reply.structuredContent;
+    const text = reply.content?.filter(x => x.type === 'text').map(x => x.text).join('\n') || '';
+    try { return JSON.parse(text); } catch { return { text }; }
+  }
+  result.open = await tool('open', { dir: project });
+  result.contextBefore = await tool('context', {});
+  assert.equal(resolve(result.open.dir).toLowerCase(), project.toLowerCase());
+  assert.equal(resolve(result.contextBefore.projectDir).toLowerCase(), project.toLowerCase());
+  await page.screenshot({ path: join(evidenceDir, 'before.png') });
+  log('PROJECT_OPEN', { id: result.open.id, dir: result.open.dir });
+  let endpoint;
+  for (let i = 0; i < 100 && !endpoint; i++) {
+    endpoint = await page.evaluate(() => new Promise((ok, fail) => {
+      const id = crypto.randomUUID();
+      const timeout = setTimeout(() => { remove(); fail(Error('agent endpoint IPC timed out')); }, 5000);
+      const remove = window.desktop.on('main:response', reply => {
+        if (reply.id !== id) return;
+        clearTimeout(timeout); remove(); reply.ok ? ok(reply.data) : fail(Error(reply.error));
+      });
+      window.desktop.send('main:request', { id, channel: 'agent-chat:endpoint', data: undefined });
+    }));
+    if (!endpoint) await delay(300);
+  }
+  if (!endpoint?.url) throw Error('Real agent host endpoint unavailable');
+  socket = new WebSocket(endpoint.url, { origin: url });
+  await new Promise((ok, fail) => { socket.once('open', ok); socket.once('error', fail); });
+  const pending = new Map();
+  let completeTurn;
+  const finished = new Promise(ok => { completeTurn = ok; });
+  socket.on('message', async bytes => {
+    const message = JSON.parse(String(bytes));
+    if (message.t === 'res') {
+      const waiter = pending.get(message.id);
+      if (!waiter) return;
+      pending.delete(message.id); clearTimeout(waiter.timeout);
+      message.ok ? waiter.ok(message.data) : waiter.fail(Error(JSON.stringify(message.error)));
+    } else if (message.t === 'event') {
+      const event = message.event;
+      if (event.type === 'item.completed' && event.item.kind === 'tool') {
+        result.events.push({ seq: message.seq, kind: 'tool', name: event.item.name, title: sanitize(event.item.title), status: event.item.status });
+        log('AGENT_TOOL', `${event.item.status}: ${event.item.title}`);
+      } else if (event.type === 'item.completed' && event.item.kind === 'assistant') {
+        result.events.push({ seq: message.seq, kind: 'assistant', phase: event.item.phase, text: sanitize(event.item.text) });
+        log('AGENT_MESSAGE', event.item.text.slice(0, 1500));
+      } else if (event.type === 'request.opened') {
+        result.pendingRequest = event.request; await persist();
+        log('AGENT_NEEDS_INPUT', event.request); completeTurn({ status: 'waiting' });
+      } else if (event.type === 'turn.completed') {
+        result.turn = event; await persist(); completeTurn(event);
+      }
+    }
+  });
+  function request(method, params, timeoutMs = 60_000) {
+    return new Promise((ok, fail) => {
+      const id = randomUUID();
+      const timeout = setTimeout(() => { pending.delete(id); fail(Error(`${method} timeout`)); }, timeoutMs);
+      pending.set(id, { ok, fail, timeout }); socket.send(JSON.stringify({ t: 'req', id, method, params }));
+    });
+  }
+  const harnesses = await request('harnesses.list', { refresh: true }, 90_000);
+  const codexInfo = harnesses.find(h => h.id === 'codex');
+  result.provider = codexInfo;
+  const requested = codexInfo?.models.find(m => m.id === 'gpt-6.1-sol');
+  assert.equal(codexInfo?.status, 'ready', `Codex not ready: ${codexInfo?.detail}`);
+  assert.ok(requested, 'Requested gpt-6.1-sol is not advertised; no fallback permitted');
+  assert.ok(requested.efforts?.includes(requestedEffort), 'Requested Alto is not advertised; no fallback permitted');
+  const model = { harness: 'codex', model: requested.id, effort: requestedEffort };
+  result.model = model;
+  log('MODEL_VERIFIED', model);
+  const chat = previous?.chatId
+    ? (await request('chats.open', { chatId: previous.chatId })).chat
+    : await request('chats.create', { projectId: result.open.id, cwd: project, model, title: 'QA · referencias motion → editable' });
+  result.chatId = chat.id;
+  await request('chats.open', { chatId: chat.id });
+  const brief = `Esta es una prueba aislada de Syka: creá una composición nueva propia de 8 segundos, 1920×1080, 60 fps, sin audio, para demostrar continuidad entre tipografía e interfaz. Ya está decidido: fondo crema #f3efe5, tinta #171a21, acento azul #2868ee, tipografía Inter, mensaje exacto en tres beats: “De idea” → “a timeline” → “editable”. Una misma pieza azul debe pasar de botón compacto a una tarjeta de timeline con tres clips y terminar como sello junto a la palabra editable. Jerarquía clara, bastante aire, un movimiento principal por beat y pausas legibles. Evitá partículas, humo, marcas reales, métricas comerciales y videos precocinados. Antes de componer, elegí pocas referencias pertinentes que tengas disponibles localmente, indicá qué decisiones tomás de ellas y llevá esas decisiones a design.md y frame.md. Después implementá con código portátil y elementos editables en Diffusion; para esta geometría simple preferí nodos nativos, con reloj absoluto y sin CSS/GSAP que dependa de la reproducción. Podés crear componentes y archivos SOLO en este proyecto aislado. El id de la escena debe ser qa_motion. Todos los assets serán formas y texto propios; no hacen falta cuentas, red, instalaciones ni generación paga. No modifiques otros proyectos ni el repo. Corré check, capturá estados y una transición y dejá un export MP4 en este proyecto. Esto es un espécimen técnico, no el lanzamiento SaaS pendiente ni una pieza aprobada por Sikora. No hace falta hacerme preguntas: usá el brief ya cerrado. Terminá contando qué funciona, qué validaste y qué sigue siendo un límite.`;
+  result.brief = brief;
+  await persist();
+  const turnText = previous?.chatId
+    ? `Sikora cambió el esfuerzo a Alto; este turno ya está configurado en GPT-6.1 Sol high. Retomá la prueba donde quedó: conservá lo escrito, leé el estado actual y completá composición, revisión y export. Las referencias ya seleccionadas y design.md/frame.md mantienen su validez. No repitas onboarding ni investigación ya hecha. Sigue vigente este brief:\n\n${brief}`
+    : brief;
+  await request('turn.send', { chatId: chat.id, projectId: result.open.id, cwd: project, text: turnText, model });
+  log('TURN_STARTED');
+  let deadline;
+  const timedOut = new Promise(ok => { deadline = setTimeout(() => ok({ status: 'timeout' }), 20 * 60_000); });
+  const turn = await Promise.race([finished, timedOut]);
+  clearTimeout(deadline);
+  if (turn.status === 'timeout') await request('turn.interrupt', { chatId: chat.id });
+  result.turnOutcome = turn;
+  await persist();
+  if (turn.status !== 'completed') throw Error(`Agent turn ${turn.status}`);
+  result.contextAfter = await tool('context', {});
+  result.checks.structure = await tool('check', { id: 'qa_motion' });
+  result.checks.capture = await tool('capture', { id: 'qa_motion', times: ['0.4', '1.8', '2.8', '3.3', '4.7', '5.7', '6.5', '7.7'], output: join(evidenceDir, 'states') });
+  result.checks.nativeExport = await tool('export', { id: 'qa_motion', path: join(project, 'qa-motion-export.mp4') });
+  await page.screenshot({ path: join(evidenceDir, 'after.png') });
+  result.uiRecon = await page.evaluate(() => ({
+    buttons: [...document.querySelectorAll('button')].map(x => ({ label: x.getAttribute('aria-label'), text: x.textContent?.trim() })).filter(x => x.label || x.text),
+    inputs: [...document.querySelectorAll('input')].map(x => ({ type: x.type, label: x.getAttribute('aria-label'), value: x.value })),
+    canvases: [...document.querySelectorAll('canvas')].map(x => ({ width: x.width, height: x.height, rect: x.getBoundingClientRect().toJSON() }))
+  }));
+  result.completedAt = new Date().toISOString();
+  await persist();
+  log('NATIVE_CAPTURE_EXPORT_READY', { capture: result.checks.capture, export: result.checks.nativeExport });
+  log('REVIEW_WINDOW_READY', 'Write qa-runtime/finish.txt to close only this isolated instance.');
+  for (let i = 0; i < 2400; i++) {
+    try { if ((await readFile(join(runtime, 'finish.txt'), 'utf8')).trim() !== 'RUNNING') break; } catch {}
+    await delay(500);
+  }
+} catch (error) {
+  result.error = sanitize(error.stack || error.message); await persist(); log('QA_FAILURE', result.error); process.exitCode = 1;
+} finally {
+  socket?.close(); await mcp?.close().catch(() => {}); await electronApp?.close().catch(() => {});
+  if (vite.exitCode === null) vite.kill();
+  result.closedAt = new Date().toISOString(); await persist();
+}

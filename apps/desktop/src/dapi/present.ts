@@ -170,9 +170,9 @@ function screenshotFilename(taken: Date, attempt: number): string {
 }
 
 /** The MCP result: the output as text and structured content, plus the images when they are few and small. */
-export function toCallToolResult({ output, images }: Presented): CallToolResult {
+export function toCallToolResult({ output, images }: Presented, inlineImages = true): CallToolResult {
   const content: CallToolResult["content"] = [{ type: "text", text: JSON.stringify(output) }];
-  const inline = images.length <= INLINE_MAX_IMAGES && images.every((image) => image.png.byteLength <= INLINE_MAX_BYTES);
+  const inline = inlineImages && images.length <= INLINE_MAX_IMAGES && images.every((image) => image.png.byteLength <= INLINE_MAX_BYTES);
   if (inline) {
     for (const { png } of images) {
       content.push({ type: "image", data: Buffer.from(png).toString("base64"), mimeType: "image/png" });

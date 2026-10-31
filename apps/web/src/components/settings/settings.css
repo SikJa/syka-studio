@@ -78,6 +78,15 @@
 .syka-skill-settings-card:first-child { padding-top: 0; }
 .syka-skill-settings-card:last-child { border: 0; padding-bottom: 0; }
 .syka-skill-settings-card strong { font-size: 11px; font-weight: 450; }
+.syka-groq-brand {color:var(--primary);}
+.syka-skill-settings-info {min-width:0;flex:1;}
+.syka-skill-settings-summary {display:flex;width:100%;min-width:0;gap:8px;align-items:center;text-align:left;cursor:pointer;margin-bottom:6px;}
+.syka-skill-settings-summary strong {flex:1;overflow-wrap:anywhere;}
+.syka-skill-settings-summary:focus-visible {outline:2px solid var(--ring);outline-offset:3px;border-radius:4px;}
+.syka-skill-static-logo {width:21px;height:21px;flex:0 0 21px;animation:none!important;}
+.syka-skill-editor-dialog {width:min(720px,calc(100vw - 32px));max-width:720px!important;max-height:calc(100dvh - 40px);overflow:auto;}
+.syka-skill-editor-dialog h2 {font-size:15px;font-weight:600;}
+.syka-skill-editor-dialog textarea {min-height:240px;max-height:50dvh;font-family:monospace;font-size:12px;line-height:1.6;resize:vertical;}
 .syka-skill-settings-card small { display: block; color: var(--muted-foreground); font-size: 10px; line-height: 1.55; margin: 5px 0 7px; }
 .syka-theme-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .syka-theme-option { display: flex; position: relative; min-width: 0; flex-direction: column; align-items: flex-start; gap: 9px; border: 1px solid var(--border-strong); border-radius: 9px; padding: 8px; font-size: 11px; color: var(--muted-foreground); }

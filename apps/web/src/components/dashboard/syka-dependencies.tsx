@@ -7,6 +7,7 @@ import type { DependencyProgress, DependencyStatus } from '@desktop/dependency-t
 import { t } from '@/i18n';
 import { toast } from 'somoto';
 import { openSettings } from '@/components/settings/state';
+import type { LocalToolName } from '../../../../../packages/agent-chat/src/host/local-tools';
 
 const store = createRoot(() => ({
   status: createSignal<DependencyStatus | null>(null),
@@ -35,9 +36,9 @@ function connect() {
   });
   void refetch();
 }
-async function install() {
+async function install(tool?: LocalToolName) {
   try {
-    const value = await mainBridge.call(MAIN_CHANNELS.SYKA_DEPENDENCIES, { action: 'install' });
+    const value = await mainBridge.call(MAIN_CHANNELS.SYKA_DEPENDENCIES, { action: 'install', ...(tool ? { tool } : {}) });
     setStatus(value); setSetup(value.setup);
   } catch (cause) { toast.error(t('No se pudieron configurar las herramientas'), { description: t((cause as Error).message) }); }
 }
@@ -68,7 +69,7 @@ export function DependencySettings() {
   return <Show when={window.desktop}><DashboardSurfaceSection title="Herramientas locales">
     <div class="flex flex-col gap-3 text-xs">
       <p>El editor puede previsualizar y exportar sin Python ni FFmpeg. Estas herramientas amplían las tareas del agente.</p>
-      <Show when={status()?.packaged}><p class="text-muted-foreground">El instalador configura Node.js, FFmpeg y yt-dlp cuando faltan. Se descargan versiones verificadas del proveedor, sin modificar las instalaciones del sistema.</p></Show>
+      <Show when={status()?.packaged}><p class="text-muted-foreground">El diagnóstico detecta las herramientas que faltan y permite preparar Node.js, Python, FFmpeg y yt-dlp dentro de Syka.</p></Show>
       <Show when={progress()?.phase === 'installing'}><p role="status">{t('Configurando herramientas…')} {progress()?.tool} {progress()?.percent ?? 0}%</p></Show>
       <Show when={progress()?.phase === 'error'}><p role="alert">{t(progress()?.message)}</p></Show>
       <Show when={error()}><p role="alert">No se pudo comprobar: {error()}</p></Show>
@@ -77,6 +78,8 @@ export function DependencySettings() {
         <p class="text-muted-foreground mt-1">{t(purposes[tool.name])}</p>
         <Show when={tool.path}><p class="mt-1 break-all select-text text-muted-foreground">{tool.path}</p></Show>
         <Show when={tool.issue}><p role="alert" class="mt-1">{tool.issue}</p></Show>
+        <Show when={!tool.path && !tool.issue && status()?.packaged && ['node','python','ffmpeg','ffprobe','yt-dlp'].includes(tool.name)}><Button variant="secondary" disabled={progress().phase === 'installing'} onClick={() => void install(tool.name)}>Instalar {tool.name}</Button></Show>
+        <Show when={!tool.path && tool.name === 'codex'}><Button variant="secondary" onClick={() => openSettings('codex')}>Conectar Codex</Button></Show>
       </div>}</For>
       <p class="text-muted-foreground">Se buscan instalaciones locales y herramientas del paquete. Encontrado indica que existe el ejecutable; no verifica login, versiones ni sus dependencias internas.</p>
       <Button variant="secondary" disabled={loading()} onClick={() => void refetch()}>{loading() ? 'Comprobando…' : 'Volver a comprobar'}</Button>

@@ -11,7 +11,7 @@ export type PreviewWorkerOptions = {
   /** Development origin, or the built standalone page. Never the normal app shell. */
   devUrl?: string;
   pagePath: string;
-  trustWindow(window: BrowserWindow | null): void;
+  trustWindow(window: BrowserWindow | null, removed?: BrowserWindow): void;
   observeWindow?(window: BrowserWindow): void;
   idleMs?: number;
 };
@@ -62,7 +62,7 @@ export class InternalPreviewWorker {
     this.window = null;
     this.loading = null;
     this.jobs = 0;
-    this.options.trustWindow(null);
+    this.options.trustWindow(null, window ?? undefined);
     if (window && !window.isDestroyed()) window.destroy();
   }
 
@@ -86,14 +86,18 @@ export class InternalPreviewWorker {
     window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
     window.webContents.on('will-navigate', event => event.preventDefault());
     window.once('closed', () => {
-      if (this.window === window) { this.window = null; this.loading = null; this.options.trustWindow(null); }
+      if (this.window === window) { this.window = null; this.loading = null; this.options.trustWindow(null, window); }
     });
     const pending = new Promise<BrowserWindow>((resolve, reject) => {
       const timer = setTimeout(() => fail(new Error('La preview interna no instaló sus herramientas a tiempo.')), 45_000);
       const cleanup = () => {
         clearTimeout(timer); ipcMain.off(DAPI_WIRE.PREVIEW_READY, ready); window.off('closed', closed);
+        window.webContents.off('preload-error', preloadFailed);
+        window.webContents.off('render-process-gone', rendererGone);
       };
       const fail = (error: Error) => { cleanup(); reject(error); };
+      const preloadFailed = (_event: unknown, _path: string, error: Error) => fail(new Error(`No se pudo iniciar la preview interna: ${error.message}`));
+      const rendererGone = (_event: unknown, details: Electron.RenderProcessGoneDetails) => fail(new Error(`La preview interna se cerró durante el inicio: ${details.reason}.`));
       const closed = () => fail(new DapiError('canceled', 'La preview interna se cerró.'));
       const ready = (event: IpcMainEvent) => {
         if (event.sender !== window.webContents || event.senderFrame !== event.sender.mainFrame) return;
@@ -101,12 +105,17 @@ export class InternalPreviewWorker {
       };
       ipcMain.on(DAPI_WIRE.PREVIEW_READY, ready);
       window.once('closed', closed);
+      window.webContents.once('preload-error', preloadFailed);
+      window.webContents.once('render-process-gone', rendererGone);
       const load = this.options.devUrl
         ? window.loadURL(new URL('/preview-worker.html', this.options.devUrl).href)
         : window.loadFile(this.options.pagePath);
       void load.catch(fail);
     });
     this.loading = pending;
+    // A rejected initialization must not poison every later job with the same
+    // rejected promise. Only dispose this generation, never a replacement worker.
+    void pending.catch(() => { if (this.loading === pending) this.reset(); });
     return pending;
   }
 }

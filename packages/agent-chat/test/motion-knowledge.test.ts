@@ -16,9 +16,26 @@ beforeAll(async () => {
 afterAll(async () => { vi.unstubAllGlobals(); await rm(folder, { recursive: true, force: true }); });
 
 describe('installed motion knowledge', () => {
+  it('retrieves Cinetic through the native tool, records a real read and rotates a chosen technique', async () => {
+    const tools = new WorkspaceTools(folder, docs);
+    type Result = { results: { id: string; collection: string; sourceText?: string; recentlyChosen: boolean }[] };
+    const query = { query: 'apertura lanzamiento producto', collection: 'cinetic', energy: 'medium', techniqueFormat: 'launch', limit: 3, seed: 9 };
+    const discovered = await tools.call('syka_motion_knowledge', query) as Result;
+    expect(discovered.results.length).toBeGreaterThan(0);
+    expect(discovered.results.every(r=>r.collection==='cinetic' && !r.sourceText)).toBe(true);
+    const id = discovered.results[0]!.id;
+    await expect(tools.call('syka_creative_selection', { action:'choose', id, role:'motion', reason:'Antes de leer' })).rejects.toThrow('receipt');
+    const read = await tools.call('syka_motion_knowledge', { id, includeText:true, textLength:1800 }) as Result;
+    expect(read.results[0]?.sourceText).toContain('Cinetic');
+    await tools.call('syka_creative_selection', { action:'choose', id, role:'motion', reason:'Demuestra el producto conservando continuidad.' });
+    const next = await tools.call('syka_motion_knowledge', query) as Result;
+    expect(next.results.every(r=>r.id!==id)).toBe(true);
+    const exact = await tools.call('syka_motion_knowledge', {id,includeText:true}) as Result;
+    expect(exact.results[0]?.recentlyChosen).toBe(true);
+  });
   it('ships repository studies and separate routes without a personal research folder', async () => {
     const tools = new WorkspaceTools(folder, docs);
-    const result = await tools.call('syka_motion_knowledge', { query: 'showreel', kind: 'skill', useCase: 'reel', limit: 4, includeText: true }) as { results: { useCases: string[]; sourceText?: string; sourceStorage: string }[] };
+    const result = await tools.call('syka_motion_knowledge', { query: 'showreel', kind: 'skill', useCase: 'reel', limit: 4, includeText: true }) as { results: { useCases: string[]; sourceText?: string; sourceStorage: string; nextTextOffset?: number | null }[] };
     expect(result.results.length).toBeGreaterThan(0);
     expect(result.results.every(row => row.useCases.includes('reel'))).toBe(true);
     const study = await tools.call('syka_motion_knowledge', { id: 'stack-whaleyxbt-claude-motion', includeText: true }) as typeof result;
@@ -26,7 +43,9 @@ describe('installed motion knowledge', () => {
     expect(study.results[0]?.sourceText).toContain('timeline compartido');
     const sound = await tools.call('syka_motion_knowledge', { id: 'stack-bodila51-opus-sound-layer', includeText: true }) as typeof result;
     expect(sound.results[0]?.sourceStorage).toBe('bundled_original_study');
-    expect(sound.results[0]?.sourceText).toContain('syka_audio_review');
+    expect(sound.results[0]?.nextTextOffset).toBeGreaterThan(0);
+    const continuation = await tools.call('syka_motion_knowledge', { id: 'stack-bodila51-opus-sound-layer', includeText: true, textOffset: sound.results[0]!.nextTextOffset }) as typeof result;
+    expect((sound.results[0]?.sourceText ?? '') + continuation.results[0]?.sourceText).toContain('syka_audio_review');
     await expect(tools.call('syka_motion_knowledge', { query: 'anything', useCase: 'invented' })).rejects.toThrow('use case');
   });
   it('native workspace tool reads the relocated bundled studies and text without network or videos', async () => {

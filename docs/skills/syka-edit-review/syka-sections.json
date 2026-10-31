@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": []
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": []
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": [
+        {
+          "name": "syka-edit-review",
+          "sectionId": "review",
+          "file": "references/motion-evidence.md",
+          "when": "Sólo motion completo o mejora amplia con export autorizado disponible"
+        },
+        {
+          "name": "syka-local-audio",
+          "sectionId": "review",
+          "file": "references/sound-layer.md",
+          "when": "Sólo mezcla/cues que requieran audio real"
+        }
+      ]
+    }
+  ]
+}

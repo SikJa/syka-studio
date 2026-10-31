@@ -15,9 +15,11 @@ import { DictationSettings } from '@/components/dashboard/syka-dictation-setting
 import { DashboardScrollView } from '@/components/dashboard/shared';
 import { ZernioSettingsView } from '@/components/publication/settings';
 import { AppearanceSettings } from './appearance';
+import { ChatSettings } from './chat';
 import { SykaOnboardingSettings } from '@/components/dashboard/syka-onboarding-settings';
 import { CodexSettings } from './codex';
 import { StorageSettings } from './storage';
+import { DiagnosticsSettings } from './diagnostics';
 import { RecordingSettings } from './recording';
 import { ShortcutsSettings } from './shortcuts';
 import { openSettings } from './state';
@@ -29,6 +31,7 @@ const pages: Record<SettingsPage, { label: string; description: string; icon: st
   general: { label: 'General', description: 'El espacio de trabajo y los permisos de Syka.', icon: 'settings' },
   profile: { label: 'Perfil', description: 'Tu nombre y tu foto, guardados en este equipo.', icon: 'user' },
   appearance: { label: 'Apariencia', description: 'Color de acento, tema y movimiento de la interfaz.', icon: 'theme' },
+  chat: { label: 'Chat', description: 'Selector de modelos y material del cuadro de mensaje.', icon: 'settings' },
   'brand-kit': { label: 'Brand kit', description: 'Identidad, colores y voz de tu marca.', icon: 'visual' },
   zernio: { label: 'Zernio', description: 'Conexiones y cuentas para publicar tus videos.', icon: 'external-link' },
   groq: { label: 'Groq', description: 'Conectá tu cuenta para transcribir y dictar.', icon: 'captions' },
@@ -37,20 +40,21 @@ const pages: Record<SettingsPage, { label: string; description: string; icon: st
   skills: { label: 'Skills', description: 'Tu biblioteca de flujos reutilizables de edición.', icon: 'sparkles' },
   tools: { label: 'Tools', description: 'Herramientas locales, transcripción y dictado.', icon: 'settings' },
   storage: { label: 'Almacenamiento', description: 'Espacio disponible, limpieza automática y conservación de archivos.', icon: 'navigation.folder' },
+  diagnostics: { label: 'Diagnóstico', description: 'Uso de la app, proveedores y tamaño del historial, sin datos privados.', icon: 'settings' },
   shortcuts: { label: 'Atajos', description: 'Accesos rápidos para configurar, editar y revisar.', icon: 'keyboard-shortcut' },
   glossary: { label: 'Glosario', description: 'Nombres y términos para tus transcripciones.', icon: 'captions' },
   help: { label: 'Ayuda', description: 'Recursos para trabajar con Syka.', icon: 'help' },
 };
 const groups: { label: string; entries: SettingsPage[] }[] = [
-  { get label() { return t('Configuración'); }, entries: ['general', 'profile', 'appearance', 'brand-kit'] },
+  { get label() { return t('Configuración'); }, entries: ['general', 'profile', 'appearance', 'chat', 'brand-kit', 'glossary'] },
   { get label() { return t('Conexiones'); }, entries: ['codex', 'groq', 'zernio', 'plugins'] },
-  { get label() { return t('Espacio de trabajo'); }, entries: ['skills', 'tools', 'storage', 'shortcuts', 'glossary'] },
+  { get label() { return t('Espacio de trabajo'); }, entries: ['skills', 'tools', 'storage', 'diagnostics', 'shortcuts'] },
 ];
 function PageIcon(props: { page: SettingsPage }) {
   return <Switch fallback={<Icon name={pages[props.page].icon} class="size-5" />}>
     <Match when={props.page === 'zernio'}><ZernioMark class="size-4" /></Match>
     <Match when={props.page === 'codex'}><CodexMark class="size-4" /></Match>
-    <Match when={props.page === 'groq'}><span class="inline-flex size-4 [&_svg]:size-full" aria-hidden="true"><GroqLogo /></span></Match>
+    <Match when={props.page === 'groq'}><span class="syka-groq-brand inline-flex size-4 [&_svg]:size-full" role="img" aria-label="Logo de Groq"><GroqLogo /></span></Match>
     <Match when={props.page === 'skills'}><svg aria-hidden="true" viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4.5h6a3 3 0 0 1 3 3v13a4 4 0 0 0-4-2H4zM13 7.5a3 3 0 0 1 3-3h4v14h-4a4 4 0 0 0-3 2" /></svg></Match>
     <Match when={props.page === 'brand-kit'}><svg aria-hidden="true" viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3a9 9 0 1 0 0 18h1.5a2 2 0 0 0 1.6-3.2 1.8 1.8 0 0 1 1.4-2.8H18a3 3 0 0 0 3-3 9 9 0 0 0-9-9Z" /><circle cx="8" cy="8" r="1" /><circle cx="14" cy="7" r="1" /><circle cx="17" cy="11" r="1" /><circle cx="6" cy="13" r="1" /></svg></Match>
   </Switch>;
@@ -84,6 +88,7 @@ export function SettingsModal(props: { isOpen: boolean; onClose(): void; default
                 <Match when={page() === 'general'}><DashboardSettingsView /></Match>
                 <Match when={page() === 'profile'}><DashboardAccountView /></Match>
                 <Match when={page() === 'appearance'}><AppearanceSettings /></Match>
+                <Match when={page() === 'chat'}><ChatSettings /></Match>
                 <Match when={page() === 'brand-kit'}><DashboardScrollView><SykaOnboardingSettings /></DashboardScrollView></Match>
                 <Match when={page() === 'zernio'}><ZernioSettingsView /></Match>
                 <Match when={page() === 'groq'}><DashboardScrollView><GroqSettings /><DictationSettings /></DashboardScrollView></Match>
@@ -92,6 +97,7 @@ export function SettingsModal(props: { isOpen: boolean; onClose(): void; default
                 <Match when={page() === 'skills'}><AgentSettings section="skills" /></Match>
                 <Match when={page() === 'tools'}><DashboardScrollView><RecordingSettings /><DependencySettings /></DashboardScrollView></Match>
                 <Match when={page() === 'storage'}><StorageSettings /></Match>
+                <Match when={page() === 'diagnostics'}><DiagnosticsSettings /></Match>
                 <Match when={page() === 'shortcuts'}><ShortcutsSettings /></Match>
                 <Match when={page() === 'glossary'}><DashboardGlossaryView /></Match>
                 <Match when={page() === 'help'}><DashboardHelpView /></Match>

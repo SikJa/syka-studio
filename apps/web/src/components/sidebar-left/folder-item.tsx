@@ -58,6 +58,9 @@ export type FolderItemProps = {
   onRenameStart(): void;
   onRenameEnd(): void;
   onOpen(): void;
+  selected?: boolean;
+  onSelect?(event: MouseEvent): void;
+  onDelete?(): void | Promise<void>;
 };
 
 export function FolderItem(props: FolderItemProps) {
@@ -117,6 +120,7 @@ export function FolderItem(props: FolderItemProps) {
 
   const handleDelete = async () => {
     try {
+      if (props.onDelete) { await props.onDelete(); return; }
       await library()?.deleteFolder(props.path);
     } catch (e) {
       toast.error("Failed to delete", { description: (e as Error).message });
@@ -129,16 +133,22 @@ export function FolderItem(props: FolderItemProps) {
         as="div"
         class="flex flex-col gap-1 text-left"
         data-folder-path={props.path}
+        data-library-key={`folder:${props.path}`}
+        role="option"
+        aria-selected={props.selected ?? false}
         draggable={true}
         onDragStart={handleDragStart}
         on:dragover={handleDragOver}
         on:dragleave={() => setIsDropTarget(false)}
         on:drop={handleDrop}
-        onClick={props.onOpen}
+        onClick={props.onSelect ?? props.onOpen}
+        onDblClick={props.onSelect ? props.onOpen : undefined}
+        onContextMenu={props.onSelect}
       >
         <div
           data-drop-target={isDropTarget()}
-          class="relative aspect-video w-full overflow-clip rounded bg-muted flex items-center justify-center after:pointer-events-none after:absolute after:inset-0 after:rounded after:opacity-0 after:ring-2 after:ring-inset after:ring-ring after:z-10 data-[drop-target=true]:after:opacity-100"
+          data-selected={props.selected ?? false}
+          class="relative aspect-video w-full overflow-clip rounded bg-muted flex items-center justify-center after:pointer-events-none after:absolute after:inset-0 after:rounded after:opacity-0 after:ring-2 after:ring-inset after:ring-ring after:z-10 data-[drop-target=true]:after:opacity-100 data-[selected=true]:after:opacity-100"
         >
           <Icon name="folder-thumbnail" class="w-8 h-6 text-muted-foreground pointer-events-none" />
           <Show when={childCount() > 0}>

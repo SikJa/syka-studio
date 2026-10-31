@@ -29,6 +29,7 @@ vi.mock('electron', () => ({
   },
 }));
 import { registerSykaAgentSettings } from '../src/syka-agent-settings';
+import { closeResourceIndexes } from '../../../packages/agent-chat/src/host/resource-index';
 let folder: string,
   request: (r: any) => Promise<any>,
   previous: string | undefined;
@@ -44,6 +45,7 @@ beforeEach(async () => {
   } as any);
 });
 afterEach(async () => {
+  await closeResourceIndexes();
   if (previous === undefined) delete process.env.SYKA_RUNTIME_ROOT;
   else process.env.SYKA_RUNTIME_ROOT = previous;
   const target = resolve(folder);
@@ -55,6 +57,18 @@ afterEach(async () => {
   await rm(target, { recursive: true, force: true });
 });
 describe('skill library desktop bridge', () => {
+  it('reads the bundled original explicitly and saves a personal copy',async()=>{
+    const catalog=await request({action:'get'});
+    const builtin=catalog.skills.find((skill:any)=>skill.bundled);
+    expect(builtin).toBeTruthy();
+    const original=await request({action:'read-skill',name:builtin.name,bundled:true});
+    expect(original.content.trim().length).toBeGreaterThan(0);
+    await request({action:'import-skill',name:'qa-custom-base',source:builtin.path});
+    const copy=await request({action:'read-skill',name:'qa-custom-base'});
+    await request({action:'save-skill',name:'qa-custom-base',content:copy.content+'\nPersonalización local.',revision:copy.revision});
+    expect((await request({action:'read-skill',name:builtin.name,bundled:true})).revision).toBe(original.revision);
+    expect((await request({action:'read-skill',name:'qa-custom-base'})).content).toContain('Personalización local.');
+  });
   it('creates, reads and saves the actual SKILL.md with revision checks and backup', async () => {
     await request({
       action: 'create-skill',

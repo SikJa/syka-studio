@@ -3,14 +3,36 @@ import {mkdtemp,mkdir,readFile,rm,writeFile,symlink} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {WorkspaceTools} from '../src/host/workspace-tools';
+import {closeResourceIndexes} from '../src/host/resource-index';
 import {revealTiming} from '../../../docs/skills/syka-motion-transitions/examples/motion-timing';
 let fixture:string;let tools:WorkspaceTools;
 beforeEach(async()=>{fixture=await mkdtemp(join(tmpdir(),'syka-workspace-test-'));tools=new WorkspaceTools(fixture);});
-afterEach(async()=>{await rm(fixture,{recursive:true,force:true});});
+afterEach(async()=>{await closeResourceIndexes();await rm(fixture,{recursive:true,force:true});});
 describe('project workspace capabilities',()=>{
+  it('searches compact skill pages, then reads just the chosen instructions',async()=>{
+    for(let i=0;i<9;i++){
+      const path=join(fixture,'.agents','skills','qa-progresivo-'+i);
+      await mkdir(path,{recursive:true});
+      await writeFile(join(path,'SKILL.md'),'---\nname: qa-progresivo-'+i+'\ndescription: Tipografía común QA\n---\n'+('INSTRUCCIONES_LARGAS '.repeat(4000)));
+    }
+    const page=await tools.call('syka_skills',{action:'list',query:'qa-progresivo tipografia'}) as any;
+    expect(page.total).toBe(9);expect(page.skills).toHaveLength(6);expect(page.nextOffset).toBe(6);
+    expect(JSON.stringify(page).length).toBeLessThanOrEqual(6000);
+    const next=await tools.call('syka_skills',{action:'list',query:'qa-progresivo tipografia',offset:page.nextOffset}) as any;
+    expect(next.skills).toHaveLength(3);expect(next.nextOffset).toBeNull();
+    expect(new Set([...page.skills,...next.skills].map((skill:any)=>skill.path)).size).toBe(9);
+    const chosen=await tools.call('syka_skills',{action:'read',name:page.skills[0].name}) as any;
+    expect(chosen.content.length).toBeGreaterThan(60000);
+  });
   it('discovers the bundled workflows and reads their executable support files',async()=>{
     const bundled=new WorkspaceTools(fixture,resolve(import.meta.dirname,'../../../docs'));
-    const result=await bundled.call('syka_skills',{action:'list'}) as {skills:{name:string;path:string}[]};
+    const result={skills:[] as {name:string;path:string}[]};
+    let offset:number|null=0;
+    do {
+      const page=await bundled.call('syka_skills',{action:'list',offset}) as {skills:{name:string;path:string}[];nextOffset:number|null};
+      expect(page.skills.length).toBeLessThanOrEqual(6);
+      result.skills.push(...page.skills);offset=page.nextOffset;
+    }while(offset!==null);
     for(const name of ['syka-editing-basics','syka-captions','syka-local-audio','syka-motion-reference','syka-motion-direction','syka-motion-transitions','syka-edit-review','syka-visual-direction','syka-media-use','syka-explainer-edit','syka-faceless-explainer','syka-music-video','syka-pr-to-video','syka-slideshow','syka-motion-brief','syka-motion-reels','syka-motion-storyboard','syka-motion-typography','syka-camera-3d-captions']){
       const skill=result.skills.find(s=>s.name===name);expect(skill,name).toBeDefined();
       expect(await bundled.call('syka_skills',{action:'read',path:skill!.path})).toMatchObject({content:expect.stringContaining('name: '+name)});

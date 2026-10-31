@@ -17,8 +17,10 @@ import {
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "somoto";
+import { drainProjectEdits } from '@/projects/edits';
 import { track } from "@/lib/analytics";
 import { forgetProjectBundle, generateProjectName } from "@/lib/db";
+import { prefetchProjectChats } from "@/agent-chat/store";
 import {
   checkProject,
   createProject,
@@ -481,6 +483,8 @@ export async function createNewProject(): Promise<ProjectInfo | null> {
 export async function openProjectFromList(project: ProjectInfo): Promise<ProjectInfo | null> {
   if (!isDesktop()) return project;
 
+  // The chat it will show loads while the folder is checked and the editor mounts.
+  prefetchProjectChats(project.id);
   const current = await checkProject(project);
   if (current) return current;
 
@@ -502,7 +506,8 @@ export async function openProjectFromList(project: ProjectInfo): Promise<Project
  * Moves `project` to the Trash, and drops the bundle we were holding for it —
  * the folder is gone, so the cached copy of it is stale.
  */
-export async function trashProject(project: ProjectInfo): Promise<void> {
+export async function trashProject(project: Pick<ProjectInfo, 'id' | 'dir'>): Promise<void> {
+  await drainProjectEdits(project.dir);
   await deleteProject(project.dir);
   forgetProjectBundle(project.id);
   track("project_deleted");

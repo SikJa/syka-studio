@@ -17,6 +17,22 @@ spec.loader.exec_module(module)
 
 
 class GraphRuntimeTests(unittest.TestCase):
+    def test_typescript_import_arrays_keep_locations_and_runtime_imports(self):
+        module.install_typescript_import_compat()
+        from graphify.extract import extract_js, _normalize_ts_import_types
+        text = "// á\nexport type Response = { data: { servers: import('./math').Server[]; count: number }; ok: boolean };\nexport const load = () => import('./math');\n"
+        self.write('imports.ts', text)
+        result = extract_js(self.root / 'src/imports.ts')
+        self.assertFalse(result.get('parse_errors'))
+        normalized = _normalize_ts_import_types(text.encode('utf-8'))
+        self.assertEqual(len(normalized), len(text.encode('utf-8')))
+        self.assertEqual(normalized.count(b'\n'), text.count('\n'))
+        self.assertIn(b"() => import('./math')", normalized)
+        self.assertEqual((self.root / 'src/imports.ts').read_text(encoding='utf-8'), text)
+        broken = text + '\nexport function broken( {{{'
+        self.write('broken.ts', broken)
+        self.assertTrue(extract_js(self.root / 'src/broken.ts').get('parse_errors'))
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='syka-graphify-test-')
         self.root = Path(self.temp.name).resolve()

@@ -8,8 +8,11 @@
 // in constant time, and an Origin allow-list.
 
 import { timingSafeEqual } from "node:crypto";
+import { createReadStream } from "node:fs";
 import { createServer } from "node:http";
 import { WebSocketServer } from "ws";
+
+import { IMAGE_MEDIA_TYPES } from "./store";
 
 import type { IncomingMessage, Server } from "node:http";
 import type { Duplex } from "node:stream";
@@ -43,8 +46,18 @@ export function originAllowed(origin: string | undefined, allowed: string[]): bo
 }
 
 export function startServer(options: ServerOptions): Promise<RunningServer> {
-  const http: Server = createServer((_req, res) => {
-    res.writeHead(404, { "content-type": "text/plain" }).end("Not found");
+  const http: Server = createServer((req, res) => {
+    // GET /images/<chatId>/<ref>?token=… serves a chat's stored tool image.
+    const url = new URL(req.url ?? "/", `http://${options.host}`);
+    const match = /^\/images\/([^/]+)\/([^/]+)$/.exec(url.pathname);
+    const path = req.method === "GET" && match && safeEqual(url.searchParams.get("token") ?? "", options.token)
+      ? options.agentHost.chatImagePath(decodeURIComponent(match[1]!), decodeURIComponent(match[2]!)) : null;
+    if (!path) { res.writeHead(404, { "content-type": "text/plain" }).end("Not found"); return; }
+    const type = IMAGE_MEDIA_TYPES[path.slice(path.lastIndexOf(".") + 1)] ?? "application/octet-stream";
+    const stream = createReadStream(path);
+    stream.once("open", () => res.writeHead(200, { "content-type": type, "cache-control": "private, max-age=31536000, immutable", "x-content-type-options": "nosniff" }));
+    stream.once("error", () => { if (!res.headersSent) res.writeHead(404, { "content-type": "text/plain" }); res.end(); });
+    stream.pipe(res);
   });
   const wss = new WebSocketServer({ noServer: true });
 

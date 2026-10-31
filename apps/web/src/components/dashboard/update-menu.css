@@ -1,4 +1,9 @@
 .syka-update-trigger{position:relative;display:grid;place-items:center;width:28px;height:28px;border-radius:8px;color:var(--muted-foreground);transition:background-color 150ms ease,color 150ms ease}
+.syka-automatic-update-notice{position:fixed;top:52px;right:20px;z-index:3000;display:grid;gap:10px;width:min(310px,calc(100vw - 32px));padding:18px;border:1px solid var(--border);border-radius:12px;background:var(--background);color:var(--foreground);box-shadow:0 12px 40px #0004;font-size:12px;}
+.syka-automatic-update-notice strong{padding-right:20px;font-size:13px;}
+.syka-automatic-update-notice p{color:var(--muted-foreground);}
+.syka-automatic-update-notice button{width:fit-content;}
+.syka-update-dismiss{position:absolute;top:9px;right:12px;font-size:20px;cursor:pointer;}
 .syka-update-trigger:hover,.syka-update-trigger:focus-visible{background:var(--accent);color:var(--foreground)}
 .syka-update-trigger:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .syka-update-trigger[data-attention=true]{color:var(--primary)}

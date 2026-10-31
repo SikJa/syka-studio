@@ -14,11 +14,12 @@ import { AgentHost } from "./host";
 import { CodexHarness } from "./codex";
 import { DEFAULT_ORIGINS, startServer } from "./server";
 import { ChatStore } from "./store";
+import { HarnessTraceStore } from './harness-telemetry';
 import { NativeUsageRecovery } from './native-usage';
 import { resolveLocalTool } from './local-tools';
 import { loadExternalHarnesses, readHarnessSettings, saveHarnessSettings } from './external-harnesses';
 import { startCodeGraph } from './code-graph';
-import { prepareProviderComponent, resolveManagedComponent, prepareLoginTerminal } from './provider-components';
+import { prepareProviderComponent, resolveManagedComponents, prepareLoginTerminal } from './provider-components';
 
 import type { Harness, McpConfig } from "./harness";
 
@@ -79,7 +80,7 @@ export async function createAgentHost(config: AgentHostConfig): Promise<RunningA
       ...(config.codeGraphRoot ? { SYKA_CODE_GRAPH_ROOT: config.codeGraphRoot } : {}),
     } };
     // Receipt-only discovery: no downloads or interactive authorization at startup.
-    if (!config.harnesses) for (const id of ['codex', 'claude', 'antigravity', 'grok', 'cursor', 'opencode'] as const) await resolveManagedComponent(id, ready, runtimeDir).catch(() => undefined);
+    if (!config.harnesses) await resolveManagedComponents(['codex', 'claude', 'antigravity', 'grok', 'cursor', 'opencode'], ready, runtimeDir);
     return ready;
   });
   const store = new ChatStore(config.dataDir);
@@ -89,8 +90,10 @@ export async function createAgentHost(config: AgentHostConfig): Promise<RunningA
     recoverUsage: config.harnesses ? undefined : ids => recovery.recover(ids),
     onNotice: config.onNotice,
     store,
+    trace: new HarnessTraceStore(config.dataDir),
     harnesses,
     env,
+    catalogCacheFile: config.harnesses ? undefined : join(config.dataDir, 'provider-catalogs-v1.json'),
     mcp: config.mcp,
     instructions: config.instructions,
     version: config.version,
@@ -100,7 +103,7 @@ export async function createAgentHost(config: AgentHostConfig): Promise<RunningA
       // An explicit user route stays authoritative, including invalid routes.
       const explicit = settings.entries.find(entry => entry.id === id);
       if (explicit) await import('./external-harnesses').then(module => module.validateExecutable(explicit));
-      else if (id !== 'hermes') await prepareProviderComponent(id, hostEnv, runtimeDir, signal, progress);
+      else if (id !== 'hermes' && id !== 'gemini-web') await prepareProviderComponent(id, hostEnv, runtimeDir, signal, progress);
       if (id === 'antigravity') await prepareLoginTerminal(hostEnv, runtimeDir, signal, progress);
       return id === 'codex' ? new CodexHarness(config.version) : (await loadExternalHarnesses(configFile, profilesRoot)).find(harness => harness.id === id)!;
     },

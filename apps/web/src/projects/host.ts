@@ -7,6 +7,7 @@ import { createSignal } from 'solid-js';
 
 import { MAIN_CHANNELS } from '@desktop/main-channels';
 import { mainBridge } from '@/lib/ipc';
+import { compileSettledSource } from './compile';
 import {
 	addProjectRecords,
 	findProjectRecords,
@@ -62,6 +63,7 @@ export const isMacOSDesktop = (): boolean => window.desktop?.platform === "darwi
 
 /** Puts `project` on the list (or marks it just opened) and tells the views. */
 async function remember(project: ProjectInfo): Promise<void> {
+	rememberForgotten(project.dir, false);
 	await rememberProject(project);
 	setProjectsRevision((revision) => revision + 1);
 }
@@ -176,8 +178,43 @@ export async function refreshProject(dir: string): Promise<ProjectInfo | null> {
 	return current;
 }
 
+// Folders the person took off the list: a later rescan of the root must not bring them back.
+const FORGOTTEN_KEY = 'syka:projects-forgotten';
+function forgottenDirs(): string[] {
+	try { const value = JSON.parse(window.localStorage.getItem(FORGOTTEN_KEY) ?? '[]'); return Array.isArray(value) ? value.filter((dir): dir is string => typeof dir === 'string') : []; }
+	catch { return []; }
+}
+function rememberForgotten(dir: string, forgotten: boolean): void {
+	const next = forgottenDirs().filter(entry => entry !== dir);
+	if (forgotten) next.push(dir);
+	try { window.localStorage.setItem(FORGOTTEN_KEY, JSON.stringify(next.slice(-500))); } catch { /* Best effort. */ }
+}
+
+/**
+ * Adds projects that appeared in the root since it was picked, including ones
+ * inside batch folders, without bringing back the ones taken off the list.
+ */
+export async function rescanProjectsRoot(): Promise<void> {
+	const root = projectsRoot();
+	if (!root || !isDesktop()) return;
+	let found: ProjectInfo[] = [];
+	try { found = await mainBridge.call(MAIN_CHANNELS.PROJECTS_SCAN, { root }); }
+	catch (error) { console.warn(`[projects] could not look for projects in ${root}`, error); return; }
+	const forgotten = new Set(forgottenDirs());
+	if (await addProjectRecords(found.filter(project => !forgotten.has(project.dir)))) setProjectsRevision((revision) => revision + 1);
+}
+
+let rescanned = false;
+/** Once per app session, when a projects list is first shown. */
+export function rescanProjectsRootOnce(): void {
+	if (rescanned) return;
+	rescanned = true;
+	void rescanProjectsRoot();
+}
+
 /** Takes the project in `dir` off the list, leaving its folder alone, and tells the views. */
 export async function forgetProject(dir: string): Promise<void> {
+	rememberForgotten(dir, true);
 	await forgetProjectRecord(dir);
 	setProjectsRevision((revision) => revision + 1);
 }
@@ -240,10 +277,10 @@ export async function getProject(dir: string): Promise<ProjectInfo | null> {
  * to it. Its id has not changed, and neither has its URL; the list follows
  * the folder.
  */
-export async function renameProject(dir: string, displayName: string): Promise<ProjectInfo> {
+export async function renameProject(dir: string, displayName: string, keepFolder = false): Promise<ProjectInfo> {
 	if (!dir) throw new Error('No project folder.');
 
-	const project = await mainBridge.call(MAIN_CHANNELS.PROJECTS_RENAME, { dir, displayName });
+	const project = await mainBridge.call(MAIN_CHANNELS.PROJECTS_RENAME, { dir, displayName, keepFolder });
 	await moveProjectRecord(dir, project.dir);
 	await remember(project);
 	return project;
@@ -254,6 +291,12 @@ export async function duplicateProject(dir: string): Promise<ProjectInfo> {
 	if (!dir) throw new Error('No project folder.');
 
 	const project = await mainBridge.call(MAIN_CHANNELS.PROJECTS_DUPLICATE, { dir });
+	await remember(project);
+	return project;
+}
+
+export async function createProjectTrial(dir: string): Promise<ProjectInfo> {
+	const project = await mainBridge.call(MAIN_CHANNELS.PROJECTS_TRIAL, { dir });
 	await remember(project);
 	return project;
 }
@@ -273,7 +316,7 @@ export async function deleteProject(dir: string): Promise<void> {
 export const projectKey = (project: ProjectInfo): string => project.id || project.name;
 
 export function compileProject(dir: string): Promise<CompileResult> {
-	return mainBridge.call(MAIN_CHANNELS.PROJECTS_COMPILE, { dir });
+	return compileSettledSource(() => mainBridge.call(MAIN_CHANNELS.PROJECTS_COMPILE, { dir }));
 }
 
 /**

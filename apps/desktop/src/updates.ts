@@ -8,7 +8,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { MAIN_CHANNELS } from './main-channels';
 import { mainBridge } from './main-manager';
-import { UpdateController, validUpdateRepo } from './update-controller';
+import { UpdateController, UpdateSourceError, validUpdateRepo } from './update-controller';
 import { isAgentChatBusy } from './agent-chat';
 import { createUpdateDemo } from './update-demo';
 import type { UpdateState } from './update-types';
@@ -20,14 +20,15 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
     const config = JSON.parse(readFileSync(join(app.getAppPath(), 'release.config.json'), 'utf8'));
     if (typeof config.repository === 'string' && validUpdateRepo(config.repository)) repo = config.repository;
   } catch { /* An unconfigured build never queries upstream Diffusion. */ }
-  const enabled = isPackagedBuild() && process.platform === 'win32' && !!repo
-    && existsSync(resolve(process.execPath, '..', '..', 'Update.exe'));
+  const enabled = isPackagedBuild() && process.platform === 'win32' && !!repo;
+  const nativeUpdater = enabled && existsSync(resolve(process.execPath, '..', '..', 'Update.exe'));
   const demoOptions = { packaged: isPackagedBuild(), defaultApp: !!process.defaultApp, appPath: app.getAppPath(), version: app.getVersion(), env: process.env,
     restart: () => { app.relaunch(); app.quit(); } };
   let demo = createUpdateDemo(demoOptions);
   const decorate = (state: UpdateState): UpdateState => demo ? { ...state, simulation: demo.applied ? 'complete' : 'preview' } : state;
   const makeController = () => new UpdateController({
     version: demo?.currentVersion ?? app.getVersion(), repo, enabled: enabled || !!demo, driver: demo?.driver ?? autoUpdater,
+    externalInstaller: !nativeUpdater && !demo,
     changed: state => mainBridge.emit(window(), MAIN_CHANNELS.SYKA_UPDATES_CHANGED, decorate(state)),
     loadRelease: async () => {
       if (demo) return demo.loadRelease();
@@ -35,7 +36,15 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
         headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'Syka-Studio-Updater' },
         signal: AbortSignal.timeout(15_000), redirect: 'error',
       });
-      if (response.status === 404) return null; // No stable release yet.
+      if (response.status === 404) {
+        // GitHub answers 404 both for "no release yet" and for a private or missing repository.
+        const repository = await fetch(`https://api.github.com/repos/${repo}`, {
+          headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'Syka-Studio-Updater' },
+          signal: AbortSignal.timeout(15_000), redirect: 'error',
+        });
+        if (repository.status === 404) throw new UpdateSourceError(`No se puede leer el repositorio de actualizaciones (${repo}): es privado o no existe. Las versiones nuevas no van a aparecer hasta que sus releases sean públicos.`);
+        return null; // No stable release yet.
+      }
       if (!response.ok) throw Error('Update metadata unavailable');
       const reader = response.body?.getReader();
       if (!reader) throw Error('Empty update metadata');
@@ -63,7 +72,15 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
       return decorate(await controller.check());
     }
     if (request.action === 'check') return decorate(await controller.check());
-    if (request.action === 'download') return decorate(controller.download());
+    if (request.action === 'download') {
+      const state = controller.snapshot();
+      if (state.installation === 'installer') {
+        if (!['available', 'error'].includes(state.phase) || !state.availableVersion || !state.releaseUrl) throw Error('Primero buscá una actualización disponible.');
+        await shell.openExternal(state.releaseUrl);
+        return decorate(state);
+      }
+      return decorate(controller.download());
+    }
     if (request.action === 'notes') {
       const url = controller.snapshot().releaseUrl;
       if (url && !demo) await shell.openExternal(url);

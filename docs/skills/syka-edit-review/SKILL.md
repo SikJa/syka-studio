@@ -5,6 +5,24 @@ description: "Comprobar calidad de una edición o export de Syka con revisión p
 
 # Revisión proporcional
 
+## Contract
+
+Syka entrega una composición audiovisual nativa editable dentro del proyecto. El pedido actual manda: conservá originales, voz, estilo/geometría aprobados y edición nativa. Un plan sólo es entrega si se pidió plan; al editar, aplicá la composición y comprobala. Un fallo deja verificaciones pendientes o bloqueadas, nunca habilita otra app, juego, web o motor como sustituto. Exportá sólo ante pedido explícito.
+
+La revisión escala al riesgo real del cambio. Un check/captura no certifica audio, reproducción, calidad artística ni aprobación. Nunca exportes sólo para emitir un veredicto.
+
+Leé sólo la fase necesaria. Las dependencias del índice son condicionales, nunca lecturas recursivas. Una corrección puntual reutiliza decisiones vigentes y su source; no repite brief, investigación ni consulta de producción nueva.
+
+## Brief
+
+Identificá el pedido vigente, la fuente/revisión y el riesgo del cambio: texto, corte, motion, audio o una pieza completa. Reutilizá la dirección aprobada y la evidencia existente; una corrección pequeña necesita sólo sus instantes afectados.
+
+## Build
+
+Prepará check y capturas del proyecto nativo en instantes concretos. Para movimiento inspeccioná el mismo tiempo después de seeks directos, hacia adelante y hacia atrás; para audio necesitás el archivo y reproducción real. Las herramientas de revisión de exports sólo se usan si existe un archivo autorizado disponible.
+
+## Review
+
 Usá la verificación que resuelva el riesgo del cambio. No conviertas un ajuste reversible en una ceremonia de aprobación.
 
 - Cambio de texto: captura durante su aparición; lectura, contraste y encuadre.
@@ -15,7 +33,7 @@ Usá la verificación que resuelva el riesgo del cambio. No conviertas un ajuste
 - Edición amplia: contrastá con el brief y distribuí muestras; reproducí un draft cuando haga falta evaluar ritmo/mezcla completa.
 - Export solicitado: comprobá archivo no vacío, streams, dimensiones/duración y muestras del mismo source revision usado para la preview.
 
-## Crítica creativa de una pieza completa
+### Crítica creativa de una pieza completa
 
 Para motion de varios beats o una mejora amplia, leé [references/motion-evidence.md](references/motion-evidence.md). Usá `syka_motion_review` sobre el export nativo del proyecto para generar contact sheets, cuadros consecutivos y lectura a 360 px; abrí sus imágenes y corregí defectos con tiempo/evidencia. No confundas generar evidencia con haberla revisado.
 

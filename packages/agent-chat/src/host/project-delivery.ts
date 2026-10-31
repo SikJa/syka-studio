@@ -1,11 +1,11 @@
 import { createHash } from 'node:crypto';
 import { realpath, stat } from 'node:fs/promises';
-import { isAbsolute, relative, resolve, sep } from 'node:path';
+import { extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import type { NoticeReport } from '../notifications';
 
 export const DELIVERY_TOOL = {
   type: 'function', name: 'syka_delivery',
-  description: 'Publish a desktop notice for a real project delivery or a blocking issue. Never use for an ordinary final message. Ready/review require an existing project artifact. Ready also requires existing review evidence; this verifies files, not aesthetic quality or user approval. Use review while visual/audio checks remain pending. The notice opens this exact project and chat.',
+  description: 'Publish a notice for an audiovisual project delivery or blocker. artifact must be the native editable entry index.tsx for an edit/motion, a supporting plan/document for review, or existing audiovisual media. Standalone HTML/apps/games/URLs cannot be delivered. A preview failure leaves the same native source in review, never changes the deliverable. Ready requires real review evidence; file checks do not certify aesthetics, animation or user approval. Do not notify ordinary messages.',
   inputSchema: { type: 'object', additionalProperties: false, properties: {
     status: { type: 'string', enum: ['ready', 'review', 'blocked'] },
     message: { type: 'string', maxLength: 600 }, artifact: { type: 'string' },
@@ -26,6 +26,15 @@ export async function projectDelivery(cwd: string, raw: unknown): Promise<Notice
     return { path, info };
   };
   const artifact = args.status === 'blocked' ? undefined : await file(args.artifact);
+  if (artifact) {
+    const extension = extname(artifact.path).toLowerCase();
+    const native = artifact.path === await realpath(resolve(root, 'index.tsx')).catch(() => '');
+    const media = new Set(['.mp4', '.mov', '.webm', '.mkv', '.mp3', '.wav', '.flac', '.ogg', '.m4a', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.srt', '.vtt']);
+    const plan = new Set(['.md', '.txt', '.json', '.pdf']);
+    if (!native && !media.has(extension) && !(args.status === 'review' && plan.has(extension))) {
+      throw Error('Syka entrega contenido audiovisual. Para una edición o motion indicá index.tsx, la composición nativa editable; no una web, juego, servidor ni componente aislado. Si falla la preview, conservá esa entrega y usá review con la comprobación pendiente.');
+    }
+  }
   if (args.status === 'ready') {
     if (!Array.isArray(args.evidence) || !args.evidence.length || args.evidence.length > 8) throw Error('Falta la evidencia de revisión; usá review si hay comprobaciones pendientes.');
     for (const path of args.evidence) await file(path);

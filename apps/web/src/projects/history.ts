@@ -3,6 +3,7 @@ import { toast } from 'somoto';
 import { MAIN_CHANNELS } from '@desktop/main-channels';
 import { mainBridge } from '@/lib/ipc';
 import { getEditHistory } from '@/engine/history';
+import { Library } from '@diffusionstudio/runtime';
 import type { World } from 'koota';
 
 /** The desktop journal is authoritative across source edits and manual batches. */
@@ -48,13 +49,15 @@ export function attachProjectHistory(world: World, dir: string, writer: {
     setBusy(true);
     ++generation;
     try {
+      await world.get(Library)?.flush();
       await writer.drain();
       if (disposed) return;
       const result = await mainBridge.call(direction === 'undo' ? MAIN_CHANNELS.SYKA_EDIT_HISTORY_UNDO : MAIN_CHANNELS.SYKA_EDIT_HISTORY_REDO, { dir });
       if (!result.ok) throw new Error(result.error);
       if (disposed) return;
       setStatus(result);
-      await writer.reload();
+      if (result.path === 'assets.yml') await world.get(Library)?.load();
+      else await writer.reload();
     } catch (error) {
       if (!disposed) toast.error('No se pudo restaurar el cambio', { description: error instanceof Error ? error.message : String(error) });
     } finally {

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": []
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-camera-3d-captions",
+          "sectionId": "build",
+          "file": "examples/projection.ts",
+          "when": "Sólo profundidad proyectada editable solicitada"
+        },
+        {
+          "name": "syka-camera-3d-captions",
+          "sectionId": "build",
+          "file": "examples/DepthCaption.tsx",
+          "when": "Sólo profundidad proyectada editable solicitada"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": []
+    }
+  ]
+}

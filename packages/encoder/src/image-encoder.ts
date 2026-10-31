@@ -126,8 +126,9 @@ export async function createImageEncoder(world: World, config: ImageEncoderConfi
 				transformSystem(world);
 				renderSystem(world);
 
+				await config.onFrame?.(frame, canvas, world);
 				images.set(frame, {
-					png: await encodePng(canvas),
+					png: config.encode === false ? new Uint8Array(0) : await encodePng(canvas),
 					timecode: formatTimecode(playheadSeconds, frameRate),
 				});
 			}

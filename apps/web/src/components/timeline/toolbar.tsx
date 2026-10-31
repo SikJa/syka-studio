@@ -12,6 +12,8 @@ import { audioDetachReason, detachAudio } from '@/engine/audio-detach';
 import { deleteSelection, duplicateSelection } from '@/engine/input/shortcuts';
 import { timelineSnapping, setTimelineSnapping } from '@/engine/timeline/preferences';
 import { EditorZoomControl } from '@/components/editor-zoom-control';
+import { useTimeline } from '@/context/timeline';
+import { TimelineNavigationControls } from './navigation-controls';
 
 function Action(props: { label: string; icon: string; shortcut?: string; disabled?: boolean; reason?: string; active?: boolean; tourTarget?: string; onClick: () => unknown }) {
   return <Tooltip><TooltipTrigger as="span" class="inline-flex" tabIndex={props.disabled ? 0 : undefined}>
@@ -27,6 +29,7 @@ function Action(props: { label: string; icon: string; shortcut?: string; disable
 /** Commands use the same editor/history as keyboard shortcuts and source persistence. */
 export function TimelineToolbar() {
   const world = useWorld();
+  const timeline = useTimeline();
   const history = getEditHistory(world);
   const selected = useDerived(() => world.query(Selected).some(entity => !entity.has(Stage) && !!entity.get(Source)?.value));
   const canSplit = useDerived(() => canSplitAtPlayhead(world));
@@ -41,6 +44,7 @@ export function TimelineToolbar() {
     <div class="w-px h-4 mx-1 bg-border shrink-0" />
     <Action label="Separar audio" icon="audio-small" disabled={!!detachReason()} reason={detachReason() || 'Conserva el video arriba y crea su audio abajo, con el mismo recorte y velocidad. El sonido sale de la nueva pista; un solo Deshacer reúne ambos.'} onClick={() => detachAudio(world)} />
     <Action label="Snapping" icon="timeline-magnet" shortcut="N" active={timelineSnapping()} reason={timelineSnapping() ? 'Ajuste magnético activado: los clips se alinean al cabezal y a otros bordes.' : 'Ajuste magnético desactivado.'} onClick={() => setTimelineSnapping(!timelineSnapping())} />
+    <TimelineNavigationControls fit={timeline.fit} zoomBy={timeline.zoomBy} />
     <Show when={history.boundary()}>
       <span role="status" class="ml-auto text-xxs text-muted-foreground whitespace-nowrap px-2" title={history.boundary()}>Historial manual nuevo</span>
     </Show>

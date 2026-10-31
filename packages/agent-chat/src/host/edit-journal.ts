@@ -9,6 +9,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { lstat, mkdir, open, readFile, realpath, rename, rmdir, stat, unlink } from "node:fs/promises";
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { parse, stringify } from 'yaml';
 
 const MAX_SOURCE_BYTES = 16 * 1024 * 1024;
 const HASH = /^[a-f0-9]{64}$/;
@@ -19,7 +20,7 @@ const pause = (ms: number): Promise<void> => new Promise(done => setTimeout(done
 const errorText = (error: unknown): string => error instanceof Error ? error.message : String(error);
 
 type FileChange = { file: string; before: string; after: string };
-type Entry = FileChange & { id: string; files?: FileChange[]; origin: "manual" | "chat"; label: string; groupId?: string; createdAt: string };
+type Entry = FileChange & { id: string; files?: FileChange[]; origin: "manual" | "chat"; label: string; groupId?: string; createdAt: string; assetImport?: boolean };
 type State = { version: 1 | 2; revision: string; cursor: number; entries: Entry[]; heads: Record<string, string> };
 type Transfer = { file: string; from: string; to: string };
 type Pending = { version: 1; previousRevision: string; next: State; file: string; from: string; to: string }
@@ -38,6 +39,8 @@ export type CommitSourceEditOptions = {
   origin: "manual" | "chat"; label?: string; groupId?: string;
   /** View/stamping writes advance CAS heads without creating an undo entry. */
   record?: boolean;
+  /** A linked-media import replays its metadata delta, not the whole manifest. */
+  assetImport?: boolean;
   onBeforeWrite?: (absolutePath: string, content: string) => void;
 };
 export type RestoreSourceEditOptions = { projectDir: string; expectedSha256?: string; expectedFilePath?: string; expectedEntryId?: string };
@@ -46,6 +49,45 @@ export type CommitSourceEditsOptions = Omit<CommitSourceEditOptions, 'filePath' 
 };
 const entryFiles = (entry: Entry): FileChange[] => entry.files ?? [{ file: entry.file, before: entry.before, after: entry.after }];
 
+type AssetManifestRecord = { id: string; path: string; [key: string]: unknown };
+type AssetManifestValue = { folders: string[]; assets: AssetManifestRecord[]; [key: string]: unknown };
+function assetManifest(text: string): AssetManifestValue {
+  const value = parse(text) as AssetManifestValue;
+  if (!value || !Array.isArray(value.folders) || !value.folders.every(folder => typeof folder === 'string') ||
+      !Array.isArray(value.assets) || !value.assets.every(asset => asset && typeof asset.id === 'string' && typeof asset.path === 'string')) {
+    throw Error('El catálogo de recursos cambió de formato; se preservó el archivo actual.');
+  }
+  return value;
+}
+
+/** Undo only a manual import's additions, preserving unrelated generated media. */
+export function replayAssetImport(beforeText: string, afterText: string, currentText: string, redo: boolean): string {
+  const before = assetManifest(beforeText), after = assetManifest(afterText), current = assetManifest(currentText);
+  const beforeIds = new Set(before.assets.map(asset => asset.id));
+  const added = after.assets.filter(asset => !beforeIds.has(asset.id));
+  const addedIds = new Set(added.map(asset => asset.id));
+  const addedFolders = after.folders.filter(folder => !before.folders.includes(folder));
+  const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+  for (const asset of added) {
+    const existing = current.assets.find(item => item.id === asset.id);
+    if (existing && !same(existing, asset)) throw Error(`El recurso ${asset.path} cambió después de importarse; no se sobrescribió.`);
+    if (redo && current.assets.some(item => item.path === asset.path && item.id !== asset.id)) {
+      throw Error(`Otro recurso ocupa ${asset.path}; no se sobrescribió.`);
+    }
+  }
+  if (redo) {
+    const ids = new Set(current.assets.map(asset => asset.id));
+    current.assets = [...added.filter(asset => !ids.has(asset.id)), ...current.assets];
+    current.folders = [...new Set([...current.folders, ...addedFolders])].sort();
+  } else {
+    current.assets = current.assets.filter(asset => !addedIds.has(asset.id));
+    current.folders = current.folders.filter(folder => !addedFolders.includes(folder) ||
+      current.assets.some(asset => asset.path.startsWith(folder + '/')) ||
+      current.folders.some(child => child.startsWith(folder + '/') && !addedFolders.includes(child)));
+  }
+  return '# Diffusion Studio asset library. Edited by the app; hand edits are read on the next load.\n' + stringify(current, { lineWidth: 0 });
+}
+
 function inside(root: string, path: string): boolean {
   const rel = relative(root, path);
   return !!rel && !isAbsolute(rel) && rel !== ".." && !rel.startsWith(".." + sep);
@@ -53,7 +95,9 @@ function inside(root: string, path: string): boolean {
 
 async function sourcePath(root: string, path: string): Promise<string> {
   const candidate = resolve(root, path);
-  if (!inside(root, candidate) || !SOURCE_EXTENSIONS.has(extname(candidate).toLowerCase())) throw new Error("History supports existing authoring source files inside this project only");
+  // Absolute paths can name the same project through a Windows junction.
+  // The resolved target, rather than the spelling of that alias, is the boundary.
+  if (!SOURCE_EXTENSIONS.has(extname(candidate).toLowerCase())) throw new Error("History supports existing authoring source files inside this project only");
   const actual = await realpath(candidate);
   if (!inside(root, actual) || relative(root, actual).split(sep).some(part => (part.startsWith(".") && ![".agents", ".codex"].includes(part)) || RESERVED.has(part.toLowerCase()))) throw new Error("Source path escapes the project or names a protected folder");
   if (!SOURCE_EXTENSIONS.has(extname(actual).toLowerCase())) throw new Error("Resolved file is not authoring source");
@@ -302,6 +346,7 @@ export async function commitSourceEdit(options: CommitSourceEditOptions): Promis
         id: randomUUID(), file, before: previousHash, after: nextHash, origin: options.origin,
         label: (options.label || (options.origin === "chat" ? "Edición del chat" : "Edición manual")).slice(0, 200),
         ...(options.groupId ? { groupId: options.groupId.slice(0, 200) } : {}), createdAt: new Date().toISOString(),
+        ...(options.assetImport ? { assetImport: true } : {}),
       };
       if (merge) next.entries[next.entries.length - 1] = entry;
       else next.entries.push(entry);
@@ -377,12 +422,19 @@ async function restore(options: RestoreSourceEditOptions, redo: boolean): Promis
     const transfers: Transfer[] = [];
     const next: State = {...state,revision:randomUUID(),cursor:state.cursor+(redo?1:-1),heads:{...state.heads}};
     for (const change of files) {
-      const nextHash = redo ? change.after : change.before;
-      transfers.push({file:change.file,from:sha(await readSource(await sourcePath(store.root,change.file))),to:nextHash});
+      const current = await readSource(await sourcePath(store.root,change.file));
+      let nextHash = redo ? change.after : change.before;
+      if (entry.assetImport && change.file === 'assets.yml') {
+        const nextContent = replayAssetImport((await snapshot(store, change.before)).toString('utf8'),
+          (await snapshot(store, change.after)).toString('utf8'), current.toString('utf8'), redo);
+        nextHash = sha(nextContent);
+        await snapshot(store, nextHash, nextContent);
+      }
+      transfers.push({file:change.file,from:sha(current),to:nextHash});
       next.heads[change.file] = nextHash;
     }
     await transactFiles(store,state,next,transfers);
-    return {...status(next),changed:true,entryId:entry.id,path:selected.file,sha256:redo ? selected.after : selected.before};
+    return {...status(next),changed:true,entryId:entry.id,path:selected.file,sha256:next.heads[selected.file]};
   });
 }
 

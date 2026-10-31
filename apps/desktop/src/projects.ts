@@ -3,10 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { isPackagedBuild } from './app-mode';
+import { copyProjectTrial } from './project-trial';
 import { app, dialog, shell, type BrowserWindow } from "electron";
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import { watch, type FSWatcher } from "node:fs";
+import { realpathSync, watch, type FSWatcher } from "node:fs";
 import { cp, mkdir, readdir, readFile, realpath, rename, rm, stat } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
@@ -154,6 +155,7 @@ async function describe(dir: string): Promise<ProjectInfo | null> {
     entry,
     modifiedAt: file.mtime.toISOString(),
     createdAt: folder.birthtime.toISOString(),
+    ...(pkg?.trialOf && typeof pkg.trialOf === 'object' && typeof (pkg.trialOf as ProjectInfo['trialOf'])?.id === 'string' ? { trialOf: pkg.trialOf as ProjectInfo['trialOf'] } : {}),
   };
 }
 
@@ -395,8 +397,15 @@ async function childDirs(root: string): Promise<string[]> {
  * root is chosen, to put the projects already in it on its list. Reads only.
  */
 export async function scanProjects(root: string): Promise<ProjectInfo[]> {
-  const projects = await Promise.all((await childDirs(root)).map(describe));
-  return projects.filter((project): project is ProjectInfo => project !== null);
+  const children = await childDirs(root);
+  const projects = await Promise.all(children.map(describe));
+  // A child that is not a project may be a batch folder ("…-lote-…") holding
+  // projects one level down; look inside those, never deeper.
+  const nested = await Promise.all(children.map(async (dir, index) => {
+    if (projects[index]) return [];
+    try { return (await Promise.all((await childDirs(dir)).slice(0, 200).map(describe))); } catch { return []; }
+  }));
+  return [...projects, ...nested.flat()].filter((project): project is ProjectInfo => project !== null);
 }
 
 /**
@@ -770,12 +779,12 @@ export async function createProject(root: string, displayName: string): Promise<
  * behind the user's back — and it costs the project neither its identity nor
  * its links, both of which are the id.
  */
-export async function renameProject(dir: string, displayName: string): Promise<ProjectInfo> {
+export async function renameProject(dir: string, displayName: string, keepFolder = false): Promise<ProjectInfo> {
   const pkg = (await readPackage(dir)) ?? packageJson(basename(dir), displayName);
   const name = displayName.trim() || basename(dir);
   await writePackage(dir, { ...pkg, displayName: name });
 
-  const project = await describe(await renameFolder(dir, name));
+  const project = await describe(keepFolder ? dir : await renameFolder(dir, name));
   if (!project) throw new Error("Not a project folder.");
   return project;
 }
@@ -832,12 +841,39 @@ export async function duplicateProject(dir: string): Promise<ProjectInfo> {
   return project;
 }
 
+export async function createProjectTrial(dir: string): Promise<ProjectInfo> {
+  if (!isAbsolute(dir)) throw Error('La carpeta debe ser absoluta.');
+  const source = await describe(dir);
+  if (!source?.id) throw Error('Abrí y guardá el proyecto antes de crear una versión de prueba.');
+  const target = await copyProjectTrial(dir, source.id, source.displayName);
+  const trial = await describe(target);
+  if (!trial) throw Error('No se pudo abrir la versión creada.');
+  return trial;
+}
+
 /** Moves the folder to the trash; resolves with the id it had ("" for none), for what is kept outside it. */
 export async function deleteProject(dir: string): Promise<string> {
-  const id = recordedId(await readPackage(dir));
-  unwatchProject(dir);
+  if (typeof dir !== 'string' || !dir.trim() || !isAbsolute(dir)) throw new Error('La carpeta del proyecto debe ser una ruta absoluta.');
+  const target = resolve(dir);
+  const pkg = await readPackage(target), id = recordedId(pkg);
+  // A recorded project can have a broken/missing entry and must still be
+  // removable. Legacy projects without an id are recognized by their entry.
+  if (dirname(target) === target || !(await stat(target).catch(() => null))?.isDirectory() || (!id && !(await findEntry(target, pkg)))) throw new Error('No encontramos un proyecto en esa carpeta. No se movió ningún archivo.');
+  const key = contentKey(target);
+  const watching = [...watchers].filter(([path]) => contentKey(path) === key);
+  for (const [path] of watching) unwatchProject(path);
   // Windows' native trash operation requires a native absolute path.
-  await shell.trashItem(resolve(dir));
+  try { await shell.trashItem(target); }
+  catch (error) {
+    // A locked folder or unavailable Recycle Bin must not leave a surviving
+    // project detached from its original window's external-change watcher.
+    for (const [path, {window}] of watching) {
+      if (window?.isDestroyed()) continue;
+      try { watchProject(window, path); }
+      catch { console.warn('[projects] Could not restore a project watcher after a failed trash operation.'); }
+    }
+    throw error;
+  }
   return id;
 }
 
@@ -1025,12 +1061,19 @@ export async function readManifest(dir: string): Promise<unknown> {
  * mid-write leaves the old manifest and no reader ever sees half of one, and
  * claimed first so the watcher does not hand it back as a change.
  */
-export async function writeManifest(dir: string, manifest: unknown): Promise<void> {
+export async function writeManifest(dir: string, manifest: unknown, options: { recordHistory?: boolean } = {}): Promise<void> {
   const path = join(dir, MANIFEST_FILE);
   const text = `# Diffusion Studio asset library. Edited by the app; hand edits are read on the next load.
 ${stringifyYaml(manifest, { lineWidth: 0 })}`;
-  noteContent(path, text);
-  await writeFileAtomic(path, text);
+  const before = await readFile(path, "utf8").catch((error: NodeJS.ErrnoException) => { if (error.code === "ENOENT") return null; throw error; });
+  if (before === null) {
+    noteContent(path, text);
+    await writeFileAtomic(path, text);
+  } else {
+    await commitSourceEdit({ projectDir: dir, filePath: path, before, after: text,
+      origin: "manual", label: "Importar recursos", record: options.recordHistory === true, assetImport: options.recordHistory === true,
+      onBeforeWrite: (file, content) => noteContent(file, content) });
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1149,7 +1192,7 @@ export async function removeEntry(dir: string, path: string): Promise<void> {
 // ---------------------------------------------------------------------------
 // Watch
 
-const watchers = new Map<string, FSWatcher>();
+const watchers = new Map<string, {watcher: FSWatcher; window: BrowserWindow | null}>();
 
 /**
  * What the app believes is on disk, by absolute path: a digest of the content
@@ -1167,6 +1210,15 @@ const watchers = new Map<string, FSWatcher>();
  * it was given, a checkout of the blob already there — costs nothing either.
  */
 const known = new Map<string, string>();
+
+/** A watch path and journal path can be aliases through a Windows junction. */
+function contentKey(path: string): string {
+  try { return realpathSync.native(path); }
+  catch {
+    try { return join(realpathSync.native(dirname(path)), basename(path)); }
+    catch { return resolve(path); }
+  }
+}
 
 /** Digests for what has no content: a file that is not there, and a folder. */
 const ABSENT = "";
@@ -1204,6 +1256,7 @@ async function digestOf(path: string): Promise<string> {
  * round, and self-correcting either way.
  */
 export function noteContent(path: string, text: string | null): void {
+  path = contentKey(path);
   if (text === null) known.set(path, ABSENT);
   else if (Buffer.byteLength(text) > DIGEST_MAX) known.delete(path);
   else known.set(path, digest(text));
@@ -1220,7 +1273,7 @@ export function noteContent(path: string, text: string | null): void {
  * exactly what an event will find at `as`.
  */
 export async function noteRenamed(temp: string, as: string): Promise<void> {
-  known.set(as, await digestOf(temp));
+  known.set(contentKey(as), await digestOf(temp));
 }
 
 export function watchProject(window: BrowserWindow | null, dir: string): void {
@@ -1249,22 +1302,24 @@ export function watchProject(window: BrowserWindow | null, dir: string): void {
     queue = queue
       .then(async () => {
         const current = await digestOf(file);
-        if (known.get(file) === current) return;
-        known.set(file, current);
+        const key = contentKey(file);
+        if (known.get(key) === current) return;
+        known.set(key, current);
         mainBridge.emit(window, MAIN_CHANNELS.PROJECTS_CHANGED, { dir, path });
       })
       .catch(() => { });
   });
   watcher.on("error", () => unwatchProject(dir));
-  watchers.set(dir, watcher);
+  watchers.set(dir, {watcher, window});
 }
 
 export function unwatchProject(dir: string): void {
-  watchers.get(dir)?.close();
+  watchers.get(dir)?.watcher.close();
   watchers.delete(dir);
   // What the folder holds while nobody is watching is not the app's to
   // remember: the next watch starts from a fresh load of the project anyway.
-  const prefix = dir.endsWith(sep) ? dir : dir + sep;
+  const canonical = contentKey(dir);
+  const prefix = canonical.endsWith(sep) ? canonical : canonical + sep;
   for (const path of known.keys()) if (path.startsWith(prefix)) known.delete(path);
 }
 

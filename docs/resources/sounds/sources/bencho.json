@@ -1,0 +1,231 @@
+{
+  "version": 1,
+  "provider": "Bencho",
+  "repository": "https://github.com/cabralorenzo/bencho",
+  "commit": "30ab35a575eb83eed8f086a6893d4d6426f4fa91",
+  "license": "MIT",
+  "freeOnly": true,
+  "sourceFiles": [
+    {
+      "source": "sounds/sounds.ts",
+      "path": "sounds.ts",
+      "sha256": "1e873dcb2a65f77fefe5f969f13b68eabdf02c88b5f8ad7e93cbd6cda6043915"
+    },
+    {
+      "source": "LICENSE",
+      "path": "LICENSE",
+      "sha256": "9f9d2eedd3383d018e343db1205e9b41f07fa49632050482fb40cc1a03dd64fe"
+    },
+    {
+      "source": "THIRD_PARTY.md",
+      "path": "THIRD_PARTY.md",
+      "sha256": "5a06fa88b258e8f876f93d900fda3b7efd8a17908fbdab5f557eb2f3f1eef969"
+    }
+  ],
+  "licenseSha256": "9f9d2eedd3383d018e343db1205e9b41f07fa49632050482fb40cc1a03dd64fe",
+  "creditsSha256": "5a06fa88b258e8f876f93d900fda3b7efd8a17908fbdab5f557eb2f3f1eef969",
+  "render": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "volume": 2.4,
+    "noiseSeed": "3107 + source index",
+    "browser": "153.0.8010.12",
+    "modelsLoaded": false,
+    "adaptation": "Upstream schedule rendered offline; fixed noise seed; same gain as approved preview; 60 ms tail.",
+    "bitDepth": 24
+  },
+  "files": [
+    {
+      "path": "bencho/paid.wav",
+      "sha256": "3bf1d78e50d51c0caf0a3cabc3528dcbad31fd0d9238e345dc9f9166a2a7d2aa",
+      "sourceCue": "paid",
+      "recipeSha256": "d48693688169368df507694a595aa084ef6bfc0f89685f450dccb66e04995697",
+      "seed": 3107,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/landed.wav",
+      "sha256": "5b2729021b2b15245b798fee19e46abb24830cb01d3d9abb777224a7cfdb38fe",
+      "sourceCue": "landed",
+      "recipeSha256": "20f61c7275ed493a1b583794e3fc13d0579a0ed5349054af53c8df08b3440c69",
+      "seed": 3108,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/plop.wav",
+      "sha256": "5794db65c78d265b78c1b70fde602cbdd20489ac97a1d645b6ec03e95c4b1c06",
+      "sourceCue": "plop",
+      "recipeSha256": "afb4f26cd113282521fd36ee6e707fe2acd09ba19882a659224e8fb000d61965",
+      "seed": 3109,
+      "derivedFrom": "Cuelume"
+    },
+    {
+      "path": "bencho/beacon.wav",
+      "sha256": "86d8909d498218f3a29993427fa52b2b298be9606465bef076d9973289461bdf",
+      "sourceCue": "beacon",
+      "recipeSha256": "ee985ca43d1602115e120dd07d7a4b3401c9f91f0aff03f2bec8c7087475bc7a",
+      "seed": 3110,
+      "derivedFrom": "Cuelume"
+    },
+    {
+      "path": "bencho/drift.wav",
+      "sha256": "dea84bf2977e37f735d8db7a54997413fdb2a212ac931968c5d060d096e6ac98",
+      "sourceCue": "drift",
+      "recipeSha256": "e182794072974546339cdc7bae43824fcd0bae46e7f337abac0ce274172847c7",
+      "seed": 3111,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/hush.wav",
+      "sha256": "fc49b35d9ccb59f636da0e0397faa12be793f4f7315671e9f4eb57ab4a27078b",
+      "sourceCue": "hush",
+      "recipeSha256": "e85eab7672ccf28d318c27ef814c65e6e1d2c6630c75a3b08a86e80591400a5e",
+      "seed": 3112,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/wisp.wav",
+      "sha256": "fa59e6af733c0bdee8eb97c9ba254550b151705ca30856f587db0d5002dfccd4",
+      "sourceCue": "wisp",
+      "recipeSha256": "9ff2e1ee152167a8a072097bd156c7b0b87ae4bd9f3090f231edcc4d7517258d",
+      "seed": 3113,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/sigh.wav",
+      "sha256": "dc473e2b20dc41533114142899cb3ccc51c663659c066a183c90e61d295a3d2c",
+      "sourceCue": "sigh",
+      "recipeSha256": "2869eead90aa6b231fb78a55287c50f6ec814b52426ce5d8173cc18fc814bb92",
+      "seed": 3114,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/perk.wav",
+      "sha256": "6120f07e3c67442c40dc7d169fcf4abb3a8c5175563ac77a8cf09e776d1cb83f",
+      "sourceCue": "perk",
+      "recipeSha256": "c9e141c5a17e5065a0c453b411d9751bbd76dc84f3f489ebe9af9dbee6d0db85",
+      "seed": 3115,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/purr.wav",
+      "sha256": "8e515229b63dcef9dcc44dbd6a263c2d49ec8e12abd5b67b39df8b936be4c4d0",
+      "sourceCue": "purr",
+      "recipeSha256": "95a543043bba043e1af3a73381c866791d02fedfc4350a058ef825159408f163",
+      "seed": 3116,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/lull.wav",
+      "sha256": "22d14417f58f6749fcf42bf4001f857112089ecd691d5768d2877636e31fed68",
+      "sourceCue": "lull",
+      "recipeSha256": "4b8809487385282e1e32d027bb6040394907b3710462b4995d36f5b767a47531",
+      "seed": 3117,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/whisk.wav",
+      "sha256": "afc1f34c5eddb2bf4e418b32edee7a4fe42b496127f04d3d6201512edca66c01",
+      "sourceCue": "whisk",
+      "recipeSha256": "8a8607b45553d161b3bfb60faa1edbdbb962d2518265a5a8eaee1d249644b866",
+      "seed": 3118,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/buzz.wav",
+      "sha256": "2fa1ecc4f1911ff9173f8c11e864ca534913c118ac6a161ab3149dad1c1301a7",
+      "sourceCue": "buzz",
+      "recipeSha256": "3d3df4a874e755c844500c9ed82dd4e20f0a690abec4bd66fe08de0acda7e730",
+      "seed": 3119,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/bump.wav",
+      "sha256": "1fed073e985626c1ed1600a254dd4fe36e13f37128acc855e39fd67e31724de4",
+      "sourceCue": "bump",
+      "recipeSha256": "42f59a245d5284a591454a83bd92ebe1d98db77b7eb820edea8182663806e811",
+      "seed": 3120,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/float.wav",
+      "sha256": "c664e70e4143a51dd46c673dd11533eea82aac3f2ad3e355746b40f9f517ce24",
+      "sourceCue": "float",
+      "recipeSha256": "c06dbf65e80ffd59ceeb8dae11a5e5ad4615511dbdf80b0594b3a1c0898bf4d2",
+      "seed": 3121,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/glide.wav",
+      "sha256": "b2fb4478b4c6e927ad5dcc9cfc0d2562059638964fd8cf0f0ee4c2492fbf4497",
+      "sourceCue": "glide",
+      "recipeSha256": "a79d5b7cb1b48031932a5bd88141647a595508da2e955bf9c111ba79e649c0b7",
+      "seed": 3122,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/step.wav",
+      "sha256": "e66961193a8932186e2269069ea9fdf0de9c34833a0f8980caa5f1ae4eb52133",
+      "sourceCue": "step",
+      "recipeSha256": "e1df2d0ab53c19375142bdcf9a5cc338c00756a85d539f2b54738470d6337272",
+      "seed": 3123,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/wander.wav",
+      "sha256": "35ffd732369d6858a4fa4e314a68df0d13e4f0c3299018d2a3074ea715c6186e",
+      "sourceCue": "wander",
+      "recipeSha256": "74324b4999348edf649b48538af4f8b74620d73917726be1202f9d5bcbfae1e8",
+      "seed": 3124,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/tick.wav",
+      "sha256": "b008b7a6737e79f51d2e2052ba64b496422a36c8eaa2bda36c84957304c59136",
+      "sourceCue": "tick",
+      "recipeSha256": "66569811f08e58743c3a9ef4f970ea48d5bfdcedece38973b0c1207f0f669f8a",
+      "seed": 3125,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/latch.wav",
+      "sha256": "6b949fe53fe8f1c0efa85a5dc6421f783bc152ebd46249b71259e1bf11a990e9",
+      "sourceCue": "latch",
+      "recipeSha256": "bc3994fc68653135c9b11eed2e4b5dc626fe32d2a5d0af194db729d7d6d2534d",
+      "seed": 3126,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/hail.wav",
+      "sha256": "ee68001094da034af405a080d84a9464cebd0e415181b5bc22f698b0a902c684",
+      "sourceCue": "hail",
+      "recipeSha256": "0f781f9e1dff787c98840d5ca4151026a18c0cdaebf838ff4eb4d069db853de9",
+      "seed": 3127,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/drape.wav",
+      "sha256": "b4972837f748431812a49fc719148fd78104ec75b228a18b5ceb57fd7ecf0a06",
+      "sourceCue": "drape",
+      "recipeSha256": "0a6765ea79dda1e565802d04fcfcb1813a4f435be658c346214eb7f43112fe14",
+      "seed": 3128,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/boot.wav",
+      "sha256": "448f84570422d3ff575c6e4d8ee5282a88c5c14c8cd03382c1e5e490baf8dd32",
+      "sourceCue": "boot",
+      "recipeSha256": "7d13a0b88e3c18a5a68454ce94acf7c569dc4a3c053e5152dfd7eec1570488a6",
+      "seed": 3129,
+      "derivedFrom": null
+    },
+    {
+      "path": "bencho/drone.wav",
+      "sha256": "63f42756937ba203f6b73fd9137bce5dd75944923330086d0f767d7f276648f0",
+      "sourceCue": "drone",
+      "recipeSha256": "dd6a919400e5bc1a9fbf6e26f3ba9b6ecc0476ddaf2933303485909f1212cd44",
+      "seed": 3130,
+      "derivedFrom": null
+    }
+  ]
+}

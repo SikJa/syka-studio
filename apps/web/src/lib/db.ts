@@ -10,6 +10,12 @@ import type { ProjectInfo } from '@desktop/main-channels';
 const adjectives = ["Golden", "Silent", "Fast", "Bright", "Dark", "Wild", "Calm"];
 const nouns = ["River", "Mountain", "Dream", "Storm", "Sunset", "Forest", "Ocean"];
 
+/** A name nobody chose: the random "Fast Storm 30 Oct" kind, or "Untitled Project N". */
+export function isPlaceholderProjectName(name: string): boolean {
+  const random = new RegExp(`^(${adjectives.join('|')}) (${nouns.join('|')}) \\d{1,2} [A-Z][a-z]{2}$`);
+  return random.test(name.trim()) || /^untitled project( \d+)?$/i.test(name.trim());
+}
+
 function getRandomElement<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!;
 }

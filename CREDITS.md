@@ -25,7 +25,18 @@ Los assets originales de marca de Diffusion, incluidos los de `apps/desktop/asse
 | [use-stick-to-bottom](https://github.com/stackblitz-labs/use-stick-to-bottom), StackBlitz; port de conciv | Scroll del chat en `apps/web/src/agent-chat/stick-to-bottom.ts`, adaptado desde `@conciv/solid-stick-to-bottom@0.0.19` | MIT completo en el header; Copyright © 2024–present StackBlitz y © 2026 conciv contributors |
 | [opus-sound-layer](https://github.com/Bodila51/opus-sound-layer), Copyright © 2026 Bodila51, snapshot `52ac266a24b7dfd3cd06a28c34d5af360a8d7586` | Criterios adaptados de selección/mezcla/revisión sonora y referencias de packs | [MIT](docs/licenses/LICENSE.opus-sound-layer.txt); el aviso no cambia la licencia de los sonidos Kenney |
 
-## Tipografías
+## Referencias de motion
+
+Motion Lab y Huashu Art Motion se incorporan como referencias de código y diseño
+adaptables, desde el snapshot OpenDesign `open-design-v0.25.0`: 160 efectos y
+56 fichas de estilos, gramáticas y apoyo. Sus textos MIT y atribuciones upstream
+se conservan en [Motion Lab](docs/skills/syka-motion-references/references/vendor/motion-lab/LICENSE)
+y [Huashu](docs/skills/syka-motion-references/references/vendor/huashu-art-motion/LICENSE),
+junto a sus `SOURCES.md`. Syka dividió las fuentes para lectura paginada y añadió
+notas de adaptación al reloj y ciclo de vida nativos; no incorpora sus aplicaciones
+web ni presume revisión visual de todos los ejemplos. [Hashes y procedencia](docs/licenses/opendesign-motion-sources.json).
+
+## Tipografías incluidas
 
 Los binarios de fuentes conservan sus licencias; nombrar una familia en un preset no implica incluirla ni dar permiso para redistribuirla.
 
@@ -46,6 +57,9 @@ La integración y los controles de subtítulos no cambian esas licencias ni los 
 - **[Kenney](https://kenney.nl/assets)**: packs de sonidos bajo CC0. Se conservan [Interface](docs/resources/sounds/LICENSE-KENNEY-INTERFACE.txt), [UI](docs/resources/sounds/LICENSE-KENNEY-UI.txt), [Impact](docs/resources/sounds/LICENSE-KENNEY-IMPACT.txt), [Casino](docs/resources/sounds/LICENSE-KENNEY-CASINO.txt), [Sci-Fi](docs/resources/sounds/LICENSE-KENNEY-SCIFI.txt) y [RPG](docs/resources/sounds/LICENSE-KENNEY-RPG.txt), además del [NOTICE](docs/resources/sounds/NOTICE.md).
 - **[Cuelume](https://cuelume.dev)**: Copyright © 2026 Daniel Belyi, [MIT completo](docs/resources/sounds/LICENSE-CUELUME.txt), versión `0.2.8`, snapshot `2a1ba4fc1b67e8371c9f37e37a51e61353166335`. Sus recetas y renderer offline producen los 168 SFX de interfaz incluidos como WAV editables. [Procedencia, ajustes y hashes](docs/resources/sounds/sources/cuelume.json); el notice MIT también se conserva dentro de cada WAV. No se incorpora el agente `vercel-labs/fx`.
 - **Sonidos de Syka**: Copyright © 2026 Syka contributors, [MIT](docs/resources/sounds/LICENSE-SYKA.txt), según el aviso y la procedencia del catálogo.
+- **[Bencho](https://github.com/cabralorenzo/bencho)**: Copyright (c) 2026 Lorenzo Cabra, [MIT completo](docs/resources/sounds/LICENSE-BENCHO.txt), snapshot `30ab35a575eb83eed8f086a6893d4d6426f4fa91`. Se incluyen sólo los 24 sonidos del repositorio público, renderizados como WAV de 48 kHz/24 bits, con [procedencia y hashes](docs/resources/sounds/sources/bencho.json). Beacon y Plop se reconstruyen de Cuelume, Copyright (c) 2026 Daniel Belyi; se conservan [ambos avisos](docs/resources/sounds/CREDITS-BENCHO.md), también dentro de cada WAV. No se incluyen recursos Pro ni la identidad o fotografías de Bencho.
+- **[Earshot](https://github.com/Leonxlnx/earshot)**: Copyright (c) 2026 Leon Lin, [MIT completo](docs/resources/sounds/LICENSE-EARSHOT.txt). La biblioteca conserva 53 efectos de `925ebe56a1b755e5d354ab642bb8f344440cfa9c` y suma 26 de la versión 0.4.0, `591fa3e028032e6dce56620a20e932e35667e8d8`, con [procedencia por archivo](docs/resources/sounds/sources/earshot.json). Quince son recetas ajustadas a [fuentes CC0 acreditadas](docs/resources/sounds/CREDITS-EARSHOT-FIT.md). También se incluyen el preset `launch`, 72 tomas en 20 roles y la adaptación nativa de sus fórmulas de nivel/alineación: [licencia del kit](docs/skills/syka-local-audio/resources/earshot-launch/LICENSE.txt), [integración y límites](docs/skills/syka-local-audio/references/earshot-launch.md). No se distribuyen grabaciones originales ni modelos. El análisis neuronal requiere un entorno opcional independiente.
+- **[OpenDesign](https://github.com/nexu-io/open-design)**: cinco partituras procedurales de sus plantillas oficiales en `open-design-v0.25.0`, con [Apache-2.0 completo](docs/resources/sounds/LICENSE-OPENDESIGN.txt), [manifests y hashes](docs/resources/sounds/sources/opendesign.json). Se conservan los archivos originales y se añade metadato de catálogo; no incluye música de videos de terceros usados como referencia.
 
 Los SVG de marcas pertenecen a sus titulares. Las bibliotecas personales que un usuario conecta no pasan a ser recursos de Syka ni quedan cubiertas por la licencia del repositorio.
 
@@ -64,3 +78,8 @@ Estos créditos son un inventario de avisos identificados. El cierre de distribu
 ## Marcas
 
 Syka Studio, Diffusion Studio, HeyGen y las marcas del catálogo identifican a sus respectivos proyectos o titulares. La licencia de código no concede derechos de marca ni implica afiliación, patrocinio o aval.
+
+## Selector de modelos de Studio · 28/10/2026
+
+- **Reasoning Effort, AICSS**: implementación React/SVG adaptada a los controladores de Studio; geometría y tiempos conservados. [MIT completo](apps/web/syka-public/licenses/AICSS-ReasoningEffort.txt). Fuente, snapshot y hashes originales conservados en `apps/web/src/mirel-chat/features/agents/reasoning-effort/`.
+- **Pixel Card, React Bits / David Haz**: animación del relleno de esfuerzo y Fast; [MIT + Commons Clause completo](apps/web/syka-public/licenses/PixelCard-MIT-Commons-Clause.txt). No se presenta como MIT sin restricciones. Se usa dentro de la aplicación; no se ofrece como paquete de componentes. Avisos y procedencia originales conservados en `reasoning-effort/pixel-card/`.

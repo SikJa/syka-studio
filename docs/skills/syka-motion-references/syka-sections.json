@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": [
+        {
+          "name": "syka-motion-references",
+          "sectionId": "brief",
+          "file": "references/design-rules.md",
+          "when": "Si falta resolver tipografía, tarjetas o continuidad de una pieza nueva"
+        },
+        {
+          "name": "syka-motion-references",
+          "sectionId": "brief",
+          "file": "references/cinetic.md",
+          "when": "Sólo al elegir/adaptar técnicas Cinetic"
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": []
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": [
+        {
+          "name": "syka-edit-review",
+          "sectionId": "review",
+          "file": "references/motion-evidence.md",
+          "when": "Si existe un export autorizado que necesita diagnóstico de motion"
+        }
+      ]
+    }
+  ]
+}

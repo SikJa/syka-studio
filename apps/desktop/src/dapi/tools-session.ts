@@ -23,7 +23,7 @@ export type ToolRunner = (tool: GenericTool, args: unknown, signal: AbortSignal)
  * clients get instead is the same schema in 2020-12 (see `toolJsonSchemas`);
  * `tools/call` and the validation behind it stay the SDK's.
  */
-export function serveCatalog(session: McpServer, run: ToolRunner): void {
+export function serveCatalog(session: McpServer, run: ToolRunner, options: { inlineImages?: boolean } = {}): void {
   for (const tool of tools) {
     session.registerTool(
       tool.name,
@@ -34,7 +34,7 @@ export function serveCatalog(session: McpServer, run: ToolRunner): void {
           // or an old shell helper must not bypass the user's manual export.
           if(tool.name === 'export') throw new DapiError('unsupported','La exportación es manual. Usá el botón Exportar del editor; el agente debe guardar el proyecto editable y revisar con check/capture.');
           const result = await run(tool, args, extra.signal);
-          return toCallToolResult(await present(tool.name as ToolName, args, result));
+          return toCallToolResult(await present(tool.name as ToolName, args, result), options.inlineImages);
         } catch (error) {
           return toErrorResult(error);
         }
@@ -42,6 +42,10 @@ export function serveCatalog(session: McpServer, run: ToolRunner): void {
     );
   }
   session.server.setRequestHandler(ListToolsRequestSchema, () => ({
-    tools: tools.filter(tool=>tool.name !== 'export').map((tool) => ({ name: tool.name, title: tool.title, description: tool.description, ...toolJsonSchemas(tool) })),
+    tools: tools.filter(tool=>tool.name !== 'export').map((tool) => ({ name: tool.name, title: tool.title, description: tool.description, ...toolJsonSchemas(tool),
+      ...(ALWAYS_LOADED.has(tool.name) ? { _meta: { 'anthropic/alwaysLoad': true } } : {}) })),
   }));
 }
+
+/** The verification loop every edit ends with; Claude Code would otherwise defer them behind its tool search. */
+const ALWAYS_LOADED = new Set(['context', 'check', 'capture', 'gate']);

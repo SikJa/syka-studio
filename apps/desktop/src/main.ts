@@ -4,7 +4,8 @@
 
 import { isPackagedBuild } from './app-mode';
 import { loadNativeWindowStyle } from './native-window-style';
-import { app, BrowserWindow, dialog, nativeImage, session, shell } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, nativeImage, session, shell } from "electron";
+import { UiPreferences } from './ui-preferences';
 import { basename, dirname, isAbsolute, join, resolve } from "node:path";
 import { existsSync, mkdirSync } from "node:fs";
 import { mkdir, open, unlink } from "node:fs/promises";
@@ -15,6 +16,7 @@ import { tempPathFor, replaceFileAtomic } from "./atomic";
 import { DapiServer } from "./dapi/server";
 import { projectSourceRevision } from './dapi/source-revision';
 import { agentChatEndpoint, deleteProjectChats, startAgentChat, stopAgentChat, isAgentChatBusy } from "./agent-chat";
+import { deleteProjectWithCleanup } from './project-delete';
 import { agentNotice, allowedNoticeCommand, isNoticeWindow, registerNotifications, stopNotifications, trustedNoticeUrl } from './notifications';
 import { cliStatus, installCli, uninstallCli } from "./cli-install";
 import { applyMcp, mcpStatus } from "./mcp-install";
@@ -26,8 +28,9 @@ import { mainBridge } from "./main-manager";
 import { MAIN_CHANNELS } from "./main-channels";
 import { registerSykaAgentSettings } from "./syka-agent-settings";
 import { registerSykaDependencies, ensurePackagedTools, dependenciesBusy } from "./syka-dependencies";
-import { runtimeDirectory } from "./runtime-paths";
+import { applyLaunchRoots, runtimeDirectory } from "./runtime-paths";
 import { registerSykaResources } from "./syka-resources";
+import { registerDiagnostics } from "./diagnostics";
 import { registerSykaFonts } from "./syka-fonts";
 import { isGroqTranscribing, registerSykaGroq } from "./syka-groq";
 import { hasActiveScreenCaptures, registerScreenCapture } from './screen-capture';
@@ -47,6 +50,7 @@ import {
   defaultRoot,
   deleteProject,
   duplicateProject,
+  createProjectTrial,
   getProject,
   initProject,
   pickFolder,
@@ -94,10 +98,25 @@ const squirrelLaunch = handleSquirrelEvent();
 
 const oldProductData = join(app.getPath('appData'), 'Syka Clips');
 const legacyUserData = existsSync(oldProductData) ? oldProductData : app.getPath("userData");
+if (isPackagedBuild()) applyLaunchRoots(join(app.getPath('appData'), 'Syka Studio', 'launch-roots.json'), process.env);
 app.setName("Syka Studio");
 app.setAppUserModelId("syka.studio.editor");
 const runtimeRoot = runtimeDirectory({ packaged: isPackagedBuild(), appPath: app.getAppPath(), userData: legacyUserData, override: process.env.SYKA_RUNTIME_ROOT });
 process.env.SYKA_RUNTIME_ROOT = runtimeRoot;
+let uiPreferences: UiPreferences | undefined;
+ipcMain.on('syka:ui-preferences', (event, request) => {
+  try {
+    const owner = BrowserWindow.fromWebContents(event.sender);
+    const mainUrl = mainWindow?.webContents.getURL().split('#')[0];
+    const sameEditor = !!owner && !!mainUrl && event.sender.getURL().split('#')[0] === mainUrl;
+    const notice = isNoticeWindow(event.sender) && trustedNoticeUrl(event.sender.getURL());
+    if ((!mainWindow || event.sender !== mainWindow.webContents) && !sameEditor && !notice || event.senderFrame !== event.sender.mainFrame) throw Error('Ventana no autorizada.');
+    uiPreferences ??= new UiPreferences(join(runtimeRoot, 'ui-preferences.json'));
+    if (request?.action === 'get') event.returnValue = { ok: true, value: uiPreferences.get(request.key) };
+    else if (request?.action === 'set') { uiPreferences.set(request.key, request.value); event.returnValue = { ok: true }; }
+    else throw Error('Acción desconocida.');
+  } catch { event.returnValue = { ok: false, error: 'No se pudieron guardar o recuperar las preferencias de Syka. Se conservaron los datos existentes.' }; }
+});
 const permissionStore = new PermissionStore(join(runtimeRoot, 'permissions.json'));
 for (const name of ["profile", "session", "temp", "logs"]) mkdirSync(join(runtimeRoot, name), { recursive: true });
 app.setPath("userData", join(runtimeRoot, "profile"));
@@ -151,14 +170,14 @@ const openWrites = new Map<string, { handle: FileHandle; path: string; temp: str
 let mainWindow: BrowserWindow | null = null;
 let stopUpdates = () => {};
 let rendererExporting = false;
-let previewWindow: BrowserWindow | null = null;
+const previewWindows = new Set<BrowserWindow>();
 const chatWindows = new Set<BrowserWindow>();
 function isTrustedWindow(contents: Electron.WebContents | null) {
   return !!contents && (contents === mainWindow?.webContents || [...chatWindows].some(window => !window.isDestroyed() && window.webContents === contents));
 }
 mainBridge.setRequestGuard((event, request) => {
   if (isNoticeWindow(event.sender)) return event.senderFrame === event.sender.mainFrame && trustedNoticeUrl(event.senderFrame?.url || '') && allowedNoticeCommand(request.channel, request.data);
-  if (previewWindow && !previewWindow.isDestroyed() && event.sender === previewWindow.webContents) {
+  if ([...previewWindows].some(window => !window.isDestroyed() && event.sender === window.webContents)) {
     const expected = isPackagedBuild() ? pathToFileURL(join(app.getAppPath(), 'web', 'preview-worker.html')).href
       : new URL('/preview-worker.html', DEV_URL).href;
     return event.senderFrame === event.sender.mainFrame && event.senderFrame?.url === expected;
@@ -182,6 +201,7 @@ registerSykaAgentSettings(mainBridge);
 registerSykaDependencies(mainBridge, async () => openWrites.size > 0 || rendererExporting || dapi.isBusy() || hasActiveScreenCaptures() || isGroqTranscribing() || hasActiveVideoImports() || await isAgentChatBusy());
 mainBridge.handle(MAIN_CHANNELS.SYKA_ACTIVITY, request => { rendererExporting = request?.exporting === true; });
 registerSykaResources(mainBridge);
+registerDiagnostics(mainBridge);
 registerSykaFonts(mainBridge);
 registerSykaGlossary(mainBridge);
 registerVideoImport(mainBridge);
@@ -232,7 +252,7 @@ const dapi = new DapiServer({
     preload: join(app.getAppPath(), 'dist', 'preload.js'),
     pagePath: join(app.getAppPath(), 'web', 'preview-worker.html'),
     devUrl: isPackagedBuild() ? undefined : DEV_URL,
-    trustWindow: window => { previewWindow = window; },
+    trustWindow: (window, removed) => { if (removed) previewWindows.delete(removed); if (window) previewWindows.add(window); },
     observeWindow: captureConsole,
   },
 });
@@ -487,9 +507,10 @@ if (squirrelLaunch) {
   mainBridge.handle(MAIN_CHANNELS.PROJECTS_CREATE, ({ root, displayName }) =>
     createProject(root, displayName),
   );
-  mainBridge.handle(MAIN_CHANNELS.PROJECTS_RENAME, ({ dir, displayName }) => renameProject(dir, displayName));
+  mainBridge.handle(MAIN_CHANNELS.PROJECTS_RENAME, ({ dir, displayName, keepFolder }) => renameProject(dir, displayName, keepFolder === true));
   mainBridge.handle(MAIN_CHANNELS.PROJECTS_DUPLICATE, ({ dir }) => duplicateProject(dir));
-  mainBridge.handle(MAIN_CHANNELS.PROJECTS_DELETE, ({ dir }) => deleteProject(dir).then(deleteProjectChats));
+  mainBridge.handle(MAIN_CHANNELS.PROJECTS_TRIAL, ({ dir }) => createProjectTrial(dir));
+  mainBridge.handle(MAIN_CHANNELS.PROJECTS_DELETE, ({ dir }) => deleteProjectWithCleanup(dir, {trash: deleteProject, cleanupChats: deleteProjectChats}));
   mainBridge.handle(MAIN_CHANNELS.PROJECTS_COMPILE, ({ dir }) => compileProject(dir));
   mainBridge.handle(MAIN_CHANNELS.PROJECTS_SOURCE_REVISION, ({ dir }) => projectSourceRevision(dir));
   mainBridge.handle(MAIN_CHANNELS.PROJECTS_WRITE, ({ dir, edits, historyGroup }) => writeProject(dir, edits, historyGroup));
@@ -501,7 +522,12 @@ if (squirrelLaunch) {
   );
   mainBridge.handle(MAIN_CHANNELS.PROJECTS_UNWATCH, ({ dir }) => unwatchProject(dir));
   mainBridge.handle(MAIN_CHANNELS.PROJECTS_MANIFEST_READ, ({ dir }) => readManifest(dir));
-  mainBridge.handle(MAIN_CHANNELS.PROJECTS_MANIFEST_WRITE, ({ dir, manifest }) => writeManifest(dir, manifest));
+  mainBridge.handle(MAIN_CHANNELS.PROJECTS_MANIFEST_WRITE, ({ dir, manifest, recordHistory }) => writeManifest(dir, manifest, { recordHistory }));
+  mainBridge.handle(MAIN_CHANNELS.ASSETS_PICK_FOLDER, async () => {
+    const options: Electron.OpenDialogOptions = { title: "Importar carpeta de medios", properties: ["openDirectory"] };
+    const result = mainWindow ? await dialog.showOpenDialog(mainWindow, options) : await dialog.showOpenDialog(options);
+    return result.canceled ? null : result.filePaths[0] ?? null;
+  });
   mainBridge.handle(MAIN_CHANNELS.PROJECTS_CONFIG_READ, ({ dir }) => readConfig(dir));
   mainBridge.handle(MAIN_CHANNELS.PROJECTS_CONFIG_WRITE, ({ dir, config }) => writeConfig(dir, config));
   mainBridge.handle(MAIN_CHANNELS.PROJECTS_FS_LIST, ({ dir, source }) => listEntries(dir, source));
@@ -615,7 +641,10 @@ if (squirrelLaunch) {
     dapi.start();
     // The chat's sessions get the MCP server by URL; `?client=chat` keeps the
     // app from switching into remote-controlled mode for them (see dapi/http).
-    Promise.all([dapi.mcpUrl(), ensurePackagedTools()]).then(([url]) =>
+    // Managed tool paths are already in the host environment. Downloads must
+    // not hold the model catalog/chat hostage on first run or an offline PC.
+    void ensurePackagedTools();
+    dapi.mcpUrl().then((url) =>
       startAgentChat({
         onNotice: agentNotice,
         docsDir: docsDir(),

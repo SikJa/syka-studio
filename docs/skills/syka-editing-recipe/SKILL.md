@@ -5,7 +5,21 @@ description: Resolver y conservar una receta de edición con decisiones acordada
 
 # Una receta que el próximo chat pueda continuar
 
-Obtené contexto del editor y leé `syka_editing_recipe read`. El pedido actual manda sobre decisiones anteriores. Para un ajuste puntual aplicá lo pedido; no armes un brief ceremonial.
+## Contract
+
+Syka entrega una composición audiovisual nativa editable dentro del proyecto. El pedido actual manda: conservá originales, voz, estilo/geometría aprobados y edición nativa. Un plan sólo es entrega si se pidió plan; al editar, aplicá la composición y comprobala. Un fallo deja verificaciones pendientes o bloqueadas, nunca habilita otra app, juego, web o motor como sustituto. Exportá sólo ante pedido explícito.
+
+La receta conserva decisiones y referencias del proyecto; no es autoridad por encima del pedido actual ni entrenamiento. Separá respuesta del usuario, decisión propuesta y resultado revisado; guardá con la revisión leída.
+
+Leé sólo la fase necesaria. Las dependencias del índice son condicionales, nunca lecturas recursivas. Una corrección puntual reutiliza decisiones vigentes y su source; no repite brief, investigación ni consulta de producción nueva.
+
+## Brief
+
+Para una corrección usá syka_editing_recipe action:summary sólo si necesitás decisiones no presentes en contexto. Para una edición amplia obtené contexto y la revisión actual; resolvé únicamente objetivo/formato/material/dirección faltantes. Reutilizá acuerdos, sin onboarding nuevo.
+
+## Build
+
+Obtené contexto del editor y leé `syka_editing_recipe read` sólo cuando necesites la receta completa para guardarla. El pedido actual manda sobre decisiones anteriores. Para un ajuste puntual aplicá lo pedido; no armes un brief ceremonial.
 
 En una edición amplia, resolvé objetivo, formato, material a conservar y dirección visual. Reutilizá respuestas previas. Preguntá solo la decisión que cambia el resultado: «¿De esta referencia querés el ritmo o también las tarjetas?», «¿Conservamos toda la voz?». No hagas que el usuario complete un formulario ni esperes una aprobación para cada cambio reversible.
 
@@ -28,7 +42,7 @@ Guardá la receta con `syka_editing_recipe save`, usando la revisión leída y e
 
 Separá el pedido del usuario, tus decisiones de este ensayo y los resultados revisados. Por ejemplo: «Pedido: conservar la voz», «Decisión del ensayo: mostrar la comparación después de la frase», «Revisión del usuario: le gustó la prueba; pidió más contraste». Una devolución positiva sirve para continuar desde ese resultado, pero no convierte cada fuente, color o duración en una regla para otros proyectos.
 
-## Referencia → decisiones → componente → revisión
+### Referencia → decisiones → componente → revisión
 
 1. Analizá material con `syka-motion-reference`: separar aspecto, movimiento, relato y audio. Indicá qué observaste y qué inferiste.
 2. Convertí eso en decisiones concretas: geometría/jerarquía, materiales, acentos, estados antes/después, cue temporal y lectura. Resolver el diseño antes de animar evita tarjetas vacías.
@@ -45,3 +59,7 @@ Para reutilizar entre proyectos, personalizá una base mediante `syka_skills cre
 Inspiración de proceso: contratos de storyboard, design-spec, memoria y review de [HyperFrames](https://github.com/heygen-com/hyperframes). Adaptación original a herramientas Syka; no ejecuta ni renderiza HyperFrames ni modifica pesos del modelo.
 
 Para dirección visual y prompts, leé `syka-visual-direction`. Para motion/animación sustancial, leé también `syka-motion-direction` y su `references/production-prompt.md`: guardá `production-prompt.md` con sus seis bloques adaptados al proyecto. Guardá `frame.md` y el storyboard/beat plan como archivos del proyecto y enlazalos, junto con ese prompt, en `references`; anotá decisiones resumidas en `decisions`. Esta ruta usa el contrato de receta existente y sus revisiones, sin crear otro perfil ni cambiar el esquema. Un cambio de dirección actualiza esos archivos preservando lo aprobado. Las notas del lienzo aportan evidencia de dónde retocar; no equivalen a aprobación de todas las referencias.
+
+## Review
+
+Enlazá observación, corrección y evidencia reales del resultado; un build verde no aprueba diseño. Conservá referencias y decisiones que siguen vigentes. Antes de convertir una receta en skill personal, respetá el alcance elegido por el usuario y la revisión/backup de esa skill.

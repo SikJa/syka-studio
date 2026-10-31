@@ -9,7 +9,7 @@
  * controller itself never paints.
  */
 
-import { getTimelineView } from '@diffusionstudio/runtime';
+import { getLocalWindow, getTimelineView } from '@diffusionstudio/runtime';
 
 import { assert, clamp } from '@/utils';
 import { getDocumentEditor } from '@/engine/editor';
@@ -29,13 +29,13 @@ import {
 } from './view';
 import {
 	SCROLL_X_SENSITIVITY,
-	TIMELINE_RESOLUTION_RANGE,
 	WHEEL_LINE_HEIGHT,
 	WHEEL_PAGE_HEIGHT,
 	ZOOM_DELTA_CLAMP,
 	ZOOM_SENSITIVITY,
 } from './config';
 import { getFrameRate } from './view';
+import { clampTimelineScroll, fitTimeline, zoomTimeline } from './navigation';
 
 import type { Entity, World } from 'koota';
 
@@ -55,6 +55,11 @@ export function createTimelineController(world: World) {
 	// How far the row labels have been scrolled sideways, in pixels. A DOM
 	// concern rather than the scene's: it is the same for every scene.
 	let layerScrollX = 0;
+	let pan: { id: number; x: number; y: number } | null = null;
+	const sceneEnd = (scene: Entity) => getLocalWindow(scene).out;
+	const width = () => surface.layout.width;
+	const panTo = (scene: Entity, frames: number) => setScrollX(world, scene,
+		clampTimelineScroll(frames, getResolution(world, scene), sceneEnd(scene), width()));
 
 	/** Runs `action` against the scene on show, if there is one. */
 	const withScene = (action: (scene: Entity) => void): void => {
@@ -95,7 +100,7 @@ export function createTimelineController(world: World) {
 
 	const resize = (): void => {
 		applyResize();
-		withScene((scene) => updateTimelineTransform(world, scene));
+		withScene((scene) => { panTo(scene, getScrollX(world, scene)); updateTimelineTransform(world, scene); });
 		timelineSystem(world);
 	};
 
@@ -147,18 +152,15 @@ export function createTimelineController(world: World) {
 				const anchor = event.clientX - (rect?.left ?? 0);
 
 				const delta = clamp(deltaY, -ZOOM_DELTA_CLAMP, ZOOM_DELTA_CLAMP);
-				const next = clamp(
-					resolution * Math.exp(-delta * ZOOM_SENSITIVITY),
-					1 / TIMELINE_RESOLUTION_RANGE[1],
-					1 / TIMELINE_RESOLUTION_RANGE[0],
-				);
+				const next = zoomTimeline(resolution, scrollX, Math.exp(-delta * ZOOM_SENSITIVITY), anchor, width(), sceneEnd(scene));
 
 				// The frame under the pointer stays under it: the scroll takes
 				// up whatever the change in scale moved it by.
-				setResolution(world, scene, next);
-				setScrollX(world, scene, scrollX + anchor / resolution - anchor / next);
-			} else if (Math.abs(deltaX) > Math.abs(deltaY)) {
-				setScrollX(world, scene, scrollX + (deltaX * SCROLL_X_SENSITIVITY) / resolution);
+				setResolution(world, scene, next.resolution);
+				setScrollX(world, scene, next.scrollX);
+			} else if (event.shiftKey || Math.abs(deltaX) > Math.abs(deltaY)) {
+				const delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
+				panTo(scene, scrollX + (delta * SCROLL_X_SENSITIVITY) / resolution);
 			} else {
 				setScrollY(world, scene, getScrollY(world, scene) + deltaY);
 				applyScroll();
@@ -167,6 +169,48 @@ export function createTimelineController(world: World) {
 			updateTimelineTransform(world, scene);
 			reportView(scene);
 		});
+	};
+
+	const fit = (): void => withScene(scene => {
+		const next = fitTimeline(sceneEnd(scene), width());
+		setResolution(world, scene, next.resolution);
+		setScrollX(world, scene, next.scrollX);
+		setScrollY(world, scene, 0);
+		applyScroll();
+		updateTimelineTransform(world, scene);
+		reportView(scene);
+	});
+
+	const zoomBy = (factor: number): void => withScene(scene => {
+		const next = zoomTimeline(getResolution(world, scene), getScrollX(world, scene), factor, width() / 2, width(), sceneEnd(scene));
+		setResolution(world, scene, next.resolution);
+		setScrollX(world, scene, next.scrollX);
+		updateTimelineTransform(world, scene);
+		reportView(scene);
+	});
+
+	const pointerDown = (event: PointerEvent): void => {
+		if (event.button !== 1) { pointer.down(event); return; }
+		event.preventDefault();
+		pan = { id: event.pointerId, x: event.clientX, y: event.clientY };
+		surface.canvas?.setPointerCapture(event.pointerId);
+	};
+	const pointerMove = (event: PointerEvent): void => {
+		if (!pan) { pointer.move(event); return; }
+		if (pan.id !== event.pointerId) return;
+		const dx = event.clientX - pan.x, dy = event.clientY - pan.y;
+		pan.x = event.clientX; pan.y = event.clientY;
+		withScene(scene => {
+			panTo(scene, getScrollX(world, scene) - dx / getResolution(world, scene));
+			setScrollY(world, scene, getScrollY(world, scene) - dy);
+			applyScroll(); updateTimelineTransform(world, scene); reportView(scene);
+		});
+	};
+	const pointerUp = (event: PointerEvent): void => {
+		if (!pan) { pointer.up(event); return; }
+		if (pan.id !== event.pointerId) return;
+		if (surface.canvas?.hasPointerCapture(event.pointerId)) surface.canvas.releasePointerCapture(event.pointerId);
+		pan = null;
 	};
 
 	/** The wheel over the row labels, which scroll but do not zoom. */
@@ -227,8 +271,8 @@ export function createTimelineController(world: World) {
 
 		observer.observe(parent);
 
-		canvas.addEventListener('wheel', handleWheel);
-		canvas.addEventListener('pointerdown', pointer.down, { passive: true });
+		canvas.addEventListener('wheel', handleWheel, { passive: false });
+		canvas.addEventListener('pointerdown', pointerDown);
 
 		applyResize();
 	};
@@ -237,7 +281,8 @@ export function createTimelineController(world: World) {
 		observer.disconnect();
 
 		surface.canvas?.removeEventListener('wheel', handleWheel);
-		surface.canvas?.removeEventListener('pointerdown', pointer.down);
+		surface.canvas?.removeEventListener('pointerdown', pointerDown);
+		pan = null;
 
 		// Dropped rather than kept stale: the draw pass no-ops until another
 		// canvas is attached.
@@ -263,16 +308,19 @@ export function createTimelineController(world: World) {
 		layerObserver.observe(layers);
 
 		// On the body, so a drag that leaves the canvas still finishes.
-		document.body.addEventListener('pointermove', pointer.move, { passive: true });
-		document.body.addEventListener('pointerup', pointer.up, { passive: true });
+		document.body.addEventListener('pointermove', pointerMove, { passive: true });
+		document.body.addEventListener('pointerup', pointerUp, { passive: true });
+		document.body.addEventListener('pointercancel', pointerUp, { passive: true });
 	};
 
 	const unmount = (): void => {
 		layerObserver.disconnect();
 		surface.pointer = null;
 
-		document.body.removeEventListener('pointermove', pointer.move);
-		document.body.removeEventListener('pointerup', pointer.up);
+		document.body.removeEventListener('pointermove', pointerMove);
+		document.body.removeEventListener('pointerup', pointerUp);
+		document.body.removeEventListener('pointercancel', pointerUp);
+		pan = null;
 	};
 
 	return {
@@ -285,6 +333,8 @@ export function createTimelineController(world: World) {
 		clientToFrame,
 		clientToTime,
 		setMinimized,
+		fit,
+		zoomBy,
 	};
 }
 

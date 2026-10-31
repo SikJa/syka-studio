@@ -5,21 +5,33 @@ description: Editar videos en Syka con montaje, recursos y comprobaciones propor
 
 # Edición con Syka
 
+## Contract
+
+Syka entrega una composición audiovisual nativa editable dentro del proyecto. El pedido actual manda: conservá originales, voz, estilo/geometría aprobados y edición nativa. Un plan sólo es entrega si se pidió plan; al editar, aplicá la composición y comprobala. Un fallo deja verificaciones pendientes o bloqueadas, nunca habilita otra app, juego, web o motor como sustituto. Exportá sólo ante pedido explícito.
+
+Ejecutá el cambio reversible autorizado en la composición activa y su historial. Una receta vacía no bloquea editar. Un saludo no dispara inspección ni lectura de skills.
+
+Leé sólo la fase necesaria. Las dependencias del índice son condicionales, nunca lecturas recursivas. Una corrección puntual reutiliza decisiones vigentes y su source; no repite brief, investigación ni consulta de producción nueva.
+
+## Brief
+
 La fuente JSX es el documento compartido con timeline e inspector. Leé skills/editor.md y la referencia del motor mediante syka_read_reference cuando necesites sintaxis. No uses APIs Remotion en esta composición.
 
-## Criterio de trabajo
+## Build
+
+### Criterio de trabajo
 
 - Empezá por contexto, fuente, selección y material real. Respetá el alcance del pedido y la composición visible.
-- Leé la receta persistente mediante `syka_editing_recipe read`. Reutilizá decisiones acordadas; para una edición amplia consultá `syka-editing-recipe` y conservá referencias/criterios reales. El pedido actual tiene prioridad y una receta vacía no bloquea editar.
+- Reutilizá decisiones acordadas. Si el contexto no aporta una decisión necesaria, consultá `syka_editing_recipe action:summary`; no releas la receta para una corrección mecánica ya resuelta. Para una edición amplia consultá la fase pertinente de `syka-editing-recipe` y conservá referencias/criterios reales. El pedido actual tiene prioridad y una receta vacía no bloquea editar.
 - Para una edición amplia, guardá un brief corto con objetivo, formato, material, estilo y decisiones. Para un ajuste pequeño, resolvelo directamente.
 - Organizá primero el montaje; luego sumá los textos, recursos y audio que ayuden a entenderlo. Separá capas con nombres útiles y sequences cuando faciliten editar.
 - No deduzcas un corte solo de un silencio: puede ser una pausa, demostración o reacción. Cuando haya ambigüedad importante, proponé alternativas; el pedido de ejecutar una edición autoriza los cambios reversibles que necesita.
 - Usá syka_resources para encontrar logos SVG, audio y referencias en las carpetas conectadas. Importá los archivos elegidos mediante assets. Un video de referencia no es una plantilla editable.
 - Conservá originales. Para fuente existente, usá lectura con hash, edición y Deshacer compartido. Crear scripts/componentes con shell es válido; esos archivos no entran automáticamente en el historial de fuente.
 
-## Especialidades
+### Especialidades
 
-Cargá solo lo necesario, descubriendo su carpeta con syka_skills list:
+Elegí por intención y decisiones vigentes; descubrí la especialidad con syka_skills list y leé sólo su fase necesaria. El índice ampliado está en references/task-modules.md:
 
 - syka-captions: transcripción, agrupación legible y sincronía.
 - syka-local-audio: sonido local, síntesis y mezcla.
@@ -32,7 +44,9 @@ Cargá solo lo necesario, descubriendo su carpeta con syka_skills list:
 - syka-design-import: diseño/export de Figma o styleframe a capas editables.
 - syka-motion-transitions: fluidez de transitions-dev adaptada al reloj nativo.
 
-## Resultado
+## Review
+
+### Resultado
 
 Comprobá el mayor riesgo del cambio: límites si cortaste, lectura si agregaste texto, duración y mezcla si agregaste audio. Usá check y capturas pertinentes; una captura no demuestra calidad sonora. No exportes todo para cada ajuste. Explicá brevemente lo aplicado, la evidencia y cualquier pendiente real.
 

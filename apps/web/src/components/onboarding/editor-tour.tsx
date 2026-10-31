@@ -1,8 +1,12 @@
-import { Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js';
+import { Show, createEffect, createSignal, onCleanup, onMount, untrack } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { t } from '@/i18n';
-import { EDITOR_TOUR_EVENT, EDITOR_TOUR_STEPS, placeTourCard, readTourProgress, resolveEditorTourTarget, saveTourProgress, setEditorTourVisible, type TourRect } from './editor-tour-model';
+import { visualPickMode } from '@/agent-chat/visual-target-state';
+import { sidebarTab, setSidebarTab, type SidebarTab } from '@/agent-chat/store';
+import { chatFloating, fullscreenChatMount } from '@/agent-chat/chat-presentation';
+import { EDITOR_TOUR_EVENT, EDITOR_TOUR_STEPS, placeTourCard, readTourProgress, resolveEditorTourTarget, saveTourProgress, setEditorTourVisible, setLibraryTourPreview, type TourRect } from './editor-tour-model';
 import './editor-tour.css';
+import { EditorTourDragDemo } from './editor-tour-drag-demo';
 
 let activeHost: symbol | null = null;
 const visible = (element: HTMLElement) => {
@@ -20,10 +24,36 @@ export function EditorTour(props: { menuAnchor: () => HTMLElement | undefined })
   const [rect, setRect] = createSignal<TourRect | null>(null);
   const [position, setPosition] = createSignal({ x: 12, y: 44 });
   const step = () => EDITOR_TOUR_STEPS[stepIndex()]!;
+  // Contextual selection help owns the screen until the user exits selection.
+  // Keep the current tour step so it can resume without dismissing the guide.
+  const suspended = () => visualPickMode() !== null;
   let card: HTMLDivElement | undefined, focusBefore: HTMLElement | null = null, lastComposer: Element | null = null;
   let closeTimer: ReturnType<typeof setTimeout> | undefined, focusTimer: ReturnType<typeof setTimeout> | undefined;
   let lastRect = '', lastTargetStep = '';
-  createEffect(() => { const shown = phase() !== 'closed'; if (activeHost === host) setEditorTourVisible(shown); });
+  let previousSidebarTab: SidebarTab | undefined, preparedSidebarTab: SidebarTab | undefined;
+  const prepareSidebar = (tab: SidebarTab) => {
+    // An already visible floating/fullscreen chat keeps its placement and draft.
+    if (tab === 'chat' && (chatFloating() || fullscreenChatMount())) return;
+    preparedSidebarTab = tab;
+    setSidebarTab(tab);
+  };
+  const restoreSidebar = () => {
+    if (previousSidebarTab && preparedSidebarTab && sidebarTab() === preparedSidebarTab) setSidebarTab(previousSidebarTab);
+    previousSidebarTab = undefined; preparedSidebarTab = undefined;
+  };
+  createEffect(() => { const shown = phase() !== 'closed' && !suspended(); if (activeHost === host) setEditorTourVisible(shown); });
+  // A fresh project opens Assets: reveal the real controls before measuring them.
+  // Only step changes trigger preparation; normal tab clicks remain usable.
+  createEffect(() => {
+    const active = phase() === 'active' && !suspended(), id = step().id;
+    if (!active || activeHost !== host) return;
+    untrack(() => {
+      if (['chat', 'model', 'voice', 'library'].includes(id)) prepareSidebar('chat');
+      else if (id === 'assets') prepareSidebar('assets');
+    });
+  });
+  // The step owns its preparation, independently of the animation's mount/replay.
+  createEffect(() => { const showLibrary = phase() === 'active' && !suspended() && step().id === 'library'; if (activeHost === host) setLibraryTourPreview(showLibrary); });
   const target = () => {
     const current = step();
     const focusedComposer = document.activeElement?.closest('.agent-composer') ?? lastComposer;
@@ -31,7 +61,7 @@ export function EditorTour(props: { menuAnchor: () => HTMLElement | undefined })
     return resolveEditorTourTarget(current, selector => document.querySelectorAll<HTMLElement>(selector), visible, priority);
   };
   const measure = () => {
-    if (phase() !== 'active') return;
+    if (phase() !== 'active' || suspended()) return;
     const element = target(), bounds = element?.getBoundingClientRect();
     // The real chat is briefly hidden while a noninteractive clone animates.
     // Keep the previous cue instead of announcing a missing control mid-flight.
@@ -47,19 +77,21 @@ export function EditorTour(props: { menuAnchor: () => HTMLElement | undefined })
   const finish = (completed = false) => {
     saveTourProgress(localStorage, completed ? 'completed' : 'dismissed', stepIndex());
     setPhase('closing');
+    restoreSidebar();
     clearTimeout(focusTimer); clearTimeout(closeTimer);
     closeTimer = setTimeout(() => { setPhase('closed'); setRect(null); }, 350);
     const fallback = props.menuAnchor();
     const previous = focusBefore?.isConnected && focusBefore !== document.body && focusBefore !== document.documentElement && visible(focusBefore) ? focusBefore : fallback;
     if (card?.contains(document.activeElement)) previous?.focus({ preventScroll: true });
   };
-  const start = () => {
+  const start = (index = 0) => {
     if (!props.menuAnchor() || !visible(props.menuAnchor()!)) return;
     if (activeHost && activeHost !== host) return;
     clearTimeout(closeTimer); clearTimeout(focusTimer);
+    if (phase() !== 'active') { previousSidebarTab = sidebarTab(); preparedSidebarTab = undefined; }
     focusBefore = document.activeElement instanceof HTMLElement ? document.activeElement : props.menuAnchor() ?? null;
-    setStepIndex(0); setPhase('active'); lastRect = ''; measure();
-    focusTimer = setTimeout(() => { measure(); card?.focus({ preventScroll: true }); }, 160);
+    setStepIndex(index); setPhase('active'); lastRect = ''; measure();
+    focusTimer = setTimeout(() => { if (!suspended()) { measure(); card?.focus({ preventScroll: true }); } }, 160);
   };
   const move = (delta: number) => {
     if (stepIndex() + delta >= EDITOR_TOUR_STEPS.length) { finish(true); return; }
@@ -68,13 +100,16 @@ export function EditorTour(props: { menuAnchor: () => HTMLElement | undefined })
   onMount(() => {
     if (activeHost) return;
     activeHost = host;
-    const handleStart = () => start();
+    const handleStart = (event: Event) => {
+      const requested = (event as CustomEvent<{ stepId?: string }>).detail?.stepId;
+      start(Math.max(0, EDITOR_TOUR_STEPS.findIndex(item => item.id === requested)));
+    };
     const handleFocus = (event: FocusEvent) => {
       const composer = event.target instanceof Element ? event.target.closest('.agent-composer') : null;
       if (composer && !composer.closest('[inert], [data-chat-transition-clone]')) lastComposer = composer;
     };
     const handleKey = (event: KeyboardEvent) => {
-      if (phase() !== 'active' || event.isComposing) return;
+      if (phase() !== 'active' || suspended() || event.isComposing) return;
       if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); finish(); }
       else if (card?.contains(document.activeElement) && (event.key === 'ArrowRight' || event.key === 'ArrowLeft')) { event.preventDefault(); event.stopPropagation(); move(event.key === 'ArrowRight' ? 1 : -1); }
     };
@@ -87,7 +122,7 @@ export function EditorTour(props: { menuAnchor: () => HTMLElement | undefined })
     const tracker = setInterval(measure, 180);
     const invitation = setTimeout(() => { if (phase() === 'closed' && readTourProgress(localStorage).status === 'new') setPhase('invite'); }, 1200);
     onCleanup(() => {
-      if (activeHost === host) { activeHost = null; setEditorTourVisible(false); }
+      if (activeHost === host) { restoreSidebar(); activeHost = null; setEditorTourVisible(false); setLibraryTourPreview(false); }
       window.removeEventListener(EDITOR_TOUR_EVENT, handleStart); window.removeEventListener('keydown', handleKey, true);
       window.removeEventListener('focusin', handleFocus);
       window.removeEventListener('resize', measure); window.removeEventListener('scroll', measure, true);
@@ -95,20 +130,21 @@ export function EditorTour(props: { menuAnchor: () => HTMLElement | undefined })
     });
   });
   return <Portal>
-    <Show when={phase() === 'invite'}>
+    <Show when={phase() === 'invite' && !suspended()}>
       <aside class="syka-tour-invitation t-panel-slide" data-open="true" aria-label="Conocé el editor">
         <strong>¿Te muestro el editor?</strong>
         <p>Un recorrido corto por las herramientas, sin cambiar tu proyecto.</p>
-        <div><button type="button" onClick={() => { saveTourProgress(localStorage, 'dismissed', 0); setPhase('closed'); }}>Ahora no</button><button type="button" class="syka-tour-primary" onClick={start}>Ver recorrido</button></div>
+        <div><button type="button" onClick={() => { saveTourProgress(localStorage, 'dismissed', 0); setPhase('closed'); }}>Ahora no</button><button type="button" class="syka-tour-primary" onClick={() => start()}>Ver recorrido</button></div>
       </aside>
     </Show>
-    <Show when={phase() === 'active' || phase() === 'closing'}>
+    <Show when={(phase() === 'active' || phase() === 'closing') && !suspended()}>
       <Show when={rect()}>{box => <div aria-hidden="true" class="syka-tour-spotlight" data-open={phase() === 'active'} style={{ transform: `translate(${box().x}px,${box().y}px)`, width: `${box().width}px`, height: `${box().height}px` }} />}</Show>
       <div class="syka-tour-position" style={{ transform: `translate(${position().x}px,${position().y}px)` }}>
         <div ref={card} role="dialog" aria-modal="false" aria-hidden={phase() === 'closing' ? true : undefined} aria-label="Recorrido del editor" aria-describedby="syka-tour-copy" tabIndex={-1} class="syka-tour-card t-panel-slide" data-open={phase() === 'active'}>
           <header><span>CONOCÉ SYKA <b>{stepIndex() + 1} / {EDITOR_TOUR_STEPS.length}</b></span><button type="button" aria-label="Cerrar recorrido" title="Cerrar · Esc" onClick={() => finish()}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg></button></header>
           <div aria-live="polite" aria-atomic="true"><h2>{t(step().title)}</h2>
           <p id="syka-tour-copy">{t(step().body)}</p></div>
+          <Show when={step().id === 'library' && phase() === 'active'}><EditorTourDragDemo prepareDestination={destination => { if (destination === 'chat') prepareSidebar('chat'); }} /></Show>
           <Show when={!rect()}><small class="syka-tour-muted">Esta zona está oculta en tu vista. Podés continuar y abrirla después.</small></Show>
           <Show when={step().shortcut}><small class="syka-tour-shortcut">{t(step().shortcut)}</small></Show>
           <footer><button type="button" class="syka-tour-skip" onClick={() => finish()}>Omitir</button><div><button type="button" disabled={stepIndex() === 0} onClick={() => move(-1)}>Atrás</button><button type="button" class="syka-tour-primary" onClick={() => move(1)}>{stepIndex() === EDITOR_TOUR_STEPS.length - 1 ? 'Terminar' : 'Siguiente'}</button></div></footer>

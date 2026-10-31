@@ -1,0 +1,50 @@
+name: Bump Homebrew cask
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  bump-cask:
+    if: ${{ !github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compute version and checksum
+        id: info
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          # On workflow_dispatch there is no release event; fall back to the latest release.
+          if [ -z "$TAG" ]; then
+            TAG=$(curl -sf https://api.github.com/repos/diffusionstudio/editor/releases/latest | jq -r .tag_name)
+          fi
+          # Draft releases carry a placeholder tag (untagged-<hash>); never write that into the cask.
+          if ! echo "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Refusing to bump cask: '$TAG' is not a vX.Y.Z tag" >&2
+            exit 1
+          fi
+          VERSION="${TAG#v}"
+          # The release event can fire before the DMG upload finishes; 404s are retried too.
+          curl -sfL --retry 10 --retry-delay 30 --retry-all-errors -o app.dmg "https://github.com/diffusionstudio/editor/releases/download/${TAG}/Diffusion-Studio-arm64.dmg"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(shasum -a 256 app.dmg | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Update tap
+        env:
+          GH_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+          VERSION: ${{ steps.info.outputs.version }}
+          SHA256: ${{ steps.info.outputs.sha256 }}
+        run: |
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/diffusionstudio/homebrew-tap.git" tap
+          cd tap
+          sed -i "s|^  version \".*\"|  version \"${VERSION}\"|" Casks/editor.rb
+          sed -i "s|^  sha256 \".*\"|  sha256 \"${SHA256}\"|" Casks/editor.rb
+          if git diff --quiet; then
+            echo "Cask already at ${VERSION}, nothing to do"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -am "Bump editor cask to ${VERSION}"
+          git push

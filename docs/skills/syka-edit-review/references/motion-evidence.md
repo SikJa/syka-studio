@@ -39,8 +39,9 @@ Cuando haya audio disponible, `syka_audio_analyze` mide ataques, energía y LUFS
 true peak del archivo real. Conservá métricas y rangos; escuchá la mezcla para
 juzgar intención, balance y relación con el movimiento.
 
-- **Contact:** muestras distribuidas alrededor de dos por segundo y último
-  cuadro; en piezas largas se limita a 120 muestras. Mirá jerarquía, consistencia,
+- **Contact:** muestras distribuidas y último cuadro, hasta 24 en `detail:standard`
+  (valor por defecto), 12 en `quick` o 120 en `diagnostic`. Elegí foco y holds desde
+  el mapa de la pieza; no existe una regla fija de tres segundos. Mirá jerarquía, consistencia,
   densidad, focos, apertura/cierre. El manifest dice índice/tiempo de cada celda.
 - **Burst:** 12 cuadros codificados consecutivos alrededor del tiempo elegido;
   ajustados al borde del archivo si hace falta. Revisá pops, solapes, radio,

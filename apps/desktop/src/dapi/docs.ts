@@ -16,7 +16,18 @@ const FALLBACK_INSTRUCTIONS =
  * it wants read — adding one is editing that file, not this one; the paths in
  * it are relative to the docs, and the sentence below is what anchors them.
  */
-export function instructions(docsDir: string | null): string {
+export function instructions(docsDir: string | null, profile: 'full' | 'progressive' = 'full'): string {
+  // The embedded harness already supplies the audiovisual contract and task
+  // guidance. Some MCP clients prefix these instructions to EVERY tool; do not
+  // multiply the full manual when they discover three unrelated tool schemas.
+  // External clients retain the existing complete instructions by default.
+  if (profile === 'progressive') {
+    return [
+      'Syka Studio is a local audiovisual editor. Work in the bound project; preserve originals and unrelated edits. Preview failure never changes the editable-video deliverable. Verify edits with check/capture; before replying on a new or reworked animated piece, run gate on its scene, fix every error and run it again; export is manual. Tool schemas and handlers are unchanged.',
+      'Image tools return real local PNG paths. Open relevant images with the native view_image tool to inspect pixels; a file receipt alone is not visual verification. Never print image bytes/base64 as text.',
+      docsDir ? `Read-only app documentation: ${JSON.stringify(docsDir)}. INSTRUCTIONS.md and skills/reference pages remain available on demand through syka_read_reference/syka_skills. Load only the relevant procedure; the embedded harness supplies the always-on product contract.` : 'Documentation is unavailable; report the limitation instead of inventing API behavior.',
+    ].join('\n');
+  }
   const text = docsDir ? readText(join(docsDir, INSTRUCTIONS_FILE)) : null;
   const parts = [text?.trim() || FALLBACK_INSTRUCTIONS];
   if (docsDir) {

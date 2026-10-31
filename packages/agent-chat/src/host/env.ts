@@ -91,7 +91,7 @@ export function knownDirs(): string[] {
 
 /** Subscription-only children: no API keys, cloud endpoints, inherited plugins or Electron flags. */
 export function codexEnvironment(runtimeDir: string, source: Record<string, string>): Record<string, string> {
-  const allowed = new Set(["PATH", "PATHEXT", "SYSTEMROOT", "WINDIR", "COMSPEC", "USERPROFILE", "HOME", "HOMEDRIVE", "HOMEPATH", "APPDATA", "LOCALAPPDATA", "PROGRAMFILES", "PROGRAMFILES(X86)", "CODEX_HOME", "LANG", "LC_ALL", "SYKA_CODEX_PATH", "DIFFUSION_CODEX_PATH", "SYKA_CLAUDE_PATH", "DIFFUSION_CLAUDE_PATH", "SYKA_ANTIGRAVITY_PATH", "SYKA_GROK_PATH", "SYKA_CURSOR_PATH", "SYKA_OPENCODE_PATH", "SYKA_HERMES_PATH", "SYKA_BROWSER_PATH"]);
+  const allowed = new Set(["PATH", "PATHEXT", "SYSTEMROOT", "SYSTEMDRIVE", "WINDIR", "COMSPEC", "PROGRAMDATA", "ALLUSERSPROFILE", "USERPROFILE", "HOME", "HOMEDRIVE", "HOMEPATH", "APPDATA", "LOCALAPPDATA", "PROGRAMFILES", "PROGRAMFILES(X86)", "CODEX_HOME", "LANG", "LC_ALL", "SYKA_CODEX_PATH", "DIFFUSION_CODEX_PATH", "SYKA_CLAUDE_PATH", "DIFFUSION_CLAUDE_PATH", "SYKA_ANTIGRAVITY_PATH", "SYKA_GROK_PATH", "SYKA_CURSOR_PATH", "SYKA_OPENCODE_PATH", "SYKA_HERMES_PATH", "SYKA_BROWSER_PATH"]);
   const result: Record<string, string> = {};
   for (const [key, value] of Object.entries(source)) if (allowed.has(key.toUpperCase())) result[key.toUpperCase()] = value;
   const officialHome = result.CODEX_HOME ?? join(homedir(), ".codex");

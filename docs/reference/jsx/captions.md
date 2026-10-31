@@ -74,6 +74,24 @@ Both read the same cached transcript: two `<captions>` in one scene do not trans
 | `"bridgeclip-editorial"` | Instrument Serif italic, sentence case, upcoming words dimmed; warm emphasis for stories. | 1: emphasis (`#FFE6B8`) |
 | `"bridgeclip-boxed"` | Archivo Black uppercase on a rounded translucent plate, active word in yellow. | 1: emphasis (`#FFD23F`), 2: plate (`#000000`) |
 | `"bridgeclip-spotlight"` | Poppins Black uppercase; active word sits on a violet rounded pill and gently pops. | 1: pill (`#7C5CFF`) |
+| `"hyperframes-clip-wipe"` | Uppercase words reveal horizontally from their actual start time. | 1: emphasis (`#67E8F9`) |
+| `"hyperframes-kinetic-slam"` | One word per hit, alternating fall, lateral entry and overshoot scale. | 1: emphasis (`#67E8F9`) |
+| `"hyperframes-weight-shift"` | Montserrat words gain weight while spoken, with stable line layout. | 1: emphasis (`#67E8F9`) |
+| `"hyperframes-neon-glow"` | The active word glows; the rest remains legible. | 1: neon (`#67E8F9`) |
+| `"hyperframes-glitch-rgb"` | A brief deterministic chromatic split at word entry, then stable text. | 1: channel (`#67E8F9`), 2: channel (`#C4B5FD`) |
+| `"hyperframes-gradient-fill"` | Two-color gradient inside the glyphs, with timed word entry. | 1: start (`#67E8F9`), 2: end (`#C4B5FD`) |
+| `"hyperframes-parallax-layers"` | Subtle depth entry with a short colored echo. | 1: echo (`#67E8F9`) |
+| `"hyperframes-editorial-emphasis"` | Local italic serif with an animated underline on the active word. | 1: emphasis (`#FFE1A6`) |
+
+The eight `hyperframes-*` styles are native Syka adaptations of the public Apache-2.0
+HyperFrames examples, not pixel-identical HTML/GSAP embeds or the full announced catalog.
+All preserve transcript times, trim, speed, authored fonts and position. They group at
+most four words (Kinetic Slam: one), respect punctuation/pauses and linger at most 400 ms
+(Slam: 80 ms), without overlapping the next cue. Absolute source time drives animation,
+including backwards seeks and export. Fonts are bundled OFL; no CDN or texture fetch runs.
+Use `colors` for preset accents, `fill` for base text. Gradient Fill deliberately uses its
+two color slots for glyph fill. Choose restraint for sustained reading. Notices:
+`/licenses/hyperframes-captions/`.
 
 The four `bridgeclip-*` styles are native Diffusion adaptations, distinct from the existing `spotlight` preset. Their OFL fonts ship with the editor and do not depend on a Google Fonts request. They keep the transcript and word timestamps editable. Preset selection and its color reset form one Undo command, also for a multiple-caption selection. Authored fonts, positions, timing and general animations stay with the caption.
 

@@ -2,12 +2,12 @@ import { Show } from 'solid-js';
 import { PreviewIcon } from '@/components/canvas/preview-icon';
 import { chatDockReady, chatFloating, fullscreenChatMount, setChatFloating } from './chat-presentation';
 import './chat-placement-control.css';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 /** One icon in the header's trailing slot; text remains available to assistive tools. */
 export function ChatPlacementButton() {
-  return <button type="button" class="syka-chat-placement-action"
+  return <Tooltip><TooltipTrigger type="button" class="syka-chat-placement-action"
     aria-label={chatFloating() ? 'Acoplar chat' : 'Desacoplar chat'}
-    title={chatFloating() ? 'Acoplar chat' : 'Desacoplar chat'}
     disabled={!!fullscreenChatMount()}
     onClick={() => setChatFloating(!chatFloating())}>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -17,7 +17,7 @@ export function ChatPlacementButton() {
         <path d="M9 4v16m8-11-3 3 3 3m-3-3h4" />
       </Show>
     </svg>
-  </button>;
+  </TooltipTrigger><TooltipContent>{chatFloating()?'Acoplar chat':'Desacoplar chat'}</TooltipContent></Tooltip>;
 }
 
 /** The drag cue owns a temporary row, never an overlay on the conversation. */

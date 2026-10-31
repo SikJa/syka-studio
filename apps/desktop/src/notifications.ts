@@ -128,6 +128,9 @@ function publishChanged(show: boolean) {
 }
 
 async function insert(notice: StudioNotice) {
+  // Transcription is an intermediate operation; only failures or the final
+  // assistant reply should interrupt the user. Also covers older renderers.
+  if (notice.kind === 'transcription') return;
   if (notice.artifact) {
     const info = await stat(notice.artifact);
     if (!info.isFile() || !info.size) throw Error('El resultado todavía no está disponible.');

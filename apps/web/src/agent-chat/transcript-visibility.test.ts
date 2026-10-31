@@ -9,7 +9,7 @@ describe('transient turn activity', () => {
       {id:'comment',kind:'assistant',phase:'commentary',text:'Preparando la portada.'},
       {id:'image',kind:'tool',name:'imageGeneration',title:'Generar imagen',status:'running'},
       {id:'private',kind:'reasoning',text:'never expose'}];
-    expect(visibleTranscriptItems(trace,true).map(i=>i.id)).toEqual(['u','comment','image']);
+    expect(visibleTranscriptItems(trace,true).map(i=>i.id)).toEqual(['u','image']);
     expect(currentActivity([trace[3]])).toEqual({label:'Generando imagen',text:''});
     trace[3]={...trace[3] as Extract<Item,{kind:'tool'}>,status:'done'};
     trace.push({id:'final',kind:'assistant',phase:'final',text:'Listo.'});
@@ -24,9 +24,9 @@ describe('transient turn activity', () => {
     { id: 'r2', kind: 'reasoning', text: 'actividad actual' },
     { id: 'a2', kind: 'assistant', text: 'resultado actual' },
   ];
-  it('separates current activity from the durable messages while running', () => {
-    expect(visibleTranscriptItems(items, true).map(x => x.id)).toEqual(['u1','a1','u2']);
-    expect(transcriptPresentation(items, true).activity.map(x=>x.id)).toEqual(['r2','a2']);
+  it('shows streamed public text immediately even when the provider omits phase', () => {
+    expect(visibleTranscriptItems(items, true).map(x => x.id)).toEqual(['u1','a1','u2','a2']);
+    expect(transcriptPresentation(items, true).activity.map(x=>x.id)).toEqual(['r2']);
   });
   it('retains messages and hides activity on completion and reopen without deleting history', () => {
     expect(visibleTranscriptItems(items, false).map(x => x.id)).toEqual(['u1','a1','u2','a2']);
@@ -48,7 +48,7 @@ describe('transient turn activity', () => {
       {id:'answer',kind:'assistant',text:'Resultado',phase:'final'},
       {id:'late',kind:'tool',name:'tool',title:'Tool',status:'done'}];
     expect(visibleTranscriptItems(explicit,false).map(x=>x.id)).toEqual(['u','answer']);
-    expect(visibleTranscriptItems(explicit.slice(0,2),false).map(x=>x.id)).toEqual(['u','comment']);
+    expect(visibleTranscriptItems(explicit.slice(0,2),false).map(x=>x.id)).toEqual(['u']);
   });
   it('does not restore previous activity when a new turn starts', () => {
     const restarted:Item[]=[...items,{id:'u3',kind:'user',text:'seguí'}];
@@ -67,7 +67,7 @@ describe('transient turn activity', () => {
       {id:'c',kind:'assistant',text:'Voy a revisar',phase:'commentary'},
       {id:'n',kind:'notice',level:'error',text:'No se pudo guardar'},
       {id:'q',kind:'question',questions:[],answers:null}];
-    expect(visibleTranscriptItems(trace,false).map(x=>x.id)).toEqual(['u','c','n','q']);
+    expect(visibleTranscriptItems(trace,false).map(x=>x.id)).toEqual(['u','n','q']);
   });
   it('uses public activity labels without exposing internal tool names or outputs', () => {
     expect(currentActivity([{id:'r',kind:'reasoning',text:'private reasoning'}]).text).not.toContain('private');
@@ -82,9 +82,9 @@ describe('transient turn activity', () => {
       {id:'web',kind:'tool',name:'webSearch',title:'Buscar en la web',detail:'Hermes Index metodología',status:'done'},
       {id:'shell',kind:'tool',name:'commandExecution',title:'Run',status:'done'},
       {id:'answer',kind:'assistant',text:'Guardado',phase:'final'}];
-    expect(visibleTranscriptItems(trace,false).map(i=>i.id)).toEqual(['u','web','answer']);
-    expect(visibleTranscriptItems(trace.slice(0,-1),true).map(i=>i.id)).toEqual(['u','web']);
-    expect(visibleTranscriptItems(trace,true).map(i=>i.id)).toEqual(['u','web','answer']);
+    expect(visibleTranscriptItems(trace,false).map(i=>i.id)).toEqual(['u','answer']);
+    expect(visibleTranscriptItems(trace.slice(0,-1),true).map(i=>i.id)).toEqual(['u']);
+    expect(visibleTranscriptItems(trace,true).map(i=>i.id)).toEqual(['u','answer']);
     expect(currentActivity([trace[2]]).text).toBe('Voy a comparar las fuentes.');
     expect(trace).toHaveLength(6);
   });
@@ -92,6 +92,6 @@ describe('transient turn activity', () => {
     expect(publicProgressSummary('Investigating internal details in English.')).toBe('');
     expect(publicProgressSummary('Voy a revisar el audio. Luego viene un párrafo largo.')).toBe('Voy a revisar el audio.');
     expect(publicProgressSummary('Estoy revisando ' + 'el proyecto '.repeat(100)).length).toBeLessThanOrEqual(221);
-    expect(currentActivity([{id:'r',kind:'reasoning',text:'Voy a revelar pensamiento privado.'}]).text).toBe('Analizando el proyecto');
+    expect(currentActivity([{id:'r',kind:'reasoning',text:'Voy a revelar pensamiento privado.'}]).text).toBe('Esperando respuesta del modelo');
   });
 });

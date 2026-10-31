@@ -31,16 +31,19 @@ export function AgentOrbCanvas({state, preset, theme, speed, paused}: {
       element.dataset.renderPixels=String(element.width);element.dataset.cssSize=String(cssSize);
       paint(reduced?.6:lastTime.current);
     };
+    // An unfocused window keeps its last frame instead of animating for nobody.
+    const running=()=>!paused&&!reduced&&visible&&document.visibilityState!=='hidden'&&document.hasFocus();
     const tick=(now:number)=>{
-      frame=0;if(paused||reduced||!visible||document.visibilityState==='hidden')return;
+      frame=0;if(!running())return;
       if(now-lastDraw>=1000/30){paint(now/1000*resolved.speed*speed);lastDraw=now;}
       frame=requestAnimationFrame(tick);
     };
-    const sync=()=>{cancelAnimationFrame(frame);frame=0;if(!paused&&!reduced&&visible&&document.visibilityState!=='hidden')frame=requestAnimationFrame(tick);};
+    const sync=()=>{cancelAnimationFrame(frame);frame=0;if(running())frame=requestAnimationFrame(tick);};
     resize();const observer=new ResizeObserver(resize);observer.observe(element);
     const visibility=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;sync();},{rootMargin:'80px'});visibility.observe(element);
-    document.addEventListener('visibilitychange',sync);window.addEventListener('resize',resize);sync();
-    return()=>{cancelAnimationFrame(frame);observer.disconnect();visibility.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('resize',resize);};
+    document.addEventListener('visibilitychange',sync);window.addEventListener('resize',resize);
+    window.addEventListener('focus',sync);window.addEventListener('blur',sync);sync();
+    return()=>{cancelAnimationFrame(frame);observer.disconnect();visibility.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('resize',resize);window.removeEventListener('focus',sync);window.removeEventListener('blur',sync);};
   },[state,preset,theme,speed,paused,reduced]);
   return <canvas ref={canvas} aria-hidden="true" style={{width:preset,height:preset,display:'block'}}/>;
 }

@@ -67,7 +67,8 @@ export function registerScreenCapture(bridge: typeof mainBridge) {
   const selectors = new Map<number, AbortController>();
   const response = (capture?: NativeSession): ScreenCaptureSources => ({ sources: [], systemAudio: process.platform === 'win32', ...(capture ? { status: { ...capture.state }, recording: capture.recording } : {}) });
   // Stream only completed session videos; arbitrary local paths are never accepted.
-  protocol.registerSchemesAsPrivileged([{ scheme: 'syka-recording', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } }]);
+  // Electron accepts a single privileged-scheme registration: library media streaming (syka-resources.ts) is declared here too.
+  protocol.registerSchemesAsPrivileged(['syka-recording', 'syka-resource'].map(scheme => ({ scheme, privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } })));
   void app.whenReady().then(() => protocol.handle('syka-recording', async request => {
     const url = new URL(request.url), capture = captures.get(url.pathname.split('/')[1] ?? '');
     if (url.hostname !== 'capture' || url.pathname !== `/${capture?.id}/video` || !capture?.recording || !['GET', 'HEAD'].includes(request.method)) return new Response(null, { status: 404 });

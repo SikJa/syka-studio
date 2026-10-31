@@ -175,7 +175,15 @@ export type CaptionPreset =
   | "bridgeclip-subtle"
   | "bridgeclip-editorial"
   | "bridgeclip-boxed"
-  | "bridgeclip-spotlight";
+  | "bridgeclip-spotlight"
+  | "hyperframes-clip-wipe"
+  | "hyperframes-kinetic-slam"
+  | "hyperframes-weight-shift"
+  | "hyperframes-neon-glow"
+  | "hyperframes-glitch-rgb"
+  | "hyperframes-gradient-fill"
+  | "hyperframes-parallax-layers"
+  | "hyperframes-editorial-emphasis";
 
 // ── Shared prop groups ──────────────────────────────────────────────────────
 //

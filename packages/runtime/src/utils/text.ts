@@ -25,13 +25,33 @@ import type { Entity, World } from 'koota';
 type Ctx = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 /** Optional native caption decoration; it uses the same shaped glyphs as text. */
+export type TextTokenEffect = {
+	opacity?: number;
+	scale?: number;
+	x?: number;
+	y?: number;
+	/** Reveal each shaped token without changing wrapping or transcript text. */
+	reveal?: number;
+};
+
 export type TextRenderOptions = {
 	beforeDraw?: (ctx: Ctx, lines: Token[][]) => void;
-	tokenEffect?: (token: Token) => { opacity?: number; scale?: number };
+	tokenEffect?: (token: Token) => TextTokenEffect;
+	/** Applied after font selection, inside the token's save/restore. */
+	tokenStyle?: (ctx: Ctx, token: Token) => void;
+	/** Decoration behind the intrinsic fill; never changes the document. */
+	tokenUnderlay?: (ctx: Ctx, token: Token) => void;
+	intrinsicFill?: (ctx: Ctx, token: Token) => string | CanvasGradient;
 };
 
 function applyTokenEffect(ctx: Ctx, token: Token, options?: TextRenderOptions): number {
 	const effect = options?.tokenEffect?.(token);
+	if (effect?.reveal !== undefined) {
+		ctx.beginPath();
+		ctx.rect(token.left - 1, token.top - token.height, (token.right - token.left + 2) * clamp(effect.reveal, 0, 1), token.height * 3);
+		ctx.clip();
+	}
+	if (effect?.x || effect?.y) ctx.translate(effect.x ?? 0, effect.y ?? 0);
 	const scale = effect?.scale ?? 1;
 	if (scale !== 1) {
 		const x = (token.left + token.right) / 2;
@@ -318,6 +338,7 @@ function renderTokens(ctx: Ctx, world: World, entity: Entity, options?: TextRend
 			ctx.save();
 			const wordAlpha = savedAlpha * applyTokenEffect(ctx, word, options);
 			applyFont(ctx, world, entity, word.ranges);
+			options?.tokenStyle?.(ctx, word);
 
 			const shadows = getShadows(world, entity, word.ranges);
 
@@ -371,6 +392,7 @@ function renderTokens(ctx: Ctx, world: World, entity: Entity, options?: TextRend
 			const wordAlpha = savedAlpha * applyTokenEffect(ctx, word, options);
 
 			applyFont(ctx, world, entity, word.ranges);
+			options?.tokenStyle?.(ctx, word);
 
 			const w = computed.width[eid]!;
 			const h = computed.height[eid]!;
@@ -421,13 +443,19 @@ function renderTokens(ctx: Ctx, world: World, entity: Entity, options?: TextRend
 			const wordAlpha = savedAlpha * applyTokenEffect(ctx, word, options);
 
 			applyFont(ctx, world, entity, word.ranges);
+			options?.tokenStyle?.(ctx, word);
 
 			const w = computed.width[eid]!;
 			const h = computed.height[eid]!;
 
 			if (intrinsicFill !== null) {
 				ctx.globalAlpha = wordAlpha;
-				ctx.fillStyle = intrinsicFill;
+				if (options?.tokenUnderlay) {
+					ctx.save();
+					options.tokenUnderlay(ctx, word);
+					ctx.restore();
+				}
+				ctx.fillStyle = options?.intrinsicFill?.(ctx, word) ?? intrinsicFill;
 				ctx.fillText(word.chars, word.x, word.y);
 			}
 

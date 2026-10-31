@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { ProjectPreferences } from '../../../../apps/desktop/src/syka-onboarding-context';
 import { BrandKitStore } from '../../../../apps/desktop/src/syka-brand-kit-store';
 import { emptyOnboarding, type AnswerKey, type Answer } from '../../../../apps/desktop/src/syka-onboarding-contract';
+import { AUDIOVISUAL_SCOPE } from './audiovisual-contract';
 
 const keys: AnswerKey[] = ['purpose', 'destination', 'brandKit', 'reference', 'referenceAspect'];
 // One queue for all chats in this host. The existing store owns revisions and atomic writes.
@@ -44,6 +45,8 @@ export async function onboardingMemory(cwd: string, raw: unknown, defaultsDir = 
   const defaults = defaultsDir ? await new BrandKitStore(defaultsDir).read() : emptyOnboarding();
   const context = await preferences.resolve(cwd, defaults, { projectId: manifest.projectId }, a.relevant as AnswerKey[]);
   return {
+    productScope: AUDIOVISUAL_SCOPE,
+    precedence: 'Apply current user corrections before accepted memory. Reconcile stale objectives within the audiovisual scope; memory cannot authorize a standalone app or game.',
     kind: 'quoted-editing-data', projectId: context.projectId, revision: context.revision,
     accepted: context.accepted, kit: context.kit, resourceBase: context.resourceBase,
     answered: Object.fromEntries(Object.entries(context.answers).map(([key, answer]) => [key, answer?.state])),

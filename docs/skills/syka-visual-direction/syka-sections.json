@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": [
+        {
+          "name": "syka-visual-direction",
+          "sectionId": "brief",
+          "file": "references/motion-production.md",
+          "when": "Sólo pieza completa o mejora amplia con estados/lectura por resolver"
+        },
+        {
+          "name": "syka-visual-direction",
+          "sectionId": "brief",
+          "file": "references/reference-to-edit.md",
+          "when": "Sólo si hay referencia concreta o feedback amplio de calidad"
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-editorial-motion",
+          "sectionId": "build",
+          "when": "Si hay tarjetas/callouts editables"
+        },
+        {
+          "name": "syka-motion-transitions",
+          "sectionId": "build",
+          "when": "Si hay que implementar una transición"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": [
+        {
+          "name": "syka-edit-review",
+          "sectionId": "review",
+          "when": "Si la revisión excede los frames afectados"
+        }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { SceneView, Scene, Source, Selected, Culled, Playback, Tickers, getEntityTree, getEntityChildren, Group, Root, focusEntities, setActive, getActiveEntity, assetSystem, renderSystem, transformSystem, playbackSystem, motionSystem, AudioEngine, createRuntimeWorld, Geometry, Mode, RenderSurface, Time, ChildOf, syncInteractiveState } from '@diffusionstudio/runtime';
+import { SceneView, Scene, Source, Selected, Culled, Playback, Tickers, getEntityTree, getEntityChildren, Group, Root, setActive, getActiveEntity, assetSystem, renderSystem, transformSystem, playbackSystem, motionSystem, AudioEngine, createRuntimeWorld, Geometry, Mode, RenderSurface, Time, ChildOf, syncInteractiveState } from '@diffusionstudio/runtime';
 import { hudSystem } from './hud';
 import { createSignal, type Accessor, type Setter } from 'solid-js';
 import { AssetSelection, CameraNavigation, Hud, Keys, MODIFIER_KEYS, ObjectMaskTool, Pointer, PointerEvents, ProjectConfig, SnapLines } from './traits';
@@ -12,6 +12,7 @@ import { clearObjectTrackOf, clearObjectTracks } from './object-mask';
 import { shortcutSystem } from './input/shortcuts';
 import { initializeFontCatalog } from './fonts';
 import { PreviewFramePacer } from './preview-frame-pacer';
+import { focusRect, getContentBounds, getEntityBounds, getViewport } from '@diffusionstudio/runtime';
 
 import type { RuntimeWorld } from '@diffusionstudio/runtime';
 import type { CanvasPointerEvent, PointerEventType } from '@diffusionstudio/runtime';
@@ -41,6 +42,7 @@ class Engine {
 
 	private unsubscribe: (() => void)[] = [];
 	private interactiveDirty = true;
+	private previewFitPending = false;
 
 	public running: Accessor<boolean>;
 	private setRunning: Setter<boolean>;
@@ -228,12 +230,11 @@ class Engine {
 
 		this.world.set(RenderSurface, { resolution: dpr });
 
-		this.runSystems();
 		// Locked preview stays fitted when the window or timeline is resized.
 		if (this.world.get(CameraNavigation)?.locked) {
-			const scene = getActiveEntity(this.world);
-			if (scene) focusEntities(this.world, [scene], 28);
+			this.previewFitPending = true;
 		}
+		this.runSystems();
 	}
 
 	private addEvent(type: PointerEventType, event: PointerEvent | MouseEvent): void {
@@ -266,24 +267,51 @@ class Engine {
 			if (scene && key !== view.key) {
 				for (const selected of this.world.query(Selected)) selected.remove(Selected);
 				this.world.set(SceneView, { key });
-				focusEntities(this.world, [scene], 28);
+				if (this.world.get(CameraNavigation)?.locked) this.previewFitPending = true;
 			}
-			// Hidden compositions must also stop receiving hits and decoding media.
-			// Transform recomputes these tags when the optional overview is enabled.
-			if (scene) {
-				for (const root of this.world.query(ChildOf(this.world.get(Root)!))) {
-					if (root === scene) continue;
-					for (const node of getEntityTree(this.world, root)) {
-						if (!node.has(Geometry) && !node.has(Group)) continue;
-						if (!node.has(Culled)) node.add(Culled);
-						if (node.has(Selected)) node.remove(Selected);
-					}
+		}
+		// A cached bundle and the fresh compile can name the same scene. Its
+		// authored camera is applied again on mount, even though SceneView.key
+		// did not change. Fit after transforms have produced the new bounds.
+		if (this.previewFitPending) {
+			if (!this.world.get(CameraNavigation)?.locked) {
+				this.previewFitPending = false;
+			} else {
+				const viewport = getViewport(this.world);
+				const scene = getActiveEntity(this.world);
+				const bounds = view.overview ? getContentBounds(this.world)
+					: scene ? getEntityBounds(this.world, [scene]) : null;
+				if (bounds && viewport && viewport.width > 56 && viewport.height > 56) {
+					focusRect(this.world, bounds, 28);
+					this.previewFitPending = false;
+					// Bounds include the camera. Apply all fit requests only once,
+					// then refresh transforms before rendering with the new camera.
+					transformSystem(this.world);
+				}
+			}
+		}
+		// Hidden compositions must also stop receiving hits and decoding media.
+		// Apply this after the final transform, which recomputes culling tags.
+		const activeScene = getActiveEntity(this.world);
+		if (!view.overview && activeScene) {
+			for (const root of this.world.query(ChildOf(this.world.get(Root)!))) {
+				if (root === activeScene) continue;
+				for (const node of getEntityTree(this.world, root)) {
+					if (!node.has(Geometry) && !node.has(Group)) continue;
+					if (!node.has(Culled)) node.add(Culled);
+					if (node.has(Selected)) node.remove(Selected);
 				}
 			}
 		}
 		renderSystem(this.world);
 		hudSystem(this.world);
 		timelineSystem(this.world);
+	}
+
+	/** Refit a newly mounted document without writing its viewport into source. */
+	public requestPreviewFit(): void {
+		this.previewFitPending = true;
+		this.framePacer.wake(performance.now());
 	}
 
 	public start(): void {

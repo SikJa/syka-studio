@@ -26,8 +26,8 @@ export class StorageItem<T> {
 	}
 
 	public set value(newValue: T) {
-		this._value = newValue;
 		this._store.set(this._key, newValue);
+		this._value = newValue;
 	}
 
 	private async initValue(value: T | Promise<T>) {

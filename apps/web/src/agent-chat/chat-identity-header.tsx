@@ -4,6 +4,7 @@
 
 import { Icon } from '@/components/ui/icon';
 import { ChatIdentityOrb } from './chat-identity-orb';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ChatPlacementButton } from './chat-placement-control';
 import { chatFloating, setChatFloating, fullscreenChatMount } from './chat-presentation';
 import { ContextMenu, ContextMenuTrigger, ContextMenuPortal, ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu';
@@ -20,10 +21,10 @@ export function ChatIdentityHeader(props: {
   return (
     <ContextMenu>
     <ContextMenuTrigger as="header" tabIndex={props.blocked?-1:0} inert={props.blocked} class="syka-chat-identity" data-chat-drag-handle aria-label="Navegación del chat" title={chatFloating()?'Arrastrá para mover el chat':'Conversaciones y proyectos'}>
-      <button type="button" class="syka-session-toggle" aria-label="Sesiones y proyectos"
+      <Tooltip><TooltipTrigger type="button" class="syka-session-toggle" aria-label="Sesiones y proyectos"
         aria-expanded={props.sessionsOpen} onClick={props.onToggleSessions}>
-        <Icon name="sidebar" class="size-4" />
-      </button>
+        <Icon name="sidebar" class="size-5" />
+      </TooltipTrigger><TooltipContent>Sesiones y proyectos</TooltipContent></Tooltip>
       <ChatIdentityOrb working={props.working || !!props.blocked} activity={props.blocked?'question':props.activity} projectId={props.projectId} />
       <ChatPlacementButton />
     </ContextMenuTrigger>

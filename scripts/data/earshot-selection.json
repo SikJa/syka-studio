@@ -1,0 +1,646 @@
+{
+  "version": 2,
+  "commit": "925ebe56a1b755e5d354ab642bb8f344440cfa9c",
+  "selectionReason": "Retain the original 20 cues. Select 33 complementary UI/film cues after rejecting three flagged candidates. Do not import all 201 recipes or call technical checks artistic approval.",
+  "entries": [
+    {
+      "id": "fit/bell/small_bell",
+      "title": "Campana pequeña",
+      "audioFamily": "notification",
+      "tags": [
+        "bell",
+        "campana",
+        "confirmación",
+        "metal"
+      ]
+    },
+    {
+      "id": "fit/click/floss_lid",
+      "title": "Clic plástico",
+      "audioFamily": "click",
+      "tags": [
+        "click",
+        "clic",
+        "plástico",
+        "botón"
+      ]
+    },
+    {
+      "id": "fit/hit/bamboo_tok",
+      "title": "Contacto de bambú",
+      "audioFamily": "impact",
+      "tags": [
+        "hit",
+        "contacto",
+        "bambú",
+        "madera",
+        "reveal"
+      ]
+    },
+    {
+      "id": "fit/key.space/thock_space",
+      "title": "Teclado · espacio",
+      "audioFamily": "click",
+      "tags": [
+        "typing",
+        "teclado",
+        "espacio",
+        "thock"
+      ]
+    },
+    {
+      "id": "fit/key/lubed",
+      "title": "Teclado · amortiguado",
+      "audioFamily": "click",
+      "tags": [
+        "typing",
+        "teclado",
+        "key",
+        "suave"
+      ]
+    },
+    {
+      "id": "fit/key/medium",
+      "title": "Teclado · medio",
+      "audioFamily": "click",
+      "tags": [
+        "typing",
+        "teclado",
+        "key",
+        "mecánico"
+      ]
+    },
+    {
+      "id": "fit/key/thock",
+      "title": "Teclado · thock",
+      "audioFamily": "click",
+      "tags": [
+        "typing",
+        "teclado",
+        "key",
+        "thock"
+      ]
+    },
+    {
+      "id": "fit/land.light/finger_phone",
+      "title": "Toque en pantalla",
+      "audioFamily": "tap",
+      "tags": [
+        "tap",
+        "toque",
+        "pantalla",
+        "teléfono"
+      ]
+    },
+    {
+      "id": "fit/land.light/finger_wood",
+      "title": "Toque en madera",
+      "audioFamily": "tap",
+      "tags": [
+        "tap",
+        "toque",
+        "madera",
+        "orgánico"
+      ]
+    },
+    {
+      "id": "fit/land.light/fingertip_book",
+      "title": "Toque en papel",
+      "audioFamily": "tap",
+      "tags": [
+        "tap",
+        "toque",
+        "libro",
+        "papel"
+      ]
+    },
+    {
+      "id": "fit/pop/lip_pop",
+      "title": "Pop corto",
+      "audioFamily": "pop",
+      "tags": [
+        "pop",
+        "labio",
+        "orgánico",
+        "aparición"
+      ]
+    },
+    {
+      "id": "fit/pop/mouth_plop",
+      "title": "Plop orgánico",
+      "audioFamily": "pop",
+      "tags": [
+        "pop",
+        "plop",
+        "orgánico",
+        "burbuja"
+      ]
+    },
+    {
+      "id": "fit/snap/switch_flip",
+      "title": "Interruptor físico",
+      "audioFamily": "switch",
+      "tags": [
+        "snap",
+        "switch",
+        "interruptor",
+        "activar"
+      ]
+    },
+    {
+      "id": "fit/tick/domino",
+      "title": "Tick de dominó",
+      "audioFamily": "click",
+      "tags": [
+        "tick",
+        "dominó",
+        "contador",
+        "contacto"
+      ]
+    },
+    {
+      "id": "fit/whoosh.short/bamboo_swish",
+      "title": "Barrido corto de bambú",
+      "audioFamily": "whoosh",
+      "tags": [
+        "whoosh",
+        "swish",
+        "bambú",
+        "barrido",
+        "transición"
+      ]
+    },
+    {
+      "id": "pro_impact/short",
+      "title": "Impacto diseñado corto",
+      "audioFamily": "impact",
+      "tags": [
+        "impact",
+        "impacto",
+        "reveal",
+        "grave",
+        "corto"
+      ]
+    },
+    {
+      "id": "pro_notify/ding_1822",
+      "title": "Ding de confirmación",
+      "audioFamily": "notification",
+      "tags": [
+        "ding",
+        "notificación",
+        "confirmación",
+        "listo"
+      ]
+    },
+    {
+      "id": "pro_shimmer/m0",
+      "title": "Brillo granular",
+      "audioFamily": "texture",
+      "tags": [
+        "shimmer",
+        "brillo",
+        "sparkle",
+        "cierre"
+      ]
+    },
+    {
+      "id": "whoosh_fast/crisp",
+      "title": "Barrido definido",
+      "audioFamily": "whoosh",
+      "tags": [
+        "whoosh",
+        "barrido",
+        "rápido",
+        "transición"
+      ]
+    },
+    {
+      "id": "whoosh_big/swell",
+      "title": "Barrido creciente",
+      "audioFamily": "whoosh",
+      "tags": [
+        "whoosh",
+        "swell",
+        "barrido",
+        "reveal",
+        "transición"
+      ]
+    },
+    {
+      "id": "pro_click/mouse",
+      "title": "Clic de mouse seco",
+      "audioFamily": "click",
+      "tags": [
+        "mouse",
+        "clic",
+        "botón",
+        "seco",
+        "ui"
+      ]
+    },
+    {
+      "id": "pro_click/glass",
+      "title": "Clic cristalino",
+      "audioFamily": "click",
+      "tags": [
+        "glass",
+        "vidrio",
+        "cristal",
+        "clic",
+        "preciso"
+      ]
+    },
+    {
+      "id": "pro_hover_tick/detent",
+      "title": "Paso de selector",
+      "audioFamily": "tap",
+      "tags": [
+        "detent",
+        "selector",
+        "tick",
+        "paso",
+        "rueda"
+      ]
+    },
+    {
+      "id": "toggle/on",
+      "title": "Interruptor · activar",
+      "audioFamily": "switch",
+      "tags": [
+        "toggle",
+        "activar",
+        "on",
+        "interruptor"
+      ]
+    },
+    {
+      "id": "toggle/off",
+      "title": "Interruptor · desactivar",
+      "audioFamily": "switch",
+      "tags": [
+        "toggle",
+        "desactivar",
+        "off",
+        "interruptor"
+      ]
+    },
+    {
+      "id": "pro_pop_in/round",
+      "title": "Aparición redonda",
+      "audioFamily": "pop",
+      "tags": [
+        "pop",
+        "aparición",
+        "round",
+        "cuerpo",
+        "badge"
+      ]
+    },
+    {
+      "id": "pro_pop_in/airy",
+      "title": "Aparición aireada",
+      "audioFamily": "pop",
+      "tags": [
+        "pop",
+        "aire",
+        "airy",
+        "icono",
+        "ligero"
+      ]
+    },
+    {
+      "id": "pro_pop/chirp",
+      "title": "Pop ascendente corto",
+      "audioFamily": "pop",
+      "tags": [
+        "chirp",
+        "pop",
+        "agudo",
+        "badge",
+        "texto"
+      ]
+    },
+    {
+      "id": "swipe/paper",
+      "title": "Deslizamiento de papel",
+      "audioFamily": "whoosh",
+      "tags": [
+        "swipe",
+        "papel",
+        "paper",
+        "tarjeta",
+        "página"
+      ]
+    },
+    {
+      "id": "swipe/velvet",
+      "title": "Deslizamiento aterciopelado",
+      "audioFamily": "whoosh",
+      "tags": [
+        "swipe",
+        "velvet",
+        "suave",
+        "textil",
+        "tarjeta"
+      ]
+    },
+    {
+      "id": "swish/blade",
+      "title": "Barrido de filo",
+      "audioFamily": "whoosh",
+      "tags": [
+        "swish",
+        "blade",
+        "filo",
+        "rápido",
+        "texto"
+      ]
+    },
+    {
+      "id": "swish/soft",
+      "title": "Barrido suave",
+      "audioFamily": "whoosh",
+      "tags": [
+        "swish",
+        "soft",
+        "suave",
+        "aire",
+        "entrada"
+      ]
+    },
+    {
+      "id": "pro_whoosh_big/reverse",
+      "title": "Barrido inverso diseñado",
+      "audioFamily": "whoosh",
+      "tags": [
+        "whoosh",
+        "reverse",
+        "inverso",
+        "anticipación",
+        "reveal"
+      ]
+    },
+    {
+      "id": "pro_whoosh_big/long",
+      "title": "Barrido amplio diseñado",
+      "audioFamily": "whoosh",
+      "tags": [
+        "whoosh",
+        "largo",
+        "amplio",
+        "escena",
+        "transición"
+      ]
+    },
+    {
+      "id": "pro_riser/air_gate",
+      "title": "Subida de aire pulsado",
+      "audioFamily": "riser",
+      "tags": [
+        "riser",
+        "subida",
+        "aire",
+        "gate",
+        "anticipación"
+      ]
+    },
+    {
+      "id": "pro_riser/chop",
+      "title": "Subida cortada rítmica",
+      "audioFamily": "riser",
+      "tags": [
+        "riser",
+        "chop",
+        "pulsos",
+        "ritmo",
+        "reveal"
+      ]
+    },
+    {
+      "id": "riser/tension",
+      "title": "Subida de tensión",
+      "audioFamily": "riser",
+      "tags": [
+        "riser",
+        "tensión",
+        "build",
+        "anticipación",
+        "lanzamiento"
+      ]
+    },
+    {
+      "id": "downlifter/tape",
+      "title": "Descenso de cinta",
+      "audioFamily": "downer",
+      "tags": [
+        "downlifter",
+        "tape",
+        "cinta",
+        "descenso",
+        "cierre"
+      ]
+    },
+    {
+      "id": "downlifter/air_fall",
+      "title": "Descenso de aire",
+      "audioFamily": "downer",
+      "tags": [
+        "downlifter",
+        "aire",
+        "caída",
+        "descenso",
+        "salida"
+      ]
+    },
+    {
+      "id": "pro_sub_drop/quick",
+      "title": "Caída de subgrave corta",
+      "audioFamily": "downer",
+      "tags": [
+        "sub",
+        "drop",
+        "grave",
+        "corto",
+        "peso"
+      ]
+    },
+    {
+      "id": "pro_sub_drop/soft",
+      "title": "Caída de subgrave suave",
+      "audioFamily": "downer",
+      "tags": [
+        "sub",
+        "drop",
+        "grave",
+        "soft",
+        "suave"
+      ]
+    },
+    {
+      "id": "pro_impact/deep",
+      "title": "Impacto diseñado profundo",
+      "audioFamily": "impact",
+      "tags": [
+        "impact",
+        "deep",
+        "profundo",
+        "grave",
+        "reveal"
+      ]
+    },
+    {
+      "id": "pro_impact/air",
+      "title": "Impacto diseñado con aire",
+      "audioFamily": "impact",
+      "tags": [
+        "impact",
+        "air",
+        "aire",
+        "ligero",
+        "acento"
+      ]
+    },
+    {
+      "id": "logo_sting/soft_bloom",
+      "title": "Firma suave en expansión",
+      "audioFamily": "success",
+      "tags": [
+        "logo",
+        "sting",
+        "bloom",
+        "suave",
+        "cierre",
+        "marca"
+      ]
+    },
+    {
+      "id": "logo_sting/whoosh_glass",
+      "title": "Firma de vidrio con barrido",
+      "audioFamily": "success",
+      "tags": [
+        "logo",
+        "sting",
+        "glass",
+        "vidrio",
+        "whoosh",
+        "marca"
+      ]
+    },
+    {
+      "id": "pro_logo_sting/taps_tone",
+      "title": "Firma de toques y tono",
+      "audioFamily": "success",
+      "tags": [
+        "logo",
+        "sting",
+        "tap",
+        "tono",
+        "firma",
+        "cierre"
+      ]
+    },
+    {
+      "id": "pro_glitch/sparse",
+      "title": "Glitch espaciado",
+      "audioFamily": "glitch",
+      "tags": [
+        "glitch",
+        "sparse",
+        "digital",
+        "corte",
+        "interferencia"
+      ]
+    },
+    {
+      "id": "pro_glitch/framelock",
+      "title": "Glitch de encaje",
+      "audioFamily": "glitch",
+      "tags": [
+        "glitch",
+        "framelock",
+        "encaje",
+        "corte",
+        "digital"
+      ]
+    },
+    {
+      "id": "pro_shimmer/m1",
+      "title": "Destello granular breve",
+      "audioFamily": "shimmer",
+      "tags": [
+        "shimmer",
+        "sparkle",
+        "brillo",
+        "destello",
+        "cierre"
+      ]
+    },
+    {
+      "id": "pluck/kalimba_soft",
+      "title": "Kalimba · toque suave",
+      "audioFamily": "chime",
+      "tags": [
+        "pluck",
+        "kalimba",
+        "soft",
+        "nota",
+        "melódico",
+        "suave"
+      ]
+    },
+    {
+      "id": "pluck/kalimba_ring",
+      "title": "Kalimba · resonancia larga",
+      "audioFamily": "chime",
+      "tags": [
+        "pluck",
+        "kalimba",
+        "ring",
+        "resonancia",
+        "nota",
+        "cierre"
+      ]
+    },
+    {
+      "id": "pro_typing_run/soft",
+      "title": "Escritura suave · secuencia",
+      "audioFamily": "click",
+      "tags": [
+        "typing",
+        "run",
+        "escritura",
+        "teclado",
+        "secuencia",
+        "suave"
+      ]
+    },
+    {
+      "id": "pro_zip/down_warm",
+      "title": "Desliz tonal cálido descendente",
+      "audioFamily": "whoosh",
+      "tags": [
+        "zip",
+        "tonal",
+        "warm",
+        "cálido",
+        "descendente",
+        "transición"
+      ]
+    }
+  ],
+  "rejectedCandidates": [
+    {
+      "id": "pro_hover_tick/air",
+      "reason": "pro_hover_tick/air: 1 warning: 1 click at 0.022 s"
+    },
+    {
+      "id": "pro_pop/bloop",
+      "reason": "pro_pop/bloop: 1 warning: pitch climbs 6 semitones over 55 ms (0.01-0.07 s): a rising synth whip reads as cheap"
+    },
+    {
+      "id": "pro_zip/arc",
+      "reason": "pro_zip/arc: 1 warning: pitch climbs 23 semitones over 100 ms (0.01-0.11 s): a rising synth whip reads as cheap"
+    }
+  ]
+}

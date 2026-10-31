@@ -21,6 +21,17 @@ function command(binary: string, args: string[]) {
   });
 }
 describe('motion evidence planning', () => {
+  it('bounds overview cost but retains focused encoded event frames in all review modes', () => {
+    const frames = Array.from({ length: 3600 }, (_, index) => ({ index, seconds: index / 30 }));
+    for (const [detail, cap] of [['quick', 12], ['standard', 24], ['diagnostic', 120]] as const) {
+      const plan = reviewPlan(frames, 120, 60, [30], [{ id: 'impact', seconds: 90 }], 0, detail);
+      expect(plan.contact.length).toBeLessThanOrEqual(cap);
+      expect(plan.burst).toHaveLength(12);
+      expect(plan.eventFrames[0]!.frames.map(frame => frame.index)).toEqual([2699, 2700, 2701]);
+      expect(plan.contact.at(-1)!.index).toBe(3599);
+    }
+    expect(reviewPlan(frames, 120, 60).detail).toBe('standard');
+  });
   it('maps composition events into a trimmed export without offsetting focus or reading',()=>{
     const frames=Array.from({length:24},(_,index)=>({index,seconds:index/24}));
     const plan=reviewPlan(frames,1,.5,[.5],[{id:'impact',seconds:5.5}],5);

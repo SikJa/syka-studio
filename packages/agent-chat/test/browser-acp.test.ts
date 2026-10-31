@@ -77,7 +77,7 @@ describe('official Cursor Node package ACP and browser login routes', () => {
     const root = await setup(), command = join(root, id === 'cursor' ? 'cursor-agent.exe' : 'grok.exe'), environment = host(root), signal = new AbortController().signal;
     await writeFile(command, 'Native fixture only'); environment.env[`SYKA_${id.toUpperCase()}_PATH`] = command;
     const harness = browserAcpHarness(id, join(root, 'profiles')); await harness.probe(environment, signal); await harness.authenticate!(environment, id + '-browser', signal);
-    expect(state.configs[0]).toMatchObject({ command, args: id === 'cursor' ? ['acp'] : ['agent', 'stdio'] });
+    expect(state.configs[0]).toMatchObject({ command, args: id === 'cursor' ? ['acp'] : ['--no-auto-update', 'agent', '--no-leader', 'stdio'] });
     expect(state.login).toHaveBeenCalledWith(expect.objectContaining({ provider: id, command, args: ['login'] }));
   });
 });

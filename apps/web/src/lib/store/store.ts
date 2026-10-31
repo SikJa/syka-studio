@@ -30,16 +30,20 @@ export class Store {
 	}
 
 	public set<T>(key: string, value: T): void {
+		const id = this.getStorageId(key), serialized = JSON.stringify({ value });
+		if (this.namespace === 'dspro.ui') window.desktop?.preferences?.setItem(id, serialized);
 		this.storageEngine.setItem(
-			this.getStorageId(key),
-			JSON.stringify({
-				value: value,
-			}),
+			id, serialized,
 		);
 	}
 
 	public get<T>(key: string): T | null {
-		const item = this.storageEngine.getItem(this.getStorageId(key));
+		const id = this.getStorageId(key);
+		const durable = this.namespace === 'dspro.ui' ? window.desktop?.preferences : undefined;
+		const persisted = durable?.getItem(id);
+		const item = persisted ?? this.storageEngine.getItem(id);
+		// Import existing choices only when the stable store has no value yet.
+		if (persisted == null && item != null) durable?.setItem(id, item);
 
 		if (item) {
 			return JSON.parse(item).value as T;
@@ -49,6 +53,7 @@ export class Store {
 	}
 
 	public remove(key: string): void {
+		if (this.namespace === 'dspro.ui') window.desktop?.preferences?.removeItem(this.getStorageId(key));
 		this.storageEngine.removeItem(this.getStorageId(key));
 	}
 

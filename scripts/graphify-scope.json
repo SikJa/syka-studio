@@ -23,6 +23,8 @@
   ],
   "files": [
     "apps/desktop/src/main.ts",
+    "apps/desktop/src/syka-dependencies.ts",
+    "apps/desktop/src/notifications.ts",
     "apps/desktop/src/main-channels.ts",
     "apps/desktop/src/preload.ts",
     "apps/desktop/src/projects.ts",
@@ -99,12 +101,21 @@
     "packages/runtime/src/systems/soft-rise.test.ts",
     "scripts/graphify-manifest.py",
     "scripts/graphify-runtime.py",
-    "scripts/graphify-stage.py"
+    "scripts/graphify-ts-imports.mjs",
+    "scripts/lib/graphify-setup.mjs",
+    "scripts/graphify-stage.py",
+    "packages/agent-chat/src/host/audiovisual-contract.ts",
+    "apps/web/src/engine/timeline/controller.ts",
+    "apps/web/src/engine/timeline/navigation.ts",
+    "apps/web/src/components/timeline/navigation-controls.tsx",
+    "scripts/lib/graphify-paths.mjs",
+    "scripts/prepare-graphify.mjs"
   ],
   "extensions": [
     ".ts",
     ".tsx",
-    ".py"
+    ".py",
+    ".mjs"
   ],
   "maxFiles": 500,
   "maxFileBytes": 2097152,

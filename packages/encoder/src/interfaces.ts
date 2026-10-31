@@ -4,6 +4,7 @@
 
 import type { VideoCodec, AudioCodec } from 'mediabunny';
 import type { ContainerFormat, EncoderProgress, WritableFileTarget } from './types';
+import type { World } from 'koota';
 
 export interface AudioConfig {
 	/**
@@ -125,4 +126,13 @@ export interface ImageEncoderConfig {
 
 	/** Target output height in px (default: the node's native size). */
 	resolution?: number;
+
+	/**
+	 * Called with each frame once it is drawn, before the world moves on: the
+	 * canvas holds its pixels and the world its state at that frame.
+	 */
+	onFrame?: (frame: number, canvas: HTMLCanvasElement, world: World) => void | Promise<void>;
+
+	/** False skips PNG encoding, for callers that only read `onFrame`. */
+	encode?: boolean;
 }

@@ -9,12 +9,21 @@
 // and they can come and go at any time without disturbing a turn.
 
 import { randomUUID } from "node:crypto";
+import { timestampEvent } from './event-time';
 
 import { isPersistedEvent, reduce } from "../reduce";
 import { HARNESS_IDS, HARNESS_LABELS, isHarnessId, titleFor } from "../protocol";
+import { progressiveChatInstructions } from './task-guidance';
+import { projectSnapshot } from './first-turn';
+import { cleanTitle, TITLE_INSTRUCTIONS, titleModel, titlePrompt } from './titles';
+import { mkdir } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { withAttachments, chatInstructions, QuestionBox } from "./harness";
 import { sameProjectFolder } from './project-folder';
 import { bindProjectMcp, PROJECT_PREVIEW_INSTRUCTIONS } from './project-mcp';
+import { loadCatalogCache, providerProbeFailure, retainDisplayCatalog, saveCatalogCache } from './provider-probe';
+import { bindHarnessTrace, type HarnessTraceStore, type HarnessTurnTrace, type SessionReason } from './harness-telemetry';
 
 import type {
   ChatEvent,
@@ -39,7 +48,7 @@ import type { Transcript } from "../reduce";
 import type { HostEnv } from "./env";
 import type { Emit, Harness, HarnessSession, McpConfig, TurnOutcome } from "./harness";
 import type { ChatMeta, ChatStore } from "./store";
-import type { HarnessPathConfig, HarnessSettings } from "../protocol";
+import type { HarnessPathConfig, HarnessSettings, HostDiagnostics } from "../protocol";
 
 export class HostError extends Error {
   readonly code: ErrorCode;
@@ -57,6 +66,8 @@ export type AgentHostOptions = {
   recoverUsage?: (projectIds: string[]) => Promise<void>;
   onNotice?: (event: import('../notifications').AgentNoticeEvent) => void;
   store: ChatStore;
+  /** Bounded metadata only; independent from transcript and native token ledgers. */
+  trace?: HarnessTraceStore;
   harnesses: Harness[];
   /** Resolves once the environment is hydrated; probes wait for it. */
   env: Promise<HostEnv>;
@@ -70,6 +81,10 @@ export type AgentHostOptions = {
   /** Bound account-choice discovery independently from interactive login. */
   authMethodsTimeoutMs?: number;
   log?: (message: string) => void;
+  /** Last confirmed model lists, shown at startup until each provider's probe settles. */
+  catalogCacheFile?: string;
+  /** How many provider checks run at once. */
+  probeConcurrency?: number;
   providerSettings?: {
     read(): Promise<HarnessSettings>;
     save(entry: HarnessPathConfig): Promise<{ settings: HarnessSettings; harness: Harness }>;
@@ -85,8 +100,9 @@ type Chat = {
   loaded: boolean;
   seq: number;
   session: HarnessSession | null;
+  sessionReason: SessionReason;
   idleTimer: ReturnType<typeof setTimeout> | null;
-  turn: { id: string; done: Promise<void>; interrupted: boolean } | null;
+  turn: { id: string; done: Promise<void>; interrupted: boolean; trace?: HarnessTurnTrace } | null;
   settling: Promise<void> | null;
   /** Items started in this turn and not yet completed, with their latest text. */
   open: Map<string, Item>;
@@ -94,10 +110,15 @@ type Chat = {
   /** Whether the "editor tools unavailable" notice has been posted. */
   noticedNoMcp: boolean;
   modelQuestions: QuestionBox | null;
+  /** In-memory only: restored queues have an explicitly unknown wait duration. */
+  queuedAt: Map<string, number>;
 };
 
 const IDLE_MS = 10 * 60 * 1000;
 const PROBE_MAX_AGE_MS = 60 * 1000;
+// Each full check relaunches every provider CLI (Hermes alone takes ~40 s).
+const READY_PROBE_MAX_AGE_MS = 15 * 60 * 1000;
+const PROBE_CONCURRENCY = 2;
 const AUTH_METHODS_TIMEOUT_MS = 30_000;
 
 function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise<T> {
@@ -107,6 +128,26 @@ function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise<T> {
     if (signal.aborted) stop();
     else signal.addEventListener('abort', stop, { once: true });
   });
+}
+
+// Opening a long chat sent ~2 MB of finished tool output the chat view never
+// shows. The log keeps it whole; generated-image results stay intact because
+// the UI imports them from their output.
+const SNAPSHOT_TOOL_OUTPUT = 1200;
+function snapshotItem(item: Item): Item {
+  if (item.kind !== 'tool' || item.status === 'running' || item.name === 'imageGeneration' || !item.output || item.output.length <= SNAPSHOT_TOOL_OUTPUT) return item;
+  return { ...item, output: item.output.slice(0, SNAPSHOT_TOOL_OUTPUT) + `\n… (${item.output.length - SNAPSHOT_TOOL_OUTPUT} caracteres más en el historial local)` };
+}
+
+/**
+ * The chat view hides tool and reasoning steps once their turn is over (see
+ * transcriptPresentation); only the latest turn shows them as activity. On a
+ * 4,000-item chat ~180 items are visible, so older steps stay in the log and
+ * out of the snapshot. Generated images remain: the view imports them.
+ */
+export function snapshotItems(items: Item[]): Item[] {
+  const lastUser = items.findLastIndex(item => item.kind === 'user');
+  return items.flatMap((item, index) => index < lastUser && (item.kind === 'reasoning' || item.kind === 'tool' && item.name !== 'imageGeneration') ? [] : [snapshotItem(item)]);
 }
 
 function checkedAuthMethods(methods: NonNullable<HarnessInfo['authMethods']>): NonNullable<HarnessInfo['authMethods']> {
@@ -120,8 +161,14 @@ export class AgentHost {
   private readonly chats = new Map<string, Chat>();
   private readonly connections = new Set<Connection>();
   private readonly harnessById = new Map<HarnessId, Harness>();
+  private readonly probeTasks = new Map<HarnessId, Promise<void>>();
+  /** Queued checks; calling one starts it now, ahead of the pool. */
+  private readonly probeQueue = new Map<HarnessId, () => void>();
+  private readonly probeDurations = new Map<HarnessId, number>();
   private readonly probes = new Map<HarnessId, { info: HarnessInfo; at: number }>();
   private readonly probeGenerations = new Map<HarnessId, number>();
+  private readonly catalogs = new Map<HarnessId, HarnessInfo>();
+  private catalogWrite: Promise<void> = Promise.resolve();
   private probing: Promise<HarnessInfo[]> | null = null;
   private probeAbort: AbortController | null = null;
   private stopping = false;
@@ -185,11 +232,45 @@ export class AgentHost {
       }
       if (chat.meta.pendingQuestion) this.notice(chat, { type: 'request.opened', request: chat.meta.pendingQuestion });
     }
+    if (this.options.catalogCacheFile) for (const [id, info] of await loadCatalogCache(this.options.catalogCacheFile)) {
+      if (!this.harnessById.has(id)) continue;
+      this.catalogs.set(id, info);
+      // at=0 keeps the seeded entry stale, so every refresh still probes it.
+      if (!this.probes.has(id)) this.probes.set(id, { info, at: 0 });
+    }
     void this.probeAll();
+    // Old chats with captures inside their history are lightened in the
+    // background, one at a time, so their first open is not the slow one.
+    this.migrationTimer = setTimeout(() => void this.migrateIdleChats(), 30_000);
+    this.migrationTimer.unref?.();
+  }
+
+  private migrationTimer: ReturnType<typeof setTimeout> | null = null;
+
+  private async migrateIdleChats(): Promise<void> {
+    for (const chat of [...this.chats.values()]) {
+      if (this.stopping) return;
+      if (chat.loaded || chat.turn) continue;
+      await this.migrateOnce(chat.meta.id);
+    }
+  }
+
+  private migrations = new Map<string, Promise<void>>();
+
+  /** One migration per chat at a time: a background pass and an open share it. */
+  private migrateOnce(chatId: string): Promise<void> {
+    const running = this.migrations.get(chatId);
+    if (running) return running;
+    const task = this.options.store.migrateImages(chatId)
+      .then(() => undefined, error => this.log(`image migration skipped: ${(error as Error).message}`))
+      .finally(() => this.migrations.delete(chatId));
+    this.migrations.set(chatId, task);
+    return task;
   }
 
   async stop(): Promise<void> {
     this.stopping = true;
+    if (this.migrationTimer) clearTimeout(this.migrationTimer);
     this.probeAbort?.abort();
     for (const controller of this.authenticating.values()) controller.abort();
     for (const controller of this.authMethodQueries.values()) controller.abort(new HostError('busy', 'El host está cerrando la conexión.'));
@@ -218,6 +299,7 @@ export class AgentHost {
     );
     await Promise.allSettled([...this.operations.values(), ...(this.probing ? [this.probing] : [])]);
     await this.options.store.flush();
+    await this.options.trace?.flush();
   }
 
   // ---------------------------------------------------------------------
@@ -261,7 +343,14 @@ export class AgentHost {
     if (this.stopping) throw new HostError('busy', 'El host está cerrando la conexión.');
     switch (method) {
       case "harnesses.list":
-        return this.listHarnesses((p as MethodParams<"harnesses.list">).refresh === true) as Promise<R>;
+        return this.listHarnesses((p as MethodParams<"harnesses.list">).refresh === true, (p as MethodParams<"harnesses.list">).force === true) as Promise<R>;
+      case "diagnostics":
+        return this.diagnostics() as Promise<R>;
+      case "titles.suggest": {
+        const { harness, text } = p as MethodParams<"titles.suggest">;
+        if (!isHarnessId(harness) || typeof text !== 'string') throw new HostError('bad-request', 'Pedido de título inválido.');
+        return this.suggestTitle(harness, text) as Promise<R>;
+      }
       case "harnesses.settings":
         if (!this.options.providerSettings) throw new HostError('harness-unavailable', 'La configuración de proveedores no está disponible en este host.');
         return this.options.providerSettings.read() as Promise<R>;
@@ -301,7 +390,11 @@ export class AgentHost {
         const ids = (p as { projectIds?: unknown }).projectIds;
         if (!Array.isArray(ids) || ids.length > 500 || ids.some(id => typeof id !== 'string' || !id || id.length > 512)) throw new HostError('bad-request', 'Invalid project IDs');
         await this.options.recoverUsage?.(ids as string[]).catch(error => this.log(`passive token recovery failed: ${(error as Error).name}`));
-        return await this.options.store.usage.list(ids as string[]) as R;
+        const [usage, chats] = await Promise.all([this.options.store.usage.list(ids as string[]), this.options.store.list()]);
+        return usage.map(value => {
+          const linked = chats.filter(chat => chat.projectId === value.projectId);
+          return { ...value, activity: { chats: linked.length, harnesses: [...new Set(linked.map(chat => chat.harness))] } };
+        }) as R;
       }
       case "chats.open":
         return this.openChat(connection, requireString(p, "chatId")) as Promise<R>;
@@ -312,10 +405,14 @@ export class AgentHost {
         return this.deleteChat(requireString(p, "chatId")) as Promise<R>;
       case "turn.send": {
         const request = p as MethodParams<'turn.send'>, provider = validateModel(request.model).harness;
-        if (this.configuring === provider || this.authenticating.has(provider)) throw new HostError('busy', 'Terminá la conexión o configuración de este proveedor antes de enviar.');
+        const admissionStarted = performance.now();
+        if (this.configuring === provider || this.authenticating.has(provider)) {
+          const error = new HostError('busy', 'Terminá la conexión o configuración de este proveedor antes de enviar.');
+          this.traceRejectedSend(request, admissionStarted, error);throw error;
+        }
         this.acceptingTurns.set(provider, (this.acceptingTurns.get(provider) ?? 0) + 1);
         const action = this.serial(request.chatId ?? randomUUID(), () => this.send(connection, request));
-        return action.finally(() => { const pending = (this.acceptingTurns.get(provider) ?? 1) - 1; pending ? this.acceptingTurns.set(provider, pending) : this.acceptingTurns.delete(provider); }) as Promise<R>;
+        return action.catch(error => { this.traceRejectedSend(request, admissionStarted, error);throw error; }).finally(() => { const pending = (this.acceptingTurns.get(provider) ?? 1) - 1; pending ? this.acceptingTurns.set(provider, pending) : this.acceptingTurns.delete(provider); }) as Promise<R>;
       }
       case "queue.add":
       case "queue.remove":
@@ -344,25 +441,63 @@ export class AgentHost {
     );
   }
 
-  private async listHarnesses(refresh: boolean): Promise<HarnessInfo[]> {
-    const oldest = Math.min(...[...this.probes.values()].map((entry) => entry.at), Infinity);
-    const stale = this.probes.size < this.harnessById.size || Date.now() - oldest > (this.options.probeMaxAgeMs ?? PROBE_MAX_AGE_MS);
-    if (refresh && stale) return this.probeAll();
-    if (this.probing && this.probes.size === 0) return this.probing;
-    return this.harnessList();
+  /** A confirmed provider is rechecked rarely; a missing or failed one keeps the short interval. */
+  private probeStale(id: HarnessId, now = Date.now()): boolean {
+    const entry = this.probes.get(id);
+    if (!entry || entry.info.status === 'checking') return true;
+    const maxAge = this.options.probeMaxAgeMs ?? (entry.info.status === 'ready' ? READY_PROBE_MAX_AGE_MS : PROBE_MAX_AGE_MS);
+    return now - entry.at > maxAge;
   }
 
-  private probeAll(): Promise<HarnessInfo[]> {
+  private async listHarnesses(refresh: boolean, force = false): Promise<HarnessInfo[]> {
+    if (!refresh) return this.harnessList();
+    if (force) return this.probeAll();
+    const stale = [...this.harnessById.keys()].filter(id => this.probeStale(id));
+    return stale.length ? this.probeAll(new Set(stale)) : this.harnessList();
+  }
+
+  /** Keeps confirmed catalogs; drops them only on a definitive answer, never on a transient failure. */
+  private rememberCatalog(info: HarnessInfo): void {
+    const path = this.options.catalogCacheFile;
+    if (!path) return;
+    if (info.status === 'ready' && info.models.length) this.catalogs.set(info.id, info);
+    else if (info.catalogSource !== 'cache' && this.catalogs.has(info.id)) this.catalogs.delete(info.id);
+    else return;
+    const snapshot = [...this.catalogs.values()];
+    this.catalogWrite = this.catalogWrite.then(() => saveCatalogCache(path, snapshot)).catch(error => this.log(`provider catalog cache not saved: ${String(error)}`));
+  }
+
+  private probeAll(only?: ReadonlySet<HarnessId>): Promise<HarnessInfo[]> {
     if (this.probing) return this.probing;
     const abort = new AbortController();
-    const harnesses = [...this.harnessById.values()].map(harness => ({ harness, generation: this.probeGenerations.get(harness.id) ?? 0 }));
+    // Recently used providers first, Hermes (a ~18 s Python start) last.
+    const recent = new Map<HarnessId, number>();
+    for (const chat of this.chats.values()) recent.set(chat.meta.harness, Math.max(recent.get(chat.meta.harness) ?? 0, chat.meta.updatedAt ?? 0));
+    const harnesses = [...this.harnessById.values()].filter(harness => !only || only.has(harness.id))
+      .sort((a, b) => Number(a.id === 'hermes') - Number(b.id === 'hermes') || (recent.get(b.id) ?? 0) - (recent.get(a.id) ?? 0))
+      .map(harness => ({ harness, generation: this.probeGenerations.get(harness.id) ?? 0 }));
     this.probeAbort = abort;
-    this.probing = (async () => {
-      const env = await this.options.env;
-      await Promise.all(
-        harnesses.map(async ({ harness, generation }) => {
+    // All CLIs at once slowed each other 4-6x on a 12-thread PC (Codex 2.7 s
+    // alone, 10.7 s together). A small pool keeps each check near its solo time.
+    const slots = this.options.probeConcurrency ?? PROBE_CONCURRENCY;
+    let running = 0;
+    const waiting: (() => void)[] = [];
+    const turn = (id: HarnessId) => new Promise<void>(start => {
+      const go = () => { running++; this.probeQueue.delete(id); start(); };
+      if (running < slots) go();
+      else { waiting.push(go); this.probeQueue.set(id, () => { const index = waiting.indexOf(go); if (index >= 0) { waiting.splice(index, 1); go(); } }); }
+    });
+    const release = () => { running--; waiting.shift()?.(); };
+    // A stopping host must not leave queued checks pending forever; they start and see the abort.
+    abort.signal.addEventListener('abort', () => { for (const go of waiting.splice(0)) go(); }, { once: true });
+    const tasks = harnesses.map(({ harness, generation }) => {
+      const task = (async () => {
+          await turn(harness.id);
+          try {
+          const env = await this.options.env;
           if (this.authenticating.has(harness.id) || this.configuring === harness.id || (this.probeGenerations.get(harness.id) ?? 0) !== generation) return;
           let info: HarnessInfo;
+          const started = Date.now();
           try {
             info = await harness.probe(env, abort.signal);
           } catch (error) {
@@ -371,19 +506,31 @@ export class AgentHost {
               label: HARNESS_LABELS[harness.id],
               status: "error",
               detail: (error as Error)?.message ?? String(error),
+              probeFailure: providerProbeFailure(error),
               models: [],
             };
           }
           if (!this.stopping && !this.authenticating.has(harness.id) && this.configuring !== harness.id && this.harnessById.get(harness.id) === harness && (this.probeGenerations.get(harness.id) ?? 0) === generation) {
             const flow = this.authFlows.get(harness.id);
+            info = retainDisplayCatalog(this.probes.get(harness.id)?.info, info);
             this.probes.set(harness.id, { info: { ...info, ...(flow ? { authFlow: flow } : {}) }, at: Date.now() });
+            this.rememberCatalog(info);
+            // One slow/disconnected provider must not hide models already ready.
+            this.broadcast({ t: "harnesses", harnesses: this.harnessList() });
+            this.probeDurations.set(harness.id, Date.now() - started);
+            this.log(`provider probe ${harness.id}: ${info.status}, ${info.models.length} models, ${Date.now() - started}ms`);
           }
-        }),
-      );
+          } finally { release(); }
+      })();
+      this.probeTasks.set(harness.id, task);
+      void task.finally(() => { if(this.probeTasks.get(harness.id)===task)this.probeTasks.delete(harness.id); }).catch(()=>{});
+      return task;
+    });
+    this.probing = Promise.all(tasks).then(() => {
       const list = this.harnessList();
       if (!this.stopping) this.broadcast({ t: "harnesses", harnesses: list });
       return list;
-    })().finally(() => {
+    }).finally(() => {
       this.probing = null;
       if (this.probeAbort === abort) this.probeAbort = null;
     });
@@ -471,7 +618,7 @@ export class AgentHost {
           const selected = methodId === 'connect' ? (choices.length > 1 && id !== 'codex' ? await askInput('Elegí la cuenta que querés conectar.', choices) : choices[0]?.id) : methodId;
           if (selected && !choices.some(choice => choice.id === selected)) throw Error('Este método de conexión ya no está disponible.');
           if (!harness!.authenticate || !selected) throw Error(current.detail ?? 'Este proveedor no anunció un método de conexión compatible.');
-          update({ phase: 'waiting', message: 'Completá la autorización oficial en el navegador…', expiresAt: Date.now() + 360_000 });
+          update({ phase: 'preparing', message: 'Preparando el inicio de sesión oficial…', expiresAt: Date.now() + 360_000 });
           await harness!.authenticate(env, selected, controller.signal, {
             update,
             requestCode: prompt => askInput(prompt),
@@ -486,7 +633,7 @@ export class AgentHost {
         this.harnessById.set(id, harness!);
         update({ phase: 'connected', message: 'Conexión comprobada. Ya podés elegir un modelo.' });
         if (methodId !== 'connect' || previousInfo.status !== 'ready') for (const chat of this.chats.values()) if (chat.meta.harness === id && chat.session) {
-          const session = chat.session; chat.session = null;
+          const session = chat.session; chat.session = null; chat.sessionReason = 'provider_reconfigured';
           await session.close().catch(error => this.log(`old provider session close failed: ${(error as Error)?.name ?? 'Error'}`));
         }
       } catch (error) {
@@ -517,7 +664,7 @@ export class AgentHost {
     try {
       const result = await this.options.providerSettings.save(entry);
       controller.signal.throwIfAborted();
-      for (const chat of this.chats.values()) if (chat.meta.harness === entry.id && chat.session) { await chat.session.close(); chat.session = null; }
+      for (const chat of this.chats.values()) if (chat.meta.harness === entry.id && chat.session) { await chat.session.close(); chat.session = null; chat.sessionReason = 'provider_reconfigured'; }
       this.harnessById.set(entry.id, result.harness);
       this.probes.set(entry.id, { at: 0, info: { id: entry.id, label: HARNESS_LABELS[entry.id], status: 'checking', models: [], detail: 'Comprobando ejecutable y cuenta…' } });
       this.broadcast({ t: 'harnesses', harnesses: this.harnessList() });
@@ -540,7 +687,7 @@ export class AgentHost {
     const projectId=requireString(params,'projectId'),cwd=requireString(params,'cwd'),model=validateModel(params.model);
     if(!this.harnessById.has(model.harness))throw new HostError('harness-unavailable','El proveedor no está conectado.');
     const now=Date.now();const chat=this.register({id:randomUUID(),projectId,cwd,harness:model.harness,model:model.model,title:typeof params.title==='string'&&params.title.trim()?params.title.trim().slice(0,120):'Nuevo chat',status:'idle',createdAt:now,updatedAt:now,resume:null});
-    chat.loaded=true;chat.subscribers.add(connection);await this.options.store.writeMeta(chat.meta);this.publish(chat,{type:'chat.updated',chat:this.summary(chat)});return this.summary(chat);
+    chat.meta.lastModel=model;chat.loaded=true;chat.subscribers.add(connection);await this.options.store.writeMeta(chat.meta);this.publish(chat,{type:'chat.updated',chat:this.summary(chat)});return this.summary(chat);
   }
 
   private register(meta: ChatMeta): Chat {
@@ -550,6 +697,7 @@ export class AgentHost {
       loaded: false,
       seq: 0,
       session: null,
+      sessionReason: meta.resume ? 'host_reopen' : 'new_chat',
       idleTimer: null,
       turn: null,
       settling: null,
@@ -557,6 +705,7 @@ export class AgentHost {
       subscribers: new Set(),
       noticedNoMcp: false,
       modelQuestions: null,
+      queuedAt: new Map(),
     };
     this.chats.set(meta.id, chat);
     return chat;
@@ -570,7 +719,7 @@ export class AgentHost {
 
   private summary(chat: Chat): ChatSummary {
     const { cwd: _cwd, resume: _resume, queue: _queue, pendingQuestion: _question, lastModel: _model, ...summary } = chat.meta;
-    return summary;
+    return { ...summary, modelRef: _model?.harness === summary.harness && _model.model === summary.model ? _model : { harness: summary.harness, model: summary.model } };
   }
 
   private listChats(projectId: string): ChatSummary[] {
@@ -580,8 +729,71 @@ export class AgentHost {
       .map((chat) => this.summary(chat));
   }
 
+  /** One short, tool-less turn with the provider's small model in a scratch folder; never the project. */
+  private async suggestTitle(id: HarnessId, text: string): Promise<{ title: string | null; model?: string }> {
+    const harness = this.harnessById.get(id);
+    const model = titleModel(this.probes.get(id)?.info);
+    if (!harness || !model || !text.trim()) return { title: null };
+    const cwd = join(tmpdir(), 'syka-titles');
+    await mkdir(cwd, { recursive: true });
+    let answer = '';
+    const collect: Emit = event => {
+      if (event.type === 'item.delta') answer += event.text;
+      else if (event.type === 'item.completed' && event.item.kind === 'assistant') answer = event.item.text;
+    };
+    let session: HarnessSession | undefined;
+    const work = (async () => {
+      session = await harness.open({ cwd, model, mcp: null, instructions: TITLE_INSTRUCTIONS, env: await this.options.env, emit: () => {} });
+      const outcome = await session.send(titlePrompt(text), model, collect);
+      return outcome?.status === 'completed' || outcome === undefined ? cleanTitle(answer) : null;
+    })();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const title = await Promise.race([work, new Promise<null>(resolve => { timer = setTimeout(() => resolve(null), 45_000); })]);
+      return title ? { title, model } : { title: null };
+    } catch (error) {
+      this.log(`title suggestion failed: ${(error as Error).message}`);
+      return { title: null };
+    } finally {
+      clearTimeout(timer);
+      void work.catch(() => {}).finally(() => { void session?.close().catch(() => {}); });
+    }
+  }
+
+  /** Replaces the cut first line with a short title from the small model, in the background. */
+  private async retitle(chat: Chat, text: string): Promise<void> {
+    if (!text.trim()) return;
+    const { title } = await this.suggestTitle(chat.meta.harness, text);
+    if (!title || this.chats.get(chat.meta.id) !== chat) return;
+    chat.meta = { ...chat.meta, title };
+    await this.options.store.writeMeta(chat.meta).catch((error: Error) => this.log(`chat title save failed: ${error.message}`));
+    this.publish(chat, { type: 'chat.updated', chat: this.summary(chat) });
+  }
+
+  private async diagnostics(): Promise<HostDiagnostics> {
+    const providers = [...this.harnessById.keys()].map(id => {
+      const entry = this.probes.get(id), info = entry?.info;
+      return { id, label: info?.label ?? HARNESS_LABELS[id], status: info?.status ?? 'checking', models: info?.models.length ?? 0,
+        ...(entry?.at ? { checkedAt: entry.at } : {}), ...(this.probeDurations.has(id) ? { durationMs: this.probeDurations.get(id) } : {}), cached: info?.catalogSource === 'cache' };
+    });
+    const sizes = await Promise.all([...this.chats.values()].map(async chat => ({ title: chat.meta.title, ...await this.options.store.sizes(chat.meta.id) })));
+    return { providers, chats: {
+      count: sizes.length,
+      historyBytes: sizes.reduce((sum, chat) => sum + chat.historyBytes, 0),
+      imageBytes: sizes.reduce((sum, chat) => sum + chat.imageBytes, 0),
+      inlineImageChats: sizes.filter(chat => chat.inlineImages).length,
+      largest: sizes.sort((a, b) => b.historyBytes - a.historyBytes).slice(0, 5).map(({ title, historyBytes, imageBytes }) => ({ title, historyBytes, imageBytes })),
+    } };
+  }
+
+  /** For the local image route: only images stored for a known chat. */
+  chatImagePath(chatId: string, ref: string): string | null {
+    return this.chats.has(chatId) ? this.options.store.imagePath(chatId, ref) : null;
+  }
+
   private async ensureLoaded(chat: Chat): Promise<void> {
     if (chat.loaded) return;
+    await this.migrateOnce(chat.meta.id);
     const transcript = await this.options.store.readTranscript(chat.meta.id);
     // A turn that started while the file was read has already put items in memory.
     if (chat.loaded) return;
@@ -593,7 +805,7 @@ export class AgentHost {
     const chat = this.get(chatId);
     await this.ensureLoaded(chat);
     chat.subscribers.add(connection);
-    return { chat: this.summary(chat), items: chat.transcript.items, seq: chat.seq, contextUsage: chat.transcript.contextUsage, pending: chat.transcript.pending, queue: chat.meta.queue };
+    return { chat: this.summary(chat), items: snapshotItems(chat.transcript.items), seq: chat.seq, contextUsage: chat.transcript.contextUsage, pending: chat.transcript.pending, queue: chat.meta.queue };
   }
 
   private async deleteChat(chatId: string): Promise<void> {
@@ -643,7 +855,9 @@ export class AgentHost {
       const attachments = Array.isArray(p.attachments) ? p.attachments.filter((a): a is string => typeof a === "string") : [];
       if (!text.trim() && !attachments.length) throw new HostError("bad-request", "El mensaje está vacío.");
       if (queue.messages.length >= 50) throw new HostError("bad-request", "La cola admite hasta 50 mensajes.");
-      const next = await this.saveQueue(chat, { messages: [...queue.messages, { id: randomUUID(), text, attachments, model }], paused: false });
+      const id = randomUUID();
+      const next = await this.saveQueue(chat, { messages: [...queue.messages, { id, text, attachments, model }], paused: false });
+      chat.queuedAt.set(id, performance.now());
       this.pumpSoon(chat);
       return next;
     }
@@ -660,6 +874,7 @@ export class AgentHost {
     if (!message) throw new HostError("not-found", "Ese mensaje ya salió de la cola.");
     if (method === "queue.redirect") await this.steer(chat, message.text, message.attachments);
     const remaining = await this.saveQueue(chat, { ...chat.meta.queue!, messages: chat.meta.queue!.messages.filter(entry => entry.id !== id) });
+    chat.queuedAt.delete(id);
     return method === "queue.redirect" ? undefined : remaining;
   }
 
@@ -667,8 +882,10 @@ export class AgentHost {
     if (!text.trim() && !attachments.length) throw new HostError("bad-request", "Escribí la instrucción que querés insertar.");
     if (!chat.turn || chat.turn.interrupted || chat.transcript.pending) throw new HostError("busy", "No hay un turno activo disponible para insertar la instrucción.");
     if (!chat.session?.steer) throw new HostError("harness-unavailable", "Este asistente no permite insertar durante el turno. Podés dejar el mensaje en cola.");
-    await chat.session.steer(withAttachments(text, attachments));
-    const event: ChatEvent = { type: "item.completed", item: { id: `u-${randomUUID()}`, kind: "user", text, ...(attachments.length ? { attachments } : {}) } };
+    const guidance = withAttachments(text, attachments);
+    chat.turn.trace?.payload('host', 'user', guidance);
+    await chat.session.steer(guidance);
+    const event: ChatEvent = { type: "item.completed", item: { id: `u-${randomUUID()}`, kind: "user", text, createdAt:Date.now(), ...(attachments.length ? { attachments } : {}) } };
     chat.transcript = reduce(chat.transcript, event);
     this.publish(chat, event);
   }
@@ -678,9 +895,11 @@ export class AgentHost {
       const queue = chat.meta.queue;
       if (this.stopping || this.configuring === chat.meta.harness || this.chats.get(chat.meta.id) !== chat || chat.turn || chat.transcript.pending || !queue?.messages.length || queue.paused) return;
       const first = queue.messages[0]!;
+      const admissionStarted = performance.now();
       try {
         await this.send({ send: () => {} }, { chatId: chat.meta.id, projectId: chat.meta.projectId, cwd: chat.meta.cwd, ...first }, first.id);
       } catch (error) {
+        this.traceRejectedSend({model:first.model,text:first.text,attachments:first.attachments}, admissionStarted, error);
         await this.saveQueue(chat, { ...chat.meta.queue!, paused: true });
         const event: ChatEvent = { type: "item.completed", item: { id: `n-${randomUUID()}`, kind: "notice", level: "error", text: `La cola quedó pausada: ${(error as Error).message}` } };
         chat.transcript = reduce(chat.transcript, event); this.publish(chat, event);
@@ -688,7 +907,17 @@ export class AgentHost {
     }).catch(error => this.log(`queue dispatch failed: ${String(error)}`));
   }
 
+  /** A rejected request has no provider turn or transcript, but still has measurable preparation. */
+  private traceRejectedSend(request: Pick<MethodParams<'turn.send'>, 'model' | 'text' | 'attachments'>, started: number, error: unknown): void {
+    const trace = this.options.trace?.begin(request.model.harness, performance.now() - started);
+    if (!trace) return;
+    trace.reject();
+    trace.payload('host', 'user', typeof request.text === 'string' ? request.text : '');
+    this.options.trace?.save(trace, 'failed', error instanceof Error ? error.message : 'Request rejected before provider turn');
+  }
+
   private async send(connection: Connection, params: MethodParams<"turn.send">, queuedMessageId?: string, providerText?: string): Promise<{ chatId: string }> {
+    const preparationStarted = performance.now();
     if (this.stopping) throw new HostError('busy', 'El host está cerrando la conexión.');
     const text = typeof params.text === "string" ? params.text : "";
     const projectId = requireString(params, "projectId");
@@ -726,10 +955,16 @@ export class AgentHost {
       chat.subscribers.add(connection);
     }
 
-    const probe = this.probes.get(model.harness)?.info ?? (await this.probeAll()).find((info) => info.id === model.harness);
-    if (probe && probe.status !== "ready") {
+    if (!this.probes.has(model.harness) || this.probes.get(model.harness)!.info.status === 'checking') {
+      // Start all passive checks, but wait only for the selected provider.
+      void this.probeAll().catch(error=>this.log('provider discovery failed: '+String(error)));
+      this.probeQueue.get(model.harness)?.();
+      await this.probeTasks.get(model.harness);
+    }
+    const probe = this.probes.get(model.harness)?.info;
+    if (!probe || probe.status !== "ready") {
       if (!params.chatId) this.chats.delete(chat.meta.id);
-      throw new HostError("harness-unavailable", probe.detail ?? `${probe.label} is ${probe.status.replace("-", " ")}`);
+      throw new HostError("harness-unavailable", probe?.detail ?? (probe ? `${probe.label} is ${probe.status.replace("-", " ")}` : 'El proveedor todavía no confirmó la conexión. Volvé a intentarlo cuando termine de comprobarse.'));
     }
     if (model.fast && !probe?.models.find(entry=>entry.id===model.model)?.supportsFast) {
       if (!params.chatId) this.chats.delete(chat.meta.id);
@@ -738,6 +973,9 @@ export class AgentHost {
 
     if (chat.idleTimer) clearTimeout(chat.idleTimer);
     chat.idleTimer = null;
+
+    // The first message names the chat; a name the person typed is kept.
+    if (!chat.transcript.items.some(item => item.kind === 'user') && (!params.chatId || /^(nuevo|new) chat$/i.test(chat.meta.title))) void this.retitle(chat, text);
 
     const turnId = randomUUID();
     const user: Item = { id: `u-${turnId.slice(0, 12)}`, kind: "user", text, ...(attachments.length ? { attachments } : {}) };
@@ -748,16 +986,21 @@ export class AgentHost {
     catch (error) { chat.meta = previousMeta; throw error; }
 
     const emit = this.emitter(chat, turnId);
+    this.log(`turn accepted ${JSON.stringify({turnId,harness:model.harness,model:model.model,preparationMs:Math.round(performance.now()-preparationStarted)})}`);
     let resolveDone!: () => void;
     const done = new Promise<void>((resolve) => (resolveDone = resolve));
-    chat.turn = { id: turnId, done, interrupted: false };
+    const queuedAt = queuedMessageId ? chat.queuedAt.get(queuedMessageId) : undefined;
+    const trace = this.options.trace?.begin(model.harness, performance.now() - preparationStarted, queuedAt === undefined ? (queuedMessageId ? null : 0) : performance.now() - queuedAt);
+    if (queuedMessageId) chat.queuedAt.delete(queuedMessageId);
+    chat.turn = { id: turnId, done, interrupted: false, trace };
     chat.settling = done;
     if (queuedMessageId && chat.meta.queue) emit({ type: "queue.updated", queue: chat.meta.queue });
     emit({ type: "chat.updated", chat: this.summary(chat) });
     emit({ type: "turn.started", turnId, model: model.model, user });
 
-    void this.runTurn(chat, turnId, withAttachments(providerText ?? text, attachments), model, emit)
-      .catch(error => this.log(`turn finalization failed: ${String(error)}`))
+    const run = () => this.runTurn(chat, turnId, withAttachments(providerText ?? text, attachments), model, emit);
+    void (trace ? trace.run(run) : run())
+      .catch(error => { if (trace && trace.record.status === null) this.options.trace?.save(trace, 'failed', error instanceof Error ? error.message : 'turn finalization failed'); this.log(`turn finalization failed: ${String(error)}`); })
       .finally(() => { if (chat.settling === done) chat.settling = null; resolveDone(); });
     return { chatId: chat.meta.id };
   }
@@ -765,7 +1008,13 @@ export class AgentHost {
   private emitter(chat: Chat, turnId: string): Emit {
     const { projectId, harness, model } = chat.meta;
     return (event) => {
+      event = timestampEvent(event,chat.transcript.items);
+      // The model already received the bytes; history and the UI only need the file.
+      if ((event.type === 'item.started' || event.type === 'item.completed') && event.item.kind === 'tool' && event.item.images?.some(image => image.data)) {
+        event = { ...event, item: { ...event.item, images: this.options.store.externalizeImages(chat.meta.id, event.item.images) } };
+      }
       if (event.type === 'usage.reported') {
+        chat.turn?.trace?.usage(event.usage);
         void this.options.store.usage.record(projectId, harness, model, event.usage)
           .then(usage => { if (usage) this.broadcast({ t: 'usage', usage }); })
           .catch(error => this.log(`token accounting failed: ${String(error)}`));
@@ -811,14 +1060,32 @@ export class AgentHost {
 
   private async runTurn(chat: Chat, turnId: string, text: string, model: ModelRef, emit: Emit): Promise<void> {
     let outcome: TurnOutcome;
+    const trace = chat.turn?.trace;
+    trace?.payload('host', 'user', text);
+    const started=performance.now();let readyMs:number|undefined,firstEventMs:number|undefined;
+    const observe:Emit=event=>{
+      if(firstEventMs===undefined&&(event.type==='item.delta'||((event.type==='item.started'||event.type==='item.completed')&&['assistant','reasoning','tool'].includes(event.item.kind))))firstEventMs=Math.round(performance.now()-started);
+      if (event.type === 'item.delta' || ((event.type === 'item.started' || event.type === 'item.completed') && ['assistant', 'reasoning', 'tool'].includes(event.item.kind))) {
+        const assistantOutput = event.type === 'item.delta' ? !!event.text.trim() && (chat.open.get(event.itemId)?.kind === 'assistant') : event.item.kind === 'assistant' && !!event.item.text.trim();
+        trace?.activity(assistantOutput);
+      }
+      emit(event);
+    };
     try {
       if (!this.options.mcp && !chat.noticedNoMcp) {
         chat.noticedNoMcp = true;
         emit({ type: "item.completed", item: { id: `n-${turnId.slice(0, 12)}`, kind: "notice", level: "info", text: "Las herramientas de revisión de esta ventana no están conectadas. Podés editar archivos, pero captura, comprobación y exportación no estarán verificadas. Revisá el estado en Configuración → MCP; no se usará otra ventana automáticamente." } });
       }
-      const session = await this.ensureSession(chat, model.model, emit);
+      const session = await this.ensureSession(chat, model.model, observe);
+      readyMs=Math.round(performance.now()-started);
+      trace?.ready();
       if(chat.turn?.interrupted)throw Error('Turno cancelado.');
-      outcome = (await session.send(text, model.model, emit, model.effort, model.fast ?? false)) ?? { status: "completed" };
+      // The first message gets a factual index of the project (names and counts) so research starts informed.
+      const firstTurn = chat.transcript.items.filter(item => item.kind === 'user').length <= 1;
+      const snapshot = firstTurn ? await projectSnapshot(chat.meta.cwd).catch(() => '') : '';
+      const prompt = snapshot ? `${text}\n\n<app_context>\n${snapshot.replaceAll('</', '<\\/')}\n</app_context>` : text;
+      if (snapshot) trace?.payload('host', 'instructions', snapshot);
+      outcome = (await session.send(prompt, model.model, observe, model.effort, model.fast ?? false)) ?? { status: "completed" };
     } catch (error) {
       const message = (error as Error)?.message ?? String(error);
       outcome = chat.turn?.interrupted ? { status: "interrupted" } : { status: "failed", error: message };
@@ -827,6 +1094,8 @@ export class AgentHost {
       }
     }
     if (chat.turn?.interrupted && outcome.status === "completed") outcome = { status: "interrupted" };
+    if (trace) this.options.trace?.save(trace, outcome.status, outcome.error);
+    this.log(`turn timing ${JSON.stringify({turnId,harness:model.harness,model:model.model,readyMs,firstEventMs,totalMs:Math.round(performance.now()-started),status:outcome.status})}`);
     this.finalizeOpen(chat, outcome.status, emit);
     emit({ type: "turn.completed", turnId, status: outcome.status, ...(outcome.error ? { error: outcome.error } : {}) });
     chat.turn = null;
@@ -856,19 +1125,20 @@ export class AgentHost {
   }
 
   private async ensureSession(chat: Chat, model: string, emit: Emit): Promise<HarnessSession> {
-    if (chat.session?.isClosed) { await chat.session.close(); chat.session = null; }
-    if (chat.session) return chat.session;
+    const trace = chat.turn?.trace, started = performance.now();
+    if (chat.session?.isClosed) { await chat.session.close(); chat.session = null; chat.sessionReason = 'transport_closed'; }
+    if (chat.session) { trace?.session('reuse', 'active_session', performance.now() - started); trace?.instructions('confirmed_session'); return chat.session; }
     const harness = this.harnessById.get(chat.meta.harness);
     if (!harness) throw new HostError("harness-unavailable", `${HARNESS_LABELS[chat.meta.harness]} is not available`);
     const env = await this.options.env;
     const projectMcp = bindProjectMcp(this.options.mcp, chat.meta.projectId, chat.meta.cwd);
-    const session = await harness.open({
+    const openOptions: import('./harness').OpenOptions = {
       notify: notice => this.notice(chat, { type: 'project.notice', notice }),
       cwd: chat.meta.cwd,
       model,
       resume: chat.meta.resume ?? undefined,
       mcp: projectMcp,
-      instructions: [chatInstructions(chat.meta.cwd, this.options.instructions, harness.codeGraphTools === true),
+      instructions: [(harness.progressiveContext ? progressiveChatInstructions : chatInstructions)(chat.meta.cwd, this.options.instructions, harness.codeGraphTools === true),
         this.options.mcp ? PROJECT_PREVIEW_INSTRUCTIONS : undefined].filter(Boolean).join('\n\n'),
       askUser: async questions => {
         if(!chat.turn||chat.turn.interrupted||chat.transcript.pending)throw new HostError('no-request','No active turn or another question is waiting.');
@@ -878,7 +1148,12 @@ export class AgentHost {
       previousConversation: chat.meta.resume && chat.meta.harness === "codex" ? recentConversation(chat.transcript.items) : undefined,
       env: projectMcp ? { ...env, env: { ...env.env, SYKA_PROJECT_MCP_URL: projectMcp.url } } : env,
       emit,
-    });
+    };
+    bindHarnessTrace(openOptions, () => chat.turn?.trace);
+    trace?.payload('host', 'instruction_source', openOptions.instructions);
+    let session: HarnessSession;
+    try { session = await harness.open(openOptions); }
+    finally { trace?.session(chat.meta.resume ? 'resume' : 'new', chat.sessionReason, performance.now() - started); }
     chat.session = session;
     chat.meta = { ...chat.meta, resume: session.resume };
     return session;
@@ -892,6 +1167,7 @@ export class AgentHost {
       if (chat.turn) return;
       const session = chat.session;
       chat.session = null;
+      chat.sessionReason = 'idle';
       void session?.close().catch(() => {});
     }, this.options.idleMs ?? IDLE_MS);
   }

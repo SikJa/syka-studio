@@ -296,8 +296,14 @@
 .agent-composer-suggestions-menu > button svg { color:color-mix(in srgb,var(--agent-composer-accent) 62%,var(--muted)); }
 
 .agent-composer-model-menu { right: 37px; width: min(246px, calc(100vw - 42px)); }
+.agent-composer-model-search { display:flex; align-items:center; gap:7px; margin:1px 1px 4px; padding:6px 8px; border-radius:7px; background:var(--surface-active); color:var(--muted); flex-shrink:0; }
+.agent-composer-model-search input { min-width:0; width:100%; border:0; outline:none; background:transparent; color:var(--text); font:inherit; font-size:12px; }
+.agent-composer-model-search:focus-within { outline:2px solid var(--agent-composer-accent); outline-offset:1px; }
+.agent-composer-model-provider { padding:5px 7px 3px; font-size:10px; font-weight:600; color:var(--muted); }
+.agent-composer-model-empty { margin:8px; font-size:12px; line-height:1.5; color:var(--muted); }
 .agent-composer-model-options {
   display: grid;
+  gap: 2px;
   max-height: 230px;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -307,10 +313,10 @@
 .agent-composer-model-options button {
   display: flex;
   width: 100%;
-  min-height: 30px;
+  min-height: 34px;
   align-items: center;
   gap: 9px;
-  padding: 5px 7px;
+  padding: 3px 7px;
   border: 0;
   border-radius: 7px;
   color: var(--text-soft);
@@ -325,7 +331,7 @@
 .agent-composer-model-options button[data-selected="true"] { background: var(--surface-active); }
 .agent-composer-model-options button:disabled { cursor: default; }
 .agent-composer-model-options button > span:first-child { display: grid; min-width: 0; flex: 1; gap: 1px; }
-.agent-composer-model-options strong { overflow: hidden; color: var(--text); font-size: 11px; font-weight: 620; text-overflow: ellipsis; white-space: nowrap; }
+.agent-composer-model-options strong { overflow: hidden; color: var(--text); font-size: 12px; font-weight: 620; overflow-wrap:anywhere; line-height:1.35; }
 .agent-composer-model-options em { overflow: hidden; color: var(--muted); font-size: 9px; font-style: normal; text-overflow: ellipsis; white-space: nowrap; }
 .agent-composer-model-check {
   display: grid;
@@ -375,20 +381,24 @@
 
 .agent-composer-effort {
   display: grid;
-  gap: 7px;
-  margin: 5px -5px -5px;
-  padding: 10px 11px 11px;
-  border-top: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface-3) 56%, transparent);
+  grid-template-columns: minmax(0, 1fr) 120px;
+  align-items: center;
+  gap: 10px;
+  width: min(238px, 100%);
+  box-sizing: border-box;
+  margin: 8px 0 2px;
+  padding: 6px 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface-active) 65%, var(--surface));
 }
 
-.agent-composer-effort > div:first-child { display: flex; align-items: baseline; gap: 4px; color: var(--muted); font-size: 9.5px; }
-.agent-composer-effort > div:first-child strong { color: var(--text-soft); font-size: 10px; }
-.agent-composer-effort-ends { display: flex; justify-content: space-between; color: var(--muted-2); font-size: 8.5px; }
+.agent-composer-effort > div:first-child { display: grid; min-width: 0; gap: 2px; color: var(--muted); font-size: 10px; }
+.agent-composer-effort > div:first-child strong { overflow: hidden; color: var(--text-soft); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 .agent-composer-effort-slider {
   position: relative;
   display: grid;
-  height: 29px;
+  height: 25px;
   align-items: center;
   overflow: hidden;
   padding: 0 8px;
@@ -414,9 +424,9 @@
 .agent-composer-effort-slider input { position: relative; z-index: 2; width: 100%; height: 18px; margin: 0; appearance: none; background: transparent; cursor: pointer; }
 .agent-composer-effort-slider input::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: transparent; }
 .agent-composer-effort-slider input::-webkit-slider-thumb {
-  width: 20px;
-  height: 25px;
-  margin-top: -11.5px;
+  width: 17px;
+  height: 21px;
+  margin-top: -9.5px;
   appearance: none;
   border: 1px solid var(--line-strong);
   border-radius: 6px;

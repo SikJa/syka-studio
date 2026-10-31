@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { resolve, join } from 'node:path';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import { chromium } from 'playwright-core';
+const root = resolve('../Pruebas Syka/17-recorte-personas-v2'), output = resolve('output/background-removal');
+await mkdir(output, { recursive: true });
+const browser = await chromium.connectOverCDP('http://127.0.0.1:9367'), page = browser.contexts().flatMap(c => c.pages()).find(p => p.url().startsWith('http://127.0.0.1:5417'));
+const client = new Client({ name: 'syka-cutout-qa', version: '1' });
+await client.connect(new StreamableHTTPClientTransport(new URL('http://127.0.0.1:3397/mcp')));
+const call = async (name, args) => { const result = await client.callTool({ name, arguments: args }, undefined, { timeout: 180000 }); if (result.isError) throw Error(JSON.stringify(result)); return result.structuredContent; };
+const evidence = { verifiedAt: new Date().toISOString(), project: root, checks: [] };
+try {
+  const source = await readFile(join(root, 'index.tsx'), 'utf8');
+  assert.match(source, /sujeto-fotogramas/); assert.equal((source.match(/<audio /g) || []).length, 1); assert.match(source, /frameRate=\{12\}/);
+  evidence.checks.push('Transparent native sequence, source fps and one original audio layer persisted.');
+  evidence.check = await call('check', { id: 'main' });
+  evidence.capture = await call('capture', { id: 'main', times: [0, .6, 1.8], output: join(output, 'frames'), separate: true });
+  evidence.export = await call('export', { id: 'main', path: join(root, 'exports/recorte.mp4') });
+  await page.getByRole('button', { name: 'Deshacer', exact: true }).click(); await page.waitForTimeout(1500);
+  const undone = await readFile(join(root, 'index.tsx'), 'utf8'); assert.match(undone, /src="assets\/persona.mp4"/); assert.doesNotMatch(undone, /<audio/);
+  await page.getByRole('button', { name: 'Rehacer', exact: true }).click(); await page.waitForTimeout(1500);
+  assert.match(await readFile(join(root, 'index.tsx'), 'utf8'), /sujeto-fotogramas/);
+  evidence.checks.push('One undo restores original source/audio; redo restores both layers.');
+  await page.reload(); await page.getByText('Sujeto sin fondo', { exact: true }).first().waitFor(); await page.waitForTimeout(1500);
+  await page.screenshot({ path: join(output, 'reabierto.png') });
+  evidence.checks.push('Real editor reopened the saved cutout with no setup rewrite.');
+  await writeFile(join(output, 'verification.json'), JSON.stringify(evidence, null, 2));
+  console.log(JSON.stringify(evidence, null, 2));
+} finally { await client.close(); await browser.close(); }

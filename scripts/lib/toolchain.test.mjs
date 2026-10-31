@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { childPath, downloadVerified, installTool, toolComplete, validateTool, windowsTools } from './toolchain.mjs';
+import { GRAPHIFY_UV } from './graphify-setup.mjs';
 const body = Buffer.from('downloaded fixture bytes');
 function manifest(overrides = {}) { return { id: 'yt-dlp', names: ['yt-dlp'], version: 'fixture', format: 'exe', prefix: '', files: ['yt-dlp.exe'], license: 'fixture',
   url: 'https://github.com/yt-dlp/yt-dlp/releases/download/fixture/yt-dlp.exe', sha256: createHash('sha256').update(body).digest('hex'), ...overrides }; }
@@ -13,8 +14,16 @@ async function fixture(run) { const root = await mkdtemp(join(tmpdir(), 'syka-to
 
 test('all pinned tools have valid HTTPS provenance and hashes', () => {
   for (const tool of windowsTools) validateTool(tool);
+  validateTool(GRAPHIFY_UV);
   assert.deepEqual(windowsTools.map(tool => tool.id), ['node', 'ffmpeg', 'yt-dlp']);
 });
+
+test('installs a verified archive whose executables are at its root', async () => fixture(async root => {
+  const tool = manifest({ id: 'uv', format: 'zip', prefix: '', files: ['uv.exe'] });
+  await installTool(root, tool, { fetcher: fakeFetch, extractor: async (_, { dir }) => { await writeFile(join(dir, 'uv.exe'), 'uv fixture'); } });
+  assert.equal(await readFile(join(root, 'uv/uv.exe'), 'utf8'), 'uv fixture');
+  assert.equal(await toolComplete(root, tool), true);
+}));
 test('rejects paths escaping the managed tools root and invalid provenance', () => {
   for (const part of ['../another', '.', '../../Windows']) assert.throws(() => childPath('/tools', part));
   for (const url of ['http://github.com/owner/repo/file', 'https://user:password@github.com/owner/repo/file', 'https://attacker.example/tool.exe']) assert.throws(() => validateTool(manifest({ url })));

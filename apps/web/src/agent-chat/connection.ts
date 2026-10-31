@@ -22,3 +22,13 @@ export async function resolveEndpoint(): Promise<string | null> {
 export const hasHost = (): boolean => !!window.desktop || configuredUrl() !== null;
 
 export const client = new AgentChatClient({ resolveEndpoint });
+
+/** HTTP address of a tool image stored in a chat; same host and token as the socket. */
+export async function chatImageUrl(chatId: string, ref: string): Promise<string | null> {
+  const endpoint = await resolveEndpoint().catch(() => null);
+  if (!endpoint) return null;
+  const url = new URL(endpoint);
+  url.protocol = url.protocol === "wss:" ? "https:" : "http:";
+  url.pathname = `/images/${encodeURIComponent(chatId)}/${encodeURIComponent(ref)}`;
+  return url.href;
+}

@@ -37,7 +37,7 @@ async function writeBlob(path: string, blob: Blob): Promise<void> {
 }
 
 /** The `ProjectFS` of the project folder at `dir`. */
-export function createProjectFS(dir: string): ProjectFS {
+export function createProjectFS(dir: string, onManifestSaved?: () => void | Promise<void>): ProjectFS {
 	const separator = dir.includes('\\') ? '\\' : '/';
 	const absolute = (source: string): string =>
 		isAbsoluteSource(source) ? source : `${dir}${separator}${source.split('/').join(separator)}`;
@@ -45,7 +45,10 @@ export function createProjectFS(dir: string): ProjectFS {
 	return {
 		absolute,
 		readManifest: () => mainBridge.call(MAIN_CHANNELS.PROJECTS_MANIFEST_READ, { dir }),
-		writeManifest: (manifest: Manifest) => mainBridge.call(MAIN_CHANNELS.PROJECTS_MANIFEST_WRITE, { dir, manifest }),
+		writeManifest: async (manifest: Manifest, options) => {
+      await mainBridge.call(MAIN_CHANNELS.PROJECTS_MANIFEST_WRITE, { dir, manifest, recordHistory: options?.recordHistory });
+      await onManifestSaved?.();
+    },
 		list: (source) => mainBridge.call(MAIN_CHANNELS.PROJECTS_FS_LIST, { dir, source }),
 		stat: (source) => mainBridge.call(MAIN_CHANNELS.PROJECTS_FS_STAT, { dir, source }),
 		file: (source) => new ElectronFileHandle(absolute(source)).getFile(),

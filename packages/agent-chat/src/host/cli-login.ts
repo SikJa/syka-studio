@@ -50,6 +50,12 @@ export function loginDeviceCode(output: string): string | undefined {
   return [...cleanLoginOutput(output).matchAll(/(?:user[ _-]?code|device[ _-]?code|enter(?: this)? code|c[oó]digo)\s*[:=]?\s*([A-Z0-9]{3,8}-[A-Z0-9]{3,8})\b/gi)].at(-1)?.[1];
 }
 
+/** Confirm only the official Google OAuth choice, never Cloud billing or trust prompts. */
+export function antigravityGoogleLoginPrompt(output: string): boolean {
+  const clean = cleanLoginOutput(output);
+  return /Select login method:\s*>\s*1\.\s*Google OAuth\s+2\.\s*Use a Google Cloud project\s+[↑↓/\s]*Navigate\s*·\s*enter Select/i.test(clean);
+}
+
 /** Owns only the login subprocess. Credentials remain in the official provider's store. */
 export async function runCliLogin(options: CliLoginOptions): Promise<void> {
   if (!isAbsolute(options.command) || !isAbsolute(options.cwd) || /\.(?:cmd|bat|ps1)$/i.test(options.command)) throw Error('No se encontró un componente oficial de conexión válido.');
@@ -76,7 +82,7 @@ export async function runCliLogin(options: CliLoginOptions): Promise<void> {
   }
   let shutdown: Promise<void> | undefined;
   try { await new Promise<void>((resolve, reject) => {
-    let settled = false, killed = false, buffer = '', url: string | undefined, requestedCode = false, verifying = false;
+    let settled = false, killed = false, buffer = '', url: string | undefined, requestedCode = false, verifying = false, selectedGoogle = false;
     const streams: Record<string, string> = {};
     const dispose: Array<() => void> = [];
     const stop = () => { if (killed) return; killed = true; try { terminal?.kill(); } catch { /* Already exited. */ } if (child) shutdown = killTree(child); };
@@ -101,6 +107,11 @@ export async function runCliLogin(options: CliLoginOptions): Promise<void> {
       if (settled) return;
       buffer = (buffer + chunk).slice(-64 * 1024);
       const clean = cleanLoginOutput(buffer);
+      if (terminal && options.provider === 'antigravity' && !selectedGoogle && antigravityGoogleLoginPrompt(clean)) {
+        selectedGoogle = true;
+        options.hooks?.update({ phase: 'preparing', message: 'Abriendo el inicio de sesión oficial con Google…', expiresAt });
+        terminal.write('\r');
+      }
       streams[source] = ((streams[source] ?? '') + chunk).slice(-64 * 1024);
       const stream = cleanLoginOutput(streams[source]!);
       // Pipe/PTY chunks do not coincide with lines. Opening an unfinished URL

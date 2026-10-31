@@ -5,6 +5,7 @@
 import { Show, createMemo, createSignal, onMount } from "solid-js";
 import { Canvas } from "@/components/canvas";
 import { leftSidebarWidth } from "@/agent-chat";
+import { ChatWidthHandle } from '@/agent-chat/chat-width-handle';
 import { Timeline, Layers } from "@/components/timeline";
 import { TimelineToolbar } from '@/components/timeline/toolbar';
 import { Soundboard, RightSidebar } from "@/components/sidebar-right";
@@ -123,6 +124,7 @@ export function EditorPage() {
       // The old render goes first: there is only one stage per world.
       unmount();
       mounted = mount(code, world);
+      engine.requestPreviewFit();
       mountedCode = code;
       // The `@inspect` variables this mount declared, for the inspector.
       setInspectEntries(world, mounted.inspect);
@@ -410,7 +412,7 @@ export function EditorPage() {
       </Show>
       <Show when={uiVisible()}>
         <SidebarLeft />
-        <div class="bg-border-strong" />
+        <ChatWidthHandle />
       </Show>
       <Canvas />
       <Show when={uiVisible()}>

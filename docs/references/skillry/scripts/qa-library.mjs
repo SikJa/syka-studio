@@ -1,0 +1,52 @@
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { chromium } from 'playwright-core';
+
+const root = resolve(process.argv[2]);
+const evidence = resolve(root, 'qa');
+await mkdir(evidence, { recursive: true });
+const browser = await chromium.launch({ executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+const errors = [];
+page.on('pageerror', error => errors.push(error.message));
+try {
+  await page.goto(pathToFileURL(resolve(root, 'library.html')).href);
+  await page.waitForLoadState('networkidle');
+  assert.equal(await page.locator('.card').count(), 24);
+  await page.getByLabel('Buscar referencias').fill('tarjetas tipografía');
+  await page.getByLabel('Tipo', { exact: true }).selectOption('video');
+  await page.getByLabel('Evidencia').selectOption('reviewed');
+  assert.ok(await page.locator('.card').count() > 0);
+  await page.screenshot({ path: resolve(evidence, 'library-search.png'), fullPage: true });
+  await page.locator('.card').first().click();
+  await page.locator('dialog[open]').waitFor();
+  const video = page.locator('dialog video').first();
+  await video.evaluate(async element => {
+    element.muted = true;
+    await element.play();
+  });
+  await page.waitForFunction(() => document.querySelector('dialog video').currentTime > .3);
+  const playback = await video.evaluate(element => ({ currentTime: element.currentTime, duration: element.duration, width: element.videoWidth, height: element.videoHeight, error: element.error?.message ?? null }));
+  assert.ok(playback.width > 0 && !playback.error);
+  await video.evaluate(element => element.pause());
+  await page.getByText('Leer prompt o texto publicado', { exact: true }).click();
+  assert.ok((await page.locator('dialog .source').last().innerText()).length > 100);
+  await page.screenshot({ path: resolve(evidence, 'library-detail.png'), fullPage: true });
+  await page.getByRole('button', { name: 'Cerrar', exact: true }).click();
+  await page.getByLabel('Buscar referencias').fill('Velocity-Matched');
+  await page.getByLabel('Tipo', { exact: true }).selectOption('skill');
+  await page.getByLabel('Evidencia').selectOption('all');
+  assert.equal(await page.locator('.card').count(), 1);
+  await page.locator('.card').first().click();
+  await page.getByText('Leer documento de la skill', { exact: true }).click();
+  assert.match(await page.locator('dialog .source').last().innerText(), /Matched vectors/);
+  await page.getByRole('button', { name: 'Cerrar', exact: true }).click();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: resolve(evidence, 'library-mobile.png'), fullPage: true });
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  assert.deepEqual(errors, []);
+  await writeFile(resolve(evidence, 'ui-verification.json'), JSON.stringify({ status: 'passed', browser: 'isolated headless Chrome', localFileNavigation: true, spanishSearch: true, evidenceFilter: true, sourceTextOpened: true, localPlayback: playback, publicSkillRead: true, mobileNoHorizontalOverflow: true, pageErrors: errors }, null, 2));
+  console.log('Library UI: Spanish search, evidence filter, local playback, source reading, public skill and mobile layout passed.');
+} finally { await browser.close(); }

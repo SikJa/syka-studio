@@ -39,7 +39,7 @@ export function MirelMessage(props:{item:Extract<Item,{kind:'assistant'}>}){
  const [feedback,setFeedback]=createSignal<AgentThreadMessage['feedback']>();
  createEffect(()=>{const key=storageKey();try{setFeedback(JSON.parse(localStorage.getItem(key)??'null')??undefined);}catch{setFeedback(undefined);}});
  onMount(()=>{root=createRoot(el);createEffect(()=>{
-   const message:AgentThreadMessage={id:props.item.id,role:'assistant',content:props.item.text,createdAt:new Date(0).toISOString(),feedback:feedback()};
+   const message:AgentThreadMessage={id:props.item.id,role:'assistant',content:props.item.text,createdAt:props.item.createdAt?new Date(props.item.createdAt).toISOString():'',feedback:feedback()};
    root.render(createElement(view(),{sectionId:'syka-message-'+props.item.id,agent,message,renderBody:withoutDuplicateImageLinks(props.item.text,actions?.imageDownloadPaths?.(props.item.id)??[]),previousMessage:undefined,hideIdentityOrb:true,sending:!!actions?.running()&&actions.lastAssistantId()===props.item.id&&actions.isActiveItem(props.item.id),reducedMotion:window.matchMedia('(prefers-reduced-motion: reduce)').matches,onCommand:(text:string)=>actions?.onDraft(text),
    onBranch:()=>actions?.onBranch(props.item.id),onFeedback:async(_:string,verdict:AgentFeedbackVerdict|null,comment:string|null)=>{const next=verdict?{verdict,comment}:undefined;localStorage.setItem(storageKey(),JSON.stringify(next??null));setFeedback(next);}}));
  });});onCleanup(()=>root?.unmount());

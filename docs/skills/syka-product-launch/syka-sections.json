@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": [
+        {
+          "name": "syka-product-launch",
+          "sectionId": "brief",
+          "file": "references/twelve-rules.md",
+          "when": "Sólo al planificar o revisar un lanzamiento completo"
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-local-audio",
+          "sectionId": "build",
+          "file": "references/earshot-launch.md",
+          "when": "Sólo lanzamiento con música y kit nativo requerido"
+        },
+        {
+          "name": "syka-product-launch",
+          "sectionId": "build",
+          "file": "references/narration-sync.md",
+          "when": "Sólo si existe voz elegida con timestamps reales"
+        },
+        {
+          "name": "syka-product-launch",
+          "sectionId": "build",
+          "file": "references/demo-recipes.md",
+          "when": "Sólo la receta de UI que se va a implementar"
+        },
+        {
+          "name": "syka-product-launch",
+          "sectionId": "build",
+          "file": "references/camera-and-framing.md",
+          "when": "Siempre que se anime UI o capturas del producto"
+        },
+        {
+          "name": "syka-product-launch",
+          "sectionId": "build",
+          "file": "references/guided-launch-and-mascot.md",
+          "when": "Sólo si la referencia/mascota cumple una función solicitada"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": []
+    }
+  ]
+}

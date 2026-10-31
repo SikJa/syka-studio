@@ -8,7 +8,7 @@ import { ClaudeCliHarness } from '../src/host/claude-cli';
 import { AcpHarness } from '../src/host/acp';
 import { ProjectUsageStore } from '../src/host/project-usage';
 import type { HarnessSession } from '../src/host/harness';
-import type { ChatEvent, TokenUsageReport } from '../src/protocol';
+import type { ChatEvent, ContextUsage, TokenUsageReport } from '../src/protocol';
 
 const roots: string[] = [], sessions: HarnessSession[] = [];
 const env = { env: { PATH: process.env.PATH ?? '', SYSTEMROOT: process.env.SYSTEMROOT ?? 'C:\\Windows' }, extraDirs: [] };
@@ -99,6 +99,17 @@ describe('Claude native usage contract', () => {
 });
 
 describe('provider subprocess to persistent ledger', () => {
+  it('publishes current Claude context separately from cumulative billing, including after resume',async()=>{
+    const root=await setup(),events:ChatEvent[]=[];
+    const harness=new ClaudeCliHarness({id:'claude',command:process.execPath,args:[fixture('claude-cli'),'usage'],profileDir:root});
+    const options={cwd:root,model:'__cli_default__',mcp:null,env,emit:(event:ChatEvent)=>events.push(event)};
+    const first=await harness.open(options);sessions.push(first);
+    await first.send('first','__cli_default__',options.emit);await first.close();
+    const resumed=await harness.open({...options,resume:first.resume});sessions.push(resumed);
+    await resumed.send('second','__cli_default__',options.emit);
+    expect(events.filter(e=>e.type==='context.updated').map(e=>e.usage)).toEqual([{usedTokens:45,maxTokens:1000},{usedTokens:45,maxTokens:1000}]);
+    expect(events.some(e=>e.type==='usage.reported'&&e.usage.tokens.totalTokens===130)).toBe(true);
+  });
   it.each(['usage', 'old-usage'])('counts two Claude CLI calls with %s semantics and resumes the native session', async mode => {
     const root = await setup(), ledger = new ProjectUsageStore(root), pending: Promise<unknown>[] = [];
     const harness = new ClaudeCliHarness({ id: 'claude', command: process.execPath, args: [fixture('claude-cli'), mode], profileDir: root });
@@ -124,5 +135,39 @@ describe('provider subprocess to persistent ledger', () => {
     const harness = new AcpHarness({ id: 'hermes', command: process.execPath, args: [fixture('acp-agent'), 'context-only', 'hermes'], profileDir: root });
     const session = await harness.open({ cwd: root, model: 'model-one', mcp: null, env, emit: e => events.push(e) }); sessions.push(session);
     await session.send('hello', 'model-one', e => events.push(e)); expect(events.some(e => e.type === 'usage.reported')).toBe(false);
+  });
+});
+
+describe('Claude current context occupancy',()=>{
+  it('uses latest main request input and cache, never session totals or subagent usage',()=>{
+    const windows=new Map<string,number>(),contexts:ContextUsage[]=[];
+    const tracker=new ClaudeUsageTracker('s',true,()=>{}, {windows,scope:'profile/opus',emit:c=>contexts.push(c)});
+    tracker.observe(step());
+    tracker.observe({...step('child','haiku'),parent_tool_use_id:'task'});
+    tracker.observe({type:'result',modelUsage:{opus:{inputTokens:999999,outputTokens:100,contextWindow:1000},haiku:{inputTokens:100000,outputTokens:900,contextWindow:200}}});
+    expect(contexts).toEqual([{usedTokens:45,maxTokens:1000}]);
+    tracker.observe({...step('next'),message:{...step().message,usage:{input_tokens:3,cache_read_input_tokens:9,output_tokens:900}}});
+    expect(contexts.at(-1)).toEqual({usedTokens:12,maxTokens:1000});
+  });
+  it('keeps missing capacity unknown and accepts only the primary model native window',()=>{
+    const contexts:ContextUsage[]=[],tracker=new ClaudeUsageTracker('s',true,()=>{}, {windows:new Map(),emit:c=>contexts.push(c)});
+    tracker.observe(step());
+    tracker.observe({type:'result',modelUsage:{haiku:{inputTokens:1,outputTokens:1,contextWindow:200}}});
+    for(const value of [0,-1,1.5,NaN,Infinity,'1000'])tracker.observe({type:'result',modelUsage:{opus:{contextWindow:value}}});
+    expect(contexts).toEqual([]);
+    tracker.observe({type:'result',modelUsage:{'opus-alias':{canonicalModel:'opus',contextWindow:1000}}});
+    expect(contexts).toEqual([{usedTokens:45,maxTokens:1000}]);
+  });
+  it('isolates model/profile windows and publishes a lower measured context after compaction',()=>{
+    const windows=new Map<string,number>(),contexts:ContextUsage[]=[];
+    const first=new ClaudeUsageTracker('a',true,()=>{},{windows,scope:'profile-a',emit:c=>contexts.push(c)});
+    first.observe(step());first.observe({type:'result',modelUsage:{opus:{contextWindow:1000}}});
+    const second=new ClaudeUsageTracker('b',true,()=>{},{windows,scope:'profile-b',emit:c=>contexts.push(c)});
+    second.observe(step());expect(contexts).toHaveLength(1);
+    second.observe({type:'result',modelUsage:{opus:{contextWindow:2000}}});
+    second.observe({type:'system',subtype:'compact_boundary'});
+    second.observe({type:'result',modelUsage:{opus:{contextWindow:2000}}});expect(contexts).toHaveLength(2);
+    second.observe({type:'assistant',message:{id:'post-compact',model:'opus',usage:{input_tokens:0,cache_read_input_tokens:4,output_tokens:1}}});
+    expect(contexts.at(-1)).toEqual({usedTokens:4,maxTokens:2000});
   });
 });

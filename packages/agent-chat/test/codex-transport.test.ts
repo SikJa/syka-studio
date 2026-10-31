@@ -9,6 +9,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CodexHarness, appServerArgs } from "../src/host/codex";
 import {chatInstructions} from '../src/host/harness';
 import type { ChatEvent } from "../src/protocol";
+import { bindHarnessTrace, HarnessTurnTrace, payloadSize } from '../src/host/harness-telemetry';
 
 const state = vi.hoisted(() => ({
   accountType: "chatgpt" as string | null,
@@ -86,6 +87,25 @@ const env = { env: {}, extraDirs: [] };
 beforeEach(() => { state.calls = []; state.items = []; state.notifications=[]; state.accountType = "chatgpt"; state.failMethod = ""; state.dynamic=[];state.responses=[];state.metadata={};state.childCompletes=false;state.tiers=undefined;state.legacyTiers=undefined; state.holdTurn=false; state.completeWithQuestion=false; });
 
 describe("Codex app-server bridge without provider calls", () => {
+  it('measures schemas, instructions and complete native tool results on the active turn',async()=>{
+    const first=new HarnessTurnTrace('codex');let active=first;
+    const options={cwd:resolve('open-project'),model:'account-model',env,mcp:null,emit(){},instructions:'Private rules'};
+    bindHarnessTrace(options,()=>active);
+    const session=await first.run(()=>new CodexHarness().open(options));
+    try{
+      const output='native result '.repeat(10_000);
+      state.items=[{id:'native-read',type:'mcpToolCall',tool:'syka_read_source',status:'completed',arguments:{path:'private.tsx'},result:{content:[{type:'text',text:output}]}}];
+      await first.run(()=>session.send('First private request','account-model',()=>{}));
+      active=new HarnessTurnTrace('codex');
+      await active.run(()=>session.send('Second private request','account-model',()=>{}));
+      expect(first.record.payloads.some(p=>p.category==='schemas')).toBe(true);
+      expect(first.record.payloads.some(p=>p.category==='instructions')).toBe(true);
+      expect(first.record.tools).toHaveLength(1);expect(active.record.tools).toHaveLength(1);
+      expect(active.record.tools[0].textResponse).toEqual(payloadSize(output));
+      expect(active.record.payloads.some(p=>p.category==='wire_request')).toBe(true);
+      expect(JSON.stringify(first.finish('completed'))).not.toMatch(/Private rules|private.tsx|First private request|native result/);
+    }finally{await session.close();}
+  });
   it('counts only the main thread and verified descendants for project usage', async () => {
     state.metadata.child = { parentThreadId: 'ephemeral-thread' };
     state.notifications = ['child', 'unrelated'].map(threadId => ({ method: 'thread/tokenUsage/updated', params: { threadId, tokenUsage: { total: { totalTokens: 500 } } } }));
@@ -168,10 +188,11 @@ describe("Codex app-server bridge without provider calls", () => {
     } finally {await session.close();}
   });
   it('routes the code graph dynamic tool and honestly reports an unconfigured host', async () => {
-    state.dynamic = [{ threadId: 'ephemeral-thread', turnId: 'turn', callId: 'graph-status', tool: 'syka_code_graph', arguments: { action: 'status' } }];
+    state.dynamic = [{ threadId: 'ephemeral-thread', turnId: 'turn', callId: 'graph-status', namespace: 'syka_memory', tool: 'syka_code_graph', arguments: { action: 'status' } }];
     const session = await new CodexHarness().open({ cwd: resolve('open-project'), model: 'account-model', env, mcp: null, emit: () => {} });
     try {
-      expect(state.calls.find(call => call.method === 'thread/start')!.params.dynamicTools).toEqual(expect.arrayContaining([expect.objectContaining({ name: 'syka_code_graph' })]));
+      const groups = state.calls.find(call => call.method === 'thread/start')!.params.dynamicTools as Array<{ name: string; tools?: unknown[] }>;
+      expect(groups.find(group => group.name === 'syka_memory')?.tools).toEqual(expect.arrayContaining([expect.objectContaining({ name: 'syka_code_graph', deferLoading: true })]));
       await session.send('Read the code map status', 'account-model', () => {});
       expect(state.responses[0]?.result?.success).toBe(true);
       expect(JSON.parse(state.responses[0]!.result!.contentItems[0]!.text!)).toMatchObject({ status: { state: 'unavailable', current: false } });
@@ -193,7 +214,7 @@ describe("Codex app-server bridge without provider calls", () => {
     const session=await new CodexHarness().open({cwd,model:'account-model',env,mcp:null,emit:()=>{}});
     try {
       const start=state.calls.find(call=>call.method==='thread/start')!.params;
-      expect(start.dynamicTools).toEqual(expect.arrayContaining([expect.objectContaining({name:'syka_onboarding_memory'})]));
+      expect(start.dynamicTools).toEqual(expect.arrayContaining([expect.objectContaining({name:'syka_memory',tools:expect.arrayContaining([expect.objectContaining({name:'syka_onboarding_memory',deferLoading:true})])})]));
       await session.send('Read editing preferences','account-model',()=>{});
       expect(state.responses[0]?.result?.success).toBe(true);
       expect(JSON.parse(state.responses[0]!.result!.contentItems[0]!.text!)).toMatchObject({kind:'quoted-editing-data',projectId:'memory-routing-project',revision:0});
@@ -299,13 +320,17 @@ describe("Codex app-server bridge without provider calls", () => {
     const events: ChatEvent[] = [];
     const session = await new CodexHarness().open({ cwd, model: "account-model", env, mcp: null, resume: { codex: { threadId: "old-thread" } }, instructions: "Edit this project", previousConversation: "Quoted recent context", emit: (event) => events.push(event) });
     const start = state.calls.find((call) => call.method === "thread/resume")!.params;
+    expect(start.developerInstructions).not.toContain('Quoted recent context');
     expect(start).toMatchObject({ cwd, modelProvider: "openai", runtimeWorkspaceRoots: [cwd], sandbox: "danger-full-access", ephemeral: false });
-    expect(start.developerInstructions).toContain("Quoted recent context");
     expect(start.developerInstructions).toContain('no connected Syka MCP endpoint');
-    expect(start.developerInstructions).toContain("media_transcribe");
-    expect(start.developerInstructions).toContain("03 Assets reutilizables/Transcripciones");
-    expect(start.developerInstructions).toContain("never invent speech or word timings");
-    expect(start.dynamicTools).toEqual(expect.arrayContaining([expect.objectContaining({ name: "syka_read_transcript" })]));
+    expect(start.developerInstructions).toContain('syka_task_guidance');
+    expect(start.developerInstructions).not.toContain('03 Assets reutilizables/Transcripciones');
+    expect(start.dynamicTools).toEqual(expect.arrayContaining([expect.objectContaining({name:'syka_task_guidance',deferLoading:false})]));
+    expect(start.developerInstructions).toContain('syka_patch_source');
+    expect(start.developerInstructions).toContain('do not reread the full brief, recipe or workflow');
+    expect(start.developerInstructions).not.toContain('Read the bundled syka-editing-basics workflow for general edits');
+    expect(start.dynamicTools).toEqual(expect.arrayContaining([expect.objectContaining({ name: 'syka_patch_source' })]));
+    expect(start.dynamicTools).toEqual(expect.arrayContaining([expect.objectContaining({name:'syka_sources',tools:expect.arrayContaining([expect.objectContaining({ name: 'syka_read_transcript', deferLoading:true })])})]));
     expect(state.calls.some((call) => call.method === "thread/resume")).toBe(true);
     await expect(session.send("Make a reversible edit", "account-model", event => events.push(event), "high")).resolves.toEqual({ status: "completed" });
     expect(events).toContainEqual({type:'context.updated',usage:{usedTokens:1200,maxTokens:32000}});

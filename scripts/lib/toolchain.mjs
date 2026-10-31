@@ -91,7 +91,7 @@ async function performInstall(root, tool, { fetcher, progress, extractor = extra
     else {
       const unpack = childPath(stage, '.unpack'); await mkdir(unpack);
       await extractor(download, { dir: unpack });
-      const source = childPath(unpack, tool.prefix);
+      const source = tool.prefix ? childPath(unpack, tool.prefix) : unpack;
       for (const file of tool.files) {
         const target = childPath(stage, file); await mkdir(dirname(target), { recursive: true });
         await copyFile(childPath(source, file), target);

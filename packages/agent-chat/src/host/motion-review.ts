@@ -12,9 +12,10 @@ import { motionDiagnostics } from './motion-diagnostics';
 
 export const MOTION_REVIEW_TOOL = {
   type: 'function', name: 'syka_motion_review',
-  description: 'Build evidence from an existing LOCAL project export: contact sheets (up to 120 samples), 12 consecutive encoded frames around focusTime, and original-aspect 360px reading frames. Also screens consecutive 32x18 grayscale frames for one-frame flash candidates and optional loop seam/velocity changes, labelled against declaredCuts. Returns images, actual timestamps, video hash, source snapshot and automaticChecks. Uses local FFmpeg/FFprobe, preserves the file, never renders or exports a composition. Open candidate neighborhoods and review playback/audio; signals are not aesthetic approval, a comprehensive glitch detector or source seek verification. Use an existing user export; a source snapshot does not prove which revision produced it. Up to 180 seconds per review.',
+  description: 'Build evidence from an existing LOCAL project export: bounded contact sheets (standard up to 24 samples; quick 12; diagnostic 120), 12 consecutive encoded frames around focusTime, and original-aspect 360px reading frames. Choose focus/reading/events from the current beat map, not a fixed interval. Also screens consecutive small grayscale frames for flash candidates and optional loop seams. Returns timestamps, video hash, source snapshot and automaticChecks. Never renders or exports. Playback, listening and source seek tests remain separate; a source snapshot does not prove which revision produced this MP4. Up to 180 seconds.',
   inputSchema: { type: 'object', properties: {
     source: { type: 'string', description: 'Video export path inside the open project.' },
+    detail: { type: 'string', enum: ['quick','standard','diagnostic'], description: 'Bounds contact-sheet samples. Targeted events, reading frames and the consecutive-frame scan remain available in every mode.' },
     focusTime: { type: 'number', minimum: 0, description: 'Seconds from the first decoded frame of the export. Choose the risky transition; not automatic fastest-motion detection.' },
     readingTimes: { type: 'array', minItems: 1, maxItems: 12, items: { type: 'number', minimum: 0 }, description: 'Held frames to inspect for readable type. Defaults to 15%, 50%, 85% of the export.' },
     events: { type: 'array', maxItems: 12, items: { type: 'object', properties: { id: { type: 'string' }, seconds: { type: 'number', minimum: 0 } }, required: ['id', 'seconds'], additionalProperties: false }, description: 'Shared event IDs with fresh resolved native seconds from motion_events. Captures the encoded frame before, nearest and after each event. Times must correspond to the exported composition, not another scene.' },
@@ -58,7 +59,7 @@ export function closestFrame(frames: Frame[], seconds: number): Frame {
   const next = frames[a]!, prev = frames[Math.max(0, a - 1)]!;
   return seconds - prev.seconds <= next.seconds - seconds ? prev : next;
 }
-export function reviewPlan(frames: Frame[], duration: number, focusTime: number, readingTimes?: number[], events: ReviewEvent[] = [], exportStartSeconds=0) {
+export function reviewPlan(frames: Frame[], duration: number, focusTime: number, readingTimes?: number[], events: ReviewEvent[] = [], exportStartSeconds=0, detail: 'quick' | 'standard' | 'diagnostic' = 'standard') {
   if(!Number.isFinite(exportStartSeconds)||exportStartSeconds<0)throw Error('Origen de export inválido.');
   if (!frames.length || frames.some((f, i) => !Number.isFinite(f.seconds) || f.seconds < 0 || (i > 0 && f.seconds <= frames[i - 1]!.seconds)))
     throw Error('El video no tiene timestamps de cuadro estrictamente crecientes.');
@@ -68,7 +69,8 @@ export function reviewPlan(frames: Frame[], duration: number, focusTime: number,
       !Array.isArray(times) || times.length < 1 || times.length > 12 ||
       times.some(t => typeof t !== 'number' || !Number.isFinite(t) || t < 0 || t >= duration))
     throw Error('Elegí tiempos dentro del video (hasta 180 segundos, 1–12 tiempos de lectura).');
-  const count = Math.min(119, Math.ceil(duration * 2));
+  if (!['quick','standard','diagnostic'].includes(detail)) throw Error('Detalle de revisión inválido.');
+  const count = Math.min(({ quick: 11, standard: 23, diagnostic: 119 })[detail], Math.ceil(duration * 2));
   const contact = [...new Set([...Array.from({ length: count }, (_, i) => closestFrame(frames, i * duration / count).index), frames.length - 1])]
     .sort((a, b) => a - b).map(i => frames[i]!);
   const center = closestFrame(frames, focusTime).index;
@@ -86,7 +88,7 @@ export function reviewPlan(frames: Frame[], duration: number, focusTime: number,
   });
   return { contact, burst: frames.slice(start, start + 12),
     reading: times.map(t => ({ requestedSeconds: t, ...closestFrame(frames, t) })),
-    eventFrames, exportStartSeconds, contactStepSeconds: duration / count, focusTime };
+    eventFrames, exportStartSeconds, contactStepSeconds: duration / count, focusTime, detail };
 }
 async function reviewFolder(root: string) {
   const candidate = join(root, 'reviews');
@@ -106,7 +108,7 @@ async function reviewFolder(root: string) {
   await mkdir(out); return out;
 }
 export async function motionReview(cwd: string, raw: unknown, search?: ToolSearch) {
-  const args = raw as { source?: string; focusTime?: number; readingTimes?: number[]; events?: ReviewEvent[]; exportStartSeconds?:number; loop?: boolean; declaredCuts?: number[] };
+  const args = raw as { source?: string; focusTime?: number; readingTimes?: number[]; events?: ReviewEvent[]; exportStartSeconds?:number; loop?: boolean; declaredCuts?: number[]; detail?: 'quick' | 'standard' | 'diagnostic' };
   if (!args || typeof args.source !== 'string' || typeof args.focusTime !== 'number') throw Error('Se necesita export local y focusTime.');
   const root = await realpath(cwd), candidate = resolve(root, args.source);
   if (!inside(root, candidate)) throw Error('El export debe estar dentro del proyecto abierto.');
@@ -125,7 +127,7 @@ export async function motionReview(cwd: string, raw: unknown, search?: ToolSearc
   const rawFrames = JSON.parse(await run(ffprobe.path, ['-v', 'error', '-select_streams', 'v:0', '-show_frames', '-show_entries', 'frame=best_effort_timestamp_time', '-of', 'json', source]));
   const origin = Number(rawFrames.frames?.[0]?.best_effort_timestamp_time);
   const frames: Frame[] = rawFrames.frames?.map((f: { best_effort_timestamp_time?: string }, index: number) => ({ index, seconds: Number(f.best_effort_timestamp_time) - origin })) ?? [];
-  const plan = reviewPlan(frames, duration, args.focusTime, args.readingTimes, args.events,args.exportStartSeconds);
+  const plan = reviewPlan(frames, duration, args.focusTime, args.readingTimes, args.events,args.exportStartSeconds,args.detail);
   if (args.loop !== undefined && typeof args.loop !== 'boolean') throw Error('loop debe ser booleano.');
   const cuts = args.declaredCuts ?? [];
   if (!Array.isArray(cuts) || cuts.length > 64 || cuts.some(t => typeof t !== 'number' || !Number.isFinite(t) || t < 0 || t >= duration)) throw Error('Cortes declarados fuera del export.');

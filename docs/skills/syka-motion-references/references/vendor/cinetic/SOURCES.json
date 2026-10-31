@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/Leonxlnx/cinetic",
+  "commit": "ecfa6605de1adb9345ce937724810dc32267d068",
+  "sourcePath": "skills/cinetic/assets/library/techniques.json",
+  "sourceSha256": "d8d936571cfcbf884002130004f02845f514d6d2d36cfa5676114afc6fc0992b",
+  "licenseSha256": "4575a543ab88dad12ccea7d97e563d0bce5b448b06072e65d3264497dad326df",
+  "techniques": 273,
+  "categories": 14,
+  "adaptation": "Attributed per-technique text, compact bilingual index, native Syka execution contract. No upstream engine or runtime installed."
+}

@@ -5,21 +5,24 @@ import { Dialog, DialogContent, DialogTitle, DialogCloseButton, DialogPortal } f
 import { PreviewIcon } from '@/components/canvas/preview-icon';
 import './motion-preview.css';
 import type { ResourceEntry } from '@desktop/main-channels';
+import { resourcePreviews, visiblePreview } from './resource-previews';
 
 export function MotionThumbnail(props: { path: string; posterPath?: string }) {
   const [enabled,setEnabled]=createSignal(false);
+  let element!: HTMLSpanElement;
+  const visible = visiblePreview(() => element);
   let video:HTMLVideoElement|undefined;
   let hovering=false;
-  const [poster]=createResource(()=>props.posterPath,async path=>{
-    try{return (await mainBridge.call(MAIN_CHANNELS.SYKA_RESOURCES,{action:'preview',path})).preview}catch{return undefined}
+  const [poster]=createResource(()=>visible()?props.posterPath:undefined,async path=>{
+    try{return await resourcePreviews.get(path)}catch{return undefined}
   });
-  const [preview]=createResource(()=>enabled()?props.path:undefined,async path=>{
-    try{return (await mainBridge.call(MAIN_CHANNELS.SYKA_RESOURCES,{action:'preview',path})).preview}catch{return undefined}
+  const [preview, { mutate: clearPreview }]=createResource(()=>enabled()?props.path:undefined,async path=>{
+    try{const source=await resourcePreviews.get(path);return hovering?source:undefined}catch{return undefined}
   });
-  const enter=()=>{hovering=true;setEnabled(true);void video?.play().catch(()=>{})};
-  const leave=()=>{hovering=false;video?.pause()};
-  return <span class="absolute inset-0" onPointerEnter={enter} onPointerLeave={leave} onFocusIn={enter} onFocusOut={leave}>
-    <Show when={preview()} fallback={<Show when={poster()} fallback={<span class="grid h-full place-items-center">Motion</span>}><img src={poster()} alt="" class="h-full w-full object-contain rounded-lg"/></Show>}>
+  const enter=()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;hovering=true;setEnabled(true);void video?.play().catch(()=>{})};
+  const leave=()=>{hovering=false;video?.pause();setEnabled(false);clearPreview(undefined)};
+  return <span ref={element} class="absolute inset-0" onPointerEnter={enter} onPointerLeave={leave} onFocusIn={enter} onFocusOut={leave}>
+    <Show when={enabled()&&preview()} fallback={<Show when={poster()} fallback={<span class="grid h-full place-items-center">Motion</span>}><img src={poster()} alt="" class="h-full w-full object-contain rounded-lg"/></Show>}>
       <video ref={video} src={preview()} muted loop playsinline preload="metadata" class="h-full w-full object-contain rounded-lg" onLoadedData={()=>{if(hovering)void video?.play().catch(()=>{})}}/>
     </Show>
   </span>;

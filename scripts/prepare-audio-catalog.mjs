@@ -52,6 +52,7 @@ for(const [mood,bpm,name,tags]of [['warm',96,'Base cálida',['warm','cálida','m
   }
 }
 // A base rebuild must not discard subsequently imported licensed packs.
+for(const entry of entries)if(entry.provider==='Syka'&&entry.audioType==='music')entry.compositionFamily='syka-four-chord-bed';
 try {
   const previous=JSON.parse(await readFile(join(target,'catalog.json'),'utf8')),rebuilt=new Set(entries.map(e=>e.path));
   const profiles=new Map(previous.entries.map(e=>[e.path,e]));

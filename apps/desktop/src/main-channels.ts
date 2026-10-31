@@ -36,6 +36,7 @@ export const MAIN_CHANNELS = {
   SYKA_PUBLICATION: "syka:publication",
   SYKA_STUDIO_SETTINGS: "syka:studio-settings",
   SYKA_STORAGE: 'syka:storage',
+  SYKA_DIAGNOSTICS: 'syka:diagnostics',
   SYKA_ONBOARDING: 'syka:onboarding',
   SYKA_RESOURCES: 'syka:resources',
   SYKA_FONTS: 'syka:fonts',
@@ -73,6 +74,7 @@ export const MAIN_CHANNELS = {
   PROJECTS_CREATE: "projects:create",
   PROJECTS_RENAME: "projects:rename",
   PROJECTS_DUPLICATE: "projects:duplicate",
+  PROJECTS_TRIAL: "projects:trial",
   PROJECTS_DELETE: "projects:delete",
   PROJECTS_COMPILE: "projects:compile",
   PROJECTS_SOURCE_REVISION: "projects:source-revision",
@@ -87,6 +89,7 @@ export const MAIN_CHANNELS = {
   PROJECTS_FS_STAT: "projects:fs-stat",
   PROJECTS_FS_REMOVE: "projects:fs-remove",
   PROJECTS_FS_REAL_PATH: "projects:fs-real-path",
+  ASSETS_PICK_FOLDER: "assets:pick-folder",
   AGENT_CHAT_ENDPOINT: "agent-chat:endpoint",
   MCP_STATUS: "mcp:status",
   MCP_APPLY: "mcp:apply",
@@ -135,6 +138,7 @@ export type ProjectInfo = {
   modifiedAt: string;
   /** birthtime of the folder, ISO string. */
   createdAt: string;
+  trialOf?: { id: string; displayName: string; createdAt: string };
 };
 
 export type CompileResult =
@@ -211,6 +215,7 @@ export type MainRequestMap = {
   [MAIN_CHANNELS.SYKA_PUBLICATION]: { request: import("./publication/types").PublicationRequest; response: import("./publication/types").PublicationOverview };
   [MAIN_CHANNELS.SYKA_STUDIO_SETTINGS]: { request: import("./studio-settings").StudioSettingsRequest; response: import("./studio-settings").StudioSettingsResult };
   [MAIN_CHANNELS.SYKA_STORAGE]: { request: import('./storage/types').StorageRequest; response: import('./storage/types').StorageResponse };
+  [MAIN_CHANNELS.SYKA_DIAGNOSTICS]: { request: void; response: import('./diagnostics').AppDiagnostics };
   [MAIN_CHANNELS.SYKA_ONBOARDING]: { request: import('./syka-onboarding-contract').BrandRequest; response: import('./syka-onboarding-contract').BrandResponse };
   [MAIN_CHANNELS.APP_OPEN_CHAT_WINDOW]: { request: { url: string }; response: void };
   [MAIN_CHANNELS.APP_OPEN_EXTERNAL]: {
@@ -300,13 +305,15 @@ export type MainRequestMap = {
   };
   // Renames the project: `displayName` in the record, and the folder with it.
   [MAIN_CHANNELS.PROJECTS_RENAME]: {
-    request: { dir: string; displayName: string };
+    /** keepFolder: change only the shown name (a chat may already be working in the folder). */
+    request: { dir: string; displayName: string; keepFolder?: boolean };
     response: ProjectInfo;
   };
   [MAIN_CHANNELS.PROJECTS_DUPLICATE]: {
     request: { dir: string };
     response: ProjectInfo;
   };
+  [MAIN_CHANNELS.PROJECTS_TRIAL]: { request: { dir: string }; response: ProjectInfo };
   [MAIN_CHANNELS.PROJECTS_DELETE]: { request: { dir: string }; response: void };
   [MAIN_CHANNELS.PROJECTS_COMPILE]: {
     request: { dir: string };
@@ -328,9 +335,10 @@ export type MainRequestMap = {
     response: unknown;
   };
   [MAIN_CHANNELS.PROJECTS_MANIFEST_WRITE]: {
-    request: { dir: string; manifest: unknown };
+    request: { dir: string; manifest: unknown; recordHistory?: boolean };
     response: void;
   };
+  [MAIN_CHANNELS.ASSETS_PICK_FOLDER]: { request: {}; response: string | null };
   // The project's config: the `diffusion` field of its package.json, as
   // parsed (null when absent). The renderer owns its shape; see
   // `engine/project-config` in the web app.
@@ -375,10 +383,10 @@ export type MainRequestMap = {
   [MAIN_CHANNELS.CLI_STATUS]: { request: void; response: CliStatus };
   [MAIN_CHANNELS.CLI_INSTALL]: { request: void; response: CliInstallResult };
   [MAIN_CHANNELS.CLI_UNINSTALL]: { request: void; response: CliUninstallResult };
-  [MAIN_CHANNELS.SYKA_AGENT_SETTINGS]: {request:{action:'get'|'save-mcp'|'create-skill'|'import-skill'|'read-skill'|'save-skill';servers?:import('../../../packages/agent-chat/src/host/agent-config').AgentServer[];name?:string;source?:string;content?:string;revision?:string};response:{servers:import('../../../packages/agent-chat/src/host/agent-config').AgentServer[];skills:{name:string;path:string;description:string;bundled?:boolean;format?:'general'|'reels'|'youtube'}[];skillsRoot:string;ffmpegPath:string;content?:string;revision?:string}};
+  [MAIN_CHANNELS.SYKA_AGENT_SETTINGS]: {request:{action:'get'|'save-mcp'|'create-skill'|'import-skill'|'read-skill'|'save-skill';servers?:import('../../../packages/agent-chat/src/host/agent-config').AgentServer[];name?:string;source?:string;content?:string;revision?:string;bundled?:boolean};response:{servers:import('../../../packages/agent-chat/src/host/agent-config').AgentServer[];skills:{name:string;path:string;description:string;bundled?:boolean;format?:'general'|'reels'|'youtube'}[];skillsRoot:string;ffmpegPath:string;content?:string;revision?:string}};
   [MAIN_CHANNELS.SYKA_RESOURCES]: { request: import('../../../packages/agent-chat/src/host/resource-library').ResourceRequest; response: import('../../../packages/agent-chat/src/host/resource-library').ResourceResult };
   [MAIN_CHANNELS.SYKA_FONTS]: { request: import('./font-import').FontRequest; response: import('./font-import').FontCatalog };
-  [MAIN_CHANNELS.SYKA_DEPENDENCIES]: { request: { action: 'status' | 'install' } | void; response: import('./dependency-types').DependencyStatus };
+  [MAIN_CHANNELS.SYKA_DEPENDENCIES]: { request: { action: 'status' | 'install'; tool?: import('../../../packages/agent-chat/src/host/local-tools').LocalToolName } | void; response: import('./dependency-types').DependencyStatus };
   [MAIN_CHANNELS.SYKA_ACTIVITY]: { request: { exporting: boolean }; response: void };
   [MAIN_CHANNELS.SYKA_VIDEO_IMPORT]: { request: import('./video-import/types').VideoImportRequest; response: import('./video-import/types').VideoImportJob };
   [MAIN_CHANNELS.SYKA_BACKGROUND_REMOVAL]: { request: import('../../../packages/agent-chat/src/host/background-removal').BackgroundRequest; response: import('../../../packages/agent-chat/src/host/background-removal').BackgroundJob };
@@ -406,7 +414,7 @@ export type SykaGroqStatus = {
   model: "whisper-large-v3-turbo";
 };
 export type SykaEditHistoryResult =
-  | { ok: true; canUndo: boolean; canRedo: boolean; revision: string; changed?: boolean; undoLabel?: string; redoLabel?: string }
+  | { ok: true; canUndo: boolean; canRedo: boolean; revision: string; changed?: boolean; undoLabel?: string; redoLabel?: string; path?: string }
   | { ok: false; error: string };
 export type SykaTranscriptSegment = {
   text: string;

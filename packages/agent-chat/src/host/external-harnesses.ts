@@ -14,6 +14,7 @@ import { installedAcpHarness } from './installed-agents';
 import { AntigravityCliHarness } from './antigravity-cli';
 import { openCodeHarness } from './opencode';
 import { browserAcpHarness } from './browser-acp';
+import { geminiWebHarness } from './gemini-web';
 
 export const EXTERNAL_HARNESS_IDS = ["antigravity", "claude", "hermes", "cursor", "grok", "opencode"] as const;
 // Accept retired entries when reading existing configuration; never load them.
@@ -63,6 +64,7 @@ function unavailable(id: HarnessId, detail: string): Harness {
 /** Detect the official installed Claude CLI at probe time, without changing its global profile. */
 function discoverClaude(profilesRoot: string): Harness {
   let delegate: ClaudeCliHarness | undefined;
+  let delegateKey: string | undefined;
   const resolve = async (env: HostEnv) => {
     const bundled = join(profilesRoot, '..', 'providers', 'claude', 'node_modules', '@anthropic-ai', `claude-code-${process.platform}-${process.arch}`, process.platform === 'win32' ? 'claude.exe' : 'claude');
     const installed = await stat(bundled).then(value => value.isFile()).catch(() => false);
@@ -72,7 +74,13 @@ function discoverClaude(profilesRoot: string): Harness {
     const entry: ExternalHarnessEntry = /\.(mjs|cjs|js)$/i.test(entrypoint)
       ? { id: 'claude', command: process.execPath, args: [entrypoint] }
       : { id: 'claude', command: entrypoint };
-    try { const command = await validateExecutable(entry); return new ClaudeCliHarness({ ...entry, id: 'claude', command, profileDir: join(profilesRoot, 'claude') }); }
+    try {
+      const command = await validateExecutable(entry), profileDir=join(profilesRoot,'claude');
+      const key=JSON.stringify([command,entry.args,profileDir]);
+      if(delegate&&delegateKey===key)return delegate;
+      delegateKey=key;
+      return new ClaudeCliHarness({ ...entry, id: 'claude', command, profileDir });
+    }
     catch { return undefined; }
   };
   return {
@@ -93,6 +101,9 @@ function discoverClaude(profilesRoot: string): Harness {
 }
 
 export async function loadExternalHarnesses(configFile: string, profilesRoot: string): Promise<Harness[]> {
+  return [...await loadOfficialHarnesses(configFile, profilesRoot), geminiWebHarness(profilesRoot)];
+}
+async function loadOfficialHarnesses(configFile: string, profilesRoot: string): Promise<Harness[]> {
   let entries: ExternalHarnessEntry[];
   try {
     const value = JSON.parse(await readFile(configFile, "utf8"));

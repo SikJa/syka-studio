@@ -5,9 +5,21 @@ description: Editar una explicación grabada a cámara o en pantalla, coordinand
 
 # Explicaciones con footage real
 
+## Contract
+
+Syka entrega una composición audiovisual nativa editable dentro del proyecto. El pedido actual manda: conservá originales, voz, estilo/geometría aprobados y edición nativa. Un plan sólo es entrega si se pidió plan; al editar, aplicá la composición y comprobala. Un fallo deja verificaciones pendientes o bloqueadas, nunca habilita otra app, juego, web o motor como sustituto. Exportá sólo ante pedido explícito.
+
+Sumar overlays conserva todo el footage si no se pidió recut. Cada corte autorizado conserva intervalos fuente→salida, voz y transcript real. Mantené visible la demostración cuando lleva la explicación.
+
+Leé sólo la fase necesaria. Las dependencias del índice son condicionales, nunca lecturas recursivas. Una corrección puntual reutiliza decisiones vigentes y su source; no repite brief, investigación ni consulta de producción nueva.
+
+## Brief
+
 Leé `syka-editing-basics` para el motor y `syka-captions` si hay subtítulos. La grabación, la intención y el estilo de la persona determinan la edición; esta base no impone una estética.
 
-## Del material al montaje
+## Build
+
+### Del material al montaje
 
 Este es el contrato nativo de **talking-head recut**. No prescribe cinco tarjetas ni un preset classic. Si el pedido es sumar gráficos sin recortar, preservá el footage completo; si pide recut, registrá cada tramo conservado y el motivo. Las escenas upstream se traducen a secuencias/capas de la composición actual.
 
@@ -17,7 +29,7 @@ Este es el contrato nativo de **talking-head recut**. No prescribe cinco tarjeta
 - Para pantalla y cámara, alineá por audio cuando exista, o por dos acciones visuales comprobables. Tratá cada toma con su propio encuadre.
 - Antes de decorar, comprobá la tabla fuente→salida: intervalos reales, huecos retirados, velocidades y orden. Tras cada corte, remapeá captions y eventos sonoros; no uses el transcript cacheado del montaje anterior. `syka-captions/examples/recut-timing.ts` contiene una conversión ejecutable de intervalos por tramo.
 
-## Dirección visual
+### Dirección visual
 
 Leé `syka-visual-direction` para construir una dirección de frame y beats a partir de marca y referencias. Conservá esa especificación junto a la receta; no repitas un cuestionario ya resuelto. Si se pidieron sólo overlays, el contrato de Talking Head Recut upstream conserva el metraje: no elimines silencios ni cambies frases por iniciativa propia.
 
@@ -28,7 +40,9 @@ Leé `syka-visual-direction` para construir una dirección de frame y beats a pa
 - Diseñá llegada, permanencia y salida. La transición puede ser corta y suave; el objeto debe terminar quieto y legible. Para motion nativo consultá `syka-motion-transitions`.
 - Los ejemplos de vidrio, acercamiento o acento de color son opciones de estilo, nunca defaults universales. Guardá decisiones aprobadas en el proyecto o en la skill personal.
 
-## Audio y revisión
+## Review
+
+### Audio y revisión
 
 - La voz manda. Si sumás música, elegí volumen y ducking a partir de sus niveles reales; usá SFX en eventos puntuales y conservá la voz original. `syka-local-audio` cubre la síntesis local.
 - Probá un fragmento corto representativo antes de ampliar una edición larga. Revisá entrada, lectura, salida y corte, además de `check`; una captura aislada no demuestra fluidez ni sincronía sonora.

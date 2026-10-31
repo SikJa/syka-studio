@@ -14,6 +14,7 @@ import { PaperCaptionDecoder, PAPER_TEXT_STYLE } from './paper';
 import { GuineaCaptionDecoder, GUINEA_TEXT_STYLE } from './guinea';
 import { StarkCaptionDecoder, STARK_TEXT_STYLE } from './stark';
 import { BridgeClipCaptionDecoder, BRIDGECLIP_STYLES } from './bridgeclip';
+import { HyperFramesCaptionDecoder, HYPERFRAMES_STYLES } from './hyperframes';
 
 import type { Entity, World } from 'koota';
 import type { Asset } from '@diffusionstudio/assets';
@@ -28,6 +29,7 @@ export { PaperCaptionDecoder } from './paper';
 export { GuineaCaptionDecoder } from './guinea';
 export { StarkCaptionDecoder } from './stark';
 export { BridgeClipCaptionDecoder, BRIDGECLIP_STYLES } from './bridgeclip';
+export { HyperFramesCaptionDecoder, HYPERFRAMES_TYPES, HYPERFRAMES_STYLES } from './hyperframes';
 export * from './position';
 export * from './subtitles';
 export * from './utils';
@@ -50,6 +52,14 @@ export const CAPTION_PRESET_STYLES: Record<CaptionType, CaptionPresetStyle> = {
 	[CaptionType.BRIDGECLIP_EDITORIAL]: BRIDGECLIP_STYLES.editorial,
 	[CaptionType.BRIDGECLIP_BOXED]: BRIDGECLIP_STYLES.boxed,
 	[CaptionType.BRIDGECLIP_SPOTLIGHT]: BRIDGECLIP_STYLES.spotlight,
+	[CaptionType.HYPERFRAMES_CLIP_WIPE]: HYPERFRAMES_STYLES['clip-wipe'],
+	[CaptionType.HYPERFRAMES_KINETIC_SLAM]: HYPERFRAMES_STYLES['kinetic-slam'],
+	[CaptionType.HYPERFRAMES_WEIGHT_SHIFT]: HYPERFRAMES_STYLES['weight-shift'],
+	[CaptionType.HYPERFRAMES_NEON_GLOW]: HYPERFRAMES_STYLES['neon-glow'],
+	[CaptionType.HYPERFRAMES_GLITCH_RGB]: HYPERFRAMES_STYLES['glitch-rgb'],
+	[CaptionType.HYPERFRAMES_GRADIENT_FILL]: HYPERFRAMES_STYLES['gradient-fill'],
+	[CaptionType.HYPERFRAMES_PARALLAX_LAYERS]: HYPERFRAMES_STYLES['parallax-layers'],
+	[CaptionType.HYPERFRAMES_EDITORIAL_EMPHASIS]: HYPERFRAMES_STYLES['editorial-emphasis'],
 };
 
 /**
@@ -71,6 +81,14 @@ export const CAPTION_PRESET_FILLS: Record<CaptionType, number | undefined> = {
 	[CaptionType.BRIDGECLIP_EDITORIAL]: 0xFFFFFF,
 	[CaptionType.BRIDGECLIP_BOXED]: 0xFFFFFF,
 	[CaptionType.BRIDGECLIP_SPOTLIGHT]: 0xFFFFFF,
+	[CaptionType.HYPERFRAMES_CLIP_WIPE]: 0xFFFFFF,
+	[CaptionType.HYPERFRAMES_KINETIC_SLAM]: 0xFFFFFF,
+	[CaptionType.HYPERFRAMES_WEIGHT_SHIFT]: 0xFFFFFF,
+	[CaptionType.HYPERFRAMES_NEON_GLOW]: 0xFFFFFF,
+	[CaptionType.HYPERFRAMES_GLITCH_RGB]: 0xFFFFFF,
+	[CaptionType.HYPERFRAMES_GRADIENT_FILL]: 0xFFFFFF,
+	[CaptionType.HYPERFRAMES_PARALLAX_LAYERS]: 0xFFFFFF,
+	[CaptionType.HYPERFRAMES_EDITORIAL_EMPHASIS]: 0xFFFFFF,
 };
 
 function createCaptionDecoder(type: CaptionType, asset: Asset): CaptionDecoder {
@@ -97,6 +115,14 @@ function createCaptionDecoder(type: CaptionType, asset: Asset): CaptionDecoder {
 			return new BridgeClipCaptionDecoder(asset, 'boxed');
 		case CaptionType.BRIDGECLIP_SPOTLIGHT:
 			return new BridgeClipCaptionDecoder(asset, 'spotlight');
+		case CaptionType.HYPERFRAMES_CLIP_WIPE: return new HyperFramesCaptionDecoder(asset, 'clip-wipe');
+		case CaptionType.HYPERFRAMES_KINETIC_SLAM: return new HyperFramesCaptionDecoder(asset, 'kinetic-slam');
+		case CaptionType.HYPERFRAMES_WEIGHT_SHIFT: return new HyperFramesCaptionDecoder(asset, 'weight-shift');
+		case CaptionType.HYPERFRAMES_NEON_GLOW: return new HyperFramesCaptionDecoder(asset, 'neon-glow');
+		case CaptionType.HYPERFRAMES_GLITCH_RGB: return new HyperFramesCaptionDecoder(asset, 'glitch-rgb');
+		case CaptionType.HYPERFRAMES_GRADIENT_FILL: return new HyperFramesCaptionDecoder(asset, 'gradient-fill');
+		case CaptionType.HYPERFRAMES_PARALLAX_LAYERS: return new HyperFramesCaptionDecoder(asset, 'parallax-layers');
+		case CaptionType.HYPERFRAMES_EDITORIAL_EMPHASIS: return new HyperFramesCaptionDecoder(asset, 'editorial-emphasis');
 		default:
 			return new ClassicCaptionDecoder(asset);
 	}

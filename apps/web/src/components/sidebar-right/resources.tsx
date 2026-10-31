@@ -30,8 +30,9 @@ import { EFFECT_OPTIONS } from './inspector/effect-types';
 import { ANIMATION_GROUPS } from './inspector/animation-types';
 import { TRANSITION_OPTIONS } from './inspector/transition-types';
 import { CAPTION_PRESET_OPTIONS } from './inspector/caption-types';
+import { STYLE_KITS, applyStyleKit } from './style-kits';
 export type ResourceKind =
-  'text' | 'font' | 'caption' | 'effect' | 'animation' | 'transition' | 'shadow' | 'stroke';
+  'text' | 'font' | 'caption' | 'effect' | 'animation' | 'transition' | 'shadow' | 'stroke' | 'style-kit';
 export type ResourceTextStyle = {
   fontFamily: string;
   fontWeight: number;
@@ -63,8 +64,17 @@ const CAPTION_DESCRIPTIONS: Record<string, string> = {
   'bridgeclip-editorial': 'Instrument Serif en cursiva. Un tono narrativo y cálido.',
   'bridgeclip-boxed': 'Archivo Black. Fondo oscuro y énfasis amarillo.',
   'bridgeclip-spotlight': 'Poppins Black. Palabra activa sobre una píldora violeta.',
+  'hyperframes-clip-wipe': 'Revelado horizontal por palabra, sincronizado con la voz.',
+  'hyperframes-kinetic-slam': 'Una palabra por golpe: entrada lateral, caída o escala.',
+  'hyperframes-weight-shift': 'La palabra activa gana peso sin mover la línea.',
+  'hyperframes-neon-glow': 'Brillo de neón en la palabra activa con color editable.',
+  'hyperframes-glitch-rgb': 'Separación cromática breve al entrar cada palabra.',
+  'hyperframes-gradient-fill': 'Degradado de dos colores sobre los glifos, sin placa.',
+  'hyperframes-parallax-layers': 'Entrada con profundidad y una estela breve de color.',
+  'hyperframes-editorial-emphasis': 'Serif cursiva con subrayado animado en la palabra activa.',
 };
 export const EDITOR_RESOURCES: EditorResource[] = [
+  ...STYLE_KITS.map(kit=>({id:'kit-'+kit.id,label:kit.label,kind:'style-kit' as const,value:kit.id,preview:kit.id,description:kit.description})),
   ...CAPTION_PRESET_OPTIONS.map(o => ({
     id: 'caption-' + o.name, label: o.label, kind: 'caption' as const,
     value: o.name, preview: o.name,
@@ -149,6 +159,7 @@ export function resourceDisabledReason(
   target: Entity | undefined,
 ): string | undefined {
   if (resource.kind === 'text') return;
+  if (resource.kind === 'style-kit') return target?.isAlive() ? undefined : 'Elegí el alcance del kit.';
   if (resource.kind === 'caption') return target?.isAlive() && isCaption(target) ? undefined : 'Seleccioná subtítulos existentes, importá un SRT/VTT/JSON o generá desde el audio de la escena.';
   if (resource.kind === 'font') return target?.isAlive() && (isText(target) || isCaption(target)) ? undefined : 'Seleccioná un texto o subtítulos para cambiar su fuente.';
   if (!target?.isAlive()) return 'Seleccioná un elemento de la timeline.';
@@ -187,6 +198,12 @@ export function applyEditorResource(
   target?: Entity | Entity[],
   start?: number,
 ): void {
+  if(resource.kind==='style-kit'){
+    const kit=STYLE_KITS.find(kit=>kit.id===resource.value);
+    if(!kit)throw Error('Kit desconocido.');
+    applyStyleKit(world,kit,'selection',Array.isArray(target)?target:target?[target]:[]);
+    return;
+  }
   const targets = Array.isArray(target) ? target : [target];
   if (resource.kind !== 'text' && !targets.length)
     throw Error('Seleccioná un elemento de la timeline.');

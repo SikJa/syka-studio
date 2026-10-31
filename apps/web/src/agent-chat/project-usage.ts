@@ -5,6 +5,7 @@ import { client } from './connection';
 import { ensureConnected } from './store';
 
 const [usage, setUsage] = createStore<Record<string, ProjectTokenUsage>>({});
+const [errors, setErrors] = createStore<Record<string, boolean>>({});
 const watched = new Map<string, number>();
 let scheduled = false;
 
@@ -24,7 +25,12 @@ function schedule() {
     scheduled = false;
     const projectIds = [...watched.keys()];
     if (!projectIds.length || client.state !== 'open') return;
-    void client.request('projects.usage', { projectIds }).then(values => values.forEach(accept)).catch(() => {});
+    for (let index = 0; index < projectIds.length; index += 500) {
+      const batch = projectIds.slice(index, index + 500);
+      void client.request('projects.usage', { projectIds: batch }).then(values => {
+        values.forEach(value => { setErrors(JSON.stringify(value.projectId), false); accept(value); });
+      }).catch(() => { for (const id of batch) setErrors(JSON.stringify(id), true); });
+    }
   });
 }
 
@@ -39,6 +45,7 @@ export function observeProjectUsage(projectId: string): () => void {
   };
 }
 export const projectUsage = (projectId: string) => usage[JSON.stringify(projectId)];
+export const projectUsageError = (projectId: string) => errors[JSON.stringify(projectId)] === true;
 
 const compact = new Intl.NumberFormat('es-AR', { notation: 'compact', maximumFractionDigits: 1 });
 const exact = new Intl.NumberFormat('es-AR');

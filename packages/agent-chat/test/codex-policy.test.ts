@@ -39,7 +39,7 @@ describe("Syka subscription and project boundaries", () => {
     expect(args).toContain('forced_login_method="chatgpt"');
     expect(args).toContain('model_provider="openai"');
     expect(args).toContain("mcp_servers={}");
-    expect(args).toContain('mcp_servers.syka.url="http://127.0.0.1:3274/mcp?client=chat"');
+    expect(args).toContain('mcp_servers.syka.url="http://127.0.0.1:3274/mcp?client=chat&sykaContext=progressive-v1"');
     expect(args).toContain('mcp_servers.syka.tools.check.approval_mode="approve"');
     expect(args).toContain('mcp_servers.syka.tools.capture.approval_mode="approve"');
     expect(args).toContain('mcp_servers.syka.tools.media_transcribe.approval_mode="approve"');

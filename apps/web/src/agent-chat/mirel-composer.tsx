@@ -5,13 +5,14 @@ import { createElement, Fragment } from 'react';
 import { BookOpen, FolderOpen, Globe2, ImagePlus, ListTodo, MousePointer2, Palette, PencilLine, Plug, Puzzle, Scan, Video } from 'lucide-react';
 import { toast } from 'somoto';
 import { useLocation } from '@solidjs/router';
-import { modelLogo, modelRouteDescription } from './provider-catalog';
+import { modelLogo, modelRouteDescription, PROVIDER_LOGOS } from './provider-catalog';
 import { AgentComposer, type AgentComposerProps } from '@/mirel-chat/features/agents/agent-composer';
+import { applyModelPickerMaterial } from '@/mirel-chat/features/agents/model-picker-preferences';
 import { mainBridge } from '@/lib/ipc';
 import { MAIN_CHANNELS } from '@desktop/main-channels';
 import type { ContextUsage, ModelRef, MessageQueue } from '@diffusionstudio/agent-chat';
 import { attachmentFromPath, createDropZone, mergeAttachments, type Attachment } from './attachments';
-import { chatState, ensureConnected, refreshHarnesses, pickerHarnesses } from './store';
+import { chatState, ensureConnected, refreshHarnesses, pickerHarnesses, pickableHarness } from './store';
 import { prepareChatFiles } from './local-attachments';
 import './mirel-adapter.css';
 import './chat-panel-motion.css';
@@ -94,8 +95,8 @@ export function Composer(props: ComposerProps) {
     props.onText([props.text.trimEnd(), text].filter(Boolean).join('\n\n'));
   };
   const drop = createDropZone(entries => props.onAttachments(mergeAttachments(props.attachments, entries)), transfer => props.onReferenceDrop?.(transfer) ?? false, files => void onFiles(files));
-  const modelOptions = createMemo(() => pickerHarnesses().filter(h => h.status === 'ready').flatMap(h => h.models.map(m => ({
-    id: `${h.id}:${m.id}`, label: m.label, description: t(modelRouteDescription(h.id,m.id)), routeLabel:h.id==='antigravity'?t('vía Antigravity'):undefined, logoSvg: modelLogo(h.id, m.id), supportsFast: m.supportsFast === true,
+  const modelOptions = createMemo(() => pickerHarnesses().filter(pickableHarness).flatMap(h => h.models.map(m => ({
+    id: `${h.id}:${m.id}`, label: m.label, providerId: h.id, providerLabel: h.label, description: t(modelRouteDescription(h.id,m.id)), routeLabel:h.id==='antigravity'?t('vía Antigravity'):undefined, logoSvg: modelLogo(h.id, m.id), supportsFast: m.supportsFast === true,
   }))));
   const selected = createMemo(() => chatState.harnesses.find(h => h.id === props.model?.harness)?.models.find(m => m.id === props.model?.model));
   const onFiles = async (files: File[]) => {
@@ -112,6 +113,7 @@ export function Composer(props: ComposerProps) {
     } finally { if (alive) setPendingFiles(n => n - 1); }
   };
   onMount(() => {
+    applyModelPickerMaterial();
     const requested=(event:Event)=>{
       const detail=(event as CustomEvent<{region?:boolean;chatKey?:string}>).detail;
       if(event.defaultPrevented||!detail||detail.chatKey!==props.chatKey||props.answering||!element.getClientRects().length)return;
@@ -148,8 +150,10 @@ export function Composer(props: ComposerProps) {
         maxRows: 3,
         onFiles: files => void onFiles(files), onRemoveAttachment: id => props.onAttachments(props.attachments.filter(a => a.key !== id)),
         models: modelOptions(), selectedModelId: ref ? `${ref.harness}:${ref.model}` : undefined,
+        providers: pickerHarnesses().map(h => ({ id:h.id, label:h.label, logoSvg:PROVIDER_LOGOS[h.id], ready:pickableHarness(h), detail:h.status==='ready' ? h.detail : h.detail ?? (h.status==='checking' ? 'Comprobando conexión…' : 'Sin conexión. Configurá este proveedor.') })),
         selectedModelOption: ref && model ? { id: `${ref.harness}:${ref.model}`, label: model.label, description:t(modelRouteDescription(ref.harness,ref.model)), routeLabel:ref.harness==='antigravity'?t('vía Antigravity'):undefined, logoSvg: modelLogo(ref.harness, ref.model) } : undefined,
         onConfigureProviders: () => openSettings('codex'),
+        modelMenuPlacement: location.pathname.startsWith('/projects/') ? 'bottom' : 'top',
         onModelChange: props.answering ? undefined : id => {
           const separator = id.indexOf(':');
           const harness = chatState.harnesses.find(h => h.id === id.slice(0, separator));
@@ -160,6 +164,7 @@ export function Composer(props: ComposerProps) {
           return {id,label:label === undefined ? id : t(label)};
         }),
         selectedEffortId: ref?.effort ?? model?.defaultEffort,
+        defaultEffortId: model?.defaultEffort,
         onEffortChange: props.answering ? undefined : effort => { if (ref) props.onModel({...ref,effort}); },
         modelFallbackLabel: t(props.blocked ?? 'Cargando modelos…'), fastAvailable: model?.supportsFast === true,
         fast: ref?.fast === true && model?.supportsFast === true,
@@ -183,7 +188,7 @@ export function Composer(props: ComposerProps) {
         ].map(action => ({...action,label:t(action.label),description:t(action.description),section:t(action.section)})),
 
       };
-      root.render(createElement(Fragment, null, createElement(AgentComposer, adapted), capture && capture.key === props.chatKey ? createElement(ScreenRecordingPanel, {
+      root.render(createElement(Fragment, null, createElement(AgentComposer, { ...adapted, key: props.chatKey }), capture && capture.key === props.chatKey ? createElement(ScreenRecordingPanel, {
         key: capture.id, contextKey: capture.key, projectDir: capture.dir, initialRegion:capture.region, onDismiss: () => setRecordingSession(null),
         onSave: (recording: CapturedRecording) => saveRecording(capture, recording),
         onTranscript: (text: string) => saveRecordingTranscript(capture, text), onConfigure: () => openSettings('groq'),

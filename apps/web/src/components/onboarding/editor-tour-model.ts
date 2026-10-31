@@ -5,6 +5,9 @@ export const EDITOR_TOUR_KEY = 'syka.editor-tour';
 export const EDITOR_TOUR_EVENT = 'syka:editor-tour';
 /** Other contextual suggestions wait until this guide leaves the screen. */
 export const [editorTourVisible, setEditorTourVisible] = createSignal(false);
+export const [libraryTourPreview, setLibraryTourPreview] = createSignal(false);
+export const [libraryTourSourceRequest, setLibraryTourSourceRequest] = createSignal(0);
+export function revealLibraryTourSource() { setLibraryTourSourceRequest(value => value + 1); }
 
 export type TourProgress = { version: number; status: 'new' | 'dismissed' | 'completed'; step: number; updatedAt?: string };
 type TourStorage = Pick<Storage, 'getItem' | 'setItem'>;
@@ -21,7 +24,7 @@ export function saveTourProgress(storage: TourStorage, status: 'dismissed' | 'co
   try { storage.setItem(EDITOR_TOUR_KEY, JSON.stringify(progress)); } catch { /* The tour also works in a storage-restricted window. */ }
   return progress;
 }
-export function requestEditorTour() { window.dispatchEvent(new Event(EDITOR_TOUR_EVENT)); }
+export function requestEditorTour(stepId?: string) { window.dispatchEvent(new CustomEvent(EDITOR_TOUR_EVENT, { detail: { stepId } })); }
 
 export type TourRect = { x: number; y: number; width: number; height: number };
 export function placeTourCard(target: TourRect | null, viewport: { width: number; height: number }, card: { width: number; height: number }) {
@@ -60,7 +63,7 @@ export const EDITOR_TOUR_STEPS: EditorTourStep[] = [
   { id: 'point', title: 'Señalá qué hay que mejorar', body: 'Pausá en el momento elegido y activá este botón. Señalá una tarjeta, texto o motion editable y explicá el cambio. No separa elementos que ya están grabados dentro de un video.', selector: '[data-tour-target="visual-select"]' },
   { id: 'capture', title: 'Una captura da contexto', body: 'Marcá una zona del cuadro para adjuntar su imagen y una nota. Revisá las notas antes de enviarlas al chat; podés describir exactamente qué querés cambiar.', selector: '[data-tour-target="visual-capture"]' },
   { id: 'timeline', title: 'Ajustá el ritmo del video', body: 'La timeline muestra cuándo aparece cada clip. Seleccionalo para moverlo o recortarlo. El cabezal indica el momento que estás viendo.', selector: '#timeline-canvas', shortcut: 'Ctrl + B: dividir en el cabezal' },
-  { id: 'library', title: 'Probá recursos y referencias', body: 'En Biblioteca encontrás subtítulos, motions, logos, sonidos y skills. Previsualizá cada recurso antes de usarlo; también podés pasarlo al chat como referencia.', selector: '[data-right-sidebar] [data-tour-target="right-tab-library"]', fallback: '[data-right-sidebar]' },
+  { id: 'library', title: 'Arrastrá para usar un recurso', body: 'Al chat, como referencia para editar. A la timeline, para colocarlo en el video cuando sea compatible. Las skills se arrastran al chat.', selector: '[data-right-sidebar] [data-tour-target="right-tab-library"]', fallback: '[data-right-sidebar]' },
   { id: 'properties', title: 'Los detalles de cada elemento', body: 'Seleccioná un clip o componente y abrí Propiedades. Ahí ajustás estilo, posición, animación o audio según el elemento seleccionado.', selector: '[data-right-sidebar] [data-tour-target="right-tab-properties"]', fallback: '[data-right-sidebar]' },
   { id: 'undo', title: 'Probá cambios con tranquilidad', body: 'Deshacer y Rehacer recuperan cambios de edición. Para revisar una corrección del agente, mirá el resultado en el mismo segundo antes de seguir.', selector: '[data-tour-target="undo"]', shortcut: 'Ctrl + Z: deshacer' },
   { id: 'export', title: 'Revisá y exportá', body: 'Reproducí el video y escuchá el audio. Cuando esté listo, tocá Exportar arriba a la derecha y elegí dónde guardar el archivo. Este recorrido no inicia una exportación.', selector: 'button[data-tour-target="export"]' },

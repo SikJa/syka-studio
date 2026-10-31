@@ -1,0 +1,174 @@
+{
+  "ref": "open-design-v0.25.0",
+  "tree": "de6d2c072a18dfef80ecad4a455b31f0d5aca090",
+  "files": [
+    {
+      "path": "skills/motion-lab/LICENSE",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/motion-lab/LICENSE",
+      "gitBlob": "958bb949bca48ee53f9b63f53b214e78779c56d2",
+      "sha256": "144ef466a3e69ba84bfa7f8bf024e4bbb100e0988a6815b613a210cf404bab56",
+      "bytes": 1224
+    },
+    {
+      "path": "skills/motion-lab/SOURCES.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/motion-lab/SOURCES.md",
+      "gitBlob": "fb5a5347996bdb50f4e054d4f8959745341603ef",
+      "sha256": "c08908fc3f1e6dc438fb0b68ba5e50171da70544b72d13a0318c3959bbbd81dd",
+      "bytes": 821
+    },
+    {
+      "path": "skills/motion-lab/references/advanced.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/motion-lab/references/advanced.md",
+      "gitBlob": "75a1d8b31d41a3fc08cd94a5a7b1a6f902aa84a6",
+      "sha256": "8d621a1bf84d75085ffeb6316f32445c69d333cb873a724399aa2cb19b8f07c6",
+      "bytes": 40854
+    },
+    {
+      "path": "skills/motion-lab/references/basic.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/motion-lab/references/basic.md",
+      "gitBlob": "6b8d5ed3711f6ec39de20344f1ded2f60399e04a",
+      "sha256": "fea1a67d09ac39cbdd2684cdc79266d5d498d0745394b2558239e88c9d245c39",
+      "bytes": 30126
+    },
+    {
+      "path": "skills/motion-lab/references/interaction.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/motion-lab/references/interaction.md",
+      "gitBlob": "51f4f0f23504f52947dce0389695677ac9fdc842",
+      "sha256": "cbf2d5f3d5b07ffccc5284bc28b9ab1c33cbdc85e5adeaba25029341e0bb8507",
+      "bytes": 37514
+    },
+    {
+      "path": "skills/motion-lab/references/text.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/motion-lab/references/text.md",
+      "gitBlob": "a414f994afde90b764971b1177f299de0e1612e5",
+      "sha256": "4a3c29cc33029082ac047762a7e0b75adb3cb7a82f507f2d773615f2bafba7e9",
+      "bytes": 33573
+    },
+    {
+      "path": "skills/huashu-art-motion/LICENSE",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/huashu-art-motion/LICENSE",
+      "gitBlob": "ed67368a2a79ed7be97b2a4852330cdac5b8b12a",
+      "sha256": "6d6a2a9caf2e6d2b76974050427053b2892d8aa4c33fd168ce63a537fcee9d96",
+      "bytes": 1086
+    },
+    {
+      "path": "skills/huashu-art-motion/SOURCES.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/huashu-art-motion/SOURCES.md",
+      "gitBlob": "9ba4ad299f704ee5ba8a2e2efc25c61b0e2d1889",
+      "sha256": "4a2cd677b0be56add7cd682195446a54ab96db2296ad62b3b5e557179b21317d",
+      "bytes": 1028
+    },
+    {
+      "path": "skills/huashu-art-motion/references/art-styles-1.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/huashu-art-motion/references/art-styles-1.md",
+      "gitBlob": "e41b4a3e7b31eb72d42208a16ba024c25d758d82",
+      "sha256": "665a3741cca1a42a29618ec39b206a7734b0c807bb34c0b04156a4e938a217e4",
+      "bytes": 96061
+    },
+    {
+      "path": "skills/huashu-art-motion/references/art-styles-2.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/huashu-art-motion/references/art-styles-2.md",
+      "gitBlob": "8935e67f6d233c19763bac10406a945fcee315ca",
+      "sha256": "173619f699cf709535212a6a5ac9bb7d83e5551b0ad804f94e16a32bb5ed46e7",
+      "bytes": 54065
+    },
+    {
+      "path": "skills/huashu-art-motion/references/canvas-helpers.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/huashu-art-motion/references/canvas-helpers.md",
+      "gitBlob": "95cc72f386327c810955e1f562f8692de4c29f6a",
+      "sha256": "16331f70fb8ad18eeb232cbfd43a9fbb28e25aea032cc61bc655d22ddee9538e",
+      "bytes": 83857
+    },
+    {
+      "path": "skills/huashu-art-motion/references/craft-workflow.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/huashu-art-motion/references/craft-workflow.md",
+      "gitBlob": "b3247e044c3d59dc0025d11484b04daf6e72fb96",
+      "sha256": "b599dcd5264aca76ec2200fdae03ab7fd3a9590329e24db16207e4a5a7fd2a2b",
+      "bytes": 58134
+    },
+    {
+      "path": "skills/huashu-art-motion/references/explainer-grammars.md",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/skills/huashu-art-motion/references/explainer-grammars.md",
+      "gitBlob": "c449a0753e319454fd2607f25b3db0c136faa7ec",
+      "sha256": "581bba2ad18f876cffc8c7234164ccbdef27e31a2766c51bfbfaa90321e9f602",
+      "bytes": 130464
+    },
+    {
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/LICENSE",
+      "gitBlob": "eb79c35bd865477e525b18e56f35d56fbe0f7110",
+      "sha256": "9d95806a26532623360eb84bb17d298f394b55ef73fb4c0796d99b4319b2b0da",
+      "bytes": 11296
+    },
+    {
+      "path": "plugins/_official/examples/motion-product-promo/open-design.json",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-product-promo/open-design.json",
+      "gitBlob": "38cb859fafa4e2c4d84338e8a9bf0677a8a63fa6",
+      "sha256": "1a6f1e454cc034d4bb8b0aada93bcc7406f44396d15a32653ba4b024070ed4aa",
+      "bytes": 21609
+    },
+    {
+      "path": "plugins/_official/examples/motion-product-promo/assets/soundtrack.mp3",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-product-promo/assets/soundtrack.mp3",
+      "gitBlob": "dee302412e99efd14b3762caf33d1ebf95a1c5da",
+      "sha256": "74520960e8bec189417cc873395d296a9a94feb81697b5d15d3431968909ba4e",
+      "bytes": 241205
+    },
+    {
+      "path": "plugins/_official/examples/motion-showreel/open-design.json",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-showreel/open-design.json",
+      "gitBlob": "24e20a0d991712ea6edb9fd4b86a80407479500e",
+      "sha256": "22fa64152573898fc08a689f8ed51c20f546a7b5fea9bd2701c02baee509512e",
+      "bytes": 12660
+    },
+    {
+      "path": "plugins/_official/examples/motion-showreel/assets/soundtrack.mp3",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-showreel/assets/soundtrack.mp3",
+      "gitBlob": "28a5b5ca2f03962d6b77a198fce8494f7c1f7079",
+      "sha256": "04c3ddb8f08024ac35a1fc4be9e2ed604859039c5a3c57f4c93585afaa53532d",
+      "bytes": 180916
+    },
+    {
+      "path": "plugins/_official/examples/motion-ui-morph/open-design.json",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-ui-morph/open-design.json",
+      "gitBlob": "17fb69da2c76200c6d3c5bbfadf967e4288e7508",
+      "sha256": "4b9a4f8bd70d1caa8eabe64f5bde943904c68b1ac9e867ddebb2a8d46e734a4c",
+      "bytes": 25660
+    },
+    {
+      "path": "plugins/_official/examples/motion-ui-morph/assets/soundtrack.mp3",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-ui-morph/assets/soundtrack.mp3",
+      "gitBlob": "fb05f6465b72e3300b6f2c8501d306783ca2e3e2",
+      "sha256": "2dfacaac7bdc41cab4db549cbfdefd6ea875d4da383c7121aab21b5697d55ca3",
+      "bytes": 168691
+    },
+    {
+      "path": "plugins/_official/examples/motion-visual-lesson/open-design.json",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-visual-lesson/open-design.json",
+      "gitBlob": "c1adbea6ac13d602a2144cca47e889c22a244d5b",
+      "sha256": "c16c5bfa58954619d4faa0595024ca6bb8346afd4a28d1a5a71920d5750ac2b2",
+      "bytes": 29652
+    },
+    {
+      "path": "plugins/_official/examples/motion-visual-lesson/assets/soundtrack.mp3",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-visual-lesson/assets/soundtrack.mp3",
+      "gitBlob": "350d921c5236bb4df05c1c8caaee51555c3f122d",
+      "sha256": "1edb7ec6de8f0600c2d6a0e4212344fbd54bb81dac71100ec3ecf9d5cef1dc47",
+      "bytes": 240789
+    },
+    {
+      "path": "plugins/_official/examples/motion-future/open-design.json",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-future/open-design.json",
+      "gitBlob": "cc92cb2b7391fa048b7bb6d6aa5cbc10a13927df",
+      "sha256": "45fb1f4b22d599999938c248329059384aa58aca45f991785480ebd45c744fb6",
+      "bytes": 24913
+    },
+    {
+      "path": "plugins/_official/examples/motion-future/assets/soundtrack.mp3",
+      "url": "https://raw.githubusercontent.com/nexu-io/open-design/open-design-v0.25.0/plugins/_official/examples/motion-future/assets/soundtrack.mp3",
+      "gitBlob": "37447f0d4053d5620b4fb64582c6aac1c3069d27",
+      "sha256": "131d9e1832be0d41531fadbf35bbe9e8edae06c788c7929843b510697dc25375",
+      "bytes": 240789
+    }
+  ]
+}

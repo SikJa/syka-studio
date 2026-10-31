@@ -91,7 +91,31 @@ export function canonicalizeTagsPlugin({ types }: BabelApi): PluginObj {
             }
 
             const component = COMPOSITION_COMPONENTS.get(name.name);
-            if (component === undefined || isSvgCollision(path, name.name, types)) return;
+            if (component === undefined || isSvgCollision(path, name.name, types)) {
+              // Solid's universal transform assigns variable refs directly to
+              // the host node, bypassing renderer.use/applyRef. Route DOM refs
+              // through a callback so authored HTML/SVG receives the actual
+              // element, while preserving function-valued refs.
+              if (/^[a-z]/.test(name.name)) {
+                for (const attribute of path.node.openingElement.attributes) {
+                  if (!types.isJSXAttribute(attribute) || !types.isJSXIdentifier(attribute.name, { name: 'ref' }) ||
+                    !types.isJSXExpressionContainer(attribute.value)) continue;
+                  const expression = attribute.value.expression;
+                  if (!types.isIdentifier(expression) && !types.isMemberExpression(expression)) continue;
+                  const target = path.scope.generateUidIdentifier('element');
+                  const previous = path.scope.generateUidIdentifier('ref');
+                  attribute.value.expression = types.arrowFunctionExpression([target], types.blockStatement([
+                    types.variableDeclaration('const', [types.variableDeclarator(previous, types.cloneNode(expression, true))]),
+                    types.ifStatement(
+                      types.binaryExpression('===', types.unaryExpression('typeof', previous), types.stringLiteral('function')),
+                      types.expressionStatement(types.callExpression(previous, [target])),
+                      types.expressionStatement(types.assignmentExpression('=', types.cloneNode(expression, true), target)),
+                    ),
+                  ]));
+                }
+              }
+              return;
+            }
 
             let alias = aliases.get(component);
             if (alias === undefined) {

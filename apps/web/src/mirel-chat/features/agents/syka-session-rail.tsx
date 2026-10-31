@@ -41,7 +41,7 @@ export function SykaSessionRail(props:Props){
         </header>
         <label className="agent-thread-search"><Search size={14}/><input value={threadSearch} onChange={(event) => setThreadSearch(event.target.value)} placeholder="Buscar conversaciones" /></label>
         {historySurface ? <nav className="agent-thread-surface-filter" aria-label="Tipo de conversaciones">{([ ["panorama", "Panorama"], ["reels", "Reels"], ["stories", "Historias"], ["analytics", "Analíticas"], ["all", "Todos"] ] as const).map(([value, label]) => <button key={value} type="button" aria-pressed={surfaceFilter === value} onClick={() => setSurfaceFilter(value)}>{label}</button>)}</nav> : null}
-        <MetalFx className="agent-new-chat-metal" variant="button" preset="chromatic" strength={0.9} theme={metalAppearance.theme} paused={metalAppearance.reducedMotion} borderRadius={10}>
+        <MetalFx className="agent-new-chat-metal" variant="button" preset="chromatic" strength={0.9} theme={metalAppearance.theme} paused={metalAppearance.paused} borderRadius={10}>
           <button className="agent-new-chat" type="button" disabled={!enabled || sending || workingElsewhere} onClick={() => void createInProject()} aria-label="Crear nuevo chat">
             <span aria-hidden="true"><Plus size={15} /></span><strong>Nuevo chat</strong><ChevronRight size={14} aria-hidden="true" />
           </button>

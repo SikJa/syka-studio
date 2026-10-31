@@ -1,9 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { resourceLibrary } from '../src/host/resource-library';
 import { WorkspaceTools } from '../src/host/workspace-tools';
+import { closeResourceIndexes, resourceIndexMetrics } from '../src/host/resource-index';
 
 let fixture: string, config: string, logos: string, second: string;
 const svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0L1 1"/></svg>';
@@ -16,11 +17,69 @@ beforeEach(async () => {
   await writeFile(join(second, 'other.svg'), svg.replace('L1 1', 'L2 2'));
 });
 afterEach(async () => {
+  await closeResourceIndexes(config);
   // Only this exact freshly-created temp fixture is removed.
   if (!fixture.startsWith(join(tmpdir(), 'syka-resources-test-'))) throw Error('Unexpected fixture path');
   await rm(fixture, { recursive: true, force: true });
 });
 describe('connected resource libraries', () => {
+  it('reuses the inventory for search and pagination and refreshes changed files', async () => {
+    await resourceLibrary(config,{action:'add-folder',kind:'logos',path:logos});
+    const before=resourceIndexMetrics(config);
+    for (const query of ['', 'brand', 'missing']) await resourceLibrary(config,{action:'list',kind:'logos',query,limit:1});
+    expect(resourceIndexMetrics(config)).toEqual(before);
+    const initial=(await resourceLibrary(config,{action:'list',kind:'logos'})).entries[0]!;
+    await writeFile(initial.path,svg.replace('L1 1','L222 222'));
+    const updated=await resourceLibrary(config,{action:'list',kind:'logos',refresh:true});
+    expect(updated.entries[0]!.sha256).not.toBe(initial.sha256);
+    expect(resourceIndexMetrics(config)[0]!.scans).toBe(before[0]!.scans+1);
+  });
+  it('persists verified hashes and checks filesystem changes after reopening', async () => {
+    await resourceLibrary(config,{action:'add-folder',kind:'logos',path:logos});
+    const first=await resourceLibrary(config,{action:'list',kind:'logos'});
+    await closeResourceIndexes(config);
+    expect((await resourceLibrary(config,{action:'list',kind:'logos'})).entries[0]!.sha256).toBe(first.entries[0]!.sha256);
+    // The saved inventory answers first; the background reconciliation reuses its hash.
+    await vi.waitFor(() => expect(resourceIndexMetrics(config)[0]!.persistedHashes).toBe(1));
+    await closeResourceIndexes(config);
+    await writeFile(join(logos,'new.svg'),svg.replace('L1 1','L3 3'));
+    expect((await resourceLibrary(config,{action:'list',kind:'logos'})).total).toBe(2);
+  });
+  it('serves later pages from the ordered list and recomputes after a change', async () => {
+    for (const name of ['a', 'b', 'c']) await writeFile(join(logos, name + '.svg'), svg.replace('L1 1', `L${name.charCodeAt(0)} 1`));
+    await resourceLibrary(config,{action:'add-folder',kind:'logos',path:logos});
+    const first = await resourceLibrary(config,{action:'list',kind:'logos',limit:2});
+    const scans = resourceIndexMetrics(config)[0]!.stats;
+    const second = await resourceLibrary(config,{action:'list',kind:'logos',limit:2,offset:2});
+    expect(resourceIndexMetrics(config)[0]!.stats).toBe(scans);
+    expect([...first.entries, ...second.entries].map(entry => entry.name).sort()).toEqual(['a.svg', 'b.svg', 'brand.svg', 'c.svg']);
+    await writeFile(join(logos, 'd.svg'), svg.replace('L1 1', 'L9 9'));
+    await vi.waitFor(async () => expect((await resourceLibrary(config,{action:'list',kind:'logos',limit:2})).total).toBe(5));
+  });
+  it('answers a reopen from the saved inventory and reconciles nested changes in the background', async () => {
+    const nested = join(logos, 'Marcas'); await mkdir(nested);
+    await writeFile(join(nested, 'a.svg'), svg.replace('L1 1', 'L4 4'));
+    await resourceLibrary(config,{action:'add-folder',kind:'logos',path:logos});
+    expect((await resourceLibrary(config,{action:'list',kind:'logos'})).total).toBe(2);
+    await closeResourceIndexes(config);
+    // A nested change leaves the root folder's own timestamps untouched.
+    await writeFile(join(nested, 'b.svg'), svg.replace('L1 1', 'L5 5'));
+    expect((await resourceLibrary(config,{action:'list',kind:'logos'})).total).toBe(2);
+    await vi.waitFor(async () => expect((await resourceLibrary(config,{action:'list',kind:'logos'})).total).toBe(3));
+    expect((await resourceLibrary(config,{action:'list',kind:'logos',refresh:true})).total).toBe(3);
+  });
+  it('keeps brand variants together, tolerates Antropic and features AI brands', async () => {
+    const bundled=join(fixture,'brands');await mkdir(bundled);
+    const entries=[{path:'ant.svg',brand:'Anthropic',variant:'symbol',category:'AI'}, {path:'ant-word.svg',brand:'Anthropic',variant:'wordmark',category:'AI'}, {path:'alpha.svg',brand:'Alpha',category:'AI'}];
+    for(const [index,entry] of entries.entries())await writeFile(join(bundled,entry.path),svg.replace('L1 1',`L${index+2} 1`));
+    await writeFile(join(bundled,'catalog.json'),JSON.stringify({version:1,entries}));
+    for(const query of ['ant','Anthropic','Antropic']){
+      const found=await resourceLibrary(config,{action:'list',kind:'logos',query,groupBrands:true},bundled);
+      expect(found.total).toBe(1);expect(found.entries[0]!.brand).toBe('Anthropic');expect(found.entries[0]!.variants).toHaveLength(2);
+    }
+    expect((await resourceLibrary(config,{action:'list',kind:'logos',groupBrands:true,limit:1},bundled)).entries[0]!.brand).toBe('Anthropic');
+    expect((await resourceLibrary(config,{action:'list',kind:'logos',groupBrands:true,limit:1,offset:1},bundled)).entries[0]!.brand).toBe('Alpha');
+  });
   it('discovers bundled editable motions without a personal folder and rejects escaped companions', async () => {
     const motions=join(fixture,'motions');await mkdir(motions);
     await writeFile(join(motions,'OrbitFeature.mp4'),'preview');
@@ -80,6 +139,20 @@ describe('connected resource libraries', () => {
     await expect(resourceLibrary(config,{action:'preview',path:join(second,'other.svg')},undefined,bundled)).rejects.toThrow();
     expect(JSON.parse(await readFile(config,'utf8')).folders).toEqual([{kind:'sounds',path:sounds}]);
   });
+  it('keeps catalog metadata on a personal byte-identical sound before type and acoustic filters', async () => {
+    const sounds=join(fixture,'personal-sounds'),bundled=join(fixture,'bundled-sounds');await mkdir(sounds);await mkdir(bundled);
+    const bytes=Buffer.from('RIFF known glass cue'),personal=join(sounds,'0007.wav');
+    await writeFile(personal,bytes);await writeFile(join(bundled,'click-glass.wav'),bytes);
+    await writeFile(join(bundled,'catalog.json'),JSON.stringify({version:1,entries:[{path:'click-glass.wav',brand:'Syka',audioType:'sfx',audioFamily:'click',license:'MIT',provider:'Cuelume',duration:.2,soundProfile:{brightness:'bright',riseMs:8}}]}));
+    await resourceLibrary(config,{action:'add-folder',kind:'sounds',path:sounds});
+    const found=await resourceLibrary(config,{action:'list',kind:'sounds',audioType:'sfx',includeUnclassified:false,audioFamily:'click',brightness:'bright',attack:'sharp'},undefined,bundled);
+    expect(found.entries).toHaveLength(1);
+    expect(found.entries[0]).toMatchObject({path:personal,origin:'personal',audioType:'sfx',classificationSource:'catalog',license:'MIT',provider:'Cuelume',duration:.2});
+    expect((await resourceLibrary(config,{action:'list',kind:'sounds',audioType:'unclassified'},undefined,bundled)).total).toBe(0);
+    await resourceLibrary(config,{action:'classify',kind:'sounds',path:personal,classification:'music',title:'Mi decisión'});
+    expect((await resourceLibrary(config,{action:'list',kind:'sounds',audioType:'music'},undefined,bundled)).entries[0]).toMatchObject({origin:'personal',audioType:'music',classificationSource:'manual',title:'Mi decisión',license:'MIT'});
+    expect((await resourceLibrary(config,{action:'list',kind:'sounds',audioType:'sfx'},undefined,bundled)).total).toBe(0);
+  });
   it('connects the sound catalog to agent tools using the bundled documentation root', async () => {
     const docs=join(fixture,'docs'),sounds=join(docs,'resources','sounds');await mkdir(sounds,{recursive:true});
     await writeFile(join(sounds,'pop.wav'),Buffer.from('RIFF local pop'));
@@ -132,6 +205,20 @@ describe('connected resource libraries', () => {
       expect((await resourceLibrary(config, { action: 'list', kind: 'logos', query })).entries.map(e => e.name)).toEqual(['huggingface.svg']);
     }
   });
+  it('shows AI logos first by catalog category without overriding an explicit brand search or stale content', async () => {
+    const bundled=join(fixture,'ai-logos');await mkdir(bundled);
+    const entries=[{path:'alpha.svg',brand:'Alpha',category:'Software'},{path:'zeta.svg',brand:'Zeta',category:['Software','AI']}];
+    await writeFile(join(bundled,'alpha.svg'),svg);await writeFile(join(bundled,'zeta.svg'),svg.replace('L1 1','L9 9'));
+    const manifest=join(bundled,'catalog.json');await writeFile(manifest,JSON.stringify({version:1,entries}));
+    const initial=await resourceLibrary(config,{action:'list',kind:'logos'},bundled);
+    expect(initial.entries.map(entry=>entry.brand)).toEqual(['Zeta','Alpha']);
+    expect((await resourceLibrary(config,{action:'list',kind:'logos',query:'Alpha'},bundled)).entries[0]?.brand).toBe('Alpha');
+    await writeFile(join(bundled,'zeta.svg'),svg.replace('L1 1','L100 100'));
+    entries[1]!.brand='Updated Zeta';await writeFile(manifest,JSON.stringify({version:1,entries}));
+    const updated=await resourceLibrary(config,{action:'list',kind:'logos'},bundled);
+    expect(updated.entries[0]?.brand).toBe('Updated Zeta');
+    expect(updated.entries[0]?.sha256).not.toBe(initial.entries[0]?.sha256);
+  });
   it('retains both independently connected folders during simultaneous requests', async () => {
     await Promise.all([logos, second].map(path => resourceLibrary(config, { action: 'add-folder', kind: 'logos', path })));
     expect((await resourceLibrary(config, { action: 'list' })).folders).toHaveLength(2);
@@ -155,5 +242,15 @@ describe('connected resource libraries', () => {
     const tools = new WorkspaceTools(fixture, undefined, undefined, config);
     expect(await tools.call('syka_resources', { action: 'list', kind: 'logos', query: 'brand' })).toMatchObject({ total: 1 });
     await expect(tools.call('syka_resources', { action: 'add-folder', kind: 'logos', path: second })).rejects.toThrow();
+  });
+  it('reconciles edits, additions and removals without forcing a refresh', async () => {
+    await resourceLibrary(config,{action:'add-folder',kind:'logos',path:logos});
+    const before=await resourceLibrary(config,{action:'list',kind:'logos'});
+    await writeFile(join(logos,'brand.svg'),svg.replace('L1 1','L678 678'));
+    await vi.waitFor(async()=>expect((await resourceLibrary(config,{action:'list',kind:'logos'})).entries[0].sha256).not.toBe(before.entries[0].sha256));
+    const added=join(logos,'new.svg');await writeFile(added,svg.replace('L1 1','L500 500'));
+    await vi.waitFor(async()=>expect((await resourceLibrary(config,{action:'list',kind:'logos',query:'new'})).total).toBe(1));
+    await rm(added);
+    await vi.waitFor(async()=>expect((await resourceLibrary(config,{action:'list',kind:'logos',query:'new'})).total).toBe(0));
   });
 });

@@ -5,9 +5,19 @@ description: Resolver la dirección visual de una edición Syka a partir de marc
 
 # Dirección que se puede ejecutar y corregir
 
+## Contract
+
+Syka entrega una composición audiovisual nativa editable dentro del proyecto. El pedido actual manda: conservá originales, voz, estilo/geometría aprobados y edición nativa. Un plan sólo es entrega si se pidió plan; al editar, aplicá la composición y comprobala. Un fallo deja verificaciones pendientes o bloqueadas, nunca habilita otra app, juego, web o motor como sustituto. Exportá sólo ante pedido explícito.
+
+La dirección sale de la marca, referencias, contenido real y decisiones aprobadas, nunca de un preset universal. Conservá frame.md y retocá sólo decisiones afectadas; el pedido autoriza una muestra reversible nativa.
+
+Leé sólo la fase necesaria. Las dependencias del índice son condicionales, nunca lecturas recursivas. Una corrección puntual reutiliza decisiones vigentes y su source; no repite brief, investigación ni consulta de producción nueva.
+
+## Brief
+
 Para una pieza completa de motion o una mejora amplia de fluidez/composición, leé [references/motion-production.md](references/motion-production.md): lecturas por beat, estados, continuidad, comportamiento por objeto, sonido y variantes de formato. Conservá la marca y el alcance acordados; no requiere aprobaciones nuevas para cada paso.
 
-Leé la receta del proyecto antes de preguntar. El pedido actual y los ejemplos aprobados prevalecen. Usá la marca, referencias y recursos disponibles; si falta una decisión que cambia el resultado, preguntá sólo eso mientras seguís con tareas independientes. Un pedido de editar ya autoriza una muestra reversible: no exijas un nuevo onboarding ni una aprobación de cada paso.
+Reutilizá decisiones ya presentes y consultá el resumen de receta sólo si hace falta antes de preguntar. El pedido actual y los ejemplos aprobados prevalecen. Usá la marca, referencias y recursos disponibles; si falta una decisión que cambia el resultado, preguntá sólo eso mientras seguís con tareas independientes. Un pedido de editar ya autoriza una muestra reversible: no exijas un nuevo onboarding ni una aprobación de cada paso.
 
 La dirección vive en un `frame.md` dentro del proyecto, enlazado desde `syka_editing_recipe.references`. Para continuar una pieza, conservá su dirección y actualizá sólo decisiones cambiadas. `references/frame-template.md` es una plantilla breve y opcional; `references/prompt-guide.md` explica cómo pasar de palabras a una escena. Los presets en `references/frames/` son referencias de diseño, nunca componentes listos para Diffusion. Elegí uno sólo si ayuda al estilo solicitado, adaptá sus tokens a la marca y mantené el formato real de entrega. No impongas 16:9, vidrio, movimiento continuo ni un preset classic.
 
@@ -15,9 +25,13 @@ El plan identifica por beat: propósito, intervalo, contenido exacto, foco, posi
 
 Para una edición amplia o un pedido de «más calidad», leé [references/reference-to-edit.md](references/reference-to-edit.md). Convertí la referencia en decisiones observables y probá primero el beat de mayor riesgo con el texto y medios reales. El catálogo nativo `syka_resources kind: motions` devuelve muestras, `componentPath`, `componentFiles` y `usage`: usalos para construir y corregir, en vez de reinventar la técnica o importar una muestra como video terminado. No todos los pedidos necesitan un motion; un corte limpio puede ser la decisión correcta.
 
+## Build
+
 Usá `syka_skills` para leer `syka-editorial-motion`, `syka-motion-transitions` o el workflow necesario. Los tiempos se traducen a secuencias/nodos/keyframes de la composición activa. Un gráfico HTML usa el ticker de la escena: no usa reloj real ni otro render. Leé las referencias JSX antes de inventar propiedades. Los nuevos elementos llevan nombre y key estables para que se puedan señalar, retocar y deshacer.
 
 Para una pieza de tipografia, tarjetas o paneles, lee [references/typography-and-cards.md](references/typography-and-cards.md). Resolve primero el cuadro quieto con el copy real: jerarquia, ancho de linea, alineacion, espaciado y margenes. Anima titulo, apoyo y superficie segun esa jerarquia; evita que todas las capas compitan a la vez. Los valores orientativos no fijan una marca ni un estilo para todos los proyectos.
+
+## Review
 
 Las notas visuales del chat incluyen tiempo, Source/Key cuando existe, región, captura y trazos normalizados. Releé el source y compará su identidad antes de tocarlo. No interpretes un círculo de revisión como un objeto que debe aparecer en el export. Para píxeles grabados dentro de un MP4, ofrecé cambios de encuadre/overlay o reconstrucción explícita; no inventes un componente editable interno.
 

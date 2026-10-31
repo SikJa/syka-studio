@@ -22,6 +22,9 @@ it('coalesces a burst at the real desktop delivery boundary and closes expired p
   vi.useFakeTimers();vi.setSystemTime(1000);registerNotifications(()=>null);
   await Promise.resolve();
   state.emit.mockClear();
+  await reportNotice('qa',{kind:'transcription',operationId:'transcribed',message:'La transcripción está lista.'});
+  await vi.advanceTimersByTimeAsync(61);
+  expect(state.emit).not.toHaveBeenCalled();
   for(let i=0;i<200;i++)await reportNotice('qa',{kind:'blocked',operationId:String(i),message:'same compiler failure'});
   await vi.advanceTimersByTimeAsync(61);
   expect(state.emit).toHaveBeenCalledOnce();

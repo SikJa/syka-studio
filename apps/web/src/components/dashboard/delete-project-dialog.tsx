@@ -9,23 +9,26 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogPortal,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { createSignal } from "solid-js";
-import { toast } from "somoto";
+import { createEffect, createSignal, Show } from "solid-js";
 import { trashProject } from "./shared";
 
 import type { ProjectInfo } from "@/projects";
 import { t } from '@/i18n';
 
 
-type DeleteProjectDialogProps = {
+export type DeletableProject = Pick<ProjectInfo, 'id' | 'dir' | 'displayName'>;
+
+type DeleteProjectDialogProps<Project extends DeletableProject> = {
   /** The project being deleted; `null` while the dialog is closed. */
-  project: ProjectInfo | null;
+  project: Project | null;
   /** Asked for whenever the dialog should close, confirmed or not. */
   onClose(): void;
   /** The project is in the Trash — for the list that showed it to catch up. */
-  onDeleted(project: ProjectInfo): void;
+  onDeleted(project: Project): void;
+  beforeDelete?(project: Project): Promise<void>;
 };
 
 /**
@@ -33,24 +36,25 @@ type DeleteProjectDialogProps = {
  * project is pending and renders this on it; the delete itself, and being
  * unclosable while it runs, are the dialog's own.
  */
-export function DeleteProjectDialog(props: DeleteProjectDialogProps) {
+export function DeleteProjectDialog<Project extends DeletableProject>(props: DeleteProjectDialogProps<Project>) {
   const [deleting, setDeleting] = createSignal(false);
+  const [error, setError] = createSignal('');
+  createEffect(() => { props.project?.dir; setError(''); });
 
   const confirm = async () => {
     const project = props.project;
     if (!project || deleting()) return;
 
-    setDeleting(true);
+    setDeleting(true); setError('');
     try {
+      await props.beforeDelete?.(project);
       await trashProject(project);
       props.onDeleted(project);
+      props.onClose();
     } catch (e) {
-      toast.error("Failed to delete project", {
-        description: (e as Error).message,
-      });
+      setError(e instanceof Error ? e.message : 'No se pudo eliminar el proyecto.');
     } finally {
       setDeleting(false);
-      props.onClose();
     }
   };
 
@@ -61,23 +65,24 @@ export function DeleteProjectDialog(props: DeleteProjectDialogProps) {
         if (!open && !deleting()) props.onClose();
       }}
     >
-      <AlertDialogContent>
+      <AlertDialogPortal><AlertDialogContent role="alertdialog" aria-label="Eliminar proyecto" class="sm:max-w-[380px]">
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete project</AlertDialogTitle>
+          <AlertDialogTitle>Eliminar proyecto</AlertDialogTitle>
           <AlertDialogDescription>
             {t('“{name}” se moverá a la papelera. ').replace('{name}', () => props.project?.displayName ?? '')}
-            You can restore it from there until the Trash is emptied.
+            Se quitará de la lista de proyectos.
           </AlertDialogDescription>
         </AlertDialogHeader>
+        <Show when={error()}><p role="alert" class="text-xs text-destructive">{error()}</p></Show>
         <AlertDialogFooter>
           <Button variant="secondary" disabled={deleting()} onClick={props.onClose}>
-            Cancel
+            Cancelar
           </Button>
           <Button variant="destructive" disabled={deleting()} onClick={confirm}>
-            {deleting() ? "Deleting..." : "Delete"}
+            {deleting() ? "Eliminando…" : "Eliminar"}
           </Button>
         </AlertDialogFooter>
-      </AlertDialogContent>
+      </AlertDialogContent></AlertDialogPortal>
     </AlertDialog>
   );
 }

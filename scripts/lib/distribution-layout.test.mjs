@@ -11,7 +11,7 @@ function fixture() {
   const write = (path, content = 'fixture') => {
     const target = join(root, path); mkdirSync(dirname(target), { recursive: true }); writeFileSync(target, content);
   };
-  for (const path of ['dist/main.js', 'dist/preload.js', 'dist/screen-region-preload.js', 'dist/agent-host.mjs',
+  for (const path of ['dist/main.js', 'dist/preload.js', 'dist/screen-region-preload.js', 'dist/agent-host.mjs', 'dist/resource-worker.js',
     'web/index.html', 'web/notifications.html', 'web/preview-worker.html', 'cli/dapi.js', 'cli/bin/dapi.cmd',
     'docs/INSTRUCTIONS.md', 'docs/SKILLS_INCLUDED.md', 'docs/LICENSE', 'docs/CREDITS.md', 'docs/LICENSE_POLICY.md', 'docs/licenses/bundled/inventory.json', 'runtime/background-removal-runner.mjs',
     'runtime/bin/LICENSE-Whispera', 'runtime/bin/TOOLS-NOTICE.txt',

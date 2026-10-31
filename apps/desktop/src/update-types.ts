@@ -6,6 +6,7 @@ export type UpdatePhase = 'disabled' | 'idle' | 'checking' | 'available' | 'down
 export type UpdateState = {
   phase: UpdatePhase;
   currentVersion: string;
+  installation?: 'squirrel' | 'installer';
   availableVersion?: string;
   releaseUrl?: string;
   checkedAt?: string;

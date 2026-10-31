@@ -4,6 +4,9 @@
 
 import type { UpdateState } from './update-types';
 
+/** A configuration problem the user must see, never reported as "up to date". */
+export class UpdateSourceError extends Error {}
+
 type Release = { tag_name?: string; draft?: boolean; prerelease?: boolean; assets?: { name: string }[] };
 export type UpdateDriver = {
   on(event: 'update-downloaded' | 'update-not-available' | 'error', listener: (...args: unknown[]) => void): unknown;
@@ -37,6 +40,7 @@ export class UpdateController {
   private readonly listeners: [string, (...args: unknown[]) => void][] = [];
   private readonly options: {
     version: string; repo: string; enabled: boolean; disabledReason?: string;
+    externalInstaller?: boolean;
     driver: UpdateDriver; loadRelease(): Promise<Release | null>;
     changed(state: UpdateState): void; now?: () => number;
   };
@@ -44,6 +48,7 @@ export class UpdateController {
   constructor(options: UpdateController['options']) {
     this.options = options;
     this.state = { phase: options.enabled && validUpdateRepo(options.repo) ? 'idle' : 'disabled', currentVersion: options.version,
+      ...(options.externalInstaller ? { installation: 'installer' as const } : {}),
       ...(!options.enabled || !validUpdateRepo(options.repo) ? { message: options.disabledReason ?? 'Las actualizaciones se habilitan en la versión instalada de Syka.' } : {}) };
     const listen = (event: 'update-downloaded' | 'update-not-available' | 'error', listener: (...args: unknown[]) => void) => {
       options.driver.on(event, listener); this.listeners.push([event, listener]);
@@ -91,21 +96,22 @@ export class UpdateController {
         this.change({ phase: 'idle', checkedAt, availableVersion: undefined, releaseUrl: undefined });
       } else {
         const names = release.assets?.map(a => a.name) ?? [];
-        if (!names.includes('RELEASES') || !names.some(n => /^SykaStudio-[\d.]+-full\.nupkg$/i.test(n))) {
+        if (this.options.externalInstaller ? !names.some(n => /^Syka-?Studio[\w.-]*\.exe$/i.test(n)) : !names.includes('RELEASES') || !names.some(n => /^SykaStudio-[\d.]+-full\.nupkg$/i.test(n))) {
           throw Error('La versión todavía no tiene todos los archivos de actualización.');
         }
         const base = `https://github.com/${this.options.repo}/releases`;
         this.feedUrl = `${base}/download/${encodeURIComponent(tag)}`;
         this.change({ phase: 'available', checkedAt, availableVersion: tag.replace(/^v/, ''), releaseUrl: `${base}/tag/${encodeURIComponent(tag)}` });
       }
-    } catch {
-      this.change({ phase: 'error', message: 'No se pudieron buscar actualizaciones. Revisá tu conexión y probá de nuevo.' });
+    } catch (error) {
+      this.change({ phase: 'error', message: error instanceof UpdateSourceError ? error.message : 'No se pudieron buscar actualizaciones. Revisá tu conexión y probá de nuevo.' });
     }
     return this.snapshot();
   }
 
   download(): UpdateState {
     if (this.stopped) return this.snapshot();
+    if (this.options.externalInstaller) throw Error('Esta instalación utiliza el instalador oficial para actualizar.');
     if (this.state.phase === 'downloading' || this.state.phase === 'ready') return this.snapshot();
     if (!this.feedUrl || !['available', 'error'].includes(this.state.phase)) throw Error('Primero buscá una actualización disponible.');
     this.change({ phase: 'downloading', message: undefined });

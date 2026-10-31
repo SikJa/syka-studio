@@ -3,6 +3,8 @@ import { toast } from 'somoto';
 import { MAIN_CHANNELS } from '@desktop/main-channels';
 import { mainBridge } from '@/lib/ipc';
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
+import { Dialog, DialogContent, DialogPortal, DialogTitle } from '@/components/ui/dialog';
 import { DashboardScrollView, DashboardSurfaceSection } from './shared';
 import type { AgentServer } from '../../../../../packages/agent-chat/src/host/agent-config';
 import { t } from '@/i18n';
@@ -20,6 +22,7 @@ export function AgentSettings(props: { section?: 'skills' | 'plugins' } = {}) {
   const [name, setName] = createSignal(''), [endpoint, setEndpoint] = createSignal(''), [args, setArgs] = createSignal('[]'), [kind, setKind] = createSignal('url');
   const [skill, setSkill] = createSignal(''), [content, setContent] = createSignal(''), [revision, setRevision] = createSignal<string>();
   const [busy, setBusy] = createSignal(false), [editing, setEditing] = createSignal(false), [query, setQuery] = createSignal(''), [error, setError] = createSignal('');
+  const [expandedSkill, setExpandedSkill] = createSignal<string>();
   const run = async (request: Request) => {
     if (busy()) return;
     setBusy(true); setError('');
@@ -73,18 +76,22 @@ export function AgentSettings(props: { section?: 'skills' | 'plugins' } = {}) {
         <For each={[{ name: 'Mis skills', bundled: false }, { name: 'Incluidas con Syka', bundled: true }]}>{group => <DashboardSurfaceSection title={t(group.name)}>
           <Show when={visibleSkills().some(item => !!item.bundled === group.bundled)} fallback={<p class="text-xs text-muted-foreground">{query() ? 'No hay resultados para esta búsqueda.' : group.bundled ? 'No se encontraron skills incluidas.' : 'Importá o creá tu primer flujo reutilizable.'}</p>}>
             <For each={visibleSkills().filter(item => !!item.bundled === group.bundled)}>{item => <article class="syka-skill-settings-card">
-              <div><strong>{item.name}</strong><small>{description(item.description)}</small><span class="syka-settings-badge">{item.format === 'youtube' ? 'YouTube' : item.format === 'reels' ? 'Reels' : 'General'}{item.bundled ? ' · Base de Syka' : ' · Personal'}</span></div>
+              <div class="syka-skill-settings-info"><button type="button" class="syka-skill-settings-summary" aria-expanded={expandedSkill() === item.path} onClick={() => setExpandedSkill(expandedSkill() === item.path ? undefined : item.path)}>
+                <Show when={item.bundled || item.name.startsWith('syka-')}><Icon name="syka-logo" class="syka-skill-static-logo" /></Show><strong>{item.name}</strong><Icon name="chevron-down" class="size-4" />
+              </button><Show when={expandedSkill() === item.path}><small>{description(item.description)}</small></Show><span class="syka-settings-badge">{item.format === 'youtube' ? 'YouTube' : item.format === 'reels' ? 'Reels' : 'General'}{item.bundled ? ' · Base de Syka' : ' · Personal'}</span></div>
               <div class="flex shrink-0 items-center gap-1"><Show when={!item.bundled}><Button variant="ghost" disabled={busy()} onClick={async () => { const result = await run({ action: 'read-skill', name: item.name }); if (result?.content) { setSkill(item.name); setContent(result.content); setRevision(result.revision); setEditing(true); } }}>Editar</Button></Show><Button variant="ghost" disabled={busy()} onClick={() => void showFolder(item.path)}>Carpeta</Button></div>
             </article>}</For>
           </Show>
         </DashboardSurfaceSection>}</For>
-        <Show when={editing()}><DashboardSurfaceSection title={revision() ? 'Editar skill' : 'Nueva skill'}>
+        <Dialog open={editing()} onOpenChange={open => { if (!busy()) setEditing(open); }}><DialogPortal><DialogContent class="syka-skill-editor-dialog" onEscapeKeyDown={event => event.stopPropagation()}>
+          <DialogTitle>{revision() ? 'Editar skill' : 'Nueva skill'}</DialogTitle>
+          <Show when={error()}><p role="alert" class="syka-settings-error">{error()}</p></Show>
           <form class="syka-settings-form" onSubmit={async event => { event.preventDefault(); const result = await run({ action: revision() ? 'save-skill' : 'create-skill', name: skill(), content: content(), revision: revision() }); if (result) { setRevision(result.revision); setEditing(false); } }}>
             <label>Nombre de la skill<input class="syka-settings-input" value={skill()} onInput={event => { setSkill(event.currentTarget.value); setRevision(undefined); }} disabled={busy() || !!revision()} placeholder="mi-flujo-reels" maxlength={80} required /></label>
             <label>Instrucciones · SKILL.md<textarea class="syka-settings-input" rows={8} value={content()} onInput={event => setContent(event.currentTarget.value)} disabled={busy()} placeholder="Describí el flujo que debe seguir el agente…" required /></label>
             <div class="flex gap-2"><Button type="submit" variant="secondary" disabled={busy() || !skill().trim() || !content().trim()}>{revision() ? 'Guardar cambios' : 'Guardar skill'}</Button><Button variant="ghost" disabled={busy()} onClick={() => setEditing(false)}>Cancelar</Button></div>
           </form>
-        </DashboardSurfaceSection></Show>
+        </DialogContent></DialogPortal></Dialog>
         <p class="text-xxs text-muted-foreground">Podés personalizar las bases y ejecutar tus skills desde Biblioteca → Skills, dentro de un proyecto.</p>
       </Show>
     </Show>

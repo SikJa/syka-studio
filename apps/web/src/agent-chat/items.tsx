@@ -5,7 +5,7 @@
 // One component per item kind. Small enough to live together: what they
 // share is the 12 px body text and the muted 11 px chrome.
 
-import { For, Show, createSignal } from "solid-js";
+import { For, Show, createResource, createSignal, useContext } from "solid-js";
 
 import { Icon } from "@/components/ui/icon";
 
@@ -15,7 +15,8 @@ import { SentAttachment } from "./sent-attachment";
 import { ImageGenerationItem } from './image-generation-item';
 
 import "./activity.css";
-import {MirelMessage,MirelTrace,MirelUserText,MirelToolMark} from "./mirel-messages";
+import {ChatActionsContext,MirelMessage,MirelTrace,MirelUserText,MirelToolMark} from "./mirel-messages";
+import { chatImageUrl } from "./connection";
 
 type Of<K extends Item["kind"]> = Extract<Item, { kind: K }>;
 
@@ -32,6 +33,7 @@ export function UserItem(props: { item: Of<"user"> }) {
           <MirelUserText text={props.item.text}/>
         </div>
       </Show>
+      <Show when={props.item.createdAt}><time class="syka-message-time" dateTime={new Date(props.item.createdAt!).toISOString()}>{new Date(props.item.createdAt!).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</time></Show>
     </div>
   );
 }
@@ -75,6 +77,17 @@ export function WebSearchItem(props: { item: Of<'tool'> }) {
   </section>;
 }
 
+/** Stored images load from the chat's folder; images of a still-running tool are inline. */
+function ToolImageView(props: { image: NonNullable<Of<"tool">["images"]>[number]; title: string }) {
+  const actions = useContext(ChatActionsContext);
+  const [src] = createResource(() => props.image.ref && actions ? { chatId: actions.chatKey(), ref: props.image.ref } : false,
+    ({ chatId, ref }) => chatImageUrl(chatId, ref));
+  const source = () => props.image.ref ? src() : `data:${props.image.mediaType};base64,${props.image.data}`;
+  return <Show when={source()} fallback={<div class="h-24 w-40 animate-pulse rounded-md bg-input" aria-label="Cargando imagen"/>}>
+    <img src={source()!} alt={`${props.title} result`} class="max-h-60 max-w-full self-start rounded-md border border-border object-contain" loading="lazy" decoding="async"/>
+  </Show>;
+}
+
 export function ToolItem(props: { item: Of<"tool"> }) {
   const [open, setOpen] = createSignal(false);
   const expandable = () => !!(props.item.detail || props.item.output || props.item.images?.length);
@@ -97,14 +110,7 @@ export function ToolItem(props: { item: Of<"tool"> }) {
             </pre>
           </Show>
           <For each={props.item.images}>
-            {(image) => (
-              <img
-                src={`data:${image.mediaType};base64,${image.data}`}
-                alt={`${props.item.title} result`}
-                class="max-h-60 max-w-full self-start rounded-md border border-border object-contain"
-                loading="lazy"
-              />
-            )}
+            {(image) => <ToolImageView image={image} title={props.item.title}/>}
           </For>
         </div>
       </Show>

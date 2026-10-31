@@ -32,7 +32,7 @@ describe('model catalog visibility',()=>{
   });
   it('sanitizes persisted data while preserving new provider names',()=>{
     expect(parseModelVisibility(null)).toEqual(DEFAULT_MODEL_VISIBILITY);
-    expect(parseModelVisibility({harnesses:{hermes:false,codex:'false'},hermesProviders:{future:false,other:1}})).toEqual({harnesses:{hermes:false},hermesProviders:{future:false},models:{}});
+    expect(parseModelVisibility({harnesses:{hermes:false,codex:'false'},hermesProviders:{future:false,other:1}})).toEqual({harnesses:{hermes:false},hermesProviders:{future:false},opencodeProviders:{},models:{}});
   });
   it('hides individual models per connection without affecting another route to the same model',()=>{
     const models=[{id:'claude-opus',label:'Opus'},{id:'gemini-flash',label:'Flash'}];
@@ -45,5 +45,12 @@ describe('model catalog visibility',()=>{
   });
   it('preserves preferences for temporarily missing models and ignores malformed nested flags',()=>{
     expect(parseModelVisibility({models:{codex:{old:false,new:'false'},antigravity:[],future:{model:true}}}).models).toEqual({codex:{old:false},antigravity:{},future:{model:true}});
+  });
+  it('hides an OpenCode provider without affecting the same provider in Hermes',()=>{
+    const open:HarnessInfo={id:'opencode',label:'OpenCode',status:'ready',models:[{id:'openrouter/anthropic/opus',label:'Opus'},{id:'opencode/deepseek',label:'DeepSeek'}]};
+    const visibility=parseModelVisibility({opencodeProviders:{openrouter:false,future:'false'}});
+    expect(visibleModelCatalog([open,hermes],visibility).map(h=>h.models.length)).toEqual([1,4]);
+    expect(visibility.opencodeProviders).toEqual({openrouter:false});
+    expect(open.models).toHaveLength(2);
   });
 });

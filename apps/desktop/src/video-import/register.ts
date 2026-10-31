@@ -23,7 +23,7 @@ let importsBusy = () => false;
 export function hasActiveVideoImports(): boolean { return importsBusy(); }
 export function registerVideoImport(bridge: typeof mainBridge): void {
   const command = (name: 'yt-dlp' | 'ffprobe') => { const path = localToolPath(name); return path ? { command: path } : undefined; };
-  const allowedEnvironment = new Set(['PATH', 'PATHEXT', 'COMSPEC', 'SYSTEMROOT', 'WINDIR', 'HOME', 'USERPROFILE', 'HOMEDRIVE', 'HOMEPATH', 'APPDATA', 'LOCALAPPDATA', 'TEMP', 'TMP', 'TMPDIR', 'LANG', 'LC_ALL', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY', 'SSL_CERT_FILE', 'SSL_CERT_DIR', 'REQUESTS_CA_BUNDLE', 'CURL_CA_BUNDLE']);
+  const allowedEnvironment = new Set(['PATH', 'PATHEXT', 'COMSPEC', 'SYSTEMROOT', 'SYSTEMDRIVE', 'WINDIR', 'PROGRAMDATA', 'ALLUSERSPROFILE', 'HOME', 'USERPROFILE', 'HOMEDRIVE', 'HOMEPATH', 'APPDATA', 'LOCALAPPDATA', 'TEMP', 'TMP', 'TMPDIR', 'LANG', 'LC_ALL', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY', 'SSL_CERT_FILE', 'SSL_CERT_DIR', 'REQUESTS_CA_BUNDLE', 'CURL_CA_BUNDLE']);
   const downloadEnvironment = () => Object.fromEntries(Object.entries(agentToolEnvironment()).filter(([key]) => allowedEnvironment.has(key.toUpperCase())));
   const service = new VideoImportService({
     onFinished: (job, projectDir) => { void reportNotice(projectDir, { kind: job.state === 'done' ? 'download' : 'blocked', operationId: job.id, message: job.state === 'done' ? 'El video se descargó y se agregó a la biblioteca del proyecto.' : job.error || 'La descarga se detuvo.', ...(job.result ? { artifact: job.result.path } : {}) }).catch(console.error); },

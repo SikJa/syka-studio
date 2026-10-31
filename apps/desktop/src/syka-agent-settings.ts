@@ -7,7 +7,7 @@ import {configuredServers,validateServers} from '../../../packages/agent-chat/sr
 import {MAIN_CHANNELS} from './main-channels';
 import type {mainBridge} from './main-manager';
 import {localToolPath} from './syka-dependencies';
-import {recipeFormat, type RecipeFormat} from '../../../packages/agent-chat/src/skill-metadata';
+import {skillCatalog} from '../../../packages/agent-chat/src/host/skill-catalog';
 import {writeFileAtomic} from './atomic';
 const root=()=>process.env.SYKA_RUNTIME_ROOT||app.getPath('userData');
 
@@ -61,18 +61,15 @@ export function registerSykaAgentSettings(bridge:typeof mainBridge){
       await writeFileAtomic(path,req.content);
     }else if(req.action==='read-skill'){
       if(!req.name||!/^[a-zA-Z0-9_-]{1,80}$/.test(req.name))throw Error('Nombre inválido');
-      const content=await readFile(join(skillsRoot,req.name,'SKILL.md'),'utf8');return {servers:configuredServers(file),skills:[],skillsRoot,content,revision:createHash('sha256').update(content).digest('hex'),ffmpegPath:ffmpegPath()};
+      const readRoot=req.bundled?(isPackagedBuild()?join(process.resourcesPath,'docs','skills'):join(app.getAppPath(),'..','..','docs','skills')):skillsRoot;
+      const content=await readFile(join(readRoot,req.name,'SKILL.md'),'utf8');return {servers:configuredServers(file),skills:[],skillsRoot,content,revision:createHash('sha256').update(content).digest('hex'),ffmpegPath:ffmpegPath()};
     }else if(req.action!=='get')throw Error('Acción desconocida');
-    const skills:{name:string;path:string;description:string;bundled?:boolean;format?:RecipeFormat}[]=[];
-    for(const entry of await readdir(skillsRoot,{withFileTypes:true})){
-      if(!entry.isDirectory())continue;
-      try {
-        const content=await readFile(join(skillsRoot,entry.name,'SKILL.md'),'utf8');
-        skills.push({name:entry.name,path:join(skillsRoot,entry.name),description:content.slice(0,300),format:recipeFormat(content)});
-      }catch{}
-    }
     const bundledRoot=isPackagedBuild()?join(process.resourcesPath,'docs','skills'):join(app.getAppPath(),'..','..','docs','skills');
-    try { for (const entry of await readdir(bundledRoot,{withFileTypes:true})) { if(!entry.isDirectory())continue; const path=join(bundledRoot,entry.name); try { const content=await readFile(join(path,'SKILL.md'),'utf8'); skills.push({name:entry.name,path,description:content.slice(0,500),format:recipeFormat(content),bundled:true}); } catch {} } } catch {}
+    const catalogOptions={config:file,depth:1,refresh:req.action!=='get'};
+    const skills=[
+      ...(await skillCatalog([skillsRoot],catalogOptions)).map(skill=>({...skill,description:skill.description.slice(0,300)})),
+      ...(await skillCatalog([bundledRoot],catalogOptions)).map(skill=>({...skill,bundled:true})),
+    ];
     return {servers:configuredServers(file),skills,skillsRoot,ffmpegPath:ffmpegPath(),...(req.action==='save-skill'?{revision:createHash('sha256').update(req.content!).digest('hex')}:{})};
   });
 }

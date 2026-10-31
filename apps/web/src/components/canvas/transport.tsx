@@ -7,7 +7,7 @@ import { PreviewIcon } from './preview-icon';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem } from '@/components/ui/dropdown-menu';
 import { previewBounds, previewClock, previewTimecode } from './transport-model';
 import { Popover, PopoverTrigger, PopoverContent, PopoverPortal } from '@/components/ui/popover';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { DockButton } from './dock-button';
 import './transport.css';
 import { EditorShortcuts } from './editor-shortcuts';
 
@@ -55,10 +55,8 @@ export function CanvasTransport(props: { fullscreen: boolean; onFullscreen: () =
     setPlayhead(world, current, offset === 'start' ? bounds.start : offset === 'end' ? bounds.last
       : Math.min(bounds.last, Math.max(bounds.start, frame() + offset)));
   };
-  const control = (label: string, icon: string, action: () => void, active = false, className = '') =>
-    <Tooltip openDelay={80}><TooltipTrigger as={Button} size="icon-square" variant="ghost" disabled={!scene()} aria-label={label}
-      onClick={action} aria-pressed={active} class={className} classList={{ 'syka-preview-active': active }}><PreviewIcon name={icon} /></TooltipTrigger>
-      <TooltipContent class="syka-transport-tooltip">{label}</TooltipContent></Tooltip>;
+  const control = (label: string, icon: string, action: () => void, options: { shortcut?: string; active?: boolean; className?: string } = {}) =>
+    <DockButton label={label} icon={icon} onClick={action} shortcut={options.shortcut} pressed={options.active} class={options.className} disabled={!scene()} />;
 
   return <div role="toolbar" aria-label="Reproducción del video" class="syka-canvas-transport">
     <div class="syka-preview-seek">
@@ -68,15 +66,15 @@ export function CanvasTransport(props: { fullscreen: boolean; onFullscreen: () =
         onInput={event=>seekToFrame(Number(event.currentTarget.value))}/>
     </div>
     <div class="syka-playback-buttons">
-      {control('Ir al inicio · Inicio', 'start', () => seek('start'))}
-      {control(playing() ? 'Pausar · Espacio' : 'Reproducir · Espacio', playing() ? 'pause' : 'play', () => {
+      {control('Ir al inicio', 'start', () => seek('start'), { shortcut: 'Inicio' })}
+      {control(playing() ? 'Pausar' : 'Reproducir', playing() ? 'pause' : 'play', () => {
         const current = scene();
         if (!current) return;
         const requestedSpeed = speed();
         togglePlayback(world, current);
         current.set(Playback, { speed: requestedSpeed });
-      }, playing(), 'syka-preview-play')}
-      {control('Ir al final · Fin', 'end', () => seek('end'))}
+      }, { shortcut: 'Espacio', active: playing(), className: 'syka-preview-play' })}
+      {control('Ir al final', 'end', () => seek('end'), { shortcut: 'Fin' })}
     </div>
     <output class="syka-preview-time" aria-label="Tiempo del video" title={`${previewTimecode(frame(), fps())} / ${previewTimecode(duration(), fps())} · ${fps()} fps`}>
       <span>{previewClock(frame(), fps(), duration())}</span><span class="syka-preview-duration"> / {previewClock(duration(), fps(), duration())}</span>
@@ -92,7 +90,7 @@ export function CanvasTransport(props: { fullscreen: boolean; onFullscreen: () =
         <p class="syka-transport-menu-note">Audio y video a la misma velocidad.</p>
       </DropdownMenuContent></DropdownMenuPortal>
     </DropdownMenu>
-    {control(loop() ? 'Desactivar bucle' : 'Repetir video', 'loop', () => scene()?.set(Playback, { loop: !loop() }), loop())}
+    {control(loop() ? 'Quitar repetición' : 'Repetir en bucle', 'loop', () => scene()?.set(Playback, { loop: !loop() }), { active: loop() })}
     <Popover placement="top" modal={false} open={volumeOpen()} onOpenChange={open => { if (open) volumeOpenedByHover = false; setVolumeOpen(open); }}>
       <PopoverTrigger ref={volumeTrigger} as={Button} size="icon-square" variant="ghost" aria-label="Volumen de previsualización" disabled={!scene()}
         onPointerEnter={(event: PointerEvent) => { if (event.pointerType !== 'touch') openVolume(); }} onPointerLeave={closeVolume}>
@@ -107,9 +105,7 @@ export function CanvasTransport(props: { fullscreen: boolean; onFullscreen: () =
           onInput={event => world.set(AudioEngine,{previewVolume:Number(event.currentTarget.value)/100,previewMuted:false})} />
       </PopoverContent></PopoverPortal>
     </Popover>
-    <Button size="icon-square" variant="ghost" disabled={!scene()} aria-label={props.fullscreen ? 'Salir de pantalla completa' : 'Pantalla completa del video'} title="Pantalla completa · Ctrl + Enter" onClick={props.onFullscreen}>
-      <PreviewIcon name={props.fullscreen ? 'collapse' : 'fullscreen'} />
-    </Button>
+    {control(props.fullscreen ? 'Salir de pantalla completa' : 'Pantalla completa', props.fullscreen ? 'collapse' : 'fullscreen', props.onFullscreen, { shortcut: 'Ctrl+Enter', active: props.fullscreen })}
     <Show when={props.fullscreen}><EditorShortcuts fullscreen portalMount={props.portalMount} /></Show>
   </div>;
 }

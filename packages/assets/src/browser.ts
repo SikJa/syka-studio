@@ -49,7 +49,7 @@ export async function importFiles(library: AssetLibrary, files: ReadonlyArray<Fi
 		if (path) paths.push(path);
 		else unnamed.push(file);
 	}
-	return { ...(await library.import(paths, { folder })), unnamed };
+	return { ...(await library.import(paths, { folder, recordHistory: true })), unnamed };
 }
 
 /**

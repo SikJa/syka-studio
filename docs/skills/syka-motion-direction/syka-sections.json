@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": [
+        {
+          "name": "syka-motion-direction",
+          "sectionId": "brief",
+          "file": "references/production-prompt.md",
+          "when": "Sólo producción sustancial sin prompt de producción resuelto"
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-editorial-motion",
+          "sectionId": "build",
+          "when": "Si hacen falta tarjetas/callouts/comparaciones"
+        },
+        {
+          "name": "syka-motion-transitions",
+          "sectionId": "build",
+          "when": "Si falta resolver keyframes o continuidad"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": [
+        {
+          "name": "syka-edit-review",
+          "sectionId": "review",
+          "when": "Sólo revisión amplia de la pieza"
+        }
+      ]
+    }
+  ]
+}

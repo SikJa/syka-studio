@@ -13,10 +13,10 @@ import {
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { useLocation, useNavigate } from "@solidjs/router";
-import { For, Show, createMemo } from "solid-js";
+import { For, Show, createMemo, createSignal } from "solid-js";
 import { toast } from "somoto";
-import { forgetProjectBundle, generateProjectName } from "@/lib/db";
-import { createProject, deleteProject, duplicateProject, ensureProjectsRoot } from "@/projects";
+import { generateProjectName } from "@/lib/db";
+import { createProject, duplicateProject, ensureProjectsRoot } from "@/projects";
 import { AssetId, ChildOf, Name, Root, Scene, getAssetFile, getActiveEntity, sortByItemIndex } from "@diffusionstudio/runtime";
 import { assetName } from "@diffusionstudio/assets";
 import { useQuery, useWorld } from "@diffusionstudio/koota-solid";
@@ -25,27 +25,41 @@ import { pickAndImport } from "@/engine/asset-actions";
 import { projectRoute } from "@/hooks/use-project-route";
 import { useProject } from "@/context/project";
 import { useExport } from "@/context/export";
+import { renderOverlay } from '@/context/render';
+import { drainProjectEdits } from '@/projects/edits';
 import { mimeTypeToExtension } from "@/utils";
 
 import type { Entity } from "koota";
 
-export function FileMenu() {
+/** Both editor entry points share the same save-before-create action. */
+export function useNewProjectAction() {
   const navigate = useNavigate();
   const location = useLocation();
   const project = useProject();
-  const library = useLibrary();
-
-  const handleNewProject = async () => {
+  const [creating, setCreating] = createSignal(false);
+  return async () => {
+    if (creating()) return;
+    if (renderOverlay()) { toast('Esperá a que termine la exportación antes de crear otro proyecto.'); return; }
+    setCreating(true);
     try {
+      await drainProjectEdits(project.dir());
       if (!(await ensureProjectsRoot())) return;
       const created = await createProject(generateProjectName());
       navigate(projectRoute(created.id), { state: location.state });
     } catch (e) {
-      toast.error("Failed to create project", {
+      toast.error("No se pudo crear el proyecto", {
         description: (e as Error).message,
       });
-    }
+    } finally { setCreating(false); }
   };
+}
+
+export function FileMenu(props: { onDeleteRequested(): void }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const project = useProject();
+  const library = useLibrary();
+  const handleNewProject = useNewProjectAction();
 
   const handleDuplicateProject = async () => {
     try {
@@ -53,16 +67,6 @@ export function FileMenu() {
       navigate(projectRoute(copy.id), { state: location.state });
     } catch (e) {
       toast.error("Failed to duplicate project", { description: (e as Error).message });
-    }
-  };
-
-  const handleDeleteProject = async () => {
-    try {
-      await deleteProject(project.dir());
-      forgetProjectBundle(project.id());
-      navigate("/?dashboard=projects");
-    } catch (e) {
-      toast.error("Failed to delete project", { description: (e as Error).message });
     }
   };
 
@@ -79,7 +83,7 @@ export function FileMenu() {
     <>
       <DropdownMenuGroup>
         <DropdownMenuItem onSelect={handleNewProject}>
-          New project
+          Nuevo proyecto
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={handleDuplicateProject}>
           Duplicate project
@@ -119,8 +123,8 @@ export function FileMenu() {
       <DropdownMenuSeparator />
 
       <DropdownMenuGroup>
-        <DropdownMenuItem onSelect={handleDeleteProject}>
-          Delete project
+        <DropdownMenuItem variant="destructive" onSelect={props.onDeleteRequested}>
+          Eliminar proyecto
         </DropdownMenuItem>
       </DropdownMenuGroup>
     </>

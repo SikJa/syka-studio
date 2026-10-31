@@ -1,7 +1,7 @@
 /* MPL-2.0. Compact project usage with a provider/model breakdown on hover. */
 import { createEffect, For, onCleanup, Show } from 'solid-js';
 import { HARNESS_LABELS } from '@diffusionstudio/agent-chat';
-import { compactTokens, exactTokens, observeProjectUsage, projectUsage } from '@/agent-chat/project-usage';
+import { compactTokens, exactTokens, observeProjectUsage, projectUsage, projectUsageError } from '@/agent-chat/project-usage';
 import { Tooltip, TooltipContent, TooltipPortal, TooltipTrigger } from '@/components/ui/tooltip';
 import { t } from '@/i18n';
 
@@ -9,7 +9,7 @@ export function ProjectTokenUsageLabel(props: { projectId: string }) {
   createEffect(() => { onCleanup(observeProjectUsage(props.projectId)); });
   const usage = () => projectUsage(props.projectId);
   const known = () => !!usage()?.models.length;
-  const label = () => known() ? compactTokens(usage()!.tokens.totalTokens) : 'Tokens: sin datos';
+  const label = () => known() ? compactTokens(usage()!.tokens.totalTokens) : projectUsageError(props.projectId) ? 'Consumo: sin conexión' : !usage() ? 'Consultando consumo…' : usage()?.activity?.chats === 0 ? 'Sin chat asociado' : 'Consumo no reportado';
   return (
     <Tooltip openDelay={250}>
       <TooltipTrigger as="span" class="shrink-0 text-[11px] tabular-nums text-muted-foreground" aria-label={label()}>
@@ -18,7 +18,7 @@ export function ProjectTokenUsageLabel(props: { projectId: string }) {
       <TooltipPortal>
         <TooltipContent class="block max-w-80 p-3 text-left font-normal">
           <p class="font-medium">Consumo del proyecto</p>
-          <Show when={known()} fallback={<p class="mt-1 text-muted-foreground">Todavía no hay métricas reportadas. Las tareas anteriores pueden no tener registros completos.</p>}>
+          <Show when={known()} fallback={<p class="mt-1 text-muted-foreground">{projectUsageError(props.projectId) ? 'No se pudo consultar el registro de consumo. Se reintentará al reconectar.' : usage()?.activity?.chats === 0 ? 'Este proyecto no tiene una conversación asociada en Syka. Las copias y las ediciones realizadas desde otro agente no transfieren automáticamente sus contadores.' : 'El proveedor todavía no reportó métricas para esta conversación, o el historial anterior no conserva esos datos. No se estima el consumo.'}</p>}>
             <p class="mt-1 font-medium tabular-nums">{exactTokens(usage()!.tokens.totalTokens)} tokens reportados</p>
             <div class="mt-2 space-y-1 border-t border-border pt-2">
               <For each={usage()?.models}>{entry => (

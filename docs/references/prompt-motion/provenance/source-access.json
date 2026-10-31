@@ -1,0 +1,26 @@
+{
+  "consultedAt": "2026-10-06",
+  "website": {
+    "url": "https://prompt-motion.com/",
+    "homeAndDetailPages": "230 listed details returned HTTP 200 to the explicit local reference audit",
+    "robots": "provenance/prompt-motion-robots.txt",
+    "signals": {"search": "yes", "ai-train": "no", "use": "reference"},
+    "licenseDiscovery": "No general redistribution grant verified; sitemap.xml, /terms and /license returned 403 during discovery",
+    "exclusivePromptRetention": "Hashes and metadata only in the durable library; temporary HTML cache is not packaged"
+  },
+  "originalPosts": {
+    "ordinaryHttp": "Eight requested original X URLs returned HTTP 200, but readable post content was not independently established",
+    "webReaderRecheck": [
+      {"url": "https://x.com/brainextends/status/2103801834930606193", "status": 403},
+      {"url": "https://x.com/twoclipping/status/2103273003555402193", "status": 403}
+    ],
+    "contentVerified": false,
+    "accessWorkarounds": "None: no cookies, login, identity switching or downloaded external skills"
+  },
+  "repository": {
+    "url": "https://github.com/yihui-dev/awesome-opus5-5-videos",
+    "commit": "3d54892e2ae5b0e8d337171e6508bba4cec01ab8",
+    "manifest": "provenance/upstream-snapshot.json",
+    "execution": "Only our parser reads data/Markdown. No upstream code or dependency installation."
+  }
+}

@@ -35,6 +35,56 @@ async function warmSession(test: Awaited<ReturnType<typeof setup>>, id: HarnessI
 }
 
 describe('provider Connect host lifecycle', () => {
+  it('starts the selected provider as soon as it is ready without waiting for other probes',async()=>{
+    const selected=deferred<HarnessInfo>(),other=deferred<HarnessInfo>();
+    const fast=fixtureHarness('codex'),slow=fixtureHarness('opencode');
+    fast.harness.probe=vi.fn(()=>selected.promise);slow.harness.probe=vi.fn(()=>other.promise);
+    const test=await setup([fast.harness,slow.harness],{},false);
+    test.fixture.release=()=>{selected.resolve(info('codex'));other.resolve(info('opencode'));};
+    const sending=test.host.handle(test.connection,'turn.send',{projectId:'fixture',cwd:test.root,text:'first message',model:{harness:'codex',model:'selected-model'}});
+    selected.resolve(info('codex'));
+    await vi.waitFor(()=>expect(fast.session.send).toHaveBeenCalledTimes(1));
+    expect(slow.harness.open).not.toHaveBeenCalled();
+    await sending;
+    other.resolve(info('opencode'));
+  });
+  it('honors explicit refresh immediately and coalesces simultaneous manual checks', async () => {
+    const fixture = fixtureHarness('codex'), test = await setup([fixture.harness], { probeMaxAgeMs: 60_000 });
+    expect(fixture.harness.probe).toHaveBeenCalledTimes(1);
+    await test.host.handle(test.connection, 'harnesses.list', { refresh: true });
+    expect(fixture.harness.probe).toHaveBeenCalledTimes(1);
+    const waiting = deferred<HarnessInfo>(); test.fixture.release = () => waiting.resolve(info('codex'));
+    fixture.harness.probe = vi.fn(() => waiting.promise);
+    const first = test.host.handle(test.connection, 'harnesses.list', { refresh: true, force: true });
+    const second = test.host.handle(test.connection, 'harnesses.list', { refresh: true, force: true });
+    await vi.waitFor(() => expect(fixture.harness.probe).toHaveBeenCalledTimes(1));
+    waiting.resolve(info('codex', 'ready', 'fresh-model'));
+    const [a, b] = await Promise.all([first, second]);
+    expect(a).toEqual(b); expect(a[0]?.models[0]?.id).toBe('fresh-model');
+  });
+  it('keeps a transiently unavailable catalog for display but refuses turns, then discards it on auth failure', async () => {
+    const fixture = fixtureHarness('codex'), test = await setup([fixture.harness], { probeMaxAgeMs: 60_000 });
+    fixture.harness.probe = vi.fn(async () => { throw Error('ETIMEDOUT: model list'); });
+    let [result] = await test.host.handle(test.connection, 'harnesses.list', { refresh: true, force: true });
+    expect(result).toMatchObject({ status: 'error', catalogSource: 'cache', models: info('codex').models });
+    await expect(test.host.handle(test.connection, 'turn.send', { projectId: 'fixture', cwd: test.root, text: 'must not send', model: { harness: 'codex', model: 'selected-model' } })).rejects.toMatchObject({ code: 'harness-unavailable' });
+    expect(fixture.harness.open).not.toHaveBeenCalled();
+    fixture.harness.probe = vi.fn(async () => info('codex', 'signed-out'));
+    [result] = await test.host.handle(test.connection, 'harnesses.list', { refresh: true, force: true });
+    expect(result?.status).toBe('signed-out'); expect(result?.models).toEqual([]); expect(result?.catalogSource).toBeUndefined();
+  });
+  it('publishes ready models while a different provider is still probing', async () => {
+    const waiting=deferred<HarnessInfo>(), fast=fixtureHarness('codex'), slow=fixtureHarness('opencode');
+    slow.harness.probe=vi.fn(()=>waiting.promise);
+    const test=await setup([fast.harness,slow.harness],{},false);
+    test.fixture.release=()=>waiting.resolve(info('opencode'));
+    await vi.waitFor(()=>expect(test.messages.some(message=>message.t==='harnesses'
+      && message.harnesses.some(h=>h.id==='codex'&&h.status==='ready')
+      && message.harnesses.some(h=>h.id==='opencode'&&h.status==='checking'))).toBe(true));
+    expect((await test.host.handle(test.connection,'harnesses.list',{})).find(h=>h.id==='codex')?.status).toBe('ready');
+    waiting.resolve(info('opencode'));
+    await test.host.handle(test.connection,'harnesses.list',{refresh:true});
+  });
   it('preserves a catalog/protocol error after successful authorization instead of reporting signed-out', async () => {
     const fixture = fixtureHarness('cursor', 'signed-out'); let authenticated = false;
     fixture.harness.probe = vi.fn(async () => ({ ...info('cursor', authenticated ? 'error' : 'signed-out'), detail: authenticated ? 'Fixture ACP catalog unavailable' : 'Connect account' }));

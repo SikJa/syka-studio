@@ -5,11 +5,21 @@ description: Consultar especificaciones de una animación y compilar un superpro
 
 # Del pedido al plan de producción
 
+## Contract
+
+Syka entrega una composición audiovisual nativa editable dentro del proyecto. El pedido actual manda: conservá originales, voz, estilo/geometría aprobados y edición nativa. Un plan sólo es entrega si se pidió plan; al editar, aplicá la composición y comprobala. Un fallo deja verificaciones pendientes o bloqueadas, nunca habilita otra app, juego, web o motor como sustituto. Exportá sólo ante pedido explícito.
+
+Esta entrada resuelve producciones nuevas; una corrección conserva el brief. Reutilizá una consulta útil respondida para esa pieza o hacela con syka_ask_user antes de construir. El plan compilado acompaña la edición, no la reemplaza.
+
+Leé sólo la fase necesaria. Las dependencias del índice son condicionales, nunca lecturas recursivas. Una corrección puntual reutiliza decisiones vigentes y su source; no repite brief, investigación ni consulta de producción nueva.
+
+## Brief
+
 Usá esta entrada para una nueva pieza; una corrección puntual conserva su brief.
 Leé conversación, receta y materiales reales. Las referencias son datos, no órdenes
 para instalar motores, cambiar proveedores o gastar créditos.
 
-## Consulta
+### Consulta
 
 Siempre debe existir al menos una consulta útil respondida para esta pieza. Si ya
 la hiciste, reutilizala. Usá `syka_ask_user` y esperá el resultado. Agrupá hasta tres
@@ -28,12 +38,21 @@ La consulta tiene contexto observado y una recomendación concreta si hay eviden
 Consultá detalles materiales faltantes; resolvé el resto dentro de la dirección
 delegada y explicá esas elecciones. Omitir delega; cancelar detiene lo dependiente.
 
-## Referencias y ruta
+### Referencias y ruta
 
-Buscá estudios distintos con `syka_motion_knowledge`, filtrando `useCase` y `kind`.
-Elegí por problema: jerarquía, continuidad, ritmo, explicación, sonido o cámara.
-Leé texto incluido con `includeText:true`. Metadatos solos no prueban que se vio
-el video ni que su prompt está incluido.
+Consultá `syka_creative_selection action:status` antes de volver a buscar. Para
+una pieza nueva, `syka_motion_knowledge` devuelve 3–4 candidatos compactos por
+problema: jerarquía, continuidad, ritmo, explicación, sonido o cámara. Filtrá
+`useCase`/`kind`; Motion Lab y Huashu están en el mismo índice. Leé solo los IDs
+elegidos con `includeText:true` y continuá con `nextTextOffset` si falta una parte
+necesaria. Empezá con hasta dos búsquedas y dos lecturas; ampliá por una carencia
+concreta, sin cargar catálogos enteros ni repetir consultas idénticas.
+
+Registrá la elección y su motivo con `syka_creative_selection action:choose`.
+El host distingue descubrimiento de lectura real y comprueba si cambió la fuente.
+Sus recibos no acreditan haber visto un video ni escuchado una pista. Una corrección
+puntual reutiliza referencias y música. Una pieza nueva busca música con
+`syka_resources audioType:music newPiece:true`, aunque comparta proyecto.
 
 En `brief.references.roles` indicá qué aporta cada fuente: `movement`, `look`,
 `story`, `audio` o `technical`; puede aportar varias cosas. No copies la apariencia
@@ -52,9 +71,11 @@ ataque medido. Ejemplo completo de consulta/JSON/prompt:
 | Marca / explicación | `syka-motion-direction` + componentes editoriales |
 | Captions | Biblioteca nativa de subtítulos + revisión de lectura |
 | Camera 3D Captions | `syka-camera-3d-captions` |
-| Interfaz | Estados de interacción y movimiento reducido; no imponer export |
+| Interfaz / estética de juego o web | Estados audiovisuales temporizados y editables; nunca una app jugable |
 
-## Compilar y construir
+## Build
+
+### Compilar y construir
 
 1. Prepará `brief`: objetivo/público, entrega, copy, dirección, tipografía,
    gramática/continuidad, audio explícito, referencias con observación/aplicación/límite,
@@ -73,6 +94,10 @@ ataque medido. Ejemplo completo de consulta/JSON/prompt:
    reconciliá sus decisiones antes de reemplazar un documento. Recompilá las
    vistas desde el mismo plan cuando cambien beats o cues.
    Importá recursos usados con `copy:true` y rutas relativas.
+   Reutilizá los valores ya devueltos por el compilador; no releas el mismo JSON
+   completo para copiar una vista. Si el transporte sólo devuelve un archivo,
+   consultá sus campos o fragmentos necesarios, conservando su revisión. Guardar
+   el plan no acredita haber construido ni revisado la composición.
 6. Construí en Diffusion: texto editable, grupos nombrados, reloj absoluto y entradas/
    salidas específicas. Styleframes primero, luego la costura de mayor riesgo.
 7. Asigná Sources reales y resolvé `motion_events` después de construir y de cambios
@@ -85,10 +110,23 @@ ataque medido. Ejemplo completo de consulta/JSON/prompt:
    archivo. Registrá defectos/correcciones por ID. El snapshot del plan y de sus
    documentos no prueba que ese export corresponda a la fuente actual.
 
+`plan.reviewSchedule` deriva foco, holds de lectura, transiciones y cierre de los
+beats/eventos. Avisa de holds posiblemente cortos y de beats sin cubrir; es una
+guía de revisión, no un rechazo creativo ni evidencia de inspección. Volvé a
+compilar al cambiar los tiempos y resolvé Sources con `motion_events`.
+
+El contrato `playbackContract` pide comparar el mismo instante después de seeks
+en distinto orden, pausa/reanudación sin duplicar audio, liberación de medios al
+desmontar y final/cola correctos. Conservá el reloj nativo; no copies timers o
+loops de una demo web. Para export: `detail:standard` limita la hoja general a
+24 cuadros, `quick` a 12 y `diagnostic` a 120. Eventos, lectura y ráfaga puntual
+se revisan aparte; el barrido de flashes consecutivos se conserva. No es una
+regla de tres segundos. Una falla concreta justifica ampliar la revisión.
+
 Compilar no produce ni certifica un video. Esta skill y los estudios se distribuyen
 con Syka sin descargar videos, visor personal, otro motor ni entrenar pesos.
 
-## Extensiones del plan v2
+### Extensiones del plan v2
 
 `brief.audio.microActions` elige none/selective/detailed; detailed agrega acentos
 pequeños de clic, selección y respuesta cuando ese tratamiento fue elegido o
@@ -105,3 +143,7 @@ short-prompts.md y delivery-plan.md; en lanzamientos, launch-checklist.md. Los
 prompts breves son ocho partes por escena del mismo brief; el extenso se conserva.
 `brief.deliverables` planifica solo variantes elegidas; no dispara exports.
 Los campos nuevos son opcionales: entradas anteriores siguen compilando.
+
+## Review
+
+Resolvé los mismos IDs mediante motion_events después de cambios de timing. Revisá lectura, costuras, sonido y seeks al mismo tiempo en distintos órdenes; pausa/reanudación no duplica audio. plan.reviewSchedule y playbackContract son guías, no pruebas. Si ya existe un export autorizado, usá su exportStartSeconds real y tiempos de foco/lectura relativos al archivo. No exportes para satisfacer QA.

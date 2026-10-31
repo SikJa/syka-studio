@@ -2,6 +2,7 @@
 import { mkdir, writeFile, access } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { composePlan } from './music-composition.mjs';
 
 export const RATE = 48000;
 export const EFFECTS = { pop: .24, click: .07, tap: .15, whoosh: .62, swipe: .32, impact: .85, riser: 1.8, downer: 1.2, chime: 1.5, success: .8, notification: .65, shimmer: 1.8 };
@@ -81,15 +82,19 @@ export function synthEffect({kind='pop',variant=0,seed=7,duration=EFFECTS[kind],
   return {samples:finish(samples,peakDb),rate:RATE,kind,seed,variant,duration:samples[0].length/RATE,loop:false};
 }
 
-function voice(stem, start, duration, frequency, type, gain, pan, rng) {
+function voice(stem, start, duration, frequency, type, gain, pan, rng, wrap=false) {
   const from=Math.round(start*RATE),count=Math.round(duration*RATE),gL=Math.sqrt((1-pan)/2)*gain,gR=Math.sqrt((1+pan)/2)*gain;
   let low=0,phase=0;
   for(let n=0;n<count;n++) {
-    const i=from+n;if(i<0||i>=stem[0].length)continue;
+    const raw=from+n,i=wrap?((raw%stem[0].length)+stem[0].length)%stem[0].length:raw;if(i<0||i>=stem[0].length)continue;
     const t=n/RATE,u=n/Math.max(1,count-1);let v=0;
     if(type==='pad') {
       const env=smooth(t/.3)*smooth((duration-t)/.45);
       v=env*(Math.sin(TAU*frequency*t)+.32*Math.sin(TAU*frequency*1.0025*t)+.13*Math.sin(TAU*frequency*2*t));
+    } else if(type==='keys') {
+      v=smooth(t/.009)*Math.exp(-t/.48)*smooth((duration-t)/.12)*(Math.sin(TAU*frequency*t)+.19*Math.sin(TAU*frequency*2*t)*Math.exp(-t/.12)+.06*Math.sin(TAU*frequency*3*t)*Math.exp(-t/.06));
+    } else if(type==='bell') {
+      v=smooth(t/.006)*Math.exp(-t/.65)*smooth((duration-t)/.16)*(Math.sin(TAU*frequency*t)+.16*Math.sin(TAU*frequency*2.01*t)*Math.exp(-t/.25));
     } else if(type==='pluck') {
       const env=smooth(t/.004)*Math.exp(-t/.24)*smooth((duration-t)/.09);
       v=env*(Math.sin(TAU*frequency*t)+.23*Math.sin(TAU*frequency*2*t)*Math.exp(-t/.09)+.1*Math.sin(TAU*frequency*3*t)*Math.exp(-t/.05));
@@ -105,32 +110,36 @@ function voice(stem, start, duration, frequency, type, gain, pan, rng) {
     stem[0][i]+=v*gL;stem[1][i]+=v*gR;
   }
 }
-export function synthMusic({mood='warm',bpm=mood==='pulse'?116:mood==='ambient'?80:96,bars=8,seed=7,loop=false,peakDb=-9}={}) {
+export function synthMusic({mood='warm',style=mood==='warm'?'editorial':mood,bpm=({editorial:92,ambient:72,pulse:118,lofi:78,cinematic:84,bright:112}[style]??96),bars=8,seed=7,loop=false,peakDb=-9,duration,avoidFamilies=[],harmony}={}) {
   if(!['warm','pulse','ambient'].includes(mood)||!Number.isFinite(bpm)||bpm<40||bpm>180||!Number.isInteger(bars)||bars<4||bars>32||!Number.isSafeInteger(seed)||!Number.isFinite(peakDb)||peakDb>0||peakDb< -60)throw Error('Invalid music options');
-  const count=Math.round(bars*4*60/bpm*RATE),period=count/RATE,beat=period/(bars*4),rng=random(seed);
-  const stems=Object.fromEntries(['harmony','melody','bass','drums'].map(name=>[name,channels(count*3)]));
-  // Am(add9), Fmaj7, Cmaj9, Gsus: original arrangement, no sampled performances.
-  const chords=[[57,60,64,71],[53,57,60,64],[48,55,59,62],[55,60,62,69]];
-  for(let cycle=0;cycle<3;cycle++) for(let bar=0;bar<bars;bar++) {
-    const start=cycle*period+bar*beat*4,chord=chords[Math.floor(bar/2)%4],energy=mood==='ambient'?.35:mood==='pulse'?1:.62;
-    for(let n=0;n<chord.length;n++)voice(stems.harmony,start,beat*4+.4,hz(chord[n]+12),'pad',.032,n%2?.52:-.52,rng);
-    for(let step=0;step<8;step++) {
-      if(mood==='ambient'&&step%2||step===7&&bar%2===0)continue;
-      const note=chord[(step+(bar%2))%chord.length]+24;
-      voice(stems.melody,start+step*beat/2,Math.min(.95,beat*1.5),hz(note),'pluck',.068*(step%2?.7:1),step%2?.38:-.38,rng);
+  const seconds=duration??bars*4*60/bpm;
+  if(!Number.isFinite(seconds)||seconds<4||seconds>90)throw Error('Music must be 4–90 seconds; render longer pieces in sections.');
+  const count=Math.round(seconds*RATE),period=count/RATE,beat=60/bpm,rng=random(seed),plan=composePlan({style,seed,avoidFamilies,harmony});
+  const stems=Object.fromEntries(['harmony','melody','bass','drums'].map(name=>[name,channels(count)]));
+  const totalBars=Math.ceil(period/(beat*4));
+  for(let bar=0;bar<totalBars;bar++) {
+    const start=bar*beat*4,chord=plan.chords[Math.floor(bar/plan.phraseBars)%plan.chords.length].map(note=>note+plan.root),energy=plan.density;
+    const phrase=!loop&&bar===0?.65:!loop&&bar===totalBars-1?.72:1;
+    for(let n=0;n<chord.length;n++)voice(stems.harmony,start,beat*4+.4,hz(chord[n]+12),'pad',.026*phrase,n%2?.52:-.52,rng,loop);
+    for(const step of plan.rhythm) {
+      if(!loop&&start+step*beat/2>period-.8)continue;
+      const note=chord[plan.motif[(step+bar)%plan.motif.length]%chord.length]+(style==='ambient'?12:24);
+      const swing=style==='lofi'&&step%2?beat*.08:0;
+      voice(stems.melody,start+step*beat/2+swing,Math.min(1.4,beat*2),hz(note),plan.voice,.065*phrase*(step%2?.7:1),step%2?.38:-.38,rng,loop);
     }
+    for(const bassBeat of plan.bass)voice(stems.bass,start+bassBeat*beat,beat*1.3,hz(chord[0]-12),'bass',.09*energy,0,rng,loop);
     for(let b=0;b<4;b++) {
-      voice(stems.bass,start+b*beat,beat*.88,hz(chord[0]-12),'bass',.09*energy,0,rng);
-      if(mood==='ambient')continue;
-      if(b===0||b===2||mood==='pulse')voice(stems.drums,start+b*beat,.25,0,'kick',.12*energy,0,rng);
-      if(b%2===1)voice(stems.drums,start+b*beat,.17,0,'snare',.036*energy,-.1,rng);
-      voice(stems.drums,start+b*beat+beat/2,.09,0,'hat',.024*energy,.38,rng);
+      if(!plan.drums||!loop&&bar===0&&b<2)continue;
+      if(b===0||b===2||style==='pulse')voice(stems.drums,start+b*beat,.25,0,'kick',.12*energy,0,rng,loop);
+      if(b%2===1)voice(stems.drums,start+b*beat,.17,0,'snare',.027*energy,-.1,rng,loop);
+      voice(stems.drums,start+b*beat+beat/2,.09,0,'hat',.018*energy,.38,rng,loop);
     }
   }
   // Tempo-derived stereo delays. Keep the middle period to preserve looping tails.
   const delay=Math.round(beat*.75*RATE),melody=stems.melody;
-  for(let i=melody[0].length-1;i>=delay;i--) { melody[0][i]+=.18*melody[1][i-delay];melody[1][i]+=.18*melody[0][i-delay]; }
-  const sliced=Object.fromEntries(Object.entries(stems).map(([name,pair])=>[name,pair.map(c=>c.slice(count,count*2))]).filter(([,pair])=>pair.some(c=>c.some(v=>v!==0))));
+  if(loop){const dry=melody.map(channel=>channel.slice());for(let i=0;i<count;i++){const at=(i-delay+count)%count;melody[0][i]+=.18*dry[1][at];melody[1][i]+=.18*dry[0][at];}}
+  else for(let i=melody[0].length-1;i>=delay;i--) { melody[0][i]+=.18*melody[1][i-delay];melody[1][i]+=.18*melody[0][i-delay]; }
+  const sliced=Object.fromEntries(Object.entries(stems).filter(([,pair])=>pair.some(c=>c.some(v=>v!==0))));
   const mix=channels(count);
   for(const pair of Object.values(sliced))for(let c=0;c<2;c++)for(let i=0;i<count;i++)mix[c][i]+=pair[c][i];
   // Linear bus gain keeps exported stems reconstructable; no per-stem normalization.
@@ -139,7 +148,7 @@ export function synthMusic({mood='warm',bpm=mood==='pulse'?116:mood==='ambient'?
     for(const c of pair)for(let i=0;i<count;i++)c[i]*=gain;
     if(!loop)fadeEnds(pair,RATE,.12,Math.min(1.2,beat*2));
   }
-  return {samples:mix,stems:sliced,rate:RATE,duration:period,bpm,bars,seed,mood,kind:'music',loop};
+  return {samples:mix,stems:sliced,rate:RATE,duration:period,bpm,bars:totalBars,seed,mood,style,composition:plan,kind:'music',loop};
 }
 export function measure(samples,rate=RATE) {
   let peak=0,sum=0,clipped=0;const frames=samples[0].length;
@@ -155,16 +164,16 @@ export async function saveAudio(path,result,{stems=false}={}) {
   path=resolve(path);if(!path.toLowerCase().endsWith('.wav'))throw Error('Output must end in .wav');
   const files=[{path,data:pcmWave(result.samples,result.rate)}];
   if(stems&&result.stems)for(const [name,samples] of Object.entries(result.stems))files.push({path:path.replace(/\.wav$/i,'-'+name+'.wav'),data:pcmWave(samples,result.rate)});
-  const metadata={...measure(result.samples,result.rate),kind:result.kind,mood:result.mood,bpm:result.bpm,bars:result.bars,seed:result.seed,variant:result.variant,loop:result.loop,license:'MIT',generator:'Syka audio-studio',stems:files.slice(1).map(f=>f.path.split(/[\\/]/).pop())};
+  const metadata={...measure(result.samples,result.rate),kind:result.kind,mood:result.mood,style:result.style,composition:result.composition,bpm:result.bpm,bars:result.bars,seed:result.seed,variant:result.variant,loop:result.loop,license:'MIT',generator:'Syka audio-studio',stems:files.slice(1).map(f=>f.path.split(/[\\/]/).pop())};
   files.push({path:path.replace(/\.wav$/i,'.json'),data:JSON.stringify(metadata,null,2)+'\n'});
   for(const file of files) {try {await access(file.path);}catch(error){if(error.code==='ENOENT')continue;throw error;}throw Error('Refusing to overwrite '+file.path);}
   await mkdir(dirname(path),{recursive:true});for(const file of files)await writeFile(file.path,file.data,{flag:'wx'});return {path,...metadata};
 }
 async function main() {
   const args={};for(let i=2;i<process.argv.length;i++) {const key=process.argv[i];if(['--loop','--stems'].includes(key)){args[key.slice(2)]=true;continue;}if(!key.startsWith('--')||!process.argv[i+1]||process.argv[i+1].startsWith('--'))throw Error('Expected --option value');args[key.slice(2)]=process.argv[++i];}
-  const allowed=['kind','mood','bpm','bars','seed','variant','duration','peak-db','output','loop','stems'];if(Object.keys(args).some(k=>!allowed.includes(k))||!args.output||!args.kind)throw Error('Use --kind pop|whoosh|music --output file.wav, optionally --mood warm|pulse|ambient --bpm 96 --bars 8 --seed 7 --loop --stems');
+  const allowed=['kind','mood','style','harmony','bpm','bars','seed','variant','duration','peak-db','output','loop','stems'];if(Object.keys(args).some(k=>!allowed.includes(k))||!args.output||!args.kind)throw Error('Use --kind pop|whoosh|music --output file.wav, optionally --style editorial|ambient|pulse|lofi|cinematic|bright --duration 12 --bpm 96 --bars 8 --seed 7 --loop --stems');
   const number=key=>args[key]===undefined?undefined:Number(args[key]);
-  const result=args.kind==='music'?synthMusic({mood:args.mood,bpm:number('bpm'),bars:number('bars'),seed:number('seed'),loop:!!args.loop,peakDb:number('peak-db')}):synthEffect({kind:args.kind,duration:number('duration'),variant:number('variant'),seed:number('seed'),peakDb:number('peak-db')});
+  const result=args.kind==='music'?synthMusic({mood:args.mood,style:args.style,harmony:args.harmony,duration:number('duration'),bpm:number('bpm'),bars:number('bars'),seed:number('seed'),loop:!!args.loop,peakDb:number('peak-db')}):synthEffect({kind:args.kind,duration:number('duration'),variant:number('variant'),seed:number('seed'),peakDb:number('peak-db')});
   console.log(JSON.stringify(await saveAudio(args.output,result,{stems:!!args.stems})));
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href)main().catch(error=>{console.error(error.message);process.exitCode=1;});

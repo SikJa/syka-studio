@@ -1,3 +1,9 @@
+import { LibraryPagination, LibraryPreview, LibrarySelection } from './library-ui';
+import { SkillsCategory } from './skills-category';
+import { libraryTourPreview, libraryTourSourceRequest } from '@/components/onboarding/editor-tour-model';
+import { LibraryAssetPreview } from './asset-preview';
+import type { Asset } from '@diffusionstudio/assets';
+import { STYLE_KITS, styleKitTargets, applyStyleKit, type KitScope } from './style-kits';
 import {
   createSignal,
   createMemo,
@@ -6,6 +12,7 @@ import {
   Show,
   onMount,
   onCleanup,
+  untrack,
 } from 'solid-js';
 import { useWorld } from '@diffusionstudio/koota-solid';
 import {
@@ -131,7 +138,7 @@ function SlidingTabs(props: {
   );
 }
 const categories = [
-  { id: 'skills', get label() { return t('Skills y mis flujos'); } },
+  { id: 'skills', get label() { return t('Skills y flujos'); } },
   { id: 'media', get label() { return t('Media'); } },
   { id: 'logos', get label() { return t('Logos'); } },
   { id: 'sounds', get label() { return t('Sonidos'); } },
@@ -156,6 +163,62 @@ export function RightSidebar() {
     [section, setSection] = createSignal<InspectorSection>('basic'),
     [category, setCategory] = createSignal('skills'),
     [query, setQuery] = createSignal('');
+  let sidebarElement: HTMLElement | undefined, restoreTourScroll = 0;
+  // Prepare the real source without requiring a category click or manual scroll.
+  createEffect(() => {
+    if (!libraryTourPreview()) return;
+    cancelAnimationFrame(restoreTourScroll);
+    const previous = untrack(() => ({ tab: tab(), category: category(), query: query() }));
+    const previousScroll = sidebarElement?.querySelector('.syka-library-scroll')?.scrollTop ?? 0;
+    let revealFrame = 0;
+    createEffect(() => {
+      libraryTourSourceRequest();
+      untrack(() => {
+        cancelAnimationFrame(revealFrame);
+        setTab('library'); setCategory('text'); setQuery('');
+        let attempts = 0;
+        const reveal = () => {
+          const scroll = sidebarElement?.querySelector<HTMLElement>('.syka-library-scroll');
+          const source = scroll?.querySelector<HTMLElement>('[data-tour-resource="text"]');
+          if (!scroll || !source) {
+            if (++attempts < 90) revealFrame = requestAnimationFrame(reveal);
+            return;
+          }
+          const bounds = scroll.getBoundingClientRect(), card = source.getBoundingClientRect();
+          if (card.top < bounds.top + 12 || card.bottom > bounds.bottom - 12) {
+            scroll.scrollTop += card.top - bounds.top - 12;
+          }
+        };
+        revealFrame = requestAnimationFrame(reveal);
+      });
+    });
+    onCleanup(() => untrack(() => {
+      cancelAnimationFrame(revealFrame);
+      if (tab() === 'library' && category() === 'text' && query() === '') {
+        setTab(previous.tab); setCategory(previous.category); setQuery(previous.query);
+        let attempts = 0;
+        const restore = () => {
+          if (libraryTourPreview() || tab() !== previous.tab || category() !== previous.category || query() !== previous.query) return;
+          const scroll = sidebarElement?.querySelector('.syka-library-scroll');
+          if (!scroll) return;
+          // Linked catalogs finish loading after the category's first paint.
+          if (scroll.scrollHeight - scroll.clientHeight < previousScroll && ++attempts < 90) {
+            restoreTourScroll = requestAnimationFrame(restore);
+            return;
+          }
+          scroll.scrollTop = previousScroll;
+        };
+        restoreTourScroll = requestAnimationFrame(restore);
+      }
+    }));
+  });
+  onCleanup(() => cancelAnimationFrame(restoreTourScroll));
+  const [expandedResource,setExpandedResource]=createSignal<string>();
+  const [pickedAsset,setPickedAsset]=createSignal<Asset>(),[expandedAsset,setExpandedAsset]=createSignal<Asset>();
+  const addAsset=(asset:Asset)=>{try{getEditHistory(world).command(()=>{if(!insertAsset(world,asset))throw Error('Abrí una escena.');});setExpandedAsset(undefined);setTab('properties');}catch(error){toast.error(String(error));}};
+  const [kitScope,setKitScope]=createSignal<KitScope>('scene');
+  const kitGraph=useDerived(()=>world.entities.length+':'+getActiveEntity(world)?.id());
+  const kitCount=createMemo(()=>{kitGraph();return styleKitTargets(world,kitScope(),selection.nodes()).length});
   const [picked, setPicked] = createSignal<string>(),
     [preferences, setPreferences] = createSignal<string[]>([]),
     [playing, setPlaying] = createSignal('');
@@ -178,7 +241,8 @@ export function RightSidebar() {
     const next = identity();
     if (next !== previousIdentity) {
       previousIdentity = next;
-      setTab('properties');
+      // Initial selection can arrive after the tour has revealed its source card.
+      if (!untrack(libraryTourPreview)) setTab('properties');
       setSection(
         selection.first() && isAudio(selection.first()!) ? 'audio' : 'basic',
       );
@@ -221,15 +285,21 @@ export function RightSidebar() {
     catalog().filter(
       (r) =>
         (category() === 'style'
-          ? r.kind === 'shadow' || r.kind === 'stroke'
+          ? r.kind === 'shadow' || r.kind === 'stroke' || r.kind === 'style-kit'
           : r.kind === category()) &&
         r.label.toLowerCase().includes(query().toLowerCase()),
     ),
   );
+  const [resourceOffset,setResourceOffset]=createSignal(0);
+  createEffect(()=>{category();query();setResourceOffset(0);setPicked(undefined);setPickedAsset(undefined);});
+  const mediaAssets=createMemo(()=>category()==='media'?(library()?.assets().filter(asset=>assetName(asset).toLowerCase().includes(query().toLowerCase()))??[]):[]);
+  const pageTotal=()=>category()==='media'?mediaAssets().length:resources().length;
+  const pageOffset=()=>Math.min(resourceOffset(),Math.max(0,Math.ceil(pageTotal()/24)-1)*24);
+  const Pages=()=> <LibraryPagination total={pageTotal()} offset={pageOffset()} size={24} onPage={setResourceOffset}/>;
   const selectedResource = () =>
     catalog().find((r) => r.id === picked());
   const disabledReason = (r: (typeof EDITOR_RESOURCES)[number]) =>
-    selection.nodes().length
+    r.kind === 'style-kit' ? (kitCount() ? undefined : 'No hay elementos compatibles en este alcance.') : selection.nodes().length
       ? selection
           .nodes()
           .map((e) => resourceDisabledReason(r, e))
@@ -239,6 +309,11 @@ export function RightSidebar() {
     const r = catalog().find((x) => x.id === id);
     if (!r) return;
     try {
+      if(r.kind==='style-kit'&&!override){
+        const count=applyStyleKit(world,STYLE_KITS.find(kit=>kit.id===r.value)!,kitScope(),selection.nodes());
+        toast.success(`Kit aplicado a ${count} elementos`,{description:'Podés revertir el kit con Deshacer.'});
+        return;
+      }
       const t = override
         ? world.entities.find((e) => e.id() === override.targetId)
         : selection.nodes();
@@ -247,7 +322,7 @@ export function RightSidebar() {
       setSection(
         r.kind === 'text' || r.kind === 'font' || r.kind === 'caption'
           ? 'basic'
-          : r.kind === 'shadow' || r.kind === 'stroke'
+          : r.kind === 'shadow' || r.kind === 'stroke' || r.kind === 'style-kit'
             ? 'style'
             : r.kind === 'effect'
               ? 'effects'
@@ -304,6 +379,7 @@ export function RightSidebar() {
     setCategory(id);
     setQuery('');
     setPicked(undefined);
+    setPickedAsset(undefined);
   };
   const importFonts = async () => {
     try {
@@ -341,12 +417,18 @@ export function RightSidebar() {
     setSection(id as InspectorSection);
     setPicked(undefined);
   };
+  const KitScopeControl=()=> <div class="syka-kit-scope"><label>Aplicar kit a<select aria-label="Alcance del kit" value={kitScope()} onChange={event=>setKitScope(event.currentTarget.value as KitScope)}><option value="selection">Selección</option><option value="scene">Escena actual</option><option value="project">Proyecto completo</option></select></label><p>{kitCount()} elementos compatibles · Un paso en Deshacer. Conserva el contenido, los tiempos y el material original.</p></div>;
   return (
     <aside
+      ref={sidebarElement}
       class="syka-right-sidebar"
       data-right-sidebar
       aria-label="Biblioteca y propiedades"
     >
+      <LibraryAssetPreview asset={expandedAsset()} onClose={()=>setExpandedAsset(undefined)} onInsert={addAsset}/>
+      <LibraryPreview open={!!expandedResource()} title={catalog().find(r=>r.id===expandedResource())?.label??'Recurso'} onClose={()=>setExpandedResource(undefined)} footer={<><Button disabled={!catalog().find(r=>r.id===expandedResource())||!!disabledReason(catalog().find(r=>r.id===expandedResource())!)} onClick={()=>{apply(expandedResource()!);setExpandedResource(undefined)}}>Aplicar recurso</Button></>}>
+        <Show when={catalog().find(r=>r.id===expandedResource())}>{r=><><div class="syka-preset-large"><PresetPreview resource={r()} playing={true} large/></div><Show when={r().kind==='style-kit'}><KitScopeControl/></Show></>}</Show>
+      </LibraryPreview>
       <header class="syka-panel-header">
         <span>Editor</span>
         <span class="text-muted-foreground" title={previewName()}>{previewName()}</span>
@@ -370,16 +452,15 @@ export function RightSidebar() {
             >
               <For each={categories}>
                 {(c) => (
-                  <button
-                    classList={{
-                      active: category() === c.id,
-                      'syka-skills-category': c.id === 'skills',
-                    }}
-                    onClick={() => chooseCategory(c.id)}
-                    aria-pressed={category() === c.id}
-                  >
-                    {c.label}
-                  </button>
+                  <Show when={c.id === 'skills'} fallback={
+                    <button
+                      classList={{ active: category() === c.id }}
+                      onClick={() => chooseCategory(c.id)}
+                      aria-pressed={category() === c.id}
+                    >
+                      {c.label}
+                    </button>
+                  }><SkillsCategory selected={category() === c.id} label={c.label} onSelect={() => chooseCategory(c.id)} /></Show>
                 )}
               </For>
             </nav>
@@ -417,12 +498,16 @@ export function RightSidebar() {
                               ? 'Elegí una fuente para tu texto o subtítulos. Las incluidas funcionan en otras instalaciones de Syka.'
                               : 'Previsualizá el preset en su tarjeta; aplicalo a la selección o arrastralo a un clip.'}
                         </p>
+                        <Show when={category()==='style'}><KitScopeControl/></Show>
+                        <Pages/>
                         <div class="syka-resource-grid" classList={{ 'syka-type-resource-grid': ['caption', 'font', 'text'].includes(category()) }}>
-                          <For each={resources()}>
+                          <For each={resources().slice(pageOffset(),pageOffset()+24)}>
                             {(r) => (
                               <AgentReferenceMenu onUse={(preview,origin) => referenceInChat(project.id(), 'Usá este preset como referencia visual para mi edición. Revisá la selección y proponé cómo adaptarlo.', {preset:{id:r.id,label:r.label,kind:r.kind,value:r.value,textStyle:r.textStyle},...selectionContext(world)}, preview,undefined,origin)}>
                               <button
                                 class="syka-resource-card"
+                                data-tour-resource={category() === 'text' ? 'text' : undefined}
+                                data-tour-resource-label={r.label}
                                 classList={{ selected: picked() === r.id }}
                                 draggable="true"
                                 onDragStart={(e) => {
@@ -438,7 +523,8 @@ export function RightSidebar() {
                                 onPointerLeave={() => setPlaying('')}
                                 onFocus={() => setPlaying(r.id)}
                                 onBlur={() => setPlaying('')}
-                                onClick={() => setPicked(r.id)}
+                                onClick={()=>setPicked(r.id)}
+                                onDblClick={()=>setExpandedResource(r.id)}
                                 aria-label={'Previsualizar ' + r.label}
                               >
                                 <span class="syka-resource-thumb">
@@ -453,15 +539,11 @@ export function RightSidebar() {
                             )}
                           </For>
                         </div>
-                        <Show when={!resources().length}>
-                          <p class="syka-panel-note">
-                            No hay recursos para esta búsqueda.
-                          </p>
-                        </Show>
+                        <Pages/>
                         <Show when={selectedResource()}>
                           {(r) => (
-                            <div class="syka-resource-detail">
-                              <strong>{r().label}</strong>
+                            <LibrarySelection title={r().label} onClose={()=>setPicked(undefined)}>
+                              <button onClick={()=>setExpandedResource(r().id)}>Ver en grande</button>
                               <Show when={r().description}><p>{r().description}</p></Show>
                               <p>
                                 {disabledReason(r()) ??
@@ -476,12 +558,19 @@ export function RightSidebar() {
                               >
                                 {r().kind === 'text'
                                   ? 'Agregar texto'
+                                  : r().kind === 'style-kit' ? 'Aplicar kit'
                                   : 'Aplicar a selección'}
                               </Button>
                               <Button variant="secondary" class="w-full" onClick={() => referenceInChat(project.id(), 'Usá este preset como referencia visual para mi edición. Revisá la selección y proponé cómo adaptarlo.', {preset:{id:r().id,label:r().label,kind:r().kind,value:r().value,textStyle:r().textStyle},...selectionContext(world)}, referenceThumbnail(document.querySelector('.syka-resource-card.selected')))}>Usar con el agente</Button>
-                            </div>
+                            </LibrarySelection>
                           )}
                         </Show>
+                        <Show when={!resources().length}>
+                          <p class="syka-panel-note">
+                            No hay recursos para esta búsqueda.
+                          </p>
+                        </Show>
+
                       </>
                     }
                   >
@@ -499,15 +588,10 @@ export function RightSidebar() {
                     >
                       Importar archivos
                     </Button>
+                    <Pages/>
                     <div class="syka-resource-grid">
                       <For
-                        each={library()
-                          ?.assets()
-                          .filter((a) =>
-                            assetName(a)
-                              .toLowerCase()
-                              .includes(query().toLowerCase()),
-                          )}
+                        each={mediaAssets().slice(pageOffset(),pageOffset()+24)}
                       >
                         {(asset) => (
                           <button
@@ -520,15 +604,9 @@ export function RightSidebar() {
                               );
                               e.dataTransfer!.effectAllowed = 'copy';
                             }}
-                            onClick={() => {
-                              try {
-                                const e = insertAsset(world, asset);
-                                if (!e) throw Error('Abrí una escena.');
-                                setTab('properties');
-                              } catch (e) {
-                                toast.error(String(e));
-                              }
-                            }}
+                            classList={{selected:pickedAsset()?.id===asset.id}}
+                            onClick={()=>setPickedAsset(asset)}
+                            onDblClick={()=>setExpandedAsset(asset)}
                           >
                             <span class="syka-resource-thumb">
                               <AssetThumbnail
@@ -542,6 +620,8 @@ export function RightSidebar() {
                         )}
                       </For>
                     </div>
+                    <Pages/>
+                    <Show when={pickedAsset()}>{asset=><LibrarySelection title={assetName(asset())} onClose={()=>setPickedAsset(undefined)}><button onClick={()=>setExpandedAsset(asset())}>Ver en grande</button><button onClick={()=>addAsset(asset())}>Agregar a la timeline</button></LibrarySelection>}</Show>
                   </Show>
                   }><LinkedResources kind={category() as 'logos' | 'sounds' | 'motions'} query={query()} onInserted={() => setTab('properties')} /></Show>
                 </>
