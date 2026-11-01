@@ -117,7 +117,7 @@
       "category": "Música y sonido",
       "path": "skills/syka-local-audio/SKILL.md",
       "description": "Diseñar música y SFX en Syka: elegir sonidos por material/ataque/brillo, alinear cues medidos, proponer volumen contra la base real y revisar el mix exportado con fingerprints. Usar al pedir audio o mejorar una mezcla; conserva Diffusion y edición nativa.",
-      "sha256": "7005909b108ebb254ea3656a88cead2b0ffa882e947953b57f01d593f30ce394",
+      "sha256": "aa2e334eb74d7bf6cc7f569ac7705fa58ff42dc9ad0e1659da1e253102956352",
       "delivery": "bundled"
     },
     {
@@ -234,7 +234,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-product-launch/SKILL.md",
       "description": "Producir anuncios y demos de lanzamiento en Diffusion con producto real, doce criterios editoriales, voz sincronizada por palabras, sonido de microacciones, componentes editables y variantes elegidas desde el brief.",
-      "sha256": "5e001606df86413ca0f0959dbb0d340e9d015d8f332cc91b373a697ff0df6ac3",
+      "sha256": "dc278844fc716b029aaf8b8c90e45b0f0f7437f512e29754e63c89f6e092dd13",
       "delivery": "bundled"
     },
     {
