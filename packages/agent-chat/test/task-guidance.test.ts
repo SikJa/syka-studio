@@ -34,8 +34,9 @@ describe('progressive task guidance',()=>{
     expect(instructions).toContain('A small correction uses the source and existing decisions, not all phases');
     expect(instructions).toContain('Do not reread a full brief, recipe, production prompt or workflow');
     expect(instructions).toContain('Store a new inference as proposed, not as a user answer');
-    // Raised from 13 000 for the gate and quoted-path rules found missing in a real run.
-    expect(instructions.length).toBeLessThan(13_400);
+    // Raised from 13 000 for the gate and quoted-path rules found missing in a
+    // real run, and for the recipe → plan method every new video follows.
+    expect(instructions.length).toBeLessThan(13_700);
     const prompt=withAttachments('Usá la tipografía de este archivo',['C:/reference.png']);
     expect(prompt).toContain('C:/reference.png');
     expect(prompt).not.toContain(REFERENCE_LINK_INSTRUCTIONS);
@@ -53,7 +54,7 @@ describe('progressive task guidance',()=>{
   });
 
   it('returns complete mandatory instructions and the chosen phase for every segmented native skill',async()=>{
-    const names=await nativeSkills(); expect(names.length).toBeGreaterThanOrEqual(28);
+    const names=await nativeSkills(); expect(names.length).toBeGreaterThanOrEqual(25);
     for(const name of names){
       const snapshot=await readTextSnapshot(docs,join(docs,name,'SKILL.md'));
       const orientation=await readBundledSkill(snapshot,{},{});

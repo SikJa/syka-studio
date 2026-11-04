@@ -293,3 +293,18 @@
 @keyframes syka-queue-menu-in { from { opacity:0; transform:scale(.97) translateY(4px); } to { opacity:1; transform:scale(1) translateY(0); } }
 @media (prefers-reduced-motion:reduce) { .syka-mirel-composer .agent-composer-queue-menu,.syka-mirel-composer .agent-composer-queue-panel { animation:none; } }
 @media (prefers-reduced-motion:reduce) { .syka-composer-queue-control button { transition:none; } }
+
+/* The app's offer to keep a delivered video as a recipe, or improve one. */
+.syka-recipe-offer {display:flex;flex-direction:column;gap:8px;margin:4px 0;padding:12px;border:1px solid var(--color-border);border-radius:12px;background:color-mix(in srgb,var(--color-primary) 5%,var(--color-background));font-size:12px;line-height:1.5;}
+.syka-recipe-offer header {display:flex;align-items:center;gap:7px;color:var(--color-foreground);}
+.syka-recipe-offer header .size-4 {color:var(--syka-accent-text,var(--color-primary));}
+.syka-recipe-offer p {margin:0;color:var(--color-muted-foreground);}
+.syka-recipe-offer ul {display:flex;flex-direction:column;gap:4px;margin:0;padding:0;list-style:none;}
+.syka-recipe-offer label {display:flex;align-items:flex-start;gap:7px;cursor:pointer;color:var(--color-foreground);}
+.syka-recipe-offer input {margin-top:3px;accent-color:var(--color-primary);}
+.syka-recipe-offer-actions {display:flex;gap:6px;flex-wrap:wrap;}
+.syka-recipe-offer-actions button {height:28px;padding:0 12px;border-radius:8px;font:inherit;font-weight:550;cursor:pointer;transition:background-color 150ms ease-out;}
+.syka-recipe-offer-primary {border:0;background:var(--color-primary);color:var(--color-primary-foreground);}
+.syka-recipe-offer-primary:disabled {opacity:.5;cursor:default;}
+.syka-recipe-offer-secondary {border:1px solid var(--color-border);background:transparent;color:var(--color-muted-foreground);}
+.syka-recipe-offer-secondary:hover {color:var(--color-foreground);}

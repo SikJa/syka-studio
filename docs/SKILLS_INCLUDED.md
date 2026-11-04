@@ -1,6 +1,6 @@
 # Skills incluidas en Syka Studio
 
-Catálogo generado desde los archivos públicos del producto: **30 skills**. Se incluyen en los recursos de la aplicación y se accede con syka_skills; no se descargan videos ni se requiere la biblioteca personal de su desarrollador. El manifiesto [catalog.json](skills/catalog.json) registra nombre, categoría, ruta relativa y SHA256.
+Catálogo generado desde los archivos públicos del producto: **27 skills**. Se incluyen en los recursos de la aplicación y se accede con syka_skills; no se descargan videos ni se requiere la biblioteca personal de su desarrollador. El manifiesto [catalog.json](skills/catalog.json) registra nombre, categoría, ruta relativa y SHA256.
 
 ## Edición y revisión
 
@@ -10,7 +10,6 @@ Catálogo generado desde los archivos públicos del producto: **30 skills**. Se 
 | [syka-design-import](skills/syka-design-import/SKILL.md) | Diseño resuelto → composición nativa |
 | [syka-edit-review](skills/syka-edit-review/SKILL.md) | Revisión proporcional |
 | [syka-editing-basics](skills/syka-editing-basics/SKILL.md) | Edición con Syka |
-| [syka-editing-recipe](skills/syka-editing-recipe/SKILL.md) | Una receta que el próximo chat pueda continuar |
 | [syka-explainer-edit](skills/syka-explainer-edit/SKILL.md) | Explicaciones con footage real |
 | [watch.md](skills/watch.md) | Watch footage in Syka |
 
@@ -20,6 +19,7 @@ Catálogo generado desde los archivos públicos del producto: **30 skills**. Se 
 |---|---|
 | [syka-editorial-motion](skills/syka-editorial-motion/SKILL.md) | Motion editorial en Diffusion |
 | [syka-faceless-explainer](skills/syka-faceless-explainer/SKILL.md) | Explicar mediante imágenes |
+| [syka-liquid-glass](skills/syka-liquid-glass/SKILL.md) | Liquid Glass sobre una persona a cámara |
 | [syka-motion-brief](skills/syka-motion-brief/SKILL.md) | Del pedido al plan de producción |
 | [syka-motion-direction](skills/syka-motion-direction/SKILL.md) | Dirección de motion |
 | [syka-motion-reels](skills/syka-motion-reels/SKILL.md) | Motion para reels |
@@ -49,10 +49,7 @@ Catálogo generado desde los archivos públicos del producto: **30 skills**. Se 
 
 | Skill incluida | Función |
 |---|---|
-| [syka-huashu-motion](skills/syka-huashu-motion/SKILL.md) | Huashu: lenguaje visual y escenas |
 | [syka-media-use](skills/syka-media-use/SKILL.md) | Recursos con una función en el relato |
-| [syka-motion-lab](skills/syka-motion-lab/SKILL.md) | Motion Lab dentro de Syka |
-| [syka-motion-reference](skills/syka-motion-reference/SKILL.md) | Referencia a motion editable |
 | [syka-motion-references](skills/syka-motion-references/SKILL.md) | Referencias que dirigen una pieza |
 | [syka-video-references](skills/syka-video-references/SKILL.md) | Referencias de video en Syka |
 

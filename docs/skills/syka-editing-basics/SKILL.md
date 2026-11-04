@@ -22,7 +22,7 @@ La fuente JSX es el documento compartido con timeline e inspector. Leé skills/e
 ### Criterio de trabajo
 
 - Empezá por contexto, fuente, selección y material real. Respetá el alcance del pedido y la composición visible.
-- Reutilizá decisiones acordadas. Si el contexto no aporta una decisión necesaria, consultá `syka_editing_recipe action:summary`; no releas la receta para una corrección mecánica ya resuelta. Para una edición amplia consultá la fase pertinente de `syka-editing-recipe` y conservá referencias/criterios reales. El pedido actual tiene prioridad y una receta vacía no bloquea editar.
+- Reutilizá decisiones acordadas. Si el contexto no aporta una decisión necesaria, consultá `syka_editing_recipe action:summary`; no releas la receta para una corrección mecánica ya resuelta. Para una edición amplia seguí la receta y el plan del video (`syka_receta`, `syka_plan`) y conservá referencias/criterios reales. El pedido actual tiene prioridad y una receta vacía no bloquea editar.
 - Para una edición amplia, guardá un brief corto con objetivo, formato, material, estilo y decisiones. Para un ajuste pequeño, resolvelo directamente.
 - Organizá primero el montaje; luego sumá los textos, recursos y audio que ayuden a entenderlo. Separá capas con nombres útiles y sequences cuando faciliten editar.
 - No deduzcas un corte solo de un silencio: puede ser una pausa, demostración o reacción. Cuando haya ambigüedad importante, proponé alternativas; el pedido de ejecutar una edición autoriza los cambios reversibles que necesita.
@@ -35,7 +35,7 @@ Elegí por intención y decisiones vigentes; descubrí la especialidad con syka_
 
 - syka-captions: transcripción, agrupación legible y sincronía.
 - syka-local-audio: sonido local, síntesis y mezcla.
-- syka-motion-reference: reconstruir movimiento desde referencias.
+- syka-video-references: inspeccionar una referencia de video y reconstruir su movimiento.
 - syka-edit-review: verificar una edición o salida.
 - syka-explainer-edit: coordinar montaje, voz y gráficos en una explicación grabada o demo de pantalla.
 - syka-editorial-motion: tarjetas, callouts y comparaciones con jerarquía y continuidad; ejemplos ejecutables para Diffusion, inspirados en HyperFrames y referencias editoriales.
@@ -43,6 +43,7 @@ Elegí por intención y decisiones vigentes; descubrí la especialidad con syka_
 - syka-media-use: planificación y resolución de recursos visuales y sonoros.
 - syka-design-import: diseño/export de Figma o styleframe a capas editables.
 - syka-motion-transitions: fluidez de transitions-dev adaptada al reloj nativo.
+- syka-liquid-glass: tarjetas de vidrio Liquid Glass sobre una persona a cámara.
 
 ## Review
 

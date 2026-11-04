@@ -46,7 +46,8 @@ export type OpenOptions = {
   /** The first turn's emitter: for notices about how the session came up. */
   emit: Emit;
   /** Model-selected interactive questions, also available through the external MCP bridge. */
-  askUser?(questions: Question[]): Promise<RequestResponse>;
+  /** The signal aborts when the provider gave up on the call, so the card does not stay open. */
+  askUser?(questions: Question[], signal?: AbortSignal): Promise<RequestResponse>;
 };
 
 /** How a turn ended. The host turns it into `turn.completed`. */
@@ -225,8 +226,11 @@ export class QuestionBox {
   }
 }
 
+/** The method every new video follows, whatever the harness. */
+export const RECIPE_RULE = 'A NEW video starts from a recipe: syka_receta listar/usar (a recipe the person dragged in wins), then syka_plan phase by phase; build only in phase construir; it is ready only with the plan done and a passing gate on the final source. A small correction of an existing piece delivers with correccion:true.';
+
 /** Project, app and data folders here contain spaces; unquoted shell paths split on them. */
-export const SHELL_PATH_RULE = 'Paths here contain spaces: double-quote every shell path ("a b"/*.md). Read bundled docs with syka_read_reference/syka_skills, not the shell; Python PIL may be missing.';
+export const SHELL_PATH_RULE ='Paths here contain spaces: double-quote every shell path ("a b"/*.md). Read bundled docs with syka_read_reference/syka_skills, not the shell; Python PIL may be missing.';
 
 /** Shared session core. Task procedures are discovered by phase, not appended here. */
 export function chatInstructions(cwd: string, custom?: string, codeGraphTools = false): string {
@@ -238,7 +242,7 @@ export function chatInstructions(cwd: string, custom?: string, codeGraphTools = 
     "Do not use Diffusion cloud accounts, credits or paid model APIs. Do not claim to hear audio or generate images unless a tool actually provided that capability. " +
     "Before deleting source media, overwriting masters or publishing externally, ask the user with a question. " +
     "On the first substantial request of a chat or a new piece, research before acting: read in full the project documents listed in <app_context>, the saved decisions and every attached reference, then summarize briefly what you found and what is missing before building or asking.";
-  return [base, custom, SHELL_PATH_RULE, EDITORIAL_INSTRUCTIONS, codeGraphTools ? CODE_GRAPH_INSTRUCTIONS : undefined, CREATIVE_BRIEF_INSTRUCTIONS].filter(Boolean).join('\n\n');
+  return [base, custom, RECIPE_RULE, SHELL_PATH_RULE, EDITORIAL_INSTRUCTIONS, codeGraphTools ? CODE_GRAPH_INSTRUCTIONS : undefined, CREATIVE_BRIEF_INSTRUCTIONS].filter(Boolean).join('\n\n');
 }
 
 /** The text a harness gets: the message, then the attached paths, one per line. */

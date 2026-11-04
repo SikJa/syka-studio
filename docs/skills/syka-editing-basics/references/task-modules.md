@@ -26,7 +26,7 @@ ni referencias nuevas para cambiar una palabra, un volumen o un tiempo acordado.
 | Necesidad actual | Skill | Qué cargar |
 | --- | --- | --- |
 | Montaje y coordinación general | `syka-editing-basics` | `build`; `review` para el riesgo cambiado |
-| Decisiones persistidas, referencias y receta | `syka-editing-recipe` | `brief` si falta contexto; `build` si hay que coordinar o guardar una edición amplia |
+| Receta y plan del video | herramientas `syka_receta` y `syka_plan` | `estado` del plan antes de construir; guardar mejoras cuando la persona aprueba |
 | Consulta y plan de una nueva animación | `syka-motion-brief` | `brief` hasta resolver decisiones; después `build` |
 | Dirección de una pieza con varios beats | `syka-motion-direction` | `brief` si falta diseño; `build` para construir lo acordado |
 | Marca, composición y adaptación de referencias | `syka-visual-direction` | La fase cuya decisión cambió |
@@ -34,8 +34,7 @@ ni referencias nuevas para cambiar una palabra, un volumen o un tiempo acordado.
 | Explicación grabada o demo de pantalla | `syka-explainer-edit` | `build`, conservando el contenido demostrativo |
 | Subtítulos y tiempos de palabras | `syka-captions` | `build`; no transcribir de nuevo si el transcript válido ya existe |
 | Música, SFX, mezcla y análisis local | `syka-local-audio` | `brief` para elegir sonido nuevo; `build` para montar o mezclar; `review` si hay audio real que revisar |
-| Inspección de una referencia de video | `syka-video-references` | `build`; reutilizar la evidencia guardada antes de descargar otra vez |
-| Reconstruir una coreografía observada | `syka-motion-reference` | La fase correspondiente a observación, construcción o revisión |
+| Inspección de una referencia de video o reconstrucción de su coreografía | `syka-video-references` | `build`; reutilizar la evidencia guardada antes de descargar otra vez |
 | Revisión visual, playback y sonido | `syka-edit-review` | `review` proporcional al cambio; una captura no demuestra escucha |
 
 ## Rutas especializadas
@@ -56,8 +55,8 @@ ni referencias nuevas para cambiar una palabra, un volumen o un tiempo acordado.
 | Preparar portadas/textos por red | `syka-content-package` | El usuario aceptó esa preparación; no autoriza publicar |
 | Fluidez, entradas, salidas y continuidad | `syka-motion-transitions` | Hace falta implementar o corregir esa parte del movimiento |
 | Estudios, prompts atribuidos y referencias | `syka-motion-references` | Elegir pocos estudios relevantes, no todos los ejemplos |
-| Una técnica seleccionada de Motion Lab | `syka-motion-lab` | Sólo el mecanismo pertinente y su adaptación nativa |
-| Una técnica seleccionada de Huashu | `syka-huashu-motion` | Sólo la ficha y sección pertinentes; conserva atribución |
+| Una técnica de Motion Lab o Huashu | `syka_motion_knowledge` con `collection` | Sólo la ficha pertinente y su adaptación nativa; conserva atribución |
+| Tarjetas Liquid Glass sobre persona a cámara | `syka-liquid-glass` | Cuando se pide ese estilo o lo usa la receta |
 
 ## Lectura y reutilización
 

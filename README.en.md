@@ -35,7 +35,7 @@ The engine, timeline, and editable projects come from Diffusion. Syka adds its w
 
 ## Installation
 
-**Current version: 0.210.0 for Windows x64.** Adds the film quality gate, Mixkit music, camera and framing rules, and faster chat opening. Includes 28 bundled skills, motion knowledge and product-launch workflows, 2,052 logo entries and 602 audio resources. Preserves the preview, notification and update fixes from 0.208.2. The app downloads when requested and asks before restarting to install. The installer is still **unsigned**; Windows may display a security warning.
+**Current version: 0.211.0 for Windows x64.** Adds reusable recipes per video type (launch, YouTube and vertical), one plan per video that blocks delivery until the quality gate passes, an offer to save your corrections as a recipe, the Liquid Glass skill and steering Claude mid-turn. Includes 27 bundled skills, motion knowledge, 2,052 logo entries and 602 audio resources. The app downloads when requested and asks before restarting to install. The installer is still **unsigned**; Windows may display a security warning.
 
 Open PowerShell and copy:
 

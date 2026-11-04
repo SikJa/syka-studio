@@ -24,7 +24,7 @@ const stageDir = resolve(desktopDir, 'docs');
 // Never ship local QA reports, machine-specific audits or personal brand assets.
 // Public attributed SVG catalogs are explicitly included under resources.
 // Relative support links remain intact inside these public documentation trees.
-export const publicEntries = ['INSTRUCTIONS.md', 'SKILLS_INCLUDED.md', 'SERVICE_MAP_SYKA.md', 'THIRD_PARTY_NOTICES_HYPERFRAMES.md', 'licenses', 'reference', 'skills', 'guides', 'examples', 'resources'];
+export const publicEntries = ['INSTRUCTIONS.md', 'SKILLS_INCLUDED.md', 'SERVICE_MAP_SYKA.md', 'THIRD_PARTY_NOTICES_HYPERFRAMES.md', 'licenses', 'reference', 'skills', 'guides', 'examples', 'resources', 'recetas'];
 assertStagingDirectory(desktopDir, stageDir, 'docs');
 
 await bundledSkills(join(repoRoot,'docs'));

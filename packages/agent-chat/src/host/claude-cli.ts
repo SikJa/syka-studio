@@ -69,7 +69,9 @@ export function claudeEnvironment(config: ClaudeCliConfig, env: HostEnv): Record
   // Claude has its own supported config directory. Isolating Windows/browser
   // directories too causes OAuth to open Brave without the user's cookies.
   for (const name of ['HOME', 'USERPROFILE', 'APPDATA', 'LOCALAPPDATA']) if (env.env[name]) isolated[name] = env.env[name]!;
-  return { ...isolated, CLAUDE_CONFIG_DIR: config.profileDir };
+  // syka_ask_user waits for a person; Claude Code's default MCP tool timeout
+  // (about a minute) cut those questions off before anyone could answer.
+  return { ...isolated, CLAUDE_CONFIG_DIR: config.profileDir, MCP_TOOL_TIMEOUT: env.env.MCP_TOOL_TIMEOUT || String(60 * 60_000) };
 }
 /** `mcp__syka__gate` reads as `gate`, the way Codex shows MCP calls; native tools keep their name. */
 export function claudeToolTitle(name: string): string {
@@ -112,7 +114,7 @@ export class ClaudeCliHarness implements Harness {
     return this.models;
   }
   async probe(env: HostEnv, signal: AbortSignal): Promise<HarnessInfo> {
-    const base = { id: this.id, label: "Claude Code", models: [] };
+    const base = { id: this.id, label: "Claude Code", models: [], supportsSteering: true };
     try {
       const version = await output(this.config, ["--version"], env, signal);
       if (!/\d+\.\d+\.\d+.*Claude Code/i.test(version)) return { ...base, status: "error", detail: "El ejecutable configurado no se identifica como Claude Code. Revisá el path; no se ejecutó un turno." };
@@ -150,6 +152,8 @@ class ClaudeCliSession implements HarnessSession {
   private hasSession: boolean;
   private child: ChildProcess | null = null;
   private active: Promise<TurnOutcome> | null = null;
+  /** Writes a user message into the running turn; null once its result arrived. */
+  private input: ((text: string) => void) | null = null;
   private cancelled = false;
   private closed = false;
   private emit: Emit;
@@ -207,9 +211,13 @@ class ClaudeCliSession implements HarnessSession {
     });
     try {
       if (this.cancelled) return { status: "interrupted" };
-      const mcpServers: Record<string, unknown> = { syka_workspace: { type: "http", url: bridge.url } };
-      if (this.options.mcp) mcpServers.syka = { type: "http", url: this.options.mcp.url };
-      const args = ["--print", "--output-format", "stream-json", "--verbose", "--strict-mcp-config", "--mcp-config", JSON.stringify({ mcpServers }),
+      // Per-server "timeout" (ms) lifts Claude Code's silent-call limit: a question
+      // waits for the person, and a long gate draws for minutes without progress.
+      const mcpServers: Record<string, unknown> = { syka_workspace: { type: "http", url: bridge.url, timeout: 60 * 60_000 } };
+      if (this.options.mcp) mcpServers.syka = { type: "http", url: this.options.mcp.url, timeout: 15 * 60_000 };
+      // stream-json input keeps stdin open for the turn, so a message steered in
+      // mid-turn reaches the model in the same turn; the turn ends at its result.
+      const args = ["--print", "--input-format", "stream-json", "--output-format", "stream-json", "--verbose", "--strict-mcp-config", "--mcp-config", JSON.stringify({ mcpServers }),
         "--dangerously-skip-permissions", "--permission-prompt-tool", "mcp__syka_workspace__permission", this.hasSession ? "--resume" : "--session-id", this.sessionId];
       if (this.options.instructions) args.push("--append-system-prompt", this.options.instructions);
       if (model !== '__cli_default__') args.push('--model', model);
@@ -262,6 +270,8 @@ class ClaudeCliSession implements HarnessSession {
               if (message.type === "result") {
                 if(message.is_error)trace?.error(typeof message.result==='string'?message.result:'Claude Code did not complete the turn');
                 outcome = message.is_error ? { status: "failed", error: "Claude Code no completó el turno. No se cambió de proveedor." } : { status: "completed" };
+                // The result answers every message sent so far; closing stdin ends the process.
+                this.input = null; child.stdin!.end();
               }
             } catch { /* Ignore non-protocol output; never surface raw stderr/credentials. */ }
           }
@@ -273,9 +283,18 @@ class ClaudeCliSession implements HarnessSession {
           if(final.error)trace?.error(final.error);
           resolveResult(final);
         });
-        child.stdin!.on("error", () => {}); child.stdin!.end(text);
+        child.stdin!.on("error", () => {});
+        const write = (message: string) => { child.stdin!.write(JSON.stringify({ type: "user", message: { role: "user", content: [{ type: "text", text: message }] } }) + "\n"); };
+        write(text);
+        this.input = write;
       });
-    } finally { this.child = null; this.box.cancelAll(); await bridge.close(); }
+    } finally { this.input = null; this.child = null; this.box.cancelAll(); await bridge.close(); }
+  }
+  /** A message for the running turn: Claude Code reads it at its next step, before the turn's result. */
+  async steer(text: string): Promise<void> {
+    if (!this.input || this.cancelled) throw Error("El turno de Claude ya terminó; mandá el mensaje como uno nuevo.");
+    harnessTraceFor(this.options)?.payload('claude_cli', 'user', text);
+    this.input(text);
   }
   respond(id: string, response: RequestResponse) { this.box.settle(id, response); }
   async interrupt() { this.cancelled = true;this.catalogAbort?.abort(); this.box.cancelAll(); if (this.child) await killTree(this.child); await this.active; }

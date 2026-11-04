@@ -25,6 +25,13 @@ async function createSkillFolder(skillsRoot:string,name:string,build:(target:str
     throw error;
   }
 }
+/** Names of the bundled bases `catalog.json` marks `library: true`; none when the catalog is missing or unreadable. */
+export async function libraryBases(bundledRoot:string):Promise<Set<string>>{
+  try{
+    const catalog=JSON.parse(await readFile(join(bundledRoot,'catalog.json'),'utf8')) as {skills?:{name:string;library?:boolean}[]};
+    return new Set((catalog.skills??[]).filter(skill=>skill.library).map(skill=>skill.name));
+  }catch{return new Set();}
+}
 export function registerSykaAgentSettings(bridge:typeof mainBridge){
   bridge.handle(MAIN_CHANNELS.SYKA_AGENT_SETTINGS,async req=>{
     const file=join(root(),'agent-settings.json');const skillsRoot=join(root(),'codex-runtime','profile','skills');
@@ -66,9 +73,11 @@ export function registerSykaAgentSettings(bridge:typeof mainBridge){
     }else if(req.action!=='get')throw Error('Acción desconocida');
     const bundledRoot=isPackagedBuild()?join(process.resourcesPath,'docs','skills'):join(app.getAppPath(),'..','..','docs','skills');
     const catalogOptions={config:file,depth:1,refresh:req.action!=='get'};
+    // Only the bases the catalog marks for the library are listed; the rest stay the agent's own knowledge.
+    const shown=await libraryBases(bundledRoot);
     const skills=[
       ...(await skillCatalog([skillsRoot],catalogOptions)).map(skill=>({...skill,description:skill.description.slice(0,300)})),
-      ...(await skillCatalog([bundledRoot],catalogOptions)).map(skill=>({...skill,bundled:true})),
+      ...(await skillCatalog([bundledRoot],catalogOptions)).filter(skill=>shown.has(skill.name)).map(skill=>({...skill,bundled:true})),
     ];
     return {servers:configuredServers(file),skills,skillsRoot,ffmpegPath:ffmpegPath(),...(req.action==='save-skill'?{revision:createHash('sha256').update(req.content!).digest('hex')}:{})};
   });

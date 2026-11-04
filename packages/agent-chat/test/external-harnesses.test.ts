@@ -40,6 +40,18 @@ describe('isolated external harness paths and environment', () => {
     expect(reports).toHaveLength(1);
     expect(reports[0]).toMatchObject({ usage: { kind: 'turn', sessionId: 's1', tokens: { totalTokens: 100, inputTokens: 80, outputTokens: 20 } } });
   });
+  it('steers a running Claude turn: the message reaches the same turn, and a late one is refused clearly', async () => {
+    const root = await setup(), events: ChatEvent[] = [];
+    expect((await claude(root).probe(env, new AbortController().signal)).supportsSteering).toBe(true);
+    const session = await claude(root).open(opts(root)); sessions.push(session);
+    const turn = session.send('steer', '__cli_default__', event => events.push(event));
+    await vi.waitFor(() => expect(events.some(event => event.type === 'item.completed' && event.item.kind === 'assistant' && event.item.text === 'working')).toBe(true));
+    await session.steer!('Usá el logo original');
+    expect((await turn).status).toBe('completed');
+    expect(events).toContainEqual(expect.objectContaining({ type: 'item.completed', item: expect.objectContaining({ text: 'steered: Usá el logo original' }) }));
+    await expect(session.steer!('tarde')).rejects.toThrow(/ya terminó/);
+  });
+
   it('inserts Hermes guidance through /steer without showing its acknowledgement as an answer', async () => {
     const root = await setup(), events: ChatEvent[] = [];
     const harness = new AcpHarness({ id: 'hermes', command: process.execPath, args: [fixture('acp-agent'), 'hermes'], profileDir: root });

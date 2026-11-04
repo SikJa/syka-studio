@@ -15,9 +15,12 @@ Leé sólo la fase necesaria. Las dependencias del índice son condicionales, nu
 
 ## Brief
 
-Usá esta receta para presentar una app/producto o una función. Entrá por
-`syka-motion-brief` y reutilizá respuestas, marca y decisiones aprobadas. Una
-corrección no reinicia la entrevista. El anuncio principal comunica una promesa;
+**Un lanzamiento nuevo empieza con la receta:** `syka_receta action:usar
+slug:lanzamiento` (o la receta propia que la persona arrastró), y sigue
+`syka_plan` fase por fase: brief, tres historias, escenas, storyboard si está
+activado, y recién entonces construir. La entrega queda lista solo con el plan
+completo y un gate aprobado sobre la versión final. Reutilizá respuestas, marca
+y decisiones aprobadas. Una corrección no reinicia la entrevista. El anuncio principal comunica una promesa;
 el recorrido largo y los clips por función desarrollan lo demás.
 
 ### Dirección y estructura

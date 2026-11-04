@@ -52,19 +52,28 @@ export function parseGroqTranscript(value: unknown, duration: number): SykaTrans
   }
   const words = (value as { words: unknown[] }).words;
   if (words.length > 50_000) throw new Error("La transcripción excedió el límite de palabras.");
-  let previous = -1;
-  const timed = words.map((entry) => {
+  let previous = 0;
+  const timed: SykaTranscriptSegment["words"] = [];
+  for (const entry of words) {
     if (!entry || typeof entry !== "object") throw new Error("Palabra de transcripción inválida.");
     const word = entry as { word?: unknown; start?: unknown; end?: unknown };
-    if (typeof word.word !== "string" || !word.word.trim() || word.word.length > 500 ||
+    if (typeof word.word !== "string" || word.word.length > 500 ||
         typeof word.start !== "number" || typeof word.end !== "number" ||
-        !Number.isFinite(word.start) || !Number.isFinite(word.end) ||
-        word.start < 0 || word.start < previous || word.end < word.start || word.end > duration + 0.5) {
+        !Number.isFinite(word.start) || !Number.isFinite(word.end) || word.start < -0.5 || word.start > duration + 0.5 ||
+        word.end < word.start - 0.5 || word.end > duration + 2) {
       throw new Error("Groq devolvió tiempos por palabra inconsistentes.");
     }
-    previous = word.start;
-    return { text: word.word.trim(), start: word.start, end: word.end };
-  });
+    // Whisper's word timing drifts by a few hundredths on long takes: empty
+    // tokens, a start just before the previous word's, an end past the chunk.
+    // Those are clamped to the neighbouring real times; a start far behind the
+    // previous word is not a drift, and is refused rather than repaired.
+    if (!word.word.trim()) continue;
+    if (word.start < previous - 0.5) throw new Error("Groq devolvió tiempos por palabra inconsistentes.");
+    const start = Math.min(Math.max(word.start, previous, 0), duration);
+    const end = Math.min(Math.max(word.end, start), duration);
+    previous = start;
+    timed.push({ text: word.word.trim(), start, end });
+  }
   if (!timed.length) return [];
   // Stable small segments are useful for captions, while every timestamp stays
   // exactly as returned by Groq (seconds relative to this audio chunk).

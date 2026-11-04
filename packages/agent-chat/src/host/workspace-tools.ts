@@ -27,12 +27,15 @@ import { DELIVERY_TOOL, projectDelivery } from './project-delivery';
 import { MUSIC_CREATE_TOOL, createMusic } from './music-create';
 import { MIXKIT_TOOL, mixkit } from './mixkit';
 import { CAPTIONS_RETIME_TOOL, captionsRetime } from './caption-timing';
+import { PLAN_TOOL, RECETA_TOOL, planTool, recetaTool } from './plan/tools';
 import type { Worker } from 'node:worker_threads';
 import type { NoticeReport } from '../notifications';
 import { randomUUID } from 'node:crypto';
 const schema = (properties: Record<string, unknown>, required: string[]) => ({type:'object', properties, required, additionalProperties:false});
 export const WORKSPACE_TOOLS = [
   TASK_GUIDANCE_TOOL,
+  RECETA_TOOL,
+  PLAN_TOOL,
   DELIVERY_TOOL,
   REFERENCE_VIDEO_TOOL,
   CODE_GRAPH_TOOL,
@@ -91,6 +94,8 @@ export class WorkspaceTools {
   }
   private async execute(name:string,raw:unknown):Promise<unknown>{
     if(name==='syka_task_guidance')return taskGuidance(raw);
+    if(name==='syka_receta')return recetaTool(this.cwd,this.docsDir,this.extraSkillsDir,raw);
+    if(name==='syka_plan')return planTool(this.cwd,raw);
     if(name==='syka_reference_video')return this.references.call(raw);
     if (name === 'syka_remove_background') return backgroundRemovalService().call({ ...(raw as object), projectDir: this.cwd } as import('./background-removal').BackgroundRequest);
     if(!raw||typeof raw!=='object')throw Error('Tool arguments required');

@@ -14,6 +14,7 @@ import { timestampEvent } from './event-time';
 import { isPersistedEvent, reduce } from "../reduce";
 import { HARNESS_IDS, HARNESS_LABELS, isHarnessId, titleFor } from "../protocol";
 import { progressiveChatInstructions } from './task-guidance';
+import { ofertaDeReceta } from './plan/tools';
 import { projectSnapshot } from './first-turn';
 import { cleanTitle, TITLE_INSTRUCTIONS, titleModel, titlePrompt } from './titles';
 import { mkdir } from 'node:fs/promises';
@@ -102,7 +103,8 @@ type Chat = {
   session: HarnessSession | null;
   sessionReason: SessionReason;
   idleTimer: ReturnType<typeof setTimeout> | null;
-  turn: { id: string; done: Promise<void>; interrupted: boolean; trace?: HarnessTurnTrace } | null;
+  /** delivered: the turn handed over a composition, which may earn a recipe offer when it ends. */
+  turn: { id: string; done: Promise<void>; interrupted: boolean; trace?: HarnessTurnTrace; delivered?: boolean } | null;
   settling: Promise<void> | null;
   /** Items started in this turn and not yet completed, with their latest text. */
   open: Map<string, Item>;
@@ -1097,6 +1099,11 @@ export class AgentHost {
     if (trace) this.options.trace?.save(trace, outcome.status, outcome.error);
     this.log(`turn timing ${JSON.stringify({turnId,harness:model.harness,model:model.model,readyMs,firstEventMs,totalMs:Math.round(performance.now()-started),status:outcome.status})}`);
     this.finalizeOpen(chat, outcome.status, emit);
+    // The app, not the model, offers to keep what this video taught as a recipe.
+    if (outcome.status === "completed" && chat.turn?.delivered) {
+      const offer = await ofertaDeReceta(chat.meta.cwd).catch(error => { this.log(`recipe offer failed: ${(error as Error).message}`); return null; });
+      if (offer) emit({ type: "item.completed", item: { id: `r-${turnId.slice(0, 12)}`, kind: "recipe", ...offer } });
+    }
     emit({ type: "turn.completed", turnId, status: outcome.status, ...(outcome.error ? { error: outcome.error } : {}) });
     chat.turn = null;
     chat.meta = { ...chat.meta, status: chat.transcript.pending ? "waiting" : "idle", resume: chat.session?.resume ?? chat.meta.resume, updatedAt: Date.now() };
@@ -1133,17 +1140,22 @@ export class AgentHost {
     const env = await this.options.env;
     const projectMcp = bindProjectMcp(this.options.mcp, chat.meta.projectId, chat.meta.cwd);
     const openOptions: import('./harness').OpenOptions = {
-      notify: notice => this.notice(chat, { type: 'project.notice', notice }),
+      notify: notice => {
+        if (chat.turn && (notice.kind === 'complete' || notice.kind === 'review') && /index\.tsx$/i.test(notice.artifact ?? '')) chat.turn.delivered = true;
+        this.notice(chat, { type: 'project.notice', notice });
+      },
       cwd: chat.meta.cwd,
       model,
       resume: chat.meta.resume ?? undefined,
       mcp: projectMcp,
       instructions: [(harness.progressiveContext ? progressiveChatInstructions : chatInstructions)(chat.meta.cwd, this.options.instructions, harness.codeGraphTools === true),
         this.options.mcp ? PROJECT_PREVIEW_INSTRUCTIONS : undefined].filter(Boolean).join('\n\n'),
-      askUser: async questions => {
+      askUser: async (questions, signal) => {
         if(!chat.turn||chat.turn.interrupted||chat.transcript.pending)throw new HostError('no-request','No active turn or another question is waiting.');
         const box=new QuestionBox(this.emitter(chat,chat.turn.id));chat.modelQuestions=box;
-        try{return await box.ask(questions);}finally{if(chat.modelQuestions===box)chat.modelQuestions=null;}
+        // A provider that abandoned the call leaves no card waiting for an answer nobody will read.
+        const abandon=()=>box.cancelAll();signal?.addEventListener('abort',abandon,{once:true});
+        try{return await box.ask(questions);}finally{signal?.removeEventListener('abort',abandon);if(chat.modelQuestions===box)chat.modelQuestions=null;}
       },
       previousConversation: chat.meta.resume && chat.meta.harness === "codex" ? recentConversation(chat.transcript.items) : undefined,
       env: projectMcp ? { ...env, env: { ...env.env, SYKA_PROJECT_MCP_URL: projectMcp.url } } : env,

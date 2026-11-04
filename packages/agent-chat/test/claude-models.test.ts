@@ -16,7 +16,7 @@ describe('Claude native model discovery', () => {
         if(args.includes('--version')){console.log('2.1.289 (Claude Code)');process.exit(0)}
         if(args.includes('auth')){console.log('{"loggedIn":true}');process.exit(0)}
         process.stdin.once('data',d=>{
-          if(args.includes('--input-format')){const r=JSON.parse(d);console.log(JSON.stringify({type:'control_response',response:{request_id:r.request_id,response:{models:JSON.parse(fs.readFileSync(${JSON.stringify(catalogFile)},'utf8'))}}}));}
+          const r=JSON.parse(d);if(r.type==='control_request'){console.log(JSON.stringify({type:'control_response',response:{request_id:r.request_id,response:{models:JSON.parse(fs.readFileSync(${JSON.stringify(catalogFile)},'utf8'))}}}));}
           else{fs.writeFileSync(${JSON.stringify(receipt)},JSON.stringify(args));console.log(JSON.stringify({type:'result',is_error:false}));process.exit(0)}
         });`);
       const env=inheritedEnv(),harness=new ClaudeCliHarness({id:'claude',command:process.execPath,args:[fixture],profileDir:root});
@@ -36,7 +36,7 @@ describe('Claude native model discovery', () => {
     let session:Awaited<ReturnType<ClaudeCliHarness['open']>>|undefined;
     try {
       const fixture=join(root,'cli.cjs');
-      await writeFile(fixture,`const a=process.argv.slice(2);if(a.includes('--version')){console.log('2.1.289 (Claude Code)');process.exit(0)}if(a.includes('auth')){console.log('{"loggedIn":true}');process.exit(0)}process.stdin.once('data',d=>{if(a.includes('--input-format')){const r=JSON.parse(d);console.log(JSON.stringify({type:'control_response',response:{request_id:r.request_id,response:{models:[{value:'opus',displayName:'Opus',supportsEffort:true,supportedEffortLevels:['high']}]}}}));}else{console.log('{"type":"result","is_error":false}');process.exit(0)}});`);
+      await writeFile(fixture,`const a=process.argv.slice(2);if(a.includes('--version')){console.log('2.1.289 (Claude Code)');process.exit(0)}if(a.includes('auth')){console.log('{"loggedIn":true}');process.exit(0)}process.stdin.once('data',d=>{const r=JSON.parse(d);if(r.type==='control_request'){console.log(JSON.stringify({type:'control_response',response:{request_id:r.request_id,response:{models:[{value:'opus',displayName:'Opus',supportsEffort:true,supportedEffortLevels:['high']}]}}}));}else{console.log('{"type":"result","is_error":false}');process.exit(0)}});`);
       const env=inheritedEnv(),harness=new ClaudeCliHarness({id:'claude',command:process.execPath,args:[fixture],profileDir:root});
       session=await harness.open({cwd:root,model:'opus',env,mcp:null,emit:()=>{}});
       await harness.probe(env,AbortSignal.timeout(15000));
@@ -77,7 +77,7 @@ describe('Claude native model discovery', () => {
         if(args.includes('--version')){console.log('2.1.219 (Claude Code)');process.exit(0)}
         if(args.includes('auth')){console.log('{"loggedIn":true}');process.exit(0)}
         process.stdin.once('data',d=>{
-          if(args.includes('--input-format')){const r=JSON.parse(d);console.log(JSON.stringify({type:'control_response',response:{request_id:r.request_id,response:{models:[{value:'opus',displayName:'Opus',supportsEffort:true,supportedEffortLevels:['low','max']}]}}}));}
+          const r=JSON.parse(d);if(r.type==='control_request'){console.log(JSON.stringify({type:'control_response',response:{request_id:r.request_id,response:{models:[{value:'opus',displayName:'Opus',supportsEffort:true,supportedEffortLevels:['low','max']}]}}}));}
           else{fs.writeFileSync(${JSON.stringify(receipt)},JSON.stringify(args));console.log(JSON.stringify({type:'result',is_error:false}));process.exit(0)}
         });`);
       const env=inheritedEnv();

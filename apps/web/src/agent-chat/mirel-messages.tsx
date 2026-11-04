@@ -28,7 +28,7 @@ export function MirelUserText(props:{text:string}) {
  onCleanup(()=>root?.unmount());return <div ref={element} class="syka-mirel-visuals syka-user-text"/>;
 }
 
-export const ChatActionsContext=createContext<{chatKey:()=>string;running:()=>boolean;lastAssistantId:()=>string|undefined;isActiveItem:(id:string)=>boolean;imageDownloadPaths?:(id:string)=>string[];onBranch:(itemId:string)=>void;onDraft:(text:string)=>void}>();
+export const ChatActionsContext=createContext<{chatKey:()=>string;running:()=>boolean;lastAssistantId:()=>string|undefined;isActiveItem:(id:string)=>boolean;imageDownloadPaths?:(id:string)=>string[];onBranch:(itemId:string)=>void;onDraft:(text:string)=>void;onSend:(text:string)=>void}>();
 const agent={key:'codex',name:'Syka',orbState:SYKA_ORB_STATE,accent:'#a6b4c2'};
 export function MirelMessage(props:{item:Extract<Item,{kind:'assistant'}>}){
  const actions=useContext(ChatActionsContext);let el!:HTMLDivElement;let root:ReturnType<typeof createRoot>;

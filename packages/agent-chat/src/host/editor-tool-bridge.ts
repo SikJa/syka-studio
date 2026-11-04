@@ -16,7 +16,7 @@ import { harnessTraceFor, registerTraceTools } from './harness-telemetry';
  * tool is one the model forgets it has, so it stops consulting. These stay
  * loaded, as the core Codex keeps in deferTaskTools plus the skill reader.
  */
-export const ALWAYS_LOADED = new Set(['syka_ask_user', 'syka_task_guidance', 'syka_read_source', 'syka_patch_source', 'syka_skills']);
+export const ALWAYS_LOADED = new Set(['syka_ask_user', 'syka_task_guidance', 'syka_read_source', 'syka_patch_source', 'syka_skills', 'syka_receta', 'syka_plan', 'syka_delivery']);
 
 /** Per-session MCP bridge for the same reversible source/workspace tools Codex uses.
  * Random loopback port and unguessable URL; never starts or contacts DAPI 3275.
@@ -54,7 +54,9 @@ export async function startEditorToolBridge(options: OpenOptions, permission?: (
           if (!definitions.some(t => t.name === name)) throw Error("Unknown tool");
           const finish = trace?.tool(name, 'mcp_workspace', message.params.arguments);
           try {
-            const execute = async () => name==='syka_ask_user' && options.askUser ? userQuestionResult(await options.askUser(parseUserQuestions(message.params.arguments)))
+            const abandoned = new AbortController();
+            res.once('close', () => { if (!res.writableFinished) abandoned.abort(); });
+            const execute = async () => name==='syka_ask_user' && options.askUser ? userQuestionResult(await options.askUser(parseUserQuestions(message.params.arguments), abandoned.signal))
               : name === "permission" && permission ? await permission(message.params.arguments)
               : SOURCE_TOOLS.some(t => t.name === name) ? await source.call(name, message.params.arguments)
               : await workspace.call(name, message.params.arguments);

@@ -14,6 +14,7 @@ import { ProjectPreviewQueue } from './preview-queue';
 import { InternalPreviewWorker } from './preview-worker';
 import { availableParallelism, totalmem } from 'node:os';
 import { previewCapacity } from './preview-capacity';
+import { planLines, planStillMax, writeGateReceipt } from '@diffusionstudio/agent-chat/host/gate-receipt';
 import type { PreviewWorkerOptions } from './preview-worker';
 import type { BrowserWindow } from 'electron';
 
@@ -147,11 +148,22 @@ export class DapiServer {
     // `name` is the machine identity, and matches the key we write into agent
     // configs; `title` is what a client shows a person.
     const session = new McpServer({ name: SERVER_NAME, title: "Syka Studio", version: this.deps.version }, { instructions: sessionInstructions });
-    serveCatalog(session, (tool, args, signal) =>
-      tool.environment === "main" ?
-        this.runInMain(tool.name as MainToolName, args, signal)
-        : project ? this.runInPreview({ project, tool: tool.name, args }, signal)
-          : this.renderer.call(tool.name, args, signal),
+    serveCatalog(session, async (tool, args, signal) => {
+      if (tool.environment === "main") return this.runInMain(tool.name as MainToolName, args, signal);
+      if (!project) return this.renderer.call(tool.name, args, signal);
+      // The gate checks the video plan's lines too; the agent never has to pass them.
+      if (tool.name === "gate") {
+        const given = args as { lines?: unknown; stillMax?: unknown };
+        const lines = given.lines ? undefined : await planLines(project.dir);
+        const stillMax = given.stillMax === undefined ? await planStillMax(project.dir) : undefined;
+        if (lines?.length || stillMax !== undefined) args = { ...(args as object), ...(lines?.length ? { lines } : {}), ...(stillMax !== undefined ? { stillMax } : {}) };
+      }
+      const result = await this.runInPreview({ project, tool: tool.name, args }, signal);
+      // The receipt is what lets a delivery be called ready: it names the exact source the gate judged.
+      if (tool.name === "gate") await writeGateReceipt(project.dir, String((args as { id?: unknown }).id ?? ""), result)
+        .catch(error => console.warn(`[syka] gate receipt not written: ${(error as Error).message}`));
+      return result;
+    },
       // Code-mode text(JSON.stringify(result)) must never ingest PNG base64.
       // Every presented image already has an actual local file receipt.
       { inlineImages: !progressive },

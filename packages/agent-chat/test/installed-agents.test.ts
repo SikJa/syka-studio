@@ -49,6 +49,9 @@ describe('reuse installed accounts without credential copies', () => {
     const value = claudeEnvironment({ id: 'claude', command: process.execPath, profileDir }, { env: original, extraDirs: [] });
     for (const key of ['HOME','USERPROFILE','APPDATA','LOCALAPPDATA'] as const) expect(value[key]).toBe(original[key]);
     expect(value.CLAUDE_CONFIG_DIR).toBe(profileDir); expect(value.ANTHROPIC_API_KEY).toBeUndefined();
+    // A question to the person must not time out after Claude Code's default minute.
+    expect(Number(value.MCP_TOOL_TIMEOUT)).toBeGreaterThanOrEqual(30 * 60_000);
+    expect(claudeEnvironment({ id: 'claude', command: process.execPath, profileDir }, { env: { ...original, MCP_TOOL_TIMEOUT: '120000' }, extraDirs: [] }).MCP_TOOL_TIMEOUT).toBe('120000');
   });
   it('discovers the prepared official Antigravity connector with the installed user directories', async () => {
     const root = await setup(), provider = join(root, 'providers', 'antigravity');

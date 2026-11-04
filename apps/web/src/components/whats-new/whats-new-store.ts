@@ -1,7 +1,7 @@
 import { createSignal } from 'solid-js';
 
 /** Seen per release: a new version opens the story once, a reopen never marks anything. */
-export const WHATS_NEW_RELEASE = '0.210.0';
+export const WHATS_NEW_RELEASE = '0.211.0';
 export const WHATS_NEW_STORAGE_KEY = 'syka.whatsNew.seen';
 
 const [open, setOpen] = createSignal(false);

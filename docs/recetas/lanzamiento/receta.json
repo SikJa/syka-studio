@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "slug": "lanzamiento",
+  "nombre": "Lanzamiento de producto",
+  "tipo": "lanzamiento",
+  "revision": 1,
+  "descripcion": "Un film corto que presenta un producto o una función con su UI real: problema, demo, resultado y logo.",
+  "cuandoUsar": "Para lanzar una app, una función, un changelog o una demo de producto con capturas o grabaciones reales. Para editar material grabado de una persona hablando, usá la receta de YouTube.",
+  "origen": { "tipo": "fabrica", "detalle": "Receta de fábrica de Syka Studio 0.211: skill syka-product-launch, reglas de cámara y encuadre, gate y lo aprendido comparando con films de lanzamiento." },
+  "formato": { "ancho": 1920, "alto": 1080, "fps": 30, "duracion": { "min": 15, "max": 40 } },
+  "fases": { "historias": true, "storyboard": false, "desdeTranscripcion": false },
+  "brief": {
+    "preguntas": [
+      { "id": "producto", "pregunta": "¿Qué producto o función se lanza, y dónde se ve (capturas, grabaciones, web)?" },
+      { "id": "antes-despues", "pregunta": "¿Cómo era antes y cómo es con el producto, en una frase cada uno?" },
+      { "id": "llamado", "pregunta": "¿Cómo cierra: nombre, frase final y llamado a la acción?" },
+      { "id": "canal", "pregunta": "¿Dónde se publica y en qué formato?" }
+    ],
+    "resuelto": {}
+  },
+  "estructura": [
+    { "id": "gancho", "nombre": "Gancho", "proposito": "El problema o la promesa en los primeros 2 a 3 segundos, con imagen, no con un título suelto.", "duracion": { "min": 2, "max": 5 }, "frase": true },
+    { "id": "presentacion", "nombre": "Presentación", "proposito": "El nombre del producto o la función entra como respuesta al gancho.", "duracion": { "min": 2, "max": 5 }, "frase": true },
+    { "id": "demo", "nombre": "Demo", "proposito": "Una o dos acciones reales: el cursor dispara, la UI reacciona, aparece el resultado. La cámara va al control que importa.", "duracion": { "min": 6, "max": 20 }, "frase": true },
+    { "id": "resultado", "nombre": "Resultado", "proposito": "El después, grande y legible: lo que la persona gana.", "duracion": { "min": 2, "max": 6 }, "frase": true },
+    { "id": "cierre", "nombre": "Cierre", "proposito": "Logo y llamado a la acción en el último 5 a 10 % del film, quieto al final entre 1,5 y 3 s.", "duracion": { "min": 2, "max": 5 }, "frase": true }
+  ],
+  "estilo": [
+    { "texto": "La UI real del producto, reconstruida o capturada; nunca una pantalla inventada. Si falta una, va un marcador rotulado.", "confianza": "aprobada" },
+    { "texto": "La captura ocupa entre el 55 % y el 90 % del ancho y nunca queda chica en el medio de un fondo vacío; si se ve entera, va sobre un fondo de marca.", "confianza": "aprobada" },
+    { "texto": "El texto de la UI que importa se lee en un teléfono: al menos el 2,5 % del alto del cuadro.", "confianza": "aprobada" },
+    { "texto": "Tres distancias alternadas: ventana entera solo para ubicar, un panel lleno, y primer plano del control. La mayor parte del film vive en panel y primer plano.", "confianza": "aprobada" },
+    { "texto": "Frases de hasta 6 palabras, del 4 al 9 % del alto, una palabra destacada con el acento. El título que aterrizó queda quieto.", "confianza": "aprobada" },
+    { "texto": "La UI va plana y frontal; la profundidad sale de sombra, escala y desenfoque del fondo.", "confianza": "aprobada" },
+    { "texto": "Los colores, radios y jerarquía del producto se conservan; un acento de marca, no un arcoíris.", "confianza": "aprobada" }
+  ],
+  "sonido": [
+    { "texto": "Música primero: el tema de la persona; si no hay, Mixkit comparando al menos tres por carácter, largo y cierre; componer es el último recurso.", "confianza": "aprobada" },
+    { "texto": "Medí los golpes del tema con syka_audio_analyze antes de animar; cortes, clics y logo caen en golpes.", "confianza": "aprobada" },
+    { "texto": "Efectos chicos solo en acciones reales (clic, aparición del resultado, logo), agrupados y con espacio para la música.", "confianza": "propuesta" }
+  ],
+  "ritmo": [
+    { "texto": "Cada movimiento de cámara dura 0,4 a 0,7 s, acelera y frena, y llega a un control o a un resultado.", "confianza": "aprobada" },
+    { "texto": "Nada de zoom lento continuo ni respiraciones en loop: o algo se mueve de verdad o queda quieto.", "confianza": "aprobada" },
+    { "texto": "Los cortes caen en movimiento (mismo sentido a ambos lados) o en el rebote de un clic; como máximo un tercio de cortes secos.", "confianza": "aprobada" },
+    { "texto": "Algo cambia en pantalla al menos cada 2,5 s; el cuadro entero nunca queda congelado más de 1,5 s salvo el cierre.", "confianza": "aprobada" }
+  ],
+  "referencias": [],
+  "fijo": [ "Logo real de la marca, nunca redibujado", "Datos, clientes y métricas solo si son verdaderos", "Fuentes y colores de la marca" ],
+  "variable": [ "La historia y sus escenas", "Las capturas de cada función", "El tema musical", "Las frases" ],
+  "controles": [
+    { "id": "ui-legible", "regla": "Cada escena de demo tiene al menos un plano panel o primer plano.", "confianza": "aprobada" },
+    { "id": "logo-al-final", "regla": "La escena marca es la última o la anteúltima.", "confianza": "aprobada" },
+    { "id": "cortes-en-movimiento", "regla": "Como máximo un tercio de las costuras son cortes secos.", "confianza": "aprobada" }
+  ]
+}

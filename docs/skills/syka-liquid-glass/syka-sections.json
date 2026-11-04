@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "required": [
+    "contract"
+  ],
+  "sections": [
+    {
+      "id": "contract",
+      "heading": "Contract",
+      "description": "Límites obligatorios y alcance de esta skill",
+      "dependencies": []
+    },
+    {
+      "id": "brief",
+      "heading": "Brief",
+      "description": "Decisiones faltantes y evidencia para trabajo nuevo",
+      "dependencies": []
+    },
+    {
+      "id": "build",
+      "heading": "Build",
+      "description": "Aplicación nativa de la tarea autorizada",
+      "dependencies": [
+        {
+          "name": "syka-captions",
+          "sectionId": "build",
+          "when": "Sólo si además lleva subtítulos"
+        },
+        {
+          "name": "syka-local-audio",
+          "sectionId": "build",
+          "when": "Sólo para elegir o mezclar música"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "heading": "Review",
+      "description": "Verificación proporcional al riesgo cambiado",
+      "dependencies": []
+    }
+  ]
+}

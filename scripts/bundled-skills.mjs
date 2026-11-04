@@ -4,13 +4,17 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const categories = [
-  ['Edición y revisión', ['editor.md','watch.md','syka-editing-basics','syka-editing-recipe','syka-edit-review','syka-explainer-edit','syka-design-import']],
-  ['Dirección y motion', ['syka-visual-direction','syka-editorial-motion','syka-motion-brief','syka-motion-direction','syka-product-launch','syka-motion-storyboard','syka-motion-reels','syka-motion-typography','syka-motion-transitions','syka-faceless-explainer','syka-slideshow','syka-pr-to-video']],
+  ['Edición y revisión', ['editor.md','watch.md','syka-editing-basics','syka-edit-review','syka-explainer-edit','syka-design-import']],
+  ['Dirección y motion', ['syka-visual-direction','syka-editorial-motion','syka-motion-brief','syka-motion-direction','syka-product-launch','syka-motion-storyboard','syka-motion-reels','syka-motion-typography','syka-motion-transitions','syka-faceless-explainer','syka-slideshow','syka-pr-to-video','syka-liquid-glass']],
   ['Subtítulos', ['syka-captions','syka-camera-3d-captions']],
   ['Música y sonido', ['syka-local-audio','syka-music-video']],
-  ['Referencias y recursos', ['syka-media-use','syka-video-references','syka-motion-reference','syka-motion-references','syka-motion-lab','syka-huashu-motion']],
+  ['Referencias y recursos', ['syka-media-use','syka-video-references','syka-motion-references']],
   ['Entrega y publicación', ['syka-content-package']],
 ];
+// Bases shown in the "Skills y flujos" panel. The rest stay bundled as the
+// agent's own knowledge (routed by syka_skills) without crowding the list of
+// the person's skills.
+const library = new Set(['syka-liquid-glass']);
 export async function bundledSkills(docsDir) {
   const skills=[];
   for(const entry of await readdir(join(docsDir,'skills'),{withFileTypes:true})) {
@@ -21,7 +25,7 @@ export async function bundledSkills(docsDir) {
     const title=content.match(/^#\s+(.+)$/m)?.[1]?.trim()??entry.name;
     const category=categories.find(([,names])=>names.includes(entry.name))?.[0];
     if(!category)throw Error(`La skill ${entry.name} necesita una categoría en el catálogo de distribución.`);
-    skills.push({name:entry.name,title,category,path,description,sha256:createHash('sha256').update(content).digest('hex'),delivery:'bundled'});
+    skills.push({name:entry.name,title,category,path,description,sha256:createHash('sha256').update(content).digest('hex'),delivery:'bundled',...(library.has(entry.name)?{library:true}:{})});
   }
   skills.sort((a,b)=>a.name.localeCompare(b.name));
   const manifest={version:1,engine:'diffusion',count:skills.length,skills};

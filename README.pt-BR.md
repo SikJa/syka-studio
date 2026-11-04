@@ -35,7 +35,7 @@ O motor, a linha do tempo e os projetos editáveis vêm do Diffusion. Syka acres
 
 ## Instalação
 
-**Versão atual: 0.210.0 para Windows x64.** Adiciona o controle de qualidade do filme (gate), música do Mixkit, regras de câmera e enquadramento, e chats que abrem mais rápido. Inclui 28 skills, conhecimento de motion e fluxos de lançamento, 2.052 entradas de logos e 602 recursos de áudio. Mantém as correções de preview, notificações e atualização da versão 0.208.2. O app baixa quando solicitado e pede confirmação antes de reiniciar e instalar. O instalador continua **sem assinatura digital**; o Windows pode mostrar um aviso de segurança.
+**Versão atual: 0.211.0 para Windows x64.** Adiciona receitas reutilizáveis por tipo de vídeo (lançamento, YouTube e vertical), um plano por vídeo que trava a entrega até passar no controle de qualidade, a oferta de salvar suas correções como receita, a skill Liquid Glass e o steer com o Claude. Inclui 27 skills, conhecimento de motion, 2.052 entradas de logos e 602 recursos de áudio. O app baixa quando solicitado e pede confirmação antes de reiniciar e instalar. O instalador continua **sem assinatura digital**; o Windows pode mostrar um aviso de segurança.
 
 Abra o PowerShell e copie:
 

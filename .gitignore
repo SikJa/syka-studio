@@ -53,9 +53,8 @@ graphify-out/status.json
 scripts/__pycache__/
 
 # Machine-local reference media location and isolated native QA profiles.
-docs/references/skillry/library-location.local.json
-docs/references/skillry/evidence/qa-runtime/
-docs/references/skillry/scripts/__pycache__/
+# Local reference studies (third-party media and evidence); archived outside the repo.
+/docs/references/
 
 # Endpoint descriptor generated for this machine's real provider preview.
 apps/web/qa/providers-live-endpoint.js

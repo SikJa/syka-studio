@@ -148,6 +148,56 @@ export function NoticeItem(props: { item: Of<"notice"> }) {
   );
 }
 
+/**
+ * The app's offer after a delivered video: keep it as a recipe, or feed the
+ * corrections the person asked for back into theirs. Choosing sends the agent
+ * a plain request; "Ahora no" only hides the card on this device.
+ */
+export function RecipeOfferItem(props: { item: Of<"recipe"> }) {
+  const actions = useContext(ChatActionsContext);
+  const hiddenKey = () => `syka.recipeOffer.hidden.${props.item.id}`;
+  const [hidden, setHidden] = createSignal((() => { try { return localStorage.getItem(hiddenKey()) === '1'; } catch { return false; } })());
+  const [chosen, setChosen] = createSignal(props.item.mejoras.map(() => true));
+  const picked = () => props.item.mejoras.filter((_, index) => chosen()[index]);
+  const hide = () => { setHidden(true); try { localStorage.setItem(hiddenKey(), '1'); } catch { /* Shown again next time. */ } };
+  const request = () => {
+    const list = picked().map(mejora => `- ${mejora}`).join('\n');
+    return props.item.mode === 'crear'
+      ? `Creá una receta mía a partir de este video. Partí de la receta «${props.item.receta.nombre}» que usamos y del plan aprobado (00 Plan/plan.json)${list ? `, sumando lo que fuimos corrigiendo:\n${list}\n` : '. '}Proponeme un nombre corto, mostrame en pocas líneas qué queda fijo y qué cambia, y guardala con syka_receta guardar (revisión 1, origen video-aprobado) cuando te diga que sí.`
+      : `Guardá estas mejoras en mi receta «${props.item.receta.nombre}»:\n${list}\nLeela con syka_receta leer, aplicá solo estos cambios, subí la revisión y anotá en la nota que salen de este video. Mostrame el cambio antes de guardar.`;
+  };
+  return (
+    <Show when={!hidden()}>
+      <section class="syka-recipe-offer" aria-label={props.item.mode === 'crear' ? 'Crear receta' : 'Mejorar receta'}>
+        <header>
+          <Icon name="sparkles" class="size-4" />
+          <strong>{props.item.mode === 'crear' ? '¿Guardamos este video como tu receta?' : `¿Mejoramos «${props.item.receta.nombre}»?`}</strong>
+        </header>
+        <p>{props.item.mode === 'crear'
+          ? `Para que el próximo video salga así, partiendo de «${props.item.receta.nombre}» con lo que ajustamos.`
+          : 'Lo que corregiste en este video puede quedar en la receta para los próximos.'}</p>
+        <Show when={props.item.mejoras.length}>
+          <ul>
+            <For each={props.item.mejoras}>{(mejora, index) => (
+              <li><label>
+                <input type="checkbox" checked={chosen()[index()]} onChange={event => setChosen(list => list.map((value, i) => i === index() ? event.currentTarget.checked : value))} />
+                <span>{mejora}</span>
+              </label></li>
+            )}</For>
+          </ul>
+        </Show>
+        <div class="syka-recipe-offer-actions">
+          <button type="button" class="syka-recipe-offer-primary" disabled={!actions || actions.running() || (props.item.mode === 'mejorar' && !picked().length)}
+            onClick={() => { actions?.onSend(request()); hide(); }}>
+            {props.item.mode === 'crear' ? 'Crear receta' : 'Guardar mejoras'}
+          </button>
+          <button type="button" class="syka-recipe-offer-secondary" onClick={hide}>Ahora no</button>
+        </div>
+      </section>
+    </Show>
+  );
+}
+
 /** Dispatches on kind. */
 export function ChatItem(props: { item: Item }) {
   const item = () => props.item;
@@ -173,6 +223,9 @@ export function ChatItem(props: { item: Item }) {
       </Show>
       <Show when={item().kind === "notice"}>
         <NoticeItem item={item() as Of<"notice">} />
+      </Show>
+      <Show when={item().kind === "recipe"}>
+        <RecipeOfferItem item={item() as Of<"recipe">} />
       </Show>
     </>
   );

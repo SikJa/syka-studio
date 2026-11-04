@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { judgeFrames, type Drawn, type FrameReading } from './gate-judge';
+import { judgeFrames, judgeLines, type Drawn, type FrameReading } from './gate-judge';
 
 const W = 480, H = 270, STEP = 0.2;
 const plate: Drawn = { stamp: 'plate', box: { minX: 40, minY: 20, maxX: 440, maxY: 250 }, order: 0, text: false };
@@ -31,6 +31,14 @@ describe('film gate', () => {
     expect(judgeFrames(finalHold, STEP, 3)).toEqual([]);
   });
 
+  it('lets a recipe allow longer still stretches, as a screen recording under a voice', () => {
+    const talk = film(60, i => i >= 10 && i < 40 ? frame(i, undefined, { change: 0 }) : frame(i));
+    expect(judgeFrames(talk, STEP, 3)).toEqual([expect.objectContaining({ code: 'frozen' })]);
+    expect(judgeFrames(talk, STEP, 3, 8)).toEqual([]);
+    const tooLong = film(60, i => i >= 5 && i < 55 ? frame(i, undefined, { change: 0 }) : frame(i));
+    expect(judgeFrames(tooLong, STEP, 3, 8)).toEqual([expect.objectContaining({ code: 'frozen' })]);
+  });
+
   it('fails a button drawn over the typed text, as in second 6', () => {
     const button: Drawn = { stamp: 'send', box: { minX: 280, minY: 195, maxX: 340, maxY: 235 }, order: 2, text: false };
     const readings = film(60, i => i >= 30 && i < 34 ? frame(i, [plate, caption(), button]) : frame(i));
@@ -55,6 +63,24 @@ describe('film gate', () => {
     expect(judgeFrames(tiny, STEP, 3)).toEqual([expect.objectContaining({ code: 'small-subject', severity: 'warning', ranges: [{ start: 0, end: 12 }] })]);
     const pushedIn = film(60, i => frame(i, [{ ...card, box: { minX: 40, minY: 20, maxX: 440, maxY: 250 } }], { content: 0.6 }));
     expect(judgeFrames(pushedIn, STEP, 3)).toEqual([]);
+  });
+
+  it('finds each plan line whole inside the safe margin, even spread over several texts', () => {
+    const word = (stamp: string, chars: string, minX: number, maxX: number): Drawn => ({ stamp, chars, text: true, order: 1, box: { minX, minY: 120, maxX, maxY: 150 } });
+    const lines = [{ id: 'gancho', text: 'Editá video con agentes', start: 0, end: 4 }];
+    const together = film(60, i => frame(i, [plate, word('a', 'Editá video', 100, 220), word('b', 'con agentes.', 230, 360)]));
+    expect(judgeLines(together, STEP, lines)).toEqual([]);
+    const atEdge = film(60, i => frame(i, [plate, word('a', 'Editá video con agentes', 2, 300)]));
+    expect(judgeLines(atEdge, STEP, lines)).toEqual([expect.objectContaining({ code: 'line-unsafe', severity: 'error' })]);
+    const elsewhere = film(60, i => i > 30 ? frame(i, [plate, word('a', 'Editá video con agentes', 100, 300)]) : frame(i, [plate]));
+    expect(judgeLines(elsewhere, STEP, lines)).toEqual([expect.objectContaining({ code: 'line-missing', severity: 'warning' })]);
+    expect(judgeLines(elsewhere, STEP, [{ ...lines[0]!, layer: 'a' }])).toEqual([expect.objectContaining({ code: 'line-missing', severity: 'error' })]);
+    // A vertical recipe keeps the bottom fifth for the app's buttons and captions.
+    const lowCaption = film(60, i => frame(i, [plate, word('a', 'Editá video con agentes', 100, 300)]).drawn.length ? frame(i, [plate, { ...word('a', 'Editá video con agentes', 100, 300), box: { minX: 100, minY: 230, maxX: 300, maxY: 255 } }]) : frame(i));
+    expect(judgeLines(lowCaption, STEP, lines)).toEqual([]);
+    expect(judgeLines(lowCaption, STEP, [{ ...lines[0]!, margins: { top: 0.08, bottom: 0.2, left: 0.06, right: 0.15 } }])).toEqual([expect.objectContaining({ code: 'line-unsafe' })]);
+    // A wrong layer name never hides a line that does show whole.
+    expect(judgeLines(together, STEP, [{ ...lines[0]!, layer: 'texto' }])).toEqual([]);
   });
 
   it('fails two captions laid over each other', () => {

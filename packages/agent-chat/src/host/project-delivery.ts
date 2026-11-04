@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { realpath, stat } from 'node:fs/promises';
 import { extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import type { NoticeReport } from '../notifications';
+import { entregaBloqueada } from './plan/tools';
 
 export const DELIVERY_TOOL = {
   type: 'function', name: 'syka_delivery',
@@ -10,11 +11,12 @@ export const DELIVERY_TOOL = {
     status: { type: 'string', enum: ['ready', 'review', 'blocked'] },
     message: { type: 'string', maxLength: 600 }, artifact: { type: 'string' },
     evidence: { type: 'array', maxItems: 8, items: { type: 'string' } },
+    correccion: { type: 'boolean', description: 'true for a small correction of an existing piece, which needs no plan; it still needs a passing gate on the final source to be ready.' },
   }, required: ['status', 'message'] },
 };
 
 export async function projectDelivery(cwd: string, raw: unknown): Promise<NoticeReport> {
-  const args = raw as { status?: string; message?: string; artifact?: string; evidence?: string[] };
+  const args = raw as { status?: string; message?: string; artifact?: string; evidence?: string[]; correccion?: boolean };
   if (!args || !['ready', 'review', 'blocked'].includes(args.status ?? '') || typeof args.message !== 'string' || !args.message.trim() || args.message.length > 600) throw Error('Entrega inválida.');
   const root = await realpath(cwd);
   const file = async (value: unknown) => {
@@ -38,6 +40,11 @@ export async function projectDelivery(cwd: string, raw: unknown): Promise<Notice
   if (args.status === 'ready') {
     if (!Array.isArray(args.evidence) || !args.evidence.length || args.evidence.length > 8) throw Error('Falta la evidencia de revisión; usá review si hay comprobaciones pendientes.');
     for (const path of args.evidence) await file(path);
+    // A composition is ready only with its plan done and a passing gate on the exact final source.
+    if (artifact && artifact.path === await realpath(resolve(root, 'index.tsx')).catch(() => '')) {
+      const blocker = await entregaBloqueada(root, args.correccion === true);
+      if (blocker) throw Error(`Todavía no está lista: ${blocker} Si querés mostrar el avance, entregá con status review.`);
+    }
   }
   // Same file revision is one delivery, even if the provider retries the tool.
   const revision = createHash('sha256').update(JSON.stringify([args.status, args.message.trim(), artifact?.path, artifact?.info.size, artifact?.info.mtimeMs])).digest('hex');

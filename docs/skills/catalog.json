@@ -1,7 +1,7 @@
 {
   "version": 1,
   "engine": "diffusion",
-  "count": 30,
+  "count": 27,
   "skills": [
     {
       "name": "editor.md",
@@ -63,16 +63,7 @@
       "category": "Edición y revisión",
       "path": "skills/syka-editing-basics/SKILL.md",
       "description": "Editar videos en Syka con montaje, recursos y comprobaciones proporcionales al pedido. Usar para una edición general o para coordinar captions, audio y motion.",
-      "sha256": "5185143f95e4bae1134ebb8708b7f27490b14569af6e39f9f412fd28a49f8c4b",
-      "delivery": "bundled"
-    },
-    {
-      "name": "syka-editing-recipe",
-      "title": "Una receta que el próximo chat pueda continuar",
-      "category": "Edición y revisión",
-      "path": "skills/syka-editing-recipe/SKILL.md",
-      "description": "Resolver y conservar una receta de edición con decisiones acordadas, referencias y revisión. Usar en una edición amplia o al convertir un resultado aprobado en una skill personal para reels, YouTube u otro uso.",
-      "sha256": "f8e8078e270a75acca5bdaa641334a9048a4c27e40d4eb1804ca0c24939fb0fe",
+      "sha256": "6bf0485e11cf358008b3e42f02a915afaf37eb13b26739b41fcc75cf79f3e326",
       "delivery": "bundled"
     },
     {
@@ -103,13 +94,14 @@
       "delivery": "bundled"
     },
     {
-      "name": "syka-huashu-motion",
-      "title": "Huashu: lenguaje visual y escenas",
-      "category": "Referencias y recursos",
-      "path": "skills/syka-huashu-motion/SKILL.md",
-      "description": "Aplicar fichas MIT de Huashu para lenguaje visual, storyboard, explicación con objetos y dibujo determinista en Syka, consultando sólo el estilo o mecanismo necesario.",
-      "sha256": "aa62ab1fd490384ee5ab55b3779ea9ad190d4cace6e6913270110828931f21ec",
-      "delivery": "bundled"
+      "name": "syka-liquid-glass",
+      "title": "Liquid Glass sobre una persona a cámara",
+      "category": "Dirección y motion",
+      "path": "skills/syka-liquid-glass/SKILL.md",
+      "description": "Editar un video de una persona hablando a cámara con tarjetas de vidrio estilo Liquid Glass (refracción, desenfoque, borde especular) para titulares, cifras con fuente, frases, pasos y placa de nombre, nativas y editables en Syka. Usar cuando pidan liquid glass, estilo Apple o vidrio, o tarjetas con datos sobre un talking-head 16:9.",
+      "sha256": "f91ccfa22d9202ee70ca21b531c95a4475c2d54c953a8d1a08b138b643c4cab7",
+      "delivery": "bundled",
+      "library": true
     },
     {
       "name": "syka-local-audio",
@@ -144,16 +136,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-motion-direction/SKILL.md",
       "description": "Diseñar la dirección visual y el storyboard de un lanzamiento SaaS, explicador o motion en Syka; convertir referencias en escenas conectadas, tipografía legible, sonido intencional y componentes editables.",
-      "sha256": "a3f63179617f37e6b1c85759149a538a65eda22e966c099af2a4f78314561f00",
-      "delivery": "bundled"
-    },
-    {
-      "name": "syka-motion-lab",
-      "title": "Motion Lab dentro de Syka",
-      "category": "Referencias y recursos",
-      "path": "skills/syka-motion-lab/SKILL.md",
-      "description": "Elegir mecanismos puntuales de Motion Lab para texto, transformaciones o demos y adaptarlos al reloj nativo de Syka; 160 fichas MIT consultables por ID sin cargar el catálogo entero.",
-      "sha256": "0b00bd0f5473c81ec45b0927a801ef7ded4f7a9824342c06508bf0d394c99a48",
+      "sha256": "9d155c9447e87b1b37aef9446a4da1f08c8bc3ad6cf0cf72648665c9a619b77a",
       "delivery": "bundled"
     },
     {
@@ -163,15 +146,6 @@
       "path": "skills/syka-motion-reels/SKILL.md",
       "description": "Crear reels y motion vertical en Diffusion con composición para móvil, ritmo, lectura y sonido decidido con el usuario.",
       "sha256": "56923df74e9c6e312fbec8ded20eab00153b9b50c949ac053f8cf1fa5b094e91",
-      "delivery": "bundled"
-    },
-    {
-      "name": "syka-motion-reference",
-      "title": "Referencia a motion editable",
-      "category": "Referencias y recursos",
-      "path": "skills/syka-motion-reference/SKILL.md",
-      "description": "Analizar videos, capturas y secuencias de frames para reconstruir un motion editable en Syka y convertir un ejemplo aprobado en componente reutilizable.",
-      "sha256": "693cd46ac41d3acc0aa4b5b334a7d6dce6e68367b5654d7fbcb212a9305b3701",
       "delivery": "bundled"
     },
     {
@@ -234,7 +208,7 @@
       "category": "Dirección y motion",
       "path": "skills/syka-product-launch/SKILL.md",
       "description": "Producir anuncios y demos de lanzamiento en Diffusion con producto real, doce criterios editoriales, voz sincronizada por palabras, sonido de microacciones, componentes editables y variantes elegidas desde el brief.",
-      "sha256": "dc278844fc716b029aaf8b8c90e45b0f0f7437f512e29754e63c89f6e092dd13",
+      "sha256": "759aa483222ff8a7486cc4180fe1ced7b8b985c6419f92f22cbee694ba2e0043",
       "delivery": "bundled"
     },
     {

@@ -46,11 +46,12 @@ describe('provider transport measurements without model calls',()=>{
   it('captures Claude full tool output before collectResult truncates it and rejects a nonzero terminal exit',async()=>{
     const cwd=await root(),fixture=join(cwd,'claude-fixture.mjs'),output='large native result '.repeat(7000);
     await writeFile(fixture,`const args=process.argv.slice(2);if(args.includes('--version')){console.log('2.1.289 (Claude Code)');process.exit(0)}
-      if(args.includes('--input-format')){process.stdin.once('data',d=>{const r=JSON.parse(d);console.log(JSON.stringify({type:'control_response',response:{request_id:r.request_id,response:{models:[]}}}));process.exit(0)});}
-      else{let input='';for await(const chunk of process.stdin)input+=chunk;
+      process.stdin.once('data',d=>{const r=JSON.parse(String(d).split('\\n')[0]);
+      if(r.type==='control_request'){console.log(JSON.stringify({type:'control_response',response:{request_id:r.request_id,response:{models:[]}}}));process.exit(0)}
+      const input=r.message.content.map(part=>part.text).join('');
       console.log(JSON.stringify({type:'assistant',message:{content:[{type:'tool_use',id:'private-call-id',name:'Read',input:{file_path:'private-file.tsx'}}]}}));
       console.log(JSON.stringify({type:'user',message:{content:[{type:'tool_result',tool_use_id:'private-call-id',content:${JSON.stringify(output)}}]}}));
-      console.log(JSON.stringify({type:'result',is_error:false}));process.exit(input==='bad-exit'?1:0);}`);
+      console.log(JSON.stringify({type:'result',is_error:false}));process.exit(input==='bad-exit'?1:0);});`);
     const opts=options(cwd,'__cli_default__');let active=new HarnessTurnTrace('claude');bindHarnessTrace(opts,()=>active);
     const harness=new ClaudeCliHarness({id:'claude',command:process.execPath,args:[fixture],profileDir:cwd});
     const session=await active.run(()=>harness.open(opts));sessions.push(session);

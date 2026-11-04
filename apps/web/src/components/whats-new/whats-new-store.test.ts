@@ -19,7 +19,7 @@ describe('novedades de Syka', () => {
     expect(whatsNewOpen()).toBe(false);
     expect(memory.get(WHATS_NEW_STORAGE_KEY)).toBe(WHATS_NEW_RELEASE);
     expect(hasSeenWhatsNew()).toBe(true);
-    expect(hasSeenWhatsNew('0.211.0')).toBe(false);
+    expect(hasSeenWhatsNew('0.212.0')).toBe(false);
   });
 
   it('names this release and tells each change in a short page', () => {

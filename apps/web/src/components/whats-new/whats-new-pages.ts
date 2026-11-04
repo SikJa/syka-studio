@@ -1,7 +1,7 @@
 import type { SettingsPage } from '@/components/settings/state';
 
 /** The pages of this release's story; the art for each lives in whats-new-art.tsx. */
-export type WhatsNewPageId = 'gate' | 'music' | 'camera' | 'chats' | 'questions' | 'dock';
+export type WhatsNewPageId = 'recipes' | 'plan' | 'offer' | 'liquid' | 'steer' | 'skills';
 
 export interface WhatsNewPage {
   id: WhatsNewPageId;
@@ -14,34 +14,33 @@ export interface WhatsNewPage {
 
 export const WHATS_NEW_PAGES: readonly WhatsNewPage[] = [
   {
-    id: 'gate', hues: [350, 300],
-    title: 'Control de calidad antes de entregar',
-    body: 'El agente revisa tu video cuadro por cuadro: tramos vacíos, imagen congelada, textos cortados, tapados o encimados. Si algo falla, lo corrige antes de responderte.',
+    id: 'recipes', hues: [350, 300],
+    title: 'Recetas para cada tipo de video',
+    body: 'Una receta guarda cómo hacés un tipo de video: formato, ritmo, cámara, sonido y reglas. Arrancás con tres de fábrica: lanzamiento, YouTube y vertical.',
   },
   {
-    id: 'music', hues: [28, 340],
-    title: 'Música real de Mixkit',
-    body: 'Para una pieza nueva busca temas en Mixkit, compara al menos tres, baja el elegido y anota la licencia. Componer música queda como último recurso.',
+    id: 'plan', hues: [212, 268],
+    title: 'Un plan por video',
+    body: 'El agente arma el video fase por fase: brief, material, historias, escenas y construcción. No entrega como listo sin un plan completo y un control de calidad aprobado sobre la versión final.',
   },
   {
-    id: 'camera', hues: [212, 268],
-    title: 'Mejor cámara y encuadre',
-    body: 'Capturas grandes que se leen en un teléfono, acercamientos que llegan al control que importa y cortes en movimiento. Si el producto queda chico en un cuadro vacío, te avisa.',
+    id: 'offer', hues: [28, 340],
+    title: 'Tu receta mejora con cada video',
+    body: 'Cuando el agente entrega un video, Syka te ofrece guardarlo como receta tuya o sumarle las correcciones que pediste. Elegís qué mejoras guardar.',
   },
   {
-    id: 'chats', hues: [168, 228],
-    title: 'Chats que abren al instante',
-    body: 'El chat del proyecto se precarga apenas lo elegís y las imágenes viejas se ordenan en segundo plano. Los chats se nombran solos y cada herramienta muestra su nombre real.',
-    link: { label: 'Ver tiempos en Diagnóstico', settings: 'diagnostics' },
+    id: 'liquid', hues: [190, 230],
+    title: 'Tarjetas Liquid Glass',
+    body: 'Nueva skill para videos a cámara: vidrio con refracción real sobre tu toma, cifras con su fuente, frases, pasos y placa. Todo queda editable y nunca te tapa la cara.',
   },
   {
-    id: 'questions', hues: [262, 318],
-    title: 'El agente vuelve a preguntarte',
-    body: 'Con Claude, las herramientas para consultarte y revisar el video quedan siempre a mano: cuando falta una decisión, te pregunta en vez de adivinar.',
+    id: 'steer', hues: [262, 318],
+    title: 'Corregí a Claude mientras trabaja',
+    body: 'Lo que escribís durante un turno de Claude entra en ese mismo turno. Sus preguntas ya no se cortan al minuto: espera tu respuesta.',
   },
   {
-    id: 'dock', hues: [40, 200],
-    title: 'Una barra del reproductor más clara',
-    body: 'Pantalla completa, señalar y capturar se marcan mientras están activos, y cada botón muestra su atajo en un tooltip prolijo.',
+    id: 'skills', hues: [168, 228],
+    title: 'Skills y flujos, ordenado',
+    body: 'La biblioteca muestra tus skills y las bases que podés usar directamente. Las guías internas del agente siguen funcionando sin llenarte la lista.',
   },
 ];

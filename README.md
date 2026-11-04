@@ -35,7 +35,7 @@ El motor, la línea de tiempo y los proyectos editables vienen de Diffusion; Syk
 
 ## Instalación
 
-**Versión actual: 0.210.0 para Windows x64.** Suma el control de calidad del film (gate), música de Mixkit, reglas de cámara y encuadre, y chats que abren más rápido. Incluye 28 skills, conocimiento de motion y recetas de lanzamiento, 2.052 entradas de logos y 602 recursos de audio. Conserva las correcciones de preview, avisos y actualización de 0.208.2. La app descarga cuando se lo pedís y solicita confirmación antes de reiniciar e instalar. El instalador todavía está **sin firma digital**; Windows puede mostrar una advertencia de seguridad.
+**Versión actual: 0.211.0 para Windows x64.** Suma recetas reutilizables por tipo de video (lanzamiento, YouTube y vertical), un plan por video que traba la entrega hasta pasar el control de calidad, la oferta de guardar tus mejoras como receta, la skill Liquid Glass y el steer con Claude. Incluye 27 skills, conocimiento de motion, 2.052 entradas de logos y 602 recursos de audio. La app descarga cuando se lo pedís y solicita confirmación antes de reiniciar e instalar. El instalador todavía está **sin firma digital**; Windows puede mostrar una advertencia de seguridad.
 
 Abrí PowerShell y copiá:
 

@@ -102,7 +102,8 @@ describe('skill library desktop bridge', () => {
     ).toBe(created.content);
     const catalog = await request({ action: 'get' });
     expect(catalog.skills.filter((s: any)=>!s.bundled).map((s: any) => s.name)).toEqual(['test-style']);
-    expect(catalog.skills.some((s: any)=>s.bundled && s.name==='syka-editing-recipe')).toBe(true);
+    // Only the bases marked for the library are listed; internal ones stay out of the panel.
+    expect(catalog.skills.filter((s: any)=>s.bundled).map((s: any)=>s.name)).toEqual(['syka-liquid-glass']);
   });
   it('imports companion files and refuses to overwrite a saved workflow', async () => {
     const source = join(folder, 'imported-flow');

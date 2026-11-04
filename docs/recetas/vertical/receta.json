@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "slug": "vertical",
+  "nombre": "Video vertical",
+  "tipo": "vertical",
+  "revision": 1,
+  "descripcion": "Un video vertical corto para TikTok, Reels o Shorts: gancho en el primer segundo, subtítulos grandes y ritmo rápido.",
+  "cuandoUsar": "Para un video de 15 a 90 s en 9:16, desde una grabación o desde cero. Para un video largo horizontal usá la receta de YouTube.",
+  "origen": { "tipo": "fabrica", "detalle": "Receta de fábrica de Syka Studio 0.211, armada a partir de las skills de reels, subtítulos y dirección de motion de Syka." },
+  "formato": { "ancho": 1080, "alto": 1920, "fps": 30, "duracion": { "min": 15, "max": 90 },
+    "zonaSegura": { "arriba": 0.08, "abajo": 0.2, "izquierda": 0.06, "derecha": 0.15 } },
+  "fases": { "historias": false, "storyboard": false, "desdeTranscripcion": false },
+  "brief": {
+    "preguntas": [
+      { "id": "material", "pregunta": "¿Hay una grabación para recortar, o lo armamos desde cero con texto, capturas o imágenes?" },
+      { "id": "gancho", "pregunta": "¿Qué tiene que hacer que alguien deje de scrollear en el primer segundo?" },
+      { "id": "red", "pregunta": "¿Para qué red es (TikTok, Reels, Shorts) y cómo cierra: seguir, comentar, un link?" }
+    ],
+    "resuelto": {}
+  },
+  "estructura": [
+    { "id": "gancho", "nombre": "Gancho", "proposito": "En el primer segundo y medio: una frase y una imagen que frenan el scroll.", "duracion": { "min": 1, "max": 3 }, "frase": true },
+    { "id": "desarrollo", "nombre": "Desarrollo", "proposito": "Lo prometido, en pasos cortos, cada uno con su frase en pantalla.", "duracion": { "min": 8, "max": 70 }, "frase": true },
+    { "id": "remate", "nombre": "Remate", "proposito": "El resultado o la revelación que paga el gancho.", "duracion": { "min": 2, "max": 10 }, "frase": true },
+    { "id": "cierre", "nombre": "Cierre", "proposito": "El llamado a la acción, corto; puede volver al principio para que se vea en loop.", "duracion": { "min": 1, "max": 5 }, "frase": true }
+  ],
+  "estilo": [
+    { "texto": "Subtítulos grandes (7 a 9 % del alto), de 1 a 3 palabras por vez, centrados en el tercio medio, nunca en la franja inferior ni pegados a la derecha donde están los botones de la app.", "confianza": "propuesta" },
+    { "texto": "La persona o el objeto principal llena el cuadro; nada importante en el 20 % inferior ni en el 15 % derecho.", "confianza": "aprobada" },
+    { "texto": "Frases en pantalla de hasta 6 palabras, con una palabra destacada en el acento.", "confianza": "aprobada" },
+    { "texto": "Si el material es horizontal, se recompone para vertical (reencuadre o pantalla partida); nunca un horizontal chico con barras.", "confianza": "aprobada" }
+  ],
+  "sonido": [
+    { "texto": "Si hay voz, la voz manda; si no, música de Mixkit con ritmo marcado (compará al menos tres temas con syka_mixkit) y los cortes en sus golpes.", "confianza": "propuesta" },
+    { "texto": "Medí los golpes del tema con syka_audio_analyze y colgá los cambios de plano de ahí.", "confianza": "aprobada" }
+  ],
+  "ritmo": [
+    { "texto": "Un cambio visual cada 1 a 3 s: corte, acercamiento, texto nuevo o gráfico.", "confianza": "propuesta" },
+    { "texto": "Sin pausas muertas: se recorta todo silencio de más de 0,3 s.", "confianza": "propuesta" },
+    { "texto": "El cuadro entero nunca queda quieto más de 1,5 s salvo el cierre.", "confianza": "aprobada" }
+  ],
+  "referencias": [],
+  "fijo": [ "Formato 9:16", "Zona segura de los botones de la red", "Colores y fuentes de la marca" ],
+  "variable": [ "El gancho", "Los pasos del desarrollo", "El tema musical", "El llamado final" ],
+  "controles": [
+    { "id": "gancho-inmediato", "regla": "La primera escena dura hasta 3 s y tiene una frase.", "confianza": "aprobada" }
+  ]
+}

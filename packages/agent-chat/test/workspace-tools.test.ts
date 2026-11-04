@@ -33,7 +33,7 @@ describe('project workspace capabilities',()=>{
       expect(page.skills.length).toBeLessThanOrEqual(6);
       result.skills.push(...page.skills);offset=page.nextOffset;
     }while(offset!==null);
-    for(const name of ['syka-editing-basics','syka-captions','syka-local-audio','syka-motion-reference','syka-motion-direction','syka-motion-transitions','syka-edit-review','syka-visual-direction','syka-media-use','syka-explainer-edit','syka-faceless-explainer','syka-music-video','syka-pr-to-video','syka-slideshow','syka-motion-brief','syka-motion-reels','syka-motion-storyboard','syka-motion-typography','syka-camera-3d-captions']){
+    for(const name of ['syka-editing-basics','syka-captions','syka-local-audio','syka-video-references','syka-motion-direction','syka-motion-transitions','syka-edit-review','syka-visual-direction','syka-media-use','syka-explainer-edit','syka-faceless-explainer','syka-music-video','syka-pr-to-video','syka-slideshow','syka-motion-brief','syka-motion-reels','syka-motion-storyboard','syka-motion-typography','syka-camera-3d-captions','syka-liquid-glass']){
       const skill=result.skills.find(s=>s.name===name);expect(skill,name).toBeDefined();
       expect(await bundled.call('syka_skills',{action:'read',path:skill!.path})).toMatchObject({content:expect.stringContaining('name: '+name)});
     }

@@ -9,7 +9,7 @@
 // sees as broken; the agent fixes it before replying.
 
 import {
-  AdjustmentLayer, Audio, Cache, Computed, FrameRate, Geometry, Group, Hidden, IsClipPath, Paint, PaintType,
+  AdjustmentLayer, Audio, Cache, Chars, Computed, FrameRate, Geometry, Group, Hidden, IsClipPath, Paint, PaintType,
   Scene, Source, Workarea, WorldBounds, framesToSeconds, isText, store,
 } from "@diffusionstudio/runtime";
 import { createImageEncoder } from "@diffusionstudio/encoder";
@@ -19,7 +19,7 @@ import { createCapture } from "@/engine/capture";
 import { awaitProjectReady } from "@/projects/readiness";
 import { requireScene } from "../lib/scene";
 
-import { area, judgeFrames, type Drawn, type FrameReading } from "./gate-judge";
+import { area, judgeFrames, judgeLines, type Drawn, type FrameReading } from "./gate-judge";
 import type { Entity, World } from "koota";
 import type { ToolHandler } from "../handler";
 
@@ -49,7 +49,8 @@ function drawnNow(world: World, scene: Entity): Drawn[] {
     if (alpha < 0.05) return;
     if (entity !== scene && drawsPixels(entity) && alpha >= 0.5) {
       const box = { minX: bounds.minX[eid]!, minY: bounds.minY[eid]!, maxX: bounds.maxX[eid]!, maxY: bounds.maxY[eid]! };
-      if (area(box) > 1) drawn.push({ stamp: entity.get(Source)?.value, box, order: drawn.length, text: isText(entity), picture: isPicture(entity) });
+      const text = isText(entity);
+      if (area(box) > 1) drawn.push({ stamp: entity.get(Source)?.value, box, order: drawn.length, text, picture: isPicture(entity), ...(text ? { chars: entity.get(Chars)?.value ?? '' } : {}) });
     }
     for (const child of entity.get(Cache)?.children ?? []) walk(child, alpha);
   };
@@ -83,7 +84,7 @@ function samplePixels(canvas: HTMLCanvasElement, sampler: CanvasRenderingContext
   return { content: differing / pixels, change: previous ? change / pixels : Infinity, grey };
 }
 
-export const gate: ToolHandler<"gate"> = async ({ id, fps, finalHold }, ctx) => {
+export const gate: ToolHandler<"gate"> = async ({ id, fps, finalHold, lines, stillMax }, ctx) => {
   const { world, project } = ctx.requireSession();
   await awaitProjectReady(world, ctx.signal);
   if (ctx.requireSession().world !== world) throw new DapiError("canceled", "El proyecto cambió durante la revisión.");
@@ -127,6 +128,6 @@ export const gate: ToolHandler<"gate"> = async ({ id, fps, finalHold }, ctx) => 
     target.dispose();
   }
 
-  const issues = judgeFrames(readings, step, finalHold ?? 3);
+  const issues = [...judgeFrames(readings, step, finalHold ?? 3, stillMax), ...judgeLines(readings, step, lines ?? [])];
   return { passed: !issues.some(issue => issue.severity === "error"), duration: Math.round(duration * 1000) / 1000, framesChecked: readings.length, issues };
 };

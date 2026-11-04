@@ -26,7 +26,7 @@ describe('progressive Codex context without losing procedures or tools',()=>{
     const lazy=grouped.flatMap(t=>'tools' in t?t.tools:[t]);
     expect(lazy.map(t=>t.name).sort()).toEqual(all.map(t=>t.name).sort());
     for(const tool of all)expect(lazy.find(t=>t.name===tool.name)?.inputSchema).toEqual(tool.inputSchema);
-    expect(lazy.filter(t=>!t.deferLoading).map(t=>t.name).sort()).toEqual(['syka_ask_user','syka_patch_source','syka_read_source','syka_task_guidance']);
+    expect(lazy.filter(t=>!t.deferLoading).map(t=>t.name).sort()).toEqual(['syka_ask_user','syka_patch_source','syka_plan','syka_read_source','syka_receta','syka_task_guidance']);
     const bytes=(tools:unknown)=>JSON.stringify(tools).length;
     expect(bytes(lazy.filter(t=>!t.deferLoading))).toBeLessThan(bytes(all)*0.15);
     expect(lazy.find(t=>t.name==='syka_skills')?.deferLoading).toBe(true);

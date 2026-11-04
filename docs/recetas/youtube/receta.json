@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "slug": "youtube",
+  "nombre": "Video de YouTube",
+  "tipo": "youtube",
+  "revision": 1,
+  "descripcion": "Editar una grabación de una persona hablando en un video de YouTube: recortes, ritmo, b-roll, títulos y subtítulos.",
+  "cuandoUsar": "Cuando hay una grabación (cámara, pantalla o ambas) con alguien explicando algo y querés el video editado para YouTube. Para un film corto de producto sin grabación, usá la receta de lanzamiento; para reels, la vertical.",
+  "origen": { "tipo": "fabrica", "detalle": "Receta de fábrica de Syka Studio 0.211, armada a partir de las skills de edición, subtítulos y explicadores de Syka." },
+  "formato": { "ancho": 1920, "alto": 1080, "fps": 30, "duracion": { "min": 120, "max": 1800 }, "quietoMaximo": 8 },
+  "fases": { "historias": false, "storyboard": false, "desdeTranscripcion": true },
+  "brief": {
+    "preguntas": [
+      { "id": "publico", "pregunta": "¿Para quién es el video y qué tiene que poder hacer después de verlo?" },
+      { "id": "recortes", "pregunta": "¿Qué recortamos: pausas largas, muletillas, repeticiones, errores, partes que no suman?" },
+      { "id": "graficos", "pregunta": "¿Cuánto gráfico querés: solo subtítulos, títulos de capítulo, o también b-roll y explicaciones animadas?" },
+      { "id": "musica", "pregunta": "¿Música de fondo bajo la voz, tu tema, o sin música?" }
+    ],
+    "resuelto": {}
+  },
+  "estructura": [
+    { "id": "gancho", "nombre": "Gancho", "proposito": "Lo más fuerte del video al principio: la promesa o el resultado, con la frase que lo dice.", "duracion": { "min": 5, "max": 30 }, "frase": true },
+    { "id": "intro", "nombre": "Intro", "proposito": "Qué se va a ver y por qué importa, corto; sin saludos largos.", "duracion": { "min": 5, "max": 40 }, "frase": false },
+    { "id": "bloque", "nombre": "Bloques", "proposito": "Cada idea del video como un bloque con su título de capítulo; se repite tantas veces como ideas haya.", "duracion": { "min": 20, "max": 600 }, "frase": true },
+    { "id": "cierre", "nombre": "Cierre", "proposito": "Resumen en una frase y el llamado (suscribirse, el próximo video, un link).", "duracion": { "min": 5, "max": 60 }, "frase": true }
+  ],
+  "estilo": [
+    { "texto": "La persona es la protagonista: los gráficos nunca tapan la cara ni la boca.", "confianza": "aprobada" },
+    { "texto": "Subtítulos por frases cortas (hasta 2 líneas, unas 6 palabras por línea), en el tercio inferior, palabra activa destacada con el acento.", "confianza": "propuesta" },
+    { "texto": "Título de capítulo al empezar cada bloque, hasta 6 palabras, quieto mientras se lee.", "confianza": "propuesta" },
+    { "texto": "Acercamiento (punch-in) a primer plano en las frases clave, como corte, no como zoom lento.", "confianza": "propuesta" },
+    { "texto": "B-roll, capturas o gráficos solo cuando la voz los nombra; vuelven a la persona cuando termina la idea.", "confianza": "propuesta" }
+  ],
+  "sonido": [
+    { "texto": "La voz manda: limpia, nivelada y siempre por encima de todo.", "confianza": "aprobada" },
+    { "texto": "Música de Mixkit tranquila bajo la voz: buscá con syka_mixkit, bajá y compará al menos tres temas por carácter y largo, y dejá el elegido entre 18 y 24 dB por debajo de la voz.", "confianza": "propuesta" },
+    { "texto": "Efectos chicos solo en gráficos que entran; nunca sobre la voz.", "confianza": "propuesta" }
+  ],
+  "ritmo": [
+    { "texto": "Recortar pausas de más de 0,6 s, muletillas y repeticiones; los cortes secos en la misma toma (jump cuts) están permitidos.", "confianza": "propuesta" },
+    { "texto": "Algo cambia en pantalla cada 4 a 8 s: un acercamiento, un gráfico, un b-roll o un cambio de plano.", "confianza": "propuesta" },
+    { "texto": "Los subtítulos y gráficos se colocan con los tiempos reales de la transcripción, nunca estimados.", "confianza": "aprobada" }
+  ],
+  "referencias": [],
+  "fijo": [ "La voz original y lo que dice la persona", "Los colores y fuentes de la marca", "El estilo de subtítulos una vez aprobado" ],
+  "variable": [ "Los recortes", "Los títulos de cada bloque", "El b-roll y los gráficos", "El tema musical" ],
+  "controles": []
+}

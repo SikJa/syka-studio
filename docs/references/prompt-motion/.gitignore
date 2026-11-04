@@ -1,8 +1,0 @@
-# Local reference movies and derived pixels have no redistribution grant.
-media/
-evidence/source-frames/
-evidence/qa-runtime/
-# Attributed source clone stays a local study library, not a nested Git link.
-upstream/awesome-opus5-5-videos/
-__pycache__/
-scripts/__pycache__/

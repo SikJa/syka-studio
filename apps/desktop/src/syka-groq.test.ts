@@ -66,8 +66,19 @@ describe("Syka Groq local provider", () => {
       { text: "hola", words: [{ text: "hola", start: 0.2, end: 0.6 }] },
     ]);
     expect(() => parseGroqTranscript({ segments: [{ text: "hola" }] }, 1)).toThrow("tiempos por palabra");
-    expect(() => parseGroqTranscript({ words: [{ word: "hola", start: 1, end: 0.6 }] }, 1)).toThrow("inconsistentes");
+    expect(() => parseGroqTranscript({ words: [{ word: "hola", start: 1, end: 0.3 }] }, 1)).toThrow("inconsistentes");
     expect(() => parseGroqTranscript({ words: [{ word: "hola", start: 0, end: 9 }] }, 1)).toThrow("inconsistentes");
+    expect(() => parseGroqTranscript({ words: [{ word: "a", start: 5, end: 5.2 }, { word: "b", start: 3, end: 3.2 }] }, 10)).toThrow("inconsistentes");
+  });
+
+  it("clamps Whisper's small drift on long takes instead of failing the whole transcript", () => {
+    const words = [
+      { word: "hola", start: 0.2, end: 0.6 }, { word: " ", start: 0.6, end: 0.6 },
+      { word: "a", start: 0.58, end: 0.9 }, { word: "todos", start: 0.9, end: 0.85 }, { word: "fin", start: 9.7, end: 10.4 },
+    ];
+    expect(parseGroqTranscript({ words }, 10)[0]!.words).toEqual([
+      { text: "hola", start: 0.2, end: 0.6 }, { text: "a", start: 0.58, end: 0.9 }, { text: "todos", start: 0.9, end: 0.9 }, { text: "fin", start: 9.7, end: 10 },
+    ]);
   });
 
   it("works without credentials and never calls the network to query status", async () => {

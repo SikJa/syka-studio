@@ -112,7 +112,9 @@ export type Item = { createdAt?:number; completedAt?:number } & (
   | { id: string; kind: "reasoning"; text: string; summary?: boolean }
   | { id: string; kind: "tool"; name: string; title: string; detail?: string; output?: string; images?: ToolImage[]; status: ToolStatus }
   | { id: string; kind: "question"; questions: Question[]; answers: Record<string, string[]> | null }
-  | { id: string; kind: "notice"; level: "info" | "error"; text: string });
+  | { id: string; kind: "notice"; level: "info" | "error"; text: string }
+  /** The app's own offer, after a delivered video, to turn it into a recipe or feed its corrections back. */
+  | { id: string; kind: "recipe"; mode: "crear" | "mejorar"; receta: { slug: string; nombre: string }; mejoras: string[] });
 
 export type ItemKind = Item["kind"];
 
