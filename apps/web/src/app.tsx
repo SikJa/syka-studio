@@ -21,8 +21,9 @@ import { NotFoundPage } from '@/pages/not-found';
 import { DashboardPage } from '@/pages/dashboard';
 import { SykaSettingsRoot } from '@/components/settings/modal';
 import { DesktopNotificationBridge } from '@/components/desktop-notification-bridge';
-import { AutomaticUpdateNotice } from '@/components/dashboard/update-menu';
-import { WhatsNewHost } from '@/components/whats-new/whats-new';
+import { UpdateCardHost } from '@/components/whats-new/UpdateCard';
+import { WhatsNewHost } from '@/components/whats-new/WhatsNewHost';
+import { openSettings } from '@/components/settings/state';
 
 function BootSplash() {
   const auth = useAuth();
@@ -58,8 +59,8 @@ function App() {
               {props.children}
               <SykaSettingsRoot />
               <DesktopNotificationBridge />
-              <AutomaticUpdateNotice />
-              <WhatsNewHost />
+              <UpdateCardHost />
+              <WhatsNewHost onOpenSettings={openSettings} />
               <BootSplash />
               <EditorApi />
             </AuthProvider>

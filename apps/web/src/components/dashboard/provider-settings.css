@@ -90,3 +90,7 @@
 .syka-individual-model-row strong{display:block;font-size:11px;font-weight:500;overflow-wrap:anywhere;}
 .syka-individual-model-row small{display:block;font-size:10px;color:var(--muted-foreground);margin-top:3px;overflow-wrap:anywhere;}
 @media(prefers-reduced-motion:reduce){.syka-provider-model-visibility summary::after{transition:none;}}
+
+/* «6 modelos ›»: what the row button opens, instead of a bare chevron. */
+.syka-model-visibility-count{margin-left:auto;padding-right:10px;font-size:11px;color:var(--muted-foreground);white-space:nowrap}
+.syka-model-visibility-open:hover .syka-model-visibility-count{color:var(--foreground)}

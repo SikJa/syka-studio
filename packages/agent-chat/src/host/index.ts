@@ -55,6 +55,8 @@ export type AgentHostConfig = {
 
 export type RunningAgentHost = {
   isBusy(): boolean;
+  /** The providers of Settings › Proveedores changed. */
+  providersChanged(): void;
   answer(chatId: string, requestId: string, response: import('../protocol').RequestResponse): Promise<void>;
   url: string;
   port: number;
@@ -130,6 +132,7 @@ export async function createAgentHost(config: AgentHostConfig): Promise<RunningA
   const stopCodeGraph = config.codeGraphRoot ? startCodeGraph(config.codeGraphRoot, log) : async () => {};
   return {
     isBusy: () => agentHost.isBusy(),
+    providersChanged: () => agentHost.providersChanged(),
     answer: (chatId, requestId, response) => agentHost.handle({ send: () => {} }, 'request.respond', { chatId, requestId, response }),
     url: server.url,
     port: server.port,

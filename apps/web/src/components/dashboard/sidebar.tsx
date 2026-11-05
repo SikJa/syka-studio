@@ -2,7 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { ProfileAvatar } from '@/components/profile/dither-avatar-picker';
 import { createSignal, Show, type JSX } from "solid-js";
+import { TESTING_INSTANCE } from "@/lib/instance";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { SykaBrandOrb } from "@/components/ui/syka-brand-orb";
@@ -58,7 +60,7 @@ export function DashboardSidebarHeader() {
       <SykaBrandOrb />
       <div class="flex w-full flex-col items-start gap-1 text-muted-foreground">
         <p class="w-full text-2xl leading-5 font-450 text-muted-foreground">
-          Syka Studio
+          Syka Studio<Show when={TESTING_INSTANCE}><span class="syka-instance-badge">Pruebas</span></Show>
         </p>
         <div class="flex w-full items-center py-0.5">
           <p class="w-full overflow-hidden text-xxs whitespace-nowrap text-ellipsis text-muted-foreground opacity-50">
@@ -78,7 +80,7 @@ export function DashboardSidebarTitleBar() {
   return (
     <div class="flex h-10 shrink-0 items-center gap-2 pl-3 pr-4">
       <SykaBrandOrb />
-      <p class="min-w-0 flex-1 truncate text-xs font-450 text-muted-foreground">Syka Studio</p>
+      <p class="min-w-0 flex-1 truncate text-xs font-450 text-muted-foreground">Syka Studio<Show when={TESTING_INSTANCE}><span class="syka-instance-badge">Pruebas</span></Show></p>
       <p class="shrink-0 text-xxs text-muted-foreground">v{APP_VERSION}</p>
     </div>
   );
@@ -190,11 +192,7 @@ export function DashboardSidebarUser(props: DashboardSidebarUserProps) {
         onClick={props.onClick}
         class="flex min-w-0 flex-1 items-center gap-2 rounded-md p-2 text-left hover:bg-accent focus-ring"
       >
-        <Show when={avatar()} fallback={
-          <div class="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-xs text-foreground">
-            {initial()}
-          </div>
-        }>
+        <Show when={avatar()} fallback={<ProfileAvatar name={displayName() || initial() || 'Syka'} size={32} />}>
           {(url) => <img src={url()} alt="" class="size-8 shrink-0 rounded-full object-cover" onError={() => setFailedAvatar(url())} />}
         </Show>
         <div class="flex min-w-0 flex-1 flex-col justify-center">

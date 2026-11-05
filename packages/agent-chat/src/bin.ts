@@ -9,6 +9,7 @@
 //     the port goes back the same way.
 // Either way SIGTERM, stdin EOF or a `stop` message shut it down cleanly.
 
+import { setProviders, type HostProvider } from './host/providers';
 import { createAgentHost } from "./host/index";
 
 import type { AgentHostConfig, RunningAgentHost } from "./host/index";
@@ -19,6 +20,7 @@ type ParentPort = {
 };
 
 type StartMessage = { type: "start"; config: AgentHostConfig };
+type ProvidersMessage = { type: 'providers'; providers: HostProvider[] };
 type StopMessage = { type: "stop" };
 type DeleteProjectMessage = { type: "deleteProject"; projectId: string };
 type AnswerMessage = { type: 'notification.answer'; id: string; chatId: string; requestId: string; answers: Record<string, string[]>; attachments?: string[] };
@@ -66,7 +68,9 @@ async function main(): Promise<void> {
 
   if (parentPort) {
     parentPort.on("message", ({ data }) => {
-      const message = data as StartMessage | StopMessage | DeleteProjectMessage | AnswerMessage | ActivityMessage;
+      const message = data as StartMessage | StopMessage | DeleteProjectMessage | AnswerMessage | ActivityMessage | ProvidersMessage;
+      // Settings › Proveedores: main sends the configuration with its keys, in memory only.
+      if (message?.type === 'providers') { setProviders(Array.isArray(message.providers) ? message.providers : []); running?.providersChanged(); }
       if (message?.type === 'activity.status') parentPort.postMessage({ type: 'activity.status', id: message.id, busy: !running || running.isBusy() });
       if (message?.type === 'notification.answer') {
         const reply = (error?: string) => parentPort.postMessage({ type: 'notification.answered', id: message.id, error });

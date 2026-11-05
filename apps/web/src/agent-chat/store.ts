@@ -8,6 +8,7 @@
 // owns (chats, transcripts, questions) is a view here; what is ours alone
 // is the draft per chat, which tab is up, and which chat each project shows.
 
+import { generalPrefs } from '@/lib/general-prefs';
 import { batch, createRoot, createSignal } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import type { ChatModelSelection } from './chat-model-selection';
@@ -443,6 +444,7 @@ export async function send(options: SendOptions): Promise<string> {
       text: options.text,
       ...(options.attachments.length ? { attachments: options.attachments } : {}),
       model: options.model,
+      ...(generalPrefs().autoTitles ? {} : { autoTitle: false }),
     });
     if (!options.chatId) {
       awaitingSnapshot.set(chatId, key);

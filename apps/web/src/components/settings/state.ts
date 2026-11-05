@@ -1,6 +1,6 @@
 import { createSignal } from 'solid-js';
 
-export type SettingsPage = 'general' | 'profile' | 'appearance' | 'chat' | 'brand-kit' | 'zernio' | 'groq' | 'codex' | 'plugins' | 'skills' | 'tools' | 'storage' | 'diagnostics' | 'shortcuts' | 'glossary' | 'help';
+export type SettingsPage = 'general' | 'profile' | 'appearance' | 'chat' | 'voice' | 'notifications' | 'providers' | 'brand-kit' | 'zernio' | 'groq' | 'codex' | 'plugins' | 'skills' | 'tools' | 'storage' | 'diagnostics' | 'shortcuts' | 'glossary' | 'help';
 export const [settingsPage, setSettingsPage] = createSignal<SettingsPage | null>(null);
 export function openSettings(page: SettingsPage = 'general') { setSettingsPage(page); }
 export function closeSettings() { setSettingsPage(null); }

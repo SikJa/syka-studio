@@ -27,11 +27,27 @@ type TranscriptProps = {
   waiting: boolean;
 };
 
+/** Messages mounted at a time when a chat opens, and per «Ver anteriores». */
+const PAGE = 60;
+
 export function Transcript(props: TranscriptProps) {
   const [scrollEl, setScrollEl] = createSignal<HTMLDivElement>();
   const stick = createStickToBottom(scrollEl, { initial: "instant" });
   const byId=createMemo(()=>new Map(props.items.map(item=>[item.id,item])));
   const presentation = createMemo(() => transcriptPresentation(props.items, props.running || props.waiting));
+  // A long chat opens with its latest messages only: each message is its own
+  // React root with Markdown, and mounting hundreds at once stalls the panel.
+  const [shown, setShown] = createSignal(PAGE);
+  const hidden = () => Math.max(0, presentation().messages.length - shown());
+  // Ids only change when messages come or go, so <For> keeps every row in place.
+  const visibleIds = createMemo(() => presentation().messages.slice(-shown()).map(item => item.id), undefined, { equals: (a, b) => a.length === b.length && a.every((id, index) => id === b[index]) });
+  const showEarlier = () => {
+    const element = scrollEl();
+    const before = element ? element.scrollHeight - element.scrollTop : 0;
+    setShown(count => count + PAGE);
+    // Keep the message the person was reading in the same place.
+    queueMicrotask(() => requestAnimationFrame(() => { if (element) element.scrollTop = element.scrollHeight - before; }));
+  };
   const responding = () => {
     const start = props.items.findLastIndex(item => item.kind === 'user');
     return props.items.slice(start + 1).some(item => item.kind === 'assistant' && item.phase === 'final');
@@ -47,11 +63,17 @@ export function Transcript(props: TranscriptProps) {
 
   createEffect(on(() => props.sendCount, (count) => count > 0 && stick.scrollToBottom(), { defer: true }));
   createEffect(on([() => props.chatKey, () => props.items.length > 0], pin));
+  createEffect(on(() => props.chatKey, () => setShown(PAGE), { defer: true }));
 
   return (
     <div ref={setScrollEl} tabIndex={0} aria-label="Mensajes del chat" class="syka-chat-transcript min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
       <div class="syka-chat-transcript-content flex flex-col gap-2 px-4 pb-2 pt-4">
-        <For each={presentation().messages.map(item=>item.id)}>
+        <Show when={hidden() > 0}>
+          <button type="button" class="syka-chat-earlier self-center rounded-full px-3 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-foreground focus-ring" onClick={showEarlier}>
+            {hidden() === 1 ? "Ver 1 mensaje anterior" : `Ver ${Math.min(hidden(), PAGE)} mensajes anteriores`}
+          </button>
+        </Show>
+        <For each={visibleIds()}>
           {(id) => <ChatItem item={byId().get(id)!} />}
         </For>
         <Show when={props.waiting || (props.running && !responding())}>

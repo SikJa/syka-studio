@@ -45,7 +45,8 @@ const config: ForgeConfig = {
       !path.startsWith('/web/'),
     // Staged by scripts/stage-{cli,runtime,docs}.mjs; end up at
     // Contents/Resources/{cli,runtime,docs}.
-    extraResource: ['./cli', './runtime', './docs'],
+    // syka-asr (Parakeet) is staged by scripts/stage-asr.mjs when its toolchain is present.
+    extraResource: ['./cli', './runtime', './docs', ...(existsSync('./syka-asr') ? ['./syka-asr'] : [])],
     osxSign: process.env.SKIP_SIGN ? undefined : {},
     osxNotarize:
       process.env.APPLE_ID && process.env.APPLE_PASSWORD && process.env.APPLE_TEAM_ID
@@ -71,9 +72,10 @@ const config: ForgeConfig = {
       exe: 'Syka Studio.exe',
       setupExe: `Syka-Studio-${process.arch}-Setup.exe`,
       setupIcon: './syka-assets/icon.ico',
-      // No upstream branded installer animation.
-      // Shown by Add/Remove Programs; Squirrel only takes a URL.
-      // An own hosted icon URL can be added when distributing an installer.
+      // Syka's orb while Squirrel installs (it has no screens of its own).
+      loadingGif: './syka-assets/install-loading.gif',
+      // Shown by Add/Remove Programs; Squirrel only takes a URL: the icon in the public repository.
+      iconUrl: 'https://raw.githubusercontent.com/SikJa/syka-studio/main/apps/desktop/syka-assets/icon.ico',
       noMsi: true,
       windowsSign: sign,
     }),

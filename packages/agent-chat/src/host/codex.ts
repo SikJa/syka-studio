@@ -7,6 +7,7 @@
 // use; anything else is ignored. The MCP server is injected with a `-c`
 // override so nothing is written to the user's config.
 
+import { CODEX_OWN_PROVIDER, codexModelTarget, codexProviderModels, codexProviderSetup } from "./providers";
 import { configuredServers } from "./agent-config";
 import { tokenCounts } from './token-usage';
 import { CODEX_EDITING_CORE, deferTaskTools } from "./task-guidance";
@@ -156,6 +157,8 @@ export function appServerArgs(env: Record<string, string>, mcpUrl: string | null
     else config.push(`${prefix}.command=${JSON.stringify(server.command)}`,`${prefix}.args=${JSON.stringify(server.args??[])}`);
   }
   for (const value of config) args.push("-c", value);
+  // Settings › Proveedores: OpenRouter and DeepSeek as Codex model providers.
+  args.push(...codexProviderSetup().args);
   return args;
 }
 
@@ -165,7 +168,8 @@ function spawnAppServer(binary: string, cwd: string, env: Record<string, string>
   const shell = needsShell(binary);
   const child = spawn(shell ? `"${binary}"` : binary, shell ? args.map(quoteArg) : args, {
     cwd,
-    env,
+    // The provider keys only reach Codex itself: its shell keeps inherit="none".
+    env: { ...env, ...codexProviderSetup().env },
     stdio: ["pipe", "pipe", "pipe"],
     shell,
     windowsHide: true,
@@ -259,6 +263,7 @@ class CodexSession implements HarnessSession {
       const threadId = await CodexSession.openThread(peer, options);
       const session = new CodexSession(options.cwd, child, peer, threadId, options.env.env.SYKA_CODEX_AUTH_FILE, options.env.env.SYKA_CODEX_RUNTIME_DIR, options.env.env.SYKA_BROWSER_MODULES_ROOT, options.env.env, options.notify);
       session.trace = () => harnessTraceFor(options);
+      session.provider = codexModelTarget(options.model)?.provider ?? CODEX_OWN_PROVIDER;
       session.resumedUsage = !!(options.resume && 'codex' in options.resume && options.resume.codex.threadId === threadId);
       return session;
     } catch (error) {
@@ -268,10 +273,12 @@ class CodexSession implements HarnessSession {
   }
 
   private static threadParams(options: OpenOptions, model: string) {
+    const target = codexModelTarget(model);
+    if (!target) throw new Error("Ese proveedor ya no está configurado o está apagado. Revisá Configuración › Proveedores.");
     const params = {
       cwd: options.cwd,
-      model,
-      modelProvider: "openai",
+      model: target.model,
+      modelProvider: target.provider,
       runtimeWorkspaceRoots: [options.cwd],
       approvalPolicy: "never",
       sandbox: "danger-full-access",
@@ -306,7 +313,16 @@ class CodexSession implements HarnessSession {
     return id;
   }
 
+  /** The provider this thread was opened with; a model of another one needs a reopened session. */
+  provider = CODEX_OWN_PROVIDER;
+  canRun(model: string): boolean { return codexModelTarget(model)?.provider === this.provider; }
+
   async send(text: string, model: string, emit: Emit, effort?: string, fast = false): Promise<TurnOutcome> {
+    const target = codexModelTarget(model);
+    if (!target) return { status: "failed", error: "Ese proveedor ya no está configurado o está apagado. Revisá Configuración › Proveedores." };
+    model = target.model;
+    // Fast tiers belong to the own account.
+    if (target.provider !== CODEX_OWN_PROVIDER) fast = false;
     this.usageEmit = emit;
     if (this.turn) throw new Error("A turn is already running");
     if (this.closed) throw new Error("Codex exited");
@@ -771,6 +787,7 @@ export class CodexHarness implements Harness {
       const preferred = (list.data ?? []).find((model) => !model.hidden && model.isDefault);
       const defaultModel = preferred?.id ?? preferred?.model ?? models[0]?.id;
       if (outdated || !models.length) return { id: this.id, label, status: "error", detail: outdated ?? "Codex no devolvió modelos disponibles", version, models: [] };
+      models.push(...codexProviderModels().map(model => ({ ...model, efforts: undefined, defaultEffort: undefined, supportsFast: false })));
       return { id: this.id, label, status: "ready", version, models, defaultModel, supportsSteering: true, authMethods: [{ id: 'chatgpt-browser', label: 'Iniciar sesión con ChatGPT' }, { id: 'chatgpt-device', label: 'Vincular con un código' }] };
     } catch (error) {
       const message = (error as Error)?.message ?? String(error);

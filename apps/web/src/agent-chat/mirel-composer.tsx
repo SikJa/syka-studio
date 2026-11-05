@@ -112,6 +112,29 @@ export function Composer(props: ComposerProps) {
       if (alive) { setAttachmentError(String(error)); toast.error('No se pudo adjuntar', { description: String(error) }); }
     } finally { if (alive) setPendingFiles(n => n - 1); }
   };
+  // Built once and only when their inputs change: the effect below runs on every
+  // keystroke (props.text), and fresh arrays and menu icons there made React
+  // redraw the whole composer each time (40 ms per key, measured).
+  const providers = createMemo(() => pickerHarnesses().map(h => ({ id:h.id, label:h.label, logoSvg:PROVIDER_LOGOS[h.id], ready:pickableHarness(h), detail:h.status==='ready' ? h.detail : h.detail ?? (h.status==='checking' ? 'Comprobando conexión…' : 'Sin conexión. Configurá este proveedor.') })));
+  const efforts = createMemo(() => { const model = selected(); return (model?.efforts ?? []).map(id => {
+          const label = ({none:'Sin esfuerzo',minimal:'Mínimo',low:'Bajo',medium:'Medio',high:'Alto',xhigh:'Extra alto',max:'Máximo',ultra:'Ultra'} as Record<string,string>)[id];
+          return {id,label:label === undefined ? id : t(label)};
+        }); });
+  const selectedModelOption = createMemo(() => { const ref = props.model, model = selected(); return ref && model ? { id: `${ref.harness}:${ref.model}`, label: model.label, description:t(modelRouteDescription(ref.harness,ref.model)), routeLabel:ref.harness==='antigravity'?t('vía Antigravity'):undefined, logoSvg: modelLogo(ref.harness, ref.model) } : undefined; });
+  const menuActions = createMemo(() => [
+          {id:'select',label:'Señalar componentes',icon:createElement(MousePointer2,{size:16}),hint:VISUAL_SELECT_SHORTCUT,description:'Ctrl + clic suma componentes. Soltá Ctrl para escribir una corrección conjunta.',disabled:!location.pathname.startsWith('/projects/'),onSelect:()=>setVisualPickMode('element')},
+          {id:'folder',label:'Adjuntar carpeta',icon:createElement(FolderOpen,{size:16}),description:'Elegí una carpeta local para darle contexto al agente.',onSelect:async()=>{try{const key=props.chatKey,path=await mainBridge.call(MAIN_CHANNELS.PROJECTS_PICK_FOLDER,undefined);if(path&&alive&&key===props.chatKey)props.onAttachments(mergeAttachments(props.attachments,[{...attachmentFromPath(path),kind:'folder'}]));}catch(error){toast.error('No se pudo adjuntar la carpeta',{description:String(error)});}}},
+          {id:'capture',label:'Capturar una zona del video',icon:createElement(Scan,{size:16}),description:location.pathname.startsWith('/projects/')?'Marcá una zona de la preview y agregala como referencia.':'Abrí un proyecto para marcar su preview.',disabled:!location.pathname.startsWith('/projects/'),onSelect:()=>setVisualPickMode('region')},
+          {id:'record',label:'Grabar pantalla',icon:createElement(Video,{size:16}),description:'Pantalla, micrófono y audio del sistema. Tu voz se transcribe al chat.',onSelect:()=>{void openRecording();}},
+          {id:'plan',label:'Modo plan',section:'Crear',icon:createElement(ListTodo,{size:16}),description:'Prepará un pedido de planificación para revisar antes de editar.',onSelect:()=>props.onText('Primero armá un plan y esperá mi aprobación antes de editar. '+props.text)},
+          {id:'draw',label:'Dibujar sobre el video',icon:createElement(PencilLine,{size:16}),accent:true,description:location.pathname.startsWith('/projects/')?'Dibujá una marca sobre la preview para explicar un cambio.':'Abrí un proyecto para dibujar sobre su preview.',disabled:!location.pathname.startsWith('/projects/'),onSelect:()=>setVisualPickMode('draw')},
+          {id:'web',label:'Buscar referencias en la web',icon:createElement(Globe2,{size:16}),description:'Prepará un pedido de búsqueda para el modelo del chat.',onSelect:()=>props.onText('Buscá en la web referencias para '+props.text)},
+          {id:'image',label:'Generar una imagen',icon:createElement(ImagePlus,{size:16}),description:'Prepará un pedido de imagen con el contexto de este video.',onSelect:()=>props.onText('Generá una imagen para este video: '+props.text)},
+          {id:'skills',label:'Skills',section:'Herramientas',icon:createElement(BookOpen,{size:16}),description:'Revisá y administrá las skills disponibles para los agentes.',onSelect:()=>openSettings('skills')},
+          {id:'connectors',label:'Conectar un proveedor',icon:createElement(Plug,{size:16}),description:'Conectá cuentas, modelos y herramientas del agente.',onSelect:()=>openSettings('codex')},
+          {id:'brand',label:'Identidad de marca',icon:createElement(Palette,{size:16}),description:'Configurá la marca, la tipografía y los colores del proyecto.',onSelect:()=>openSettings('brand-kit')},
+          {id:'plugins',label:'Plugins y complementos',icon:createElement(Puzzle,{size:16}),accent:true,description:'Administrá los complementos de Syka y sus capacidades.',onSelect:()=>openSettings('plugins')},
+        ].map(action => ({...action,label:t(action.label),description:t(action.description),section:t(action.section)})));
   onMount(() => {
     applyModelPickerMaterial();
     const requested=(event:Event)=>{
@@ -150,8 +173,8 @@ export function Composer(props: ComposerProps) {
         maxRows: 3,
         onFiles: files => void onFiles(files), onRemoveAttachment: id => props.onAttachments(props.attachments.filter(a => a.key !== id)),
         models: modelOptions(), selectedModelId: ref ? `${ref.harness}:${ref.model}` : undefined,
-        providers: pickerHarnesses().map(h => ({ id:h.id, label:h.label, logoSvg:PROVIDER_LOGOS[h.id], ready:pickableHarness(h), detail:h.status==='ready' ? h.detail : h.detail ?? (h.status==='checking' ? 'Comprobando conexión…' : 'Sin conexión. Configurá este proveedor.') })),
-        selectedModelOption: ref && model ? { id: `${ref.harness}:${ref.model}`, label: model.label, description:t(modelRouteDescription(ref.harness,ref.model)), routeLabel:ref.harness==='antigravity'?t('vía Antigravity'):undefined, logoSvg: modelLogo(ref.harness, ref.model) } : undefined,
+        providers: providers(),
+        selectedModelOption: selectedModelOption(),
         onConfigureProviders: () => openSettings('codex'),
         modelMenuPlacement: location.pathname.startsWith('/projects/') ? 'bottom' : 'top',
         onModelChange: props.answering ? undefined : id => {
@@ -159,10 +182,7 @@ export function Composer(props: ComposerProps) {
           const harness = chatState.harnesses.find(h => h.id === id.slice(0, separator));
           if (harness) props.onModel({harness:harness.id,model:id.slice(separator + 1)});
         },
-        efforts: (model?.efforts ?? []).map(id => {
-          const label = ({none:'Sin esfuerzo',minimal:'Mínimo',low:'Bajo',medium:'Medio',high:'Alto',xhigh:'Extra alto',max:'Máximo',ultra:'Ultra'} as Record<string,string>)[id];
-          return {id,label:label === undefined ? id : t(label)};
-        }),
+        efforts: efforts(),
         selectedEffortId: ref?.effort ?? model?.defaultEffort,
         defaultEffortId: model?.defaultEffort,
         onEffortChange: props.answering ? undefined : effort => { if (ref) props.onModel({...ref,effort}); },
@@ -172,20 +192,7 @@ export function Composer(props: ComposerProps) {
         fastUnavailableReason: t(!model ? 'Elegí un modelo conectado.' : ref?.harness !== 'codex' ? 'Este proveedor no ofrece modo rápido.' : 'Codex no ofrece modo rápido para este modelo en tu cuenta.'),
         dictationContext: props.chatKey, contextUsage:props.contextUsage,
         notice: attachmentError() ?? (preparing() ? t('Guardando adjuntos en el proyecto…') : null), accept: '*',
-        menuActions: [
-          {id:'select',label:'Señalar componentes',icon:createElement(MousePointer2,{size:16}),hint:VISUAL_SELECT_SHORTCUT,description:'Ctrl + clic suma componentes. Soltá Ctrl para escribir una corrección conjunta.',disabled:!location.pathname.startsWith('/projects/'),onSelect:()=>setVisualPickMode('element')},
-          {id:'folder',label:'Adjuntar carpeta',icon:createElement(FolderOpen,{size:16}),description:'Elegí una carpeta local para darle contexto al agente.',onSelect:async()=>{try{const key=props.chatKey,path=await mainBridge.call(MAIN_CHANNELS.PROJECTS_PICK_FOLDER,undefined);if(path&&alive&&key===props.chatKey)props.onAttachments(mergeAttachments(props.attachments,[{...attachmentFromPath(path),kind:'folder'}]));}catch(error){toast.error('No se pudo adjuntar la carpeta',{description:String(error)});}}},
-          {id:'capture',label:'Capturar una zona del video',icon:createElement(Scan,{size:16}),description:location.pathname.startsWith('/projects/')?'Marcá una zona de la preview y agregala como referencia.':'Abrí un proyecto para marcar su preview.',disabled:!location.pathname.startsWith('/projects/'),onSelect:()=>setVisualPickMode('region')},
-          {id:'record',label:'Grabar pantalla',icon:createElement(Video,{size:16}),description:'Pantalla, micrófono y audio del sistema. Tu voz se transcribe al chat.',onSelect:()=>{void openRecording();}},
-          {id:'plan',label:'Modo plan',section:'Crear',icon:createElement(ListTodo,{size:16}),description:'Prepará un pedido de planificación para revisar antes de editar.',onSelect:()=>props.onText('Primero armá un plan y esperá mi aprobación antes de editar. '+props.text)},
-          {id:'draw',label:'Dibujar sobre el video',icon:createElement(PencilLine,{size:16}),accent:true,description:location.pathname.startsWith('/projects/')?'Dibujá una marca sobre la preview para explicar un cambio.':'Abrí un proyecto para dibujar sobre su preview.',disabled:!location.pathname.startsWith('/projects/'),onSelect:()=>setVisualPickMode('draw')},
-          {id:'web',label:'Buscar referencias en la web',icon:createElement(Globe2,{size:16}),description:'Prepará un pedido de búsqueda para el modelo del chat.',onSelect:()=>props.onText('Buscá en la web referencias para '+props.text)},
-          {id:'image',label:'Generar una imagen',icon:createElement(ImagePlus,{size:16}),description:'Prepará un pedido de imagen con el contexto de este video.',onSelect:()=>props.onText('Generá una imagen para este video: '+props.text)},
-          {id:'skills',label:'Skills',section:'Herramientas',icon:createElement(BookOpen,{size:16}),description:'Revisá y administrá las skills disponibles para los agentes.',onSelect:()=>openSettings('skills')},
-          {id:'connectors',label:'Conectar un proveedor',icon:createElement(Plug,{size:16}),description:'Conectá cuentas, modelos y herramientas del agente.',onSelect:()=>openSettings('codex')},
-          {id:'brand',label:'Identidad de marca',icon:createElement(Palette,{size:16}),description:'Configurá la marca, la tipografía y los colores del proyecto.',onSelect:()=>openSettings('brand-kit')},
-          {id:'plugins',label:'Plugins y complementos',icon:createElement(Puzzle,{size:16}),accent:true,description:'Administrá los complementos de Syka y sus capacidades.',onSelect:()=>openSettings('plugins')},
-        ].map(action => ({...action,label:t(action.label),description:t(action.description),section:t(action.section)})),
+        menuActions: menuActions(),
 
       };
       root.render(createElement(Fragment, null, createElement(AgentComposer, { ...adapted, key: props.chatKey }), capture && capture.key === props.chatKey ? createElement(ScreenRecordingPanel, {

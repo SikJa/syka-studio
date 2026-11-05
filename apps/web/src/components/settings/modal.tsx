@@ -1,16 +1,15 @@
 import { createEffect, createSignal, For, Match, onCleanup, onMount, Show, Switch, type Component } from 'solid-js';
-import { Dialog, DialogCloseButton, DialogContent, DialogDescription, DialogPortal, DialogTitle } from '@/components/ui/dialog';
-import { Icon } from '@/components/ui/icon';
-import { SykaBrandOrb } from '@/components/ui/syka-brand-orb';
-import { ZernioMark, CodexMark } from '@/components/ui/provider-mark';
-import GroqLogo from '@/assets/providers/groq.svg';
+import { Portal } from 'solid-js/web';
 import { DashboardAccountView } from '@/components/dashboard/account-view';
 import { DashboardSettingsView } from '@/components/dashboard/settings-view';
 import { DashboardGlossaryView } from '@/components/dashboard/glossary-view';
 import { DashboardHelpView } from '@/components/dashboard/help-view';
 import { AgentSettings } from '@/components/dashboard/syka-agent-settings';
 import { DependencySettings } from '@/components/dashboard/syka-dependencies';
-import { GroqSettings } from '@/components/dashboard/syka-groq-settings';
+import { GroqKeySettings } from './groq';
+import { LocalVoiceSettings } from './local-voice';
+import { TESTING_INSTANCE } from '@/lib/instance';
+import { ParakeetSettings } from './parakeet';
 import { DictationSettings } from '@/components/dashboard/syka-dictation-settings';
 import { DashboardScrollView } from '@/components/dashboard/shared';
 import { ZernioSettingsView } from '@/components/publication/settings';
@@ -24,74 +23,94 @@ import { RecordingSettings } from './recording';
 import { ShortcutsSettings } from './shortcuts';
 import { openSettings } from './state';
 import { closeSettings, motionPreference, settingsPage, setMotionPreference, type SettingsPage } from './state';
-import { t } from '@/i18n';
+import { SETTINGS_GROUPS, filterSettings, sectionInfo } from './sections';
+import { SettingsNavIcon } from './nav-icon';
+import { GeneralOptions } from './general';
+import { NotificationSettings } from './notifications';
+import { ProvidersSettings } from './providers';
+import './syka-code-settings.css';
 import './settings.css';
+import './settings-shell.css';
+import './appearance-prefs.css';
+import { applyAppearancePrefs } from '@/lib/appearance-prefs';
 
-const pages: Record<SettingsPage, { label: string; description: string; icon: string }> = {
-  general: { label: 'General', description: 'El espacio de trabajo y los permisos de Syka.', icon: 'settings' },
-  profile: { label: 'Perfil', description: 'Tu nombre y tu foto, guardados en este equipo.', icon: 'user' },
-  appearance: { label: 'Apariencia', description: 'Color de acento, tema y movimiento de la interfaz.', icon: 'theme' },
-  chat: { label: 'Chat', description: 'Selector de modelos y material del cuadro de mensaje.', icon: 'settings' },
-  'brand-kit': { label: 'Brand kit', description: 'Identidad, colores y voz de tu marca.', icon: 'visual' },
-  zernio: { label: 'Zernio', description: 'Conexiones y cuentas para publicar tus videos.', icon: 'external-link' },
-  groq: { label: 'Groq', description: 'Conectá tu cuenta para transcribir y dictar.', icon: 'captions' },
-  codex: { label: 'Modelos e IA', description: 'Conectá tus asistentes y elegí cómo editar.', icon: 'agent.codex' },
-  plugins: { label: 'Plugins', description: 'Servidores MCP que amplían las herramientas del agente.', icon: 'ai-mcp-cli' },
-  skills: { label: 'Skills', description: 'Tu biblioteca de flujos reutilizables de edición.', icon: 'sparkles' },
-  tools: { label: 'Tools', description: 'Herramientas locales, transcripción y dictado.', icon: 'settings' },
-  storage: { label: 'Almacenamiento', description: 'Espacio disponible, limpieza automática y conservación de archivos.', icon: 'navigation.folder' },
-  diagnostics: { label: 'Diagnóstico', description: 'Uso de la app, proveedores y tamaño del historial, sin datos privados.', icon: 'settings' },
-  shortcuts: { label: 'Atajos', description: 'Accesos rápidos para configurar, editar y revisar.', icon: 'keyboard-shortcut' },
-  glossary: { label: 'Glosario', description: 'Nombres y términos para tus transcripciones.', icon: 'captions' },
-  help: { label: 'Ayuda', description: 'Recursos para trabajar con Syka.', icon: 'help' },
-};
-const groups: { label: string; entries: SettingsPage[] }[] = [
-  { get label() { return t('Configuración'); }, entries: ['general', 'profile', 'appearance', 'chat', 'brand-kit', 'glossary'] },
-  { get label() { return t('Conexiones'); }, entries: ['codex', 'groq', 'zernio', 'plugins'] },
-  { get label() { return t('Espacio de trabajo'); }, entries: ['skills', 'tools', 'storage', 'diagnostics', 'shortcuts'] },
-];
-function PageIcon(props: { page: SettingsPage }) {
-  return <Switch fallback={<Icon name={pages[props.page].icon} class="size-5" />}>
-    <Match when={props.page === 'zernio'}><ZernioMark class="size-4" /></Match>
-    <Match when={props.page === 'codex'}><CodexMark class="size-4" /></Match>
-    <Match when={props.page === 'groq'}><span class="syka-groq-brand inline-flex size-4 [&_svg]:size-full" role="img" aria-label="Logo de Groq"><GroqLogo /></span></Match>
-    <Match when={props.page === 'skills'}><svg aria-hidden="true" viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4.5h6a3 3 0 0 1 3 3v13a4 4 0 0 0-4-2H4zM13 7.5a3 3 0 0 1 3-3h4v14h-4a4 4 0 0 0-3 2" /></svg></Match>
-    <Match when={props.page === 'brand-kit'}><svg aria-hidden="true" viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3a9 9 0 1 0 0 18h1.5a2 2 0 0 0 1.6-3.2 1.8 1.8 0 0 1 1.4-2.8H18a3 3 0 0 0 3-3 9 9 0 0 0-9-9Z" /><circle cx="8" cy="8" r="1" /><circle cx="14" cy="7" r="1" /><circle cx="17" cy="11" r="1" /><circle cx="6" cy="13" r="1" /></svg></Match>
-  </Switch>;
-}
-
-/** BoardUI Settings Modal composition, with Syka's Solid/Kobalte dialog and real views.
- * Reference: https://www.boardui.com/components/settings-modal (871×614 rail + pane).
+/**
+ * Settings as a full page, like Syka Code: the app stays blurred behind, the
+ * sidebar takes back to the app, searches settings and lists the sections by
+ * group, and the section sits in a 760 px column with its title.
  */
 export type SettingsPanes = Partial<Record<SettingsPage, Component>>;
 export function SettingsModal(props: { isOpen: boolean; onClose(): void; defaultPage?: SettingsPage; panes?: SettingsPanes }) {
   const [page, setPage] = createSignal<SettingsPage>(props.defaultPage ?? 'general');
+  const [query, setQuery] = createSignal('');
+  const groups = () => filterSettings(SETTINGS_GROUPS, query());
   let scroller: HTMLDivElement | undefined;
-  createEffect(() => { if (props.isOpen) setPage(props.defaultPage ?? 'general'); });
+  createEffect(() => { if (props.isOpen) { setPage(props.defaultPage ?? 'general'); setQuery(''); } });
   createEffect(() => { page(); scroller?.scrollTo({ top: 0 }); });
-  return <Dialog open={props.isOpen} onOpenChange={open => { if (!open) props.onClose(); }}>
-    <DialogPortal>
-      <DialogContent class="syka-settings-modal" overlayClass="syka-settings-backdrop" showCloseButton={false} aria-label="Configuración de Syka">
-        <div class="syka-settings-layout t-panel-slide" data-open="true">
-          <aside class="syka-settings-rail">
-            <div class="syka-settings-brand"><SykaBrandOrb /><span>Syka Studio</span></div>
-            <nav aria-label="Apartados de configuración" class="syka-settings-nav">
-              <For each={groups}>{group => <div class="syka-settings-group"><span class="syka-settings-group-label">{group.label}</span><For each={group.entries}>{entry => <button type="button" aria-label={pages[entry].label} title={pages[entry].label} aria-current={page() === entry ? 'page' : undefined} onClick={() => setPage(entry)}><span class="syka-settings-nav-icon"><PageIcon page={entry} /></span><span class="syka-settings-nav-label">{pages[entry].label}</span></button>}</For></div>}</For>
-            </nav>
-            <div class="syka-settings-rail-footer"><button type="button" aria-label="Ayuda" aria-current={page() === 'help' ? 'page' : undefined} onClick={() => setPage('help')}><Icon name="help" class="size-5" /><span>Ayuda</span></button><small>Local · v{APP_VERSION}</small></div>
-          </aside>
-          <section class="syka-settings-content">
-            <header class="syka-settings-header"><div><DialogTitle>{pages[page()].label}</DialogTitle><DialogDescription>{pages[page()].description}</DialogDescription></div><DialogCloseButton class="syka-settings-close" aria-label="Cerrar configuración"><svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 6 12 12M18 6 6 18" /></svg></DialogCloseButton></header>
-            <div ref={scroller} class="syka-settings-body" data-settings-page={page()}>
+  // The settings palette (syka-code-settings.css) applies while this mark is on <html>.
+  createEffect(() => {
+    if (!props.isOpen) return;
+    document.documentElement.setAttribute('data-syka-settings-open', '');
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      if (document.querySelector('[data-kb-popper-content-id], [role="menu"]')) return;
+      event.preventDefault(); props.onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    onCleanup(() => { document.documentElement.removeAttribute('data-syka-settings-open'); window.removeEventListener('keydown', onKey); });
+  });
+  return <Show when={props.isOpen}>
+    <Portal mount={document.body}>
+      <div class="syka-settings-shell" role="dialog" aria-modal="true" aria-label="Configuración de Syka">
+        {/* The window still moves from the strip above the page; the sidebar and its back button stay clickable. */}
+        <Show when={!!window.desktop}><div class="syka-settings-drag" aria-hidden="true" /></Show>
+        <nav class="syka-settings-sidenav" aria-label="Apartados de configuración">
+          <button type="button" class="syka-settings-back" onClick={() => props.onClose()}>
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7M19 12H5" /></svg>
+            Volver a la aplicación
+          </button>
+          <label class="syka-settings-search">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="size-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+            <input value={query()} placeholder="Buscar ajustes…" aria-label="Buscar ajustes" onInput={event => setQuery(event.currentTarget.value)}
+              onKeyDown={event => {
+                if (event.key === 'Escape' && query()) { event.preventDefault(); event.stopPropagation(); setQuery(''); }
+                const first = groups()[0]?.sections[0];
+                if (event.key === 'Enter' && first) setPage(first.id);
+              }} />
+          </label>
+          <div class="syka-settings-sidenav-list">
+            <Show when={groups().length} fallback={<p class="syka-settings-sidenav-empty">Sin resultados</p>}>
+              <For each={groups()}>{group =>
+                <section aria-label={group.label}>
+                  <h2>{group.label}</h2>
+                  <For each={group.sections}>{section =>
+                    <button type="button" class="syka-settings-navrow" aria-current={page() === section.id ? 'page' : undefined} onClick={() => setPage(section.id)}>
+                      <span class="syka-settings-navrow-icon"><SettingsNavIcon page={section.id} /></span>
+                      <span>{section.label}</span>
+                    </button>}
+                  </For>
+                </section>}
+              </For>
+            </Show>
+          </div>
+          <small class="syka-settings-sidenav-version">{TESTING_INSTANCE ? 'Pruebas' : 'Local'} · v{APP_VERSION}</small>
+        </nav>
+        <div ref={scroller} class="syka-settings-scroll">
+          <div class="syka-settings-column" data-settings-page={page()}>
+            <div class="syka-settings-page">
+              <h1>{sectionInfo(page()).label}</h1>
+              <p class="syka-settings-page-description">{sectionInfo(page()).description}</p>
               <Show when={props.panes?.[page()]} fallback={
               <Switch>
-                <Match when={page() === 'general'}><DashboardSettingsView /></Match>
+                <Match when={page() === 'general'}><GeneralOptions /><DashboardSettingsView /></Match>
+                <Match when={page() === 'notifications'}><NotificationSettings /></Match>
+                <Match when={page() === 'providers'}><ProvidersSettings /></Match>
                 <Match when={page() === 'profile'}><DashboardAccountView /></Match>
                 <Match when={page() === 'appearance'}><AppearanceSettings /></Match>
                 <Match when={page() === 'chat'}><ChatSettings /></Match>
                 <Match when={page() === 'brand-kit'}><DashboardScrollView><SykaOnboardingSettings /></DashboardScrollView></Match>
                 <Match when={page() === 'zernio'}><ZernioSettingsView /></Match>
-                <Match when={page() === 'groq'}><DashboardScrollView><GroqSettings /><DictationSettings /></DashboardScrollView></Match>
+                <Match when={page() === 'groq'}><GroqKeySettings /><ParakeetSettings /><LocalVoiceSettings /><DictationSettings /></Match>
                 <Match when={page() === 'codex'}><CodexSettings /></Match>
                 <Match when={page() === 'plugins'}><AgentSettings section="plugins" /></Match>
                 <Match when={page() === 'skills'}><AgentSettings section="skills" /></Match>
@@ -104,11 +123,11 @@ export function SettingsModal(props: { isOpen: boolean; onClose(): void; default
               </Switch>
               }>{Pane => <>{Pane()({})}</>}</Show>
             </div>
-          </section>
+          </div>
         </div>
-      </DialogContent>
-    </DialogPortal>
-  </Dialog>;
+      </div>
+    </Portal>
+  </Show>;
 }
 
 export function SykaSettingsRoot(props: { panes?: SettingsPanes } = {}) {
@@ -119,6 +138,7 @@ export function SykaSettingsRoot(props: { panes?: SettingsPanes } = {}) {
     document.documentElement.dataset.motion = preference;
   });
   onMount(() => {
+    applyAppearancePrefs();
     const listener = (event: StorageEvent) => { if (event.key === 'syka.settings.motion.v1') setMotionPreference(event.newValue === 'reduced' ? 'reduced' : 'system'); };
     const shortcut = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.isComposing || event.altKey) return;

@@ -27,7 +27,8 @@ import type { HostEnv } from "./env";
 
 export type ResumeCursor = { claude: { sessionId: string; profile?: string } } | { codex: { threadId: string } }
   | { antigravityCli: { sessionId: string; profile: string; mcpNamespace?: string } }
-  | { acp: { version: 1; harness: HarnessId; sessionId: string; profile: string; instructionsHash?: string } };
+  | { acp: { version: 1; harness: HarnessId; sessionId: string; profile: string; instructionsHash?: string } }
+  | { pi: { sessionFile: string } };
 
 export type McpConfig = { name: "syka"; url: string };
 
@@ -58,6 +59,8 @@ export interface HarnessSession {
   readonly isClosed?: boolean;
   /** Persisted after every turn; what the next `open` resumes from. */
   readonly resume: ResumeCursor;
+  /** False when this session cannot run that model (another provider): the host reopens it from its cursor. */
+  canRun?(model: string): boolean;
   /** Runs one turn. Resolves when the turn has ended, whatever the outcome. */
   send(text: string, model: string, emit: Emit, effort?: string, fast?: boolean): Promise<TurnOutcome>;
   /** Insert guidance into the current turn; reject if no active turn accepts it. */

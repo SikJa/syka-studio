@@ -1,0 +1,14 @@
+/* Settings › Apariencia, after Syka Code's syka-appearance.css and settings.css. */
+html[data-syka-pointer="true"]
+  :is(button, [role="button"], [role="radio"], [role="menuitem"], [role="switch"], select, summary, input[type="checkbox"]):not(:disabled):not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+html[data-syka-pointer="false"]
+  :is(button, [role="button"], [role="radio"], [role="menuitem"], [role="switch"], summary):not(:disabled):not([aria-disabled="true"]) {
+  cursor: default;
+}
+/* Pausar en segundo plano: with another window in front, the motion that never
+   stops (the Syka orb and the What's new glow) pauses; work indicators go on. */
+html[data-syka-paused="true"] :is(.syka-shared-chat-orb, .syka-shared-chat-orb *, .syka-brand-orb, .syka-brand-orb *, .syka-wn-glow *) {
+  animation-play-state: paused !important;
+}

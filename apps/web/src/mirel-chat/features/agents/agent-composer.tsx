@@ -6,6 +6,7 @@ import {composeWebDraft,splitWebDraft,mergeWebDraft} from '@/lib/web-links';
 import { DictationControl } from "./dictation-control.js";
 import { StudioModelMenu, type AgentComposerProviderOption } from './model-picker-menu';
 import { useModelPickerPreferences } from './model-picker-preferences';
+import { generalPrefs, markAlternateSubmit, onGeneralPrefsChange } from '@/lib/general-prefs';
 import { useComposerMetalAppearance } from "../../shared/use-metal-appearance.js";
 import {
   ArrowUp,
@@ -35,6 +36,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type ChangeEvent,
   type KeyboardEvent,
   type ReactNode,
@@ -282,6 +284,7 @@ export function AgentComposer({
   const [contextDetailsOpen,setContextDetailsOpen]=useState(false);
   const [contextDetailsDismissed,setContextDetailsDismissed]=useState(false);
   const contextPercent = getAgentComposerContextPercent(contextUsage);
+  const showContextUsage = useSyncExternalStore(onGeneralPrefsChange, () => generalPrefs().showContextUsage);
   const classNames = ["agent-composer", className].filter(Boolean).join(" ");
   const appearance = useComposerMetalAppearance();
   const metalReflectionTargets = useMemo(() => [modelTriggerRef, voiceButtonRef], []);
@@ -307,9 +310,26 @@ export function AgentComposer({
     ? null
     : Math.min(attachmentLightboxIndex, previewImages.length - 1);
 
+  // The field grows with its text. With `field-sizing: content` the browser does
+  // it: no forced layout on every keystroke (measured at ~40 ms a key with the
+  // old height=0 → scrollHeight cycle). The cycle stays for engines without it.
+  const sizesItself = typeof CSS !== "undefined" && CSS.supports?.("field-sizing", "content");
   useLayoutEffect(() => {
     const input = inputRef.current;
-    if (!input) return;
+    if (!input || !sizesItself) return;
+    const computed = window.getComputedStyle(input);
+    const lineHeight = Number.parseFloat(computed.lineHeight) || 20;
+    const verticalPadding = Number.parseFloat(computed.paddingTop) + Number.parseFloat(computed.paddingBottom);
+    input.style.setProperty("field-sizing", "content");
+    input.style.height = "auto";
+    input.style.minHeight = `${lineHeight + verticalPadding}px`;
+    input.style.maxHeight = `${(lineHeight * Math.max(1, maxRows)) + verticalPadding}px`;
+    input.style.overflowY = "auto";
+  }, [maxRows, sizesItself]);
+
+  useLayoutEffect(() => {
+    const input = inputRef.current;
+    if (!input || sizesItself) return;
     const computed = window.getComputedStyle(input);
     const lineHeight = Number.parseFloat(computed.lineHeight) || 20;
     const verticalPadding = Number.parseFloat(computed.paddingTop) + Number.parseFloat(computed.paddingBottom);
@@ -320,7 +340,7 @@ export function AgentComposer({
     const nextHeight = Math.min(contentHeight, maximum);
     input.style.height = `${Math.max(minimum, nextHeight)}px`;
     input.style.overflowY = contentHeight > maximum ? "auto" : "hidden";
-  }, [maxRows, draftText]);
+  }, [maxRows, draftText, sizesItself]);
 
   useEffect(() => {
     if (!addMenuOpen && !modelMenuOpen && !suggestionsMenuOpen) return;
@@ -360,7 +380,13 @@ export function AgentComposer({
       return;
     }
     if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
+      // Settings › General: Enter sends, or Ctrl+Enter sends and Enter adds a line.
+      // With Enter sending, Ctrl+Enter sends with the other follow-up mode.
+      const control = event.ctrlKey || event.metaKey;
+      const ctrlSends = generalPrefs().enterBehavior === "ctrl-enter";
+      if (ctrlSends && !control) return;
       event.preventDefault();
+      markAlternateSubmit(!ctrlSends && control);
       submit();
     }
   };
@@ -508,7 +534,7 @@ export function AgentComposer({
                 >
                   <Plus size={17} />
                 </button>
-        <button type="button" className="agent-composer-context" data-context-known={contextPercent !== null} data-context-dismissed={contextDetailsDismissed} aria-expanded={contextDetailsOpen} onMouseEnter={()=>setContextDetailsDismissed(false)} onFocus={()=>setContextDetailsDismissed(false)} onClick={()=>{setContextDetailsDismissed(contextDetailsOpen);setContextDetailsOpen(!contextDetailsOpen);}} onBlur={()=>{setContextDetailsOpen(false);setContextDetailsDismissed(false);}} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();setContextDetailsOpen(false);setContextDetailsDismissed(true);}}} aria-label={contextPercent === null ? "Uso de contexto no disponible" : `${contextUsage?.approximate ? 'Aproximadamente ' : ''}${contextPercent}% del contexto utilizado`}>
+        {showContextUsage ? <button type="button" className="agent-composer-context" data-context-known={contextPercent !== null} data-context-dismissed={contextDetailsDismissed} aria-expanded={contextDetailsOpen} onMouseEnter={()=>setContextDetailsDismissed(false)} onFocus={()=>setContextDetailsDismissed(false)} onClick={()=>{setContextDetailsDismissed(contextDetailsOpen);setContextDetailsOpen(!contextDetailsOpen);}} onBlur={()=>{setContextDetailsOpen(false);setContextDetailsDismissed(false);}} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();setContextDetailsOpen(false);setContextDetailsDismissed(true);}}} aria-label={contextPercent === null ? "Uso de contexto no disponible" : `${contextUsage?.approximate ? 'Aproximadamente ' : ''}${contextPercent}% del contexto utilizado`}>
           <svg viewBox="0 0 22 22" aria-hidden="true">
             <circle cx="11" cy="11" r="8.5" pathLength="100" />
             {contextPercent !== null ? <circle className="agent-composer-context-value" cx="11" cy="11" r="8.5" pathLength="100" strokeDasharray={`${contextPercent} ${100 - contextPercent}`} /> : null}
@@ -523,7 +549,7 @@ export function AgentComposer({
               <span><em>Ventana total</em><b>{formatTokens(contextUsage.maxTokens)}</b></span>
             </> : <span><em>El proveedor todavía no publicó la ventana de contexto.</em></span>}
           </span>
-        </button>
+        </button> : null}
                 {suggestions.length > 0 ? <button
                   type="button"
                   className="agent-composer-suggestions-trigger"

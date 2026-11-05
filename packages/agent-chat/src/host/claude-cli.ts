@@ -1,6 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+import { claudeProviderLaunch, claudeProviderModels, parseProviderModel, providerEnvironment } from './providers';
 import { spawn, type ChildProcess } from "node:child_process";
 import { mkdir } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
@@ -77,9 +78,11 @@ export function claudeEnvironment(config: ClaudeCliConfig, env: HostEnv): Record
 export function claudeToolTitle(name: string): string {
   return /^mcp__[^_]+(?:_[^_]+)*__(.+)$/.exec(name)?.[1] ?? name;
 }
-function start(config: ClaudeCliConfig, args: string[], env: HostEnv, cwd: string): ChildProcess {
+/** `provider` is the extra environment of a provider model (Settings › Proveedores). */
+function start(config: ClaudeCliConfig, args: string[], env: HostEnv, cwd: string, provider?: Record<string, string>): ChildProcess {
   if (!isAbsolute(config.command) || !isAbsolute(config.profileDir) || /\.(cmd|bat)$/i.test(config.command)) throw Error("Configurá el ejecutable absoluto de Claude Code, sin shell ni shims cmd.");
-  return spawn(config.command, [...(config.args ?? []), ...args], { env: claudeEnvironment(config, env), cwd, stdio: "pipe", windowsHide: true, shell: false });
+  const environment = provider ? providerEnvironment(claudeEnvironment(config, env), provider) : claudeEnvironment(config, env);
+  return spawn(config.command, [...(config.args ?? []), ...args], { env: environment, cwd, stdio: "pipe", windowsHide: true, shell: false });
 }
 async function output(config: ClaudeCliConfig, args: string[], env: HostEnv, signal?: AbortSignal, timeout = 15_000): Promise<string> {
   await mkdir(join(config.profileDir, 'tmp'), { recursive: true });
@@ -123,7 +126,7 @@ export class ClaudeCliHarness implements Harness {
       if (status.loggedIn !== true) { this.models=[];this.contextWindows.clear();return { ...base, status: "signed-out", authMethods: [{ id: "cli-login", label: "Login oficial de Claude Code" }], detail: "Conectá Claude Code en el perfil propio de Syka." }; }
       await this.refreshModels(env, signal);
       return { ...base, status: "ready", authMethods: [{ id: "cli-login", label: "Login oficial de Claude Code" }], version: version.trim(),
-        models: this.models.length ? this.models : [{ id: "__cli_default__", label: "Predeterminado de Claude Code" }],
+        models: [...(this.models.length ? this.models : [{ id: "__cli_default__", label: "Predeterminado de Claude Code" }]), ...claudeProviderModels()],
         defaultModel: this.models.find(model => model.id === 'default')?.id ?? this.models[0]?.id ?? '__cli_default__',
         detail: this.models.length ? 'Modelos anunciados por Claude Code. La disponibilidad depende de tu cuenta.' : 'Sesión conectada. Claude Code no devolvió su catálogo; volvé a comprobar la conexión para actualizarlo.' };
     } catch { return { ...base, status: "error", detail: "No se pudo verificar ejecutable y sesión de Claude Code. Revisá ruta, versión y perfil." }; }
@@ -183,6 +186,8 @@ class ClaudeCliSession implements HarnessSession {
   }
   private async validateAndRun(text:string,model:string,effort?:string,fast?:boolean):Promise<TurnOutcome> {
     if(fast)return {status:'failed',error:'Claude Code no tiene modo rápido habilitado por esta integración.'};
+    // A provider model is not in Claude Code's own catalog: its provider answers for it.
+    if(model.startsWith('p:'))return parseProviderModel(model)?this.run(text,model,undefined):{status:'failed',error:'Ese proveedor ya no está configurado o está apagado. Revisá Configuración › Proveedores.'};
     const supported=()=>{const selected=this.models().find(item=>item.id===model);return (model==='__cli_default__'||!!selected)&&(effort===undefined||!!selected?.efforts?.includes(effort));};
     if(!supported())await this.refreshModels(this.catalogAbort!.signal);
     if(this.cancelled||this.closed)return {status:'interrupted'};
@@ -219,15 +224,19 @@ class ClaudeCliSession implements HarnessSession {
       // mid-turn reaches the model in the same turn; the turn ends at its result.
       const args = ["--print", "--input-format", "stream-json", "--output-format", "stream-json", "--verbose", "--strict-mcp-config", "--mcp-config", JSON.stringify({ mcpServers }),
         "--dangerously-skip-permissions", "--permission-prompt-tool", "mcp__syka_workspace__permission", this.hasSession ? "--resume" : "--session-id", this.sessionId];
-      if (this.options.instructions) args.push("--append-system-prompt", this.options.instructions);
-      if (model !== '__cli_default__') args.push('--model', model);
+      const provider = parseProviderModel(model);
+      const launch = provider ? claudeProviderLaunch(provider.provider, provider.model) : null;
+      const instructions = [this.options.instructions, launch?.identity].filter(Boolean).join("\n\n");
+      if (instructions) args.push("--append-system-prompt", instructions);
+      if (launch) args.push('--model', launch.model);
+      else if (model !== '__cli_default__') args.push('--model', model);
       if (effort !== undefined) args.push('--effort', effort);
       const trace = harnessTraceFor(this.options);
       if (this.options.instructions) trace?.payload('claude_cli', 'instructions', this.options.instructions);
       trace?.payload('claude_cli', 'user', text);
       trace?.payload('claude_cli', 'wire_request', {args,input:text});
       trace?.instructions('per_invocation_unverified_persistence');
-      const child = start(this.config, args, this.options.env, this.options.cwd); this.child = child;
+      const child = start(this.config, args, this.options.env, this.options.cwd, launch?.env); this.child = child;
       return await new Promise<TurnOutcome>((resolveResult) => {
         let buffer = "", timedOut=false, oversized=false; let outcome: TurnOutcome | undefined;
         const tools = new Map<string, { name: string; title: string; detail?: string }>();

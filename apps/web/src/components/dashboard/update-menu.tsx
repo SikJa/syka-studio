@@ -16,7 +16,6 @@ import './update-menu.css';
 
 const [update, setUpdate] = createRoot(() => createSignal<UpdateState>({ phase: 'disabled', currentVersion: APP_VERSION }));
 const [announcement, setAnnouncement] = createRoot(() => createSignal<UpdateState | null>(null));
-let announcementTimer: ReturnType<typeof setTimeout> | undefined;
 let connected = false;
 let statusPoll: ReturnType<typeof setTimeout> | undefined;
 const announced = new Set<string>();
@@ -27,8 +26,6 @@ function applyUpdate(next: UpdateState) {
     if (!announced.has(key)) {
       announced.add(key);
       setAnnouncement(next);
-      clearTimeout(announcementTimer);
-      announcementTimer = setTimeout(() => setAnnouncement(null), 20_000);
     }
   }
   clearTimeout(statusPoll); statusPoll = undefined;
@@ -39,6 +36,9 @@ function applyUpdate(next: UpdateState) {
     statusPoll = setTimeout(() => void command('status'), next.phase === 'checking' ? 1000 : 3000);
   }
 }
+/** The updater as the app sees it, shared by the menu and the centred new-version card. */
+export { update as updateState, announcement as updateAnnouncement, setAnnouncement as setUpdateAnnouncement, command as updateCommand, connect as connectUpdates };
+
 function connect() {
   if (connected || !isDesktop()) return;
   connected = true;
@@ -51,9 +51,11 @@ async function command(action: UpdateRequest['action']) {
   catch (error) { clearTimeout(statusPoll); statusPoll = undefined; toast.error(t('No se pudo completar la actualización'), { description: t((error as Error).message) }); }
 }
 
+/** Lucide's circle-fading-arrow-up (ISC), the usual «update» mark, at the sidebar's icon size. */
 function UpdateArrow() {
-  return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="size-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M19.5 8A8 8 0 1 0 20 15M19.5 3.5V8H15M12 16V8m-3 3 3-3 3 3" />
+  return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="size-[18px]" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2a10 10 0 0 1 7.38 16.75" /><path d="m16 12-4-4-4 4" /><path d="M12 16V8" />
+    <path d="M2.5 8.875a10 10 0 0 0-.5 3" /><path d="M2.83 16a10 10 0 0 0 2.43 3.4" /><path d="M4.636 5.235a10 10 0 0 1 .891-.857" /><path d="M8.644 21.42a10 10 0 0 0 7.631-.38" />
   </svg>;
 }
 function UpdateDetails() {
@@ -70,11 +72,11 @@ function UpdateDetails() {
     <p class="text-xxs text-muted-foreground">{t('Versión instalada')} · {update().currentVersion}</p>
     <Show when={update().availableVersion}><p class="text-xs text-foreground">{t('Nueva versión')} · {update().availableVersion}</p></Show>
     <Show when={update().message}><p class="text-xs text-muted-foreground">{t(update().message!)}</p></Show>
-    <Show when={update().phase === 'downloading'}><div class="syka-update-progress" role="progressbar" aria-label={t('Descargando actualización')} /></Show>
+    <Show when={update().phase === 'downloading'}><div class="syka-update-progress" role="progressbar" aria-label={t('Descargando actualización')} aria-valuenow={update().progress === undefined ? undefined : Math.round(update().progress! * 100)} /></Show>
     <Show when={update().phase === 'ready'}><p class="text-xs text-muted-foreground">{t('Reiniciá cuando te venga bien. Tus proyectos y preferencias se conservan.')}</p></Show>
     <div class="flex flex-wrap items-center gap-2 pt-1">
       <Show when={update().phase === 'available' || update().phase === 'error' && !!update().availableVersion}>
-        <Button onClick={() => void command('download')}>{t(update().installation === 'installer' ? 'Descargar instalador' : 'Descargar actualización')}</Button>
+        <Button onClick={() => void command('download')}>{t('Descargar actualización')}</Button>
       </Show>
       <Show when={update().phase === 'ready'}><Button onClick={() => void command('install')}>{t('Reiniciar e instalar')}</Button></Show>
       <Show when={['idle', 'error'].includes(update().phase)}><Button variant="secondary" onClick={() => void command('check')}>{t('Buscar actualizaciones')}</Button></Show>
@@ -100,15 +102,4 @@ export function UpdateMenu() {
 export function UpdateSettings() {
   onMount(connect);
   return <UpdateDetails />;
-}
-
-/** Mounted once at app level, including direct launches into the editor. */
-export function AutomaticUpdateNotice() {
-  onMount(connect);
-  return <Show when={announcement()}>{notice => <aside class="syka-automatic-update-notice" data-automatic-update-notice role="status" aria-live="polite">
-    <button type="button" class="syka-update-dismiss" aria-label="Cerrar aviso de actualización" onClick={() => setAnnouncement(null)}>×</button>
-    <strong>{t(notice().phase === 'ready' ? 'Actualización lista para instalar' : 'Actualización disponible')}</strong>
-    <p>Syka Studio {notice().availableVersion}</p>
-    <Button variant="secondary" onClick={() => { const state = notice(); setAnnouncement(null); void command(state.phase === 'ready' ? 'install' : 'download'); }}>{t(notice().phase === 'ready' ? 'Reiniciar e instalar' : notice().installation === 'installer' ? 'Descargar instalador' : 'Descargar actualización')}</Button>
-  </aside>}</Show>;
 }

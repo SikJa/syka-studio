@@ -80,6 +80,7 @@ import { LINKED_RESOURCE_DRAG_TYPE, readLinkedResourceDrop } from '@/engine/link
 import { RESOURCE_DRAG_TYPE, RESOURCE_PREVIEW_DRAG_TYPE } from '@/components/sidebar-right/library-model';
 import { getEditorResources } from '@/components/sidebar-right/resources';
 import { linkedReferenceInstruction, referenceInChat, selectionContext } from './visual-context';
+import { generalPrefs, takeAlternateSubmit } from '@/lib/general-prefs';
 
 export function ChatPanel() {
   const project = useProject();
@@ -230,6 +231,8 @@ export function ChatPanel() {
   };
 
   const handleSend = () => {
+    // Settings › General: what Enter does while a turn runs; Ctrl+Enter does the other.
+    const alternate = takeAlternateSubmit();
     if (questionView() || waiting()) return;
     const ref = model();
     const { text, attachments } = current();
@@ -245,7 +248,9 @@ export function ChatPanel() {
     const options = { projectId: project.id(), cwd: dir, chatId: id, text, attachments: attachmentPaths(attachments), model: ref };
     clearDraft(sendKey);
     setSubmitting(true);
-    const queue = running() || !!transcript().queue?.messages.length;
+    const wantsSteer = (generalPrefs().followUpMode === 'steer') !== alternate;
+    const steerNow = !command && wantsSteer && running() && supportsSteering() && !!id && !transcript().queue?.messages.length;
+    const queue = !steerNow && (running() || !!transcript().queue?.messages.length);
     const action = (async () => {
       await loadVisualNotes(sendKey);
       const notes = JSON.parse(JSON.stringify(visualNotes(sendKey))) as ReturnType<typeof visualNotes>;
@@ -253,7 +258,7 @@ export function ChatPanel() {
       const prepared = await prepareVisualReview(referenced.text, referenced.attachments, notes, dir);
       const payload = {...options, text:prepared.text, attachments:attachmentPaths(prepared.attachments)};
       let destination = id;
-      if (command) {
+      if (command || steerNow) {
         if (!id) throw Error('El chat todavía se está abriendo.');
         await steer(id, dir, payload.text, payload.attachments);
       } else if (queue) await enqueue(payload);

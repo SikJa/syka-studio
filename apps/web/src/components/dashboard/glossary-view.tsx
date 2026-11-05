@@ -6,7 +6,7 @@ import { For, Show, createMemo, createSignal, onCleanup, onMount } from "solid-j
 import { MAIN_CHANNELS, type SykaGlossary, type SykaGlossaryEntry } from "@desktop/main-channels";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { Switch, SwitchControl, SwitchInput, SwitchThumb } from "@/components/ui/switch";
+import { SettingsSwitch } from "@/components/settings/kit";
 import { TextField, TextFieldInput, TextFieldLabel, TextFieldTextArea } from "@/components/ui/text-field";
 import { mainBridge } from "@/lib/ipc";
 import { DashboardScrollView, DashboardSurfaceSection } from "./shared";
@@ -135,9 +135,7 @@ export function DashboardGlossaryView() {
               <For each={matches()}>{entry => (
                 <div class="flex flex-wrap items-center gap-x-3 gap-y-2 py-3" data-glossary-entry={entry.id}>
                   <div class="min-w-32 flex-1"><p class="text-xs font-450 break-words" classList={{ "text-muted-foreground": !entry.enabled }}>{entry.term}</p><p class="mt-1 text-xxs text-muted-foreground break-words">{entry.variants.length ? `${entry.variants.join(" · ")} → ${entry.term}` : "Término preferido, sin variantes"}</p></div>
-                  <Switch checked={entry.enabled} disabled={disabled()} onChange={enabled => void saveEntries(entries().map(current => current.id === entry.id ? { ...current, enabled } : current), enabled ? "Término activado" : "Término desactivado")}>
-                    <SwitchInput aria-label={`Activar ${entry.term}`} /><SwitchControl variant="compact"><SwitchThumb variant="compact" /></SwitchControl>
-                  </Switch>
+                  <SettingsSwitch label={`Activar ${entry.term}`} checked={entry.enabled} disabled={disabled()} onChange={enabled => void saveEntries(entries().map(current => current.id === entry.id ? { ...current, enabled } : current), enabled ? "Término activado" : "Término desactivado")} />
                   <Button type="button" variant="ghost" size="small" aria-label={`Editar ${entry.term}`} disabled={disabled() || formOpen()} onClick={() => openForm(entry)}>Editar</Button>
                   <Button type="button" variant="ghost" size="small" aria-label={`Eliminar ${entry.term}`} disabled={disabled()} onClick={() => void remove(entry)}>Eliminar</Button>
                 </div>

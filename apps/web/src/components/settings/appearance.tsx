@@ -1,11 +1,14 @@
 import { PersonalizationSection } from '@/components/dashboard/personalization/personalization-section';
-import { createEffect, createSignal, For } from 'solid-js';
+import { createEffect, createSignal, For, Show } from 'solid-js';
 import { COLOR_MODE_STORAGE_KEY, useColorMode } from '@kobalte/core';
 import { toast } from 'somoto';
 import { DashboardScrollView, DashboardSurfaceSection } from '@/components/dashboard/shared';
 import { motionPreference, saveMotionPreference } from './state';
-import { Select, SelectTrigger, SelectValue, SelectPortal, SelectContent, SelectItem } from '@/components/ui/select';
 import { t } from '@/i18n';
+import { isDesktop } from '@/projects';
+import { appearancePrefs, onAppearancePrefsChange, setUiScale, uiScale, updateAppearancePrefs, UI_SCALE_STEPS } from '@/lib/appearance-prefs';
+import { SettingsGroup, SettingsRow, SettingsSelect, SettingsSwitch } from './kit';
+import { onCleanup } from 'solid-js';
 
 type Theme = 'light' | 'dark' | 'system';
 export function AppearanceSettings() {
@@ -31,17 +34,36 @@ export function AppearanceSettings() {
         }</For>
       </div>
     </DashboardSurfaceSection>
-    <DashboardSurfaceSection title="Movimiento">
-      <div class="syka-settings-row">
-        <div><p>Animaciones y transiciones</p><small>Siempre se respeta la preferencia de movimiento de tu sistema.</small></div>
-        <Select modal options={['Seguir al sistema','Reducir movimiento']}
-          value={motionPreference()==='reduced'?'Reducir movimiento':'Seguir al sistema'}
-          onChange={value=>{if(!value)return;try{saveMotionPreference(value==='Reducir movimiento'?'reduced':'system')}catch{toast.error('No se pudo guardar la preferencia.')}}}
-          itemComponent={item=><SelectItem item={item.item}>{t(item.item.rawValue)}</SelectItem>}>
-          <SelectTrigger class="min-w-44" aria-label="Movimiento de la interfaz"><SelectValue<string>>{state=>t(state.selectedOption())}</SelectValue></SelectTrigger>
-          <SelectPortal><SelectContent class="syka-motion-select"/></SelectPortal>
-        </Select>
-      </div>
-    </DashboardSurfaceSection>
+    <AppearanceOptions />
   </DashboardScrollView>;
+}
+
+/** Syka Code's «Movimiento» and «Organización del espacio» options that Syka Studio has. */
+function AppearanceOptions() {
+  const [prefs, setPrefs] = createSignal(appearancePrefs());
+  const [scale, setScale] = createSignal(uiScale());
+  onCleanup(onAppearancePrefsChange(() => { setPrefs(appearancePrefs()); setScale(uiScale()); }));
+  return <>
+    <SettingsGroup title="Movimiento">
+      <SettingsRow title="Reducir movimiento" description="Menos animaciones y transiciones. También se respeta la preferencia de Windows.">
+        <SettingsSwitch label="Reducir movimiento" checked={motionPreference() === 'reduced'} onChange={reduced => {
+          try { saveMotionPreference(reduced ? 'reduced' : 'system'); } catch { toast.error('No se pudo guardar la preferencia.'); }
+        }} />
+      </SettingsRow>
+      <SettingsRow title="Pausar en segundo plano" description="Detiene el movimiento que no para, como el orbe de Syka, cuando otra ventana tiene el foco.">
+        <SettingsSwitch label="Pausar en segundo plano" checked={prefs().pauseInBackground} onChange={pauseInBackground => updateAppearancePrefs({ pauseInBackground })} />
+      </SettingsRow>
+    </SettingsGroup>
+    <SettingsGroup title="Organización del espacio">
+      <Show when={isDesktop()}>
+        <SettingsRow title="Escala de interfaz" description="Ajusta toda la app. También podés usar Ctrl +, Ctrl − y Ctrl 0.">
+          <SettingsSelect label="Escala de interfaz" value={String(scale())} options={UI_SCALE_STEPS.map(step => ({ value: String(step), label: `${step}%` }))}
+            onChange={value => setUiScale(Number(value))} />
+        </SettingsRow>
+      </Show>
+      <SettingsRow title="Usar cursores de puntero" description="Mano al pasar sobre botones y controles interactivos.">
+        <SettingsSwitch label="Usar cursores de puntero" checked={prefs().pointerCursors} onChange={pointerCursors => updateAppearancePrefs({ pointerCursors })} />
+      </SettingsRow>
+    </SettingsGroup>
+  </>;
 }

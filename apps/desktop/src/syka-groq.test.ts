@@ -19,7 +19,7 @@ vi.mock("electron", () => ({
   },
 }));
 
-const { groqChunkFingerprint, parseGroqTranscript, registerSykaGroq } = await import("./syka-groq");
+const { groqChunkFingerprint, parseGroqTranscript, registerSykaGroq, transcriptionModels } = await import("./syka-groq");
 const { MAIN_CHANNELS } = await import("./main-channels");
 const { getSykaGlossary, saveSykaGlossary } = await import("./syka-glossary");
 import { randomUUID } from "node:crypto";
@@ -83,13 +83,14 @@ describe("Syka Groq local provider", () => {
 
   it("works without credentials and never calls the network to query status", async () => {
     expect(await call(MAIN_CHANNELS.SYKA_GROQ_STATUS)).toMatchObject({ configured: false, secureStorage: true });
-    await expect(call(MAIN_CHANNELS.SYKA_GROQ_TRANSCRIBE, { audio, duration: 1 })).rejects.toThrow("clave propia");
+    await expect(call(MAIN_CHANNELS.SYKA_GROQ_TRANSCRIBE, { audio, duration: 1 })).rejects.toThrow("Falta la clave de Groq");
     expect(fetch).not.toHaveBeenCalled();
   });
 
   it("keeps secrets out of status/readback and does not validate on save", async () => {
     expect(await call(MAIN_CHANNELS.SYKA_GROQ_SET_KEY, { key: fakeKey })).toEqual({
-      configured: true, secureStorage: true, model: "whisper-large-v3-turbo",
+      configured: true, secureStorage: true, model: "whisper-large-v3-turbo", active: "groq",
+      keys: { groq: true, openai: false, compatible: false }, compatible: null,
     });
     const encrypted = await readFile(join(storage.root, "providers/groq.key.encrypted"), "utf8");
     expect(encrypted).not.toContain(fakeKey);
@@ -125,6 +126,32 @@ describe("Syka Groq local provider", () => {
     variant.set([5, 6, 7, 8], 22);
     expect(await call(MAIN_CHANNELS.SYKA_GROQ_TRANSCRIBE, { audio: variant, duration: 1 })).toEqual(expected);
     expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("sends captions to OpenAI or a compatible service once chosen, each with its own key", async () => {
+    await expect(call(MAIN_CHANNELS.SYKA_TRANSCRIPTION_CONFIGURE, { active: "compatible" })).rejects.toThrow("URL y el modelo");
+    await expect(call(MAIN_CHANNELS.SYKA_GROQ_SET_KEY, { key: "not-openai", provider: "openai" })).rejects.toThrow("sk-");
+    // Built at runtime so no source line looks like a real key.
+    await call(MAIN_CHANNELS.SYKA_GROQ_SET_KEY, { key: ["sk", "x".repeat(24)].join("-"), provider: "openai" });
+    expect(await call(MAIN_CHANNELS.SYKA_TRANSCRIPTION_CONFIGURE, { active: "openai" })).toMatchObject({ configured: true, active: "openai", model: "whisper-1", keys: { groq: false, openai: true } });
+    const urls: string[] = [];
+    vi.stubGlobal("fetch", vi.fn(async (url: string, options: RequestInit) => {
+      urls.push(url);
+      urls.push(String((options.body as FormData).get("model")));
+      return new Response(JSON.stringify({ words: [{ word: "hola", start: 0, end: 0.5 }] }), { status: 200 });
+    }));
+    await call(MAIN_CHANNELS.SYKA_GROQ_TRANSCRIBE, { audio, duration: 1 });
+    await expect(call(MAIN_CHANNELS.SYKA_TRANSCRIPTION_CONFIGURE, { active: "compatible", compatible: { name: "X", baseUrl: "http://example.com/v1", model: "m" } })).rejects.toThrow("https://");
+    await call(MAIN_CHANNELS.SYKA_GROQ_SET_KEY, { key: "any-key", provider: "compatible" });
+    await call(MAIN_CHANNELS.SYKA_TRANSCRIPTION_CONFIGURE, { active: "compatible", compatible: { name: "Mi servidor", baseUrl: "https://speech.example.com/v1/", model: "whisper-large" } });
+    await call(MAIN_CHANNELS.SYKA_GROQ_TRANSCRIBE, { audio, duration: 1 });
+    expect(urls).toEqual(["https://api.openai.com/v1/audio/transcriptions", "whisper-1", "https://speech.example.com/v1/audio/transcriptions", "whisper-large"]);
+  });
+
+  it("offers the speech models a service publishes, or all of them when none looks like one", () => {
+    expect(transcriptionModels({ data: [{ id: "llama-3" }, { id: "whisper-large-v3" }, { id: "gpt-4o-transcribe" }] })).toEqual({ models: ["gpt-4o-transcribe", "whisper-large-v3"], transcription: true });
+    expect(transcriptionModels({ data: [{ id: "b" }, { id: "a" }] })).toEqual({ models: ["a", "b"], transcription: false });
+    expect(transcriptionModels(null)).toEqual({ models: [], transcription: false });
   });
 
   it("forwards preferred terms, caches raw words, and reapplies changed aliases without another request", async () => {

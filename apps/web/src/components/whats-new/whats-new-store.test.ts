@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { WHATS_NEW_PAGES } from './whats-new-pages';
+import { useWhatsNewMessages } from './whats-new-messages';
 import { WHATS_NEW_RELEASE, WHATS_NEW_STORAGE_KEY, closeWhatsNew, hasSeenWhatsNew, openWhatsNew, whatsNewOpen, whatsNewSession } from './whats-new-store';
 
 const memory = new Map<string, string>();
@@ -19,15 +20,16 @@ describe('novedades de Syka', () => {
     expect(whatsNewOpen()).toBe(false);
     expect(memory.get(WHATS_NEW_STORAGE_KEY)).toBe(WHATS_NEW_RELEASE);
     expect(hasSeenWhatsNew()).toBe(true);
-    expect(hasSeenWhatsNew('0.212.0')).toBe(false);
+    expect(hasSeenWhatsNew('0.213.0')).toBe(false);
   });
 
   it('names this release and tells each change in a short page', () => {
     expect(WHATS_NEW_RELEASE).toMatch(/^\d+\.\d+\.\d+$/);
     expect(new Set(WHATS_NEW_PAGES.map(page => page.id)).size).toBe(WHATS_NEW_PAGES.length);
+    const t = useWhatsNewMessages();
     for (const page of WHATS_NEW_PAGES) {
-      expect(page.title.length).toBeLessThanOrEqual(42);
-      expect(page.body.length).toBeLessThanOrEqual(200);
+      expect(t(`${page.id}.title`).length).toBeLessThanOrEqual(42);
+      expect(t(`${page.id}.body`).length).toBeLessThanOrEqual(200);
     }
   });
 });

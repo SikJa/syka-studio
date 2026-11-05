@@ -10,7 +10,7 @@ import type { SykaGlossary, SykaGlossaryEntry, SykaTranscriptSegment } from "./m
 
 const storage = vi.hoisted(() => ({ root: "" }));
 vi.mock("electron", () => ({ app: { getPath: () => storage.root } }));
-import { applyGlossaryToTranscript, getSykaGlossary, glossaryPrompt, GLOSSARY_LIMITS, registerSykaGlossary, saveSykaGlossary, validateGlossaryEntries } from "./syka-glossary";
+import { applyGlossaryToText, applyGlossaryToTranscript, getSykaGlossary, glossaryTerms, glossaryPrompt, GLOSSARY_LIMITS, registerSykaGlossary, saveSykaGlossary, validateGlossaryEntries } from "./syka-glossary";
 import { MAIN_CHANNELS } from "./main-channels";
 import type { mainBridge } from "./main-manager";
 
@@ -145,5 +145,18 @@ describe("local Syka glossary", () => {
     expect(() => applyGlossaryToTranscript([{ text: "bad", words: [{ text: "bad", start: NaN, end: 1 }] }], glossary())).toThrow(/Tiempos/);
     expect(() => applyGlossaryToTranscript([{ text: "bad", words: [{ text: "a".repeat(501), start: 0, end: 1 }] }], glossary())).toThrow(/Tiempos/);
     expect(applyGlossaryToTranscript([], glossary())).toEqual([]);
+  });
+});
+
+describe("dictation corrections", () => {
+  it("fixes plain dictated text and offers the enabled terms as vocabulary", () => {
+    const glossary = { version: 1, revision: "r", entries: [
+      { id: "a", term: "Claude", variants: ["cloud", "clod"], enabled: true },
+      { id: "b", term: "Syka Studio", variants: ["sika estudio"], enabled: true },
+      { id: "c", term: "Off", variants: ["of"], enabled: false },
+    ] } as SykaGlossary;
+    expect(applyGlossaryToText("le pregunté a cloud, desde sika estudio of", glossary)).toBe("le pregunté a Claude, desde Syka Studio of");
+    expect(glossaryTerms(glossary)).toEqual(["Claude", "Syka Studio"]);
+    expect(applyGlossaryToText("  ", glossary)).toBe("");
   });
 });

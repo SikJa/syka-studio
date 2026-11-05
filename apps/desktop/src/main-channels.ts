@@ -97,9 +97,18 @@ export const MAIN_CHANNELS = {
   CLI_INSTALL: "cli:install",
   CLI_UNINSTALL: "cli:uninstall",
   SYKA_AGENT_SETTINGS: "syka-agent:settings",
+  SYKA_PROVIDERS: "syka:providers",
   SYKA_GROQ_STATUS: "syka-groq:status",
   SYKA_GROQ_SET_KEY: "syka-groq:set-key",
   SYKA_GROQ_TRANSCRIBE: "syka-groq:transcribe",
+  SYKA_TRANSCRIPTION_CONFIGURE: "syka-groq:configure",
+  SYKA_TRANSCRIPTION_MODELS: "syka-groq:models",
+  SYKA_LOCAL_VOICE: "syka-local-voice:manage",
+  SYKA_PARAKEET: "syka-parakeet:manage",
+  SYKA_PARAKEET_TRANSCRIBE: "syka-parakeet:transcribe",
+  SYKA_LOCAL_TRANSCRIBE: "syka-local-voice:transcribe",
+  SYKA_CODEX_VOICE_STATUS: "syka-codex-voice:status",
+  SYKA_CODEX_TRANSCRIBE: "syka-codex-voice:transcribe",
   SYKA_GLOSSARY_GET: "syka-glossary:get",
   SYKA_GLOSSARY_SAVE: "syka-glossary:save",
   SYKA_GLOSSARY_APPLY_TRANSCRIPT: "syka-glossary:apply-transcript",
@@ -381,6 +390,7 @@ export type MainRequestMap = {
   [MAIN_CHANNELS.MCP_STATUS]: { request: void; response: McpStatus };
   [MAIN_CHANNELS.MCP_APPLY]: { request: McpApplyRequest; response: McpApplyResult };
   [MAIN_CHANNELS.CLI_STATUS]: { request: void; response: CliStatus };
+  [MAIN_CHANNELS.SYKA_PROVIDERS]: { request: import('./providers').ProviderRequest; response: import('./providers').ProviderResponse };
   [MAIN_CHANNELS.CLI_INSTALL]: { request: void; response: CliInstallResult };
   [MAIN_CHANNELS.CLI_UNINSTALL]: { request: void; response: CliUninstallResult };
   [MAIN_CHANNELS.SYKA_AGENT_SETTINGS]: {request:{action:'get'|'save-mcp'|'create-skill'|'import-skill'|'read-skill'|'save-skill';servers?:import('../../../packages/agent-chat/src/host/agent-config').AgentServer[];name?:string;source?:string;content?:string;revision?:string;bundled?:boolean};response:{servers:import('../../../packages/agent-chat/src/host/agent-config').AgentServer[];skills:{name:string;path:string;description:string;bundled?:boolean;format?:'general'|'reels'|'youtube'}[];skillsRoot:string;ffmpegPath:string;content?:string;revision?:string}};
@@ -395,23 +405,44 @@ export type MainRequestMap = {
   [MAIN_CHANNELS.SYKA_EDIT_HISTORY_STATUS]: { request: { dir: string }; response: SykaEditHistoryResult };
   [MAIN_CHANNELS.SYKA_EDIT_HISTORY_UNDO]: { request: { dir: string }; response: SykaEditHistoryResult };
   [MAIN_CHANNELS.SYKA_EDIT_HISTORY_REDO]: { request: { dir: string }; response: SykaEditHistoryResult };
-  [MAIN_CHANNELS.SYKA_GROQ_SET_KEY]: { request: { key: string }; response: SykaGroqStatus };
+  [MAIN_CHANNELS.SYKA_GROQ_SET_KEY]: { request: { key: string; provider?: SykaKeyedProvider }; response: SykaGroqStatus };
+  [MAIN_CHANNELS.SYKA_LOCAL_VOICE]: { request: { action: "status" | "download" | "cancel" | "delete" | "choose" | "warmup" | "scan" | "pickFolder"; model?: import("./local-voice/assets").LocalVoiceModel }; response: import("./local-voice/local-voice").LocalVoiceStatus };
+  [MAIN_CHANNELS.SYKA_PARAKEET]: { request: { action: "status" | "download" | "cancel" | "delete" | "warmup" | "scan" | "pickFolder" }; response: import("./local-voice/parakeet").ParakeetStatus };
+  [MAIN_CHANNELS.SYKA_PARAKEET_TRANSCRIBE]: { request: { audio: Uint8Array; language?: string | null }; response: { text: string } };
+  [MAIN_CHANNELS.SYKA_LOCAL_TRANSCRIBE]: { request: { audio: Uint8Array; durationMs: number; language?: string | null }; response: { text: string } };
+  [MAIN_CHANNELS.SYKA_TRANSCRIPTION_MODELS]: { request: { baseUrl: string; key?: string }; response: { models: string[]; transcription: boolean } };
+  [MAIN_CHANNELS.SYKA_TRANSCRIPTION_CONFIGURE]: { request: { active: SykaCaptionProvider; compatible?: SykaCompatibleTranscription }; response: SykaGroqStatus };
   [MAIN_CHANNELS.SYKA_GROQ_TRANSCRIBE]: {
     request: { audio: Uint8Array; duration: number; applyGlossary?: boolean };
     response: SykaTranscriptSegment[];
   };
+  [MAIN_CHANNELS.SYKA_CODEX_VOICE_STATUS]: { request: void; response: SykaCodexVoiceStatus };
+  [MAIN_CHANNELS.SYKA_CODEX_TRANSCRIBE]: { request: { audio: Uint8Array; language?: string | null }; response: { text: string } };
   [MAIN_CHANNELS.SYKA_GLOSSARY_GET]: { request: void; response: SykaGlossary };
   [MAIN_CHANNELS.SYKA_GLOSSARY_SAVE]: { request: { expectedRevision: string; entries: SykaGlossaryEntry[] }; response: SykaGlossary };
   [MAIN_CHANNELS.SYKA_GLOSSARY_APPLY_TRANSCRIPT]: { request: { segments: SykaTranscriptSegment[] }; response: SykaTranscriptSegment[] };
 };
 
+/** Whether dictation can use the Codex account of this computer, and how. */
+export type SykaCodexVoiceStatus = { available: boolean; mode: "openai" | "chatgpt" | null };
+
 export type SykaGlossaryEntry = { id: string; term: string; variants: string[]; enabled: boolean };
 export type SykaGlossary = { version: 1; revision: string; entries: SykaGlossaryEntry[] };
 
+/** Who transcribes video captions: Groq, OpenAI or any OpenAI-compatible service with word timings. */
+export type SykaCaptionProvider = "groq" | "openai" | "compatible" | "local" | "parakeet";
+/** The caption providers that take a key (the local one runs on this computer). */
+export type SykaKeyedProvider = Exclude<SykaCaptionProvider, "local" | "parakeet">;
+export type SykaCompatibleTranscription = { name: string; baseUrl: string; model: string };
 export type SykaGroqStatus = {
+  /** The chosen caption provider has its key. */
   configured: boolean;
   secureStorage: boolean;
-  model: "whisper-large-v3-turbo";
+  model: string;
+  active: SykaCaptionProvider;
+  /** Which providers have a key saved. */
+  keys: Record<SykaKeyedProvider, boolean>;
+  compatible: SykaCompatibleTranscription | null;
 };
 export type SykaEditHistoryResult =
   | { ok: true; canUndo: boolean; canRedo: boolean; revision: string; changed?: boolean; undoLabel?: string; redoLabel?: string; path?: string }

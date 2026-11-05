@@ -85,7 +85,7 @@ describe('isolated external harness paths and environment', () => {
     const loaded = await loadExternalHarnesses(path, root);
     expect((await loaded[0]!.probe(env, new AbortController().signal)).status).toBe('not-installed');
     await writeFile(path, JSON.stringify([{ id: 'antigravity', command: process.execPath, token: 'invalid-field' }]));
-    expect(await loadExternalHarnesses(path, root)).toHaveLength(7);
+    expect(await loadExternalHarnesses(path, root)).toHaveLength(9);
   });
   it('persists explicit paths without losing other providers and preserves invalid configuration', async () => {
     const root = await setup(), path = join(root, 'harnesses.json');

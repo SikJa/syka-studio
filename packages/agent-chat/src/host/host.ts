@@ -204,6 +204,17 @@ export class AgentHost {
     for (const harness of options.harnesses) this.harnessById.set(harness.id, harness);
   }
 
+  /**
+   * Settings › Proveedores changed: the engines that list provider models check
+   * again. A check already running for them is discarded (its generation moves on)
+   * and a fresh one starts when it ends, so a saved provider shows up at once.
+   */
+  providersChanged(): void {
+    const ids = (["codex", "claude", "pi"] as HarnessId[]).filter(id => this.harnessById.has(id));
+    for (const id of ids) this.invalidateProbe(id);
+    void (this.probing ?? Promise.resolve([])).catch(() => []).then(() => this.stopping ? [] : this.probeAll(new Set(ids))).catch(error => this.log('provider re-check failed: ' + String(error)));
+  }
+
   /** Includes queued/settling work, not just the currently visible project. */
   isBusy(): boolean {
     return this.operations.size > 0 || this.authenticating.size > 0 || this.authMethodQueries.size > 0 || this.configuring !== null || [...this.chats.values()].some(chat =>
@@ -977,7 +988,7 @@ export class AgentHost {
     chat.idleTimer = null;
 
     // The first message names the chat; a name the person typed is kept.
-    if (!chat.transcript.items.some(item => item.kind === 'user') && (!params.chatId || /^(nuevo|new) chat$/i.test(chat.meta.title))) void this.retitle(chat, text);
+    if (params.autoTitle !== false && !chat.transcript.items.some(item => item.kind === 'user') && (!params.chatId || /^(nuevo|new) chat$/i.test(chat.meta.title))) void this.retitle(chat, text);
 
     const turnId = randomUUID();
     const user: Item = { id: `u-${turnId.slice(0, 12)}`, kind: "user", text, ...(attachments.length ? { attachments } : {}) };
@@ -1134,6 +1145,8 @@ export class AgentHost {
   private async ensureSession(chat: Chat, model: string, emit: Emit): Promise<HarnessSession> {
     const trace = chat.turn?.trace, started = performance.now();
     if (chat.session?.isClosed) { await chat.session.close(); chat.session = null; chat.sessionReason = 'transport_closed'; }
+    // Another provider's model: the same conversation reopens with it (Codex fixes the provider per thread).
+    if (chat.session?.canRun && !chat.session.canRun(model)) { await chat.session.close(); chat.session = null; chat.sessionReason = 'provider_reconfigured'; }
     if (chat.session) { trace?.session('reuse', 'active_session', performance.now() - started); trace?.instructions('confirmed_session'); return chat.session; }
     const harness = this.harnessById.get(chat.meta.harness);
     if (!harness) throw new HostError("harness-unavailable", `${HARNESS_LABELS[chat.meta.harness]} is not available`);

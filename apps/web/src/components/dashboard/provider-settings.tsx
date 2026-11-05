@@ -5,10 +5,9 @@ import { DashboardSurfaceSection } from './shared';
 import { authenticateHarness, cancelProviderAuth, submitProviderAuthCode, providerAuthMethods, chatState, currentModel, ensureConnected, refreshHarnesses, setStoredModel } from '@/agent-chat/store';
 import { PROVIDER_GUIDES, PROVIDER_LOGOS, PROVIDER_NAMES, PROVIDER_NOTES } from '@/agent-chat/provider-catalog';
 import { AssistantMark } from '@/components/ui/assistant-mark';
-import { Icon } from '@/components/ui/icon';
 import { Dialog, DialogContent, DialogDescription, DialogPortal, DialogTitle } from '@/components/ui/dialog';
 import { OfficialLink } from './syka-onboarding-settings';
-import { Switch, SwitchControl, SwitchInput, SwitchThumb } from '@/components/ui/switch';
+import { SettingsSwitch } from '@/components/settings/kit';
 import { modelVisibility, pickerHarnesses, setHarnessVisible, setHermesProviderVisible, setOpenCodeProviderVisible, setModelsVisible } from '@/agent-chat/store';
 import { harnessVisible, hermesProvider, routedProviderGroups, modelVisible } from '@/agent-chat/model-visibility';
 import './provider-settings.css';
@@ -39,10 +38,9 @@ export function ProviderSettings() {
   </DashboardSurfaceSection>
   </>;
 }
+/** The settings kit's switch, the same as every other page of Configuración. */
 function VisibilitySwitch(props: { label: string; checked: boolean; onChange(value: boolean): void }) {
-  return <Switch checked={props.checked} onChange={props.onChange}>
-    <SwitchInput aria-label={props.label} /><SwitchControl><SwitchThumb /></SwitchControl>
-  </Switch>;
+  return <SettingsSwitch label={props.label} checked={props.checked} onChange={props.onChange} />;
 }
 function ModelVisibilitySettings() {
   const count = () => pickerHarnesses().filter(h => h.status === 'ready').reduce((n, h) => n + h.models.length, 0);
@@ -52,7 +50,7 @@ function ModelVisibilitySettings() {
     <div class="syka-model-visibility-grid"><For each={HARNESS_IDS.filter(id => id !== 'muse')}>{id =>
       <div class="syka-model-visibility-row" data-harness={id}>
         <button type="button" class="syka-model-visibility-open" aria-label={`Elegir modelos visibles de ${PROVIDER_NAMES[id]}`} aria-haspopup="dialog" disabled={!chatState.harnesses.find(h => h.id === id)?.models.length} onClick={() => setSelected(id)}>
-          <span class="syka-model-visibility-logo" aria-hidden="true" innerHTML={PROVIDER_LOGOS[id]} /><span>{PROVIDER_NAMES[id]}</span><Icon name="chevron-down" class="size-4" />
+          <span class="syka-model-visibility-logo" aria-hidden="true" innerHTML={PROVIDER_LOGOS[id]} /><span>{PROVIDER_NAMES[id]}</span>{(() => { const n = chatState.harnesses.find(h => h.id === id)?.models.length ?? 0; return n ? <span class="syka-model-visibility-count">{n === 1 ? '1 modelo' : `${n} modelos`} ›</span> : null; })()}
         </button>
         <VisibilitySwitch label={`Mostrar ${PROVIDER_NAMES[id]} en el selector`} checked={harnessVisible(id, modelVisibility())} onChange={value => setHarnessVisible(id, value)} />
       </div>
@@ -119,7 +117,7 @@ function ProviderRow(props: { id: HarnessId }) {
         <Button variant="secondary" class="syka-model-login" disabled={connecting() || checking()} onClick={() => void connect()}><AssistantMark provider={props.id} class="size-4" />{connecting() ? 'Conectando…' : checking() ? 'Comprobando…' : `Conectar ${PROVIDER_NAMES[props.id]}`}</Button>
       }>
         <Button variant="secondary" disabled={connecting()} aria-expanded={expanded()} aria-controls={`provider-models-${props.id}`} onClick={() => setExpanded(!expanded())}>{expanded() ? 'Contraer' : 'Elegir modelo'}</Button>
-        <Show when={props.id !== 'antigravity' && props.id !== 'gemini-web'}><Button variant="secondary" aria-expanded={showAccounts()} aria-controls={`provider-accounts-${props.id}`} disabled={connecting()} onClick={() => void accounts()}>{showAccounts() ? 'Cancelar otra conexión' : 'Conectar otra cuenta'}</Button></Show>
+        <Show when={props.id !== 'gemini-web'}><Button variant="secondary" aria-expanded={showAccounts()} aria-controls={`provider-accounts-${props.id}`} disabled={connecting()} onClick={() => void accounts()}>{showAccounts() ? 'Cancelar' : props.id === 'antigravity' ? 'Cambiar de cuenta' : 'Conectar otra cuenta'}</Button></Show>
       </Show></div>
     </div>
     <p>{PROVIDER_NOTES[props.id]}</p>
@@ -146,6 +144,7 @@ function ProviderRow(props: { id: HarnessId }) {
       </Show>
       <Show when={info()?.status === 'ready' && props.id === 'antigravity'}><p class="syka-model-footnote">Usás la cuenta conectada en Antigravity. Para cambiarla, cambiá de cuenta en Antigravity y volvé a comprobar la conexión.</p><Button variant="ghost" disabled={connecting()} onClick={() => refreshHarnesses(true)}>Volver a comprobar</Button></Show>
     </div></Show>
+    <Show when={info()?.status === 'ready' && showAccounts() && props.id === 'antigravity'}><p class="syka-model-footnote">Antigravity guarda una sola cuenta de Google para todo el equipo. Se abre su terminal: escribí /logout, iniciá sesión con la otra cuenta y cerrá la terminal. La cuenta cambia en todos tus proyectos.</p></Show>
     <Show when={info()?.status === 'ready' && showAccounts()}><div id={`provider-accounts-${props.id}`} class="syka-provider-auth-methods" aria-label={`Otra cuenta de ${PROVIDER_NAMES[props.id]}`}><For each={info()?.authMethods}>{method => <Button variant="secondary" disabled={connecting()} onClick={() => void connect(method.id)}>{method.label}</Button>}</For></div></Show>
     <Show when={error()}><p role="alert" class="text-destructive">{error()}</p></Show>
     <details class="syka-provider-guide"><summary>Cómo conectar {PROVIDER_NAMES[props.id]}</summary><ol><For each={guide().steps}>{step => <li>{step}</li>}</For></ol><Show when={guide().limitation}><p>{guide().limitation}</p></Show><OfficialLink href={guide().url}>{guide().linkLabel}</OfficialLink></details>

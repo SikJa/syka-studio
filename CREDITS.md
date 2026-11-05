@@ -25,6 +25,19 @@ Los assets originales de marca de Diffusion, incluidos los de `apps/desktop/asse
 | [use-stick-to-bottom](https://github.com/stackblitz-labs/use-stick-to-bottom), StackBlitz; port de conciv | Scroll del chat en `apps/web/src/agent-chat/stick-to-bottom.ts`, adaptado desde `@conciv/solid-stick-to-bottom@0.0.19` | MIT completo en el header; Copyright © 2024–present StackBlitz y © 2026 conciv contributors |
 | [opus-sound-layer](https://github.com/Bodila51/opus-sound-layer), Copyright © 2026 Bodila51, snapshot `52ac266a24b7dfd3cd06a28c34d5af360a8d7586` | Criterios adaptados de selección/mezcla/revisión sonora y referencias de packs | [MIT](docs/licenses/LICENSE.opus-sound-layer.txt); el aviso no cambia la licencia de los sonidos Kenney |
 
+## Transcripción en este equipo
+
+Los modelos no viajan con la app: se descargan desde Configuración, fijados por revisión y verificados con SHA-256.
+
+| Origen y autoría | Uso en Syka | Licencia |
+| --- | --- | --- |
+| [Parakeet TDT 0.6B v3](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3), NVIDIA; conversión GGUF de [handy-computer](https://huggingface.co/handy-computer/parakeet-tdt-0.6b-v3-gguf) | Modelo «Parakeet v3» para subtítulos y dictado | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/): este crédito es la atribución que pide |
+| [transcribe.cpp](https://github.com/handy-computer/transcribe.cpp) y ggml, Handy Computer y los autores de ggml | Motor de `native/syka-asr` (crate `transcribe-cpp` 0.4.1) | MIT |
+| [Silero VAD](https://github.com/snakers4/silero-vad) v6.2, Silero Team | Detector de voz antes del modelo | MIT |
+| [whisper.cpp](https://github.com/ggml-org/whisper.cpp) (release b5130) y los modelos Whisper de OpenAI en formato ggml | «Whisper en este equipo» (Base, Small, Large V3 Turbo) | MIT |
+| [Hex](https://github.com/anomalyco/hex), Anomaly | La forma de tratar el audio (detector de voz, bordes, bloques), tomada de las notas de Whispera; no se copia su código | MIT |
+| Whispera y Syka Code, SikJa | Diseño del motor local, descargas verificadas y gestión de `whisper-server` | Proyectos propios |
+
 ## Referencias de motion
 
 Motion Lab y Huashu Art Motion se incorporan como referencias de código y diseño

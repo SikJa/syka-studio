@@ -12,5 +12,7 @@ export type UpdateState = {
   checkedAt?: string;
   message?: string;
   simulation?: 'preview' | 'complete';
+  /** Download progress, 0–1, while an installer downloads. */
+  progress?: number;
 };
 export type UpdateRequest = { action: 'status' | 'check' | 'download' | 'install' | 'notes' | 'demo-reset'; locale?: 'es' | 'en' | 'pt-BR' };

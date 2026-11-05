@@ -1,0 +1,1661 @@
+/* Syka Code's syka-settings.css (B:\Code Apps\Syka-Next, src/renderer/src/styles),
+   copied as is except the dark theme selector: Syka Studio marks it with
+   [data-kb-theme="dark"] instead of [data-theme="dark"]. */
+/*
+  syka-settings.css de Syka 2.0 (apps/app/src/components/settings), copiado tal cual
+  salvo: sin @font-face (Syka ya trae Geist), sin los temas por defecto de
+  Syka y con el modo oscuro de Syka ([data-kb-theme="dark"]).
+*/
+:root {
+  --z-menu-in: 140ms;
+  --z-menu-out: 100ms;
+  --z-dialog-in: 180ms;
+  --z-hover: 150ms;
+  --z-switch-duration: 240ms;
+  --z-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --z-hover-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --z-switch-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --z-bg: var(--background);
+  --z-shell: var(--sidebar);
+  --z-text: var(--foreground);
+  --z-muted: var(--muted-foreground);
+  --z-border: var(--border);
+  --z-solid: var(--foreground);
+  --z-on-solid: var(--background);
+  --z-accent: var(--syka-accent, #5b43e8);
+  --z-accent-strong: var(--z-accent);
+  --z-wash-045: rgb(25.5 25.5 25.5/0.045);
+  --z-wash-06: rgb(25.5 25.5 25.5/0.06);
+  --z-wash-10: rgb(25.5 25.5 25.5/0.1);
+  --z-hover-wash: rgb(25.5 25.5 25.5/0.06);
+  --z-floating-tint: rgb(255 255 255/0.45);
+  --z-switch-off: rgb(25.5 25.5 25.5/0.14);
+  --z-switch-off-hover: rgb(25.5 25.5 25.5/0.2);
+  --z-track-on: var(--z-accent);
+  --z-range-track: rgb(25.5 25.5 25.5/0.12);
+  --z-thumb-shadow:
+    0 0 0 0.5px rgb(0 0 0/0.08), 0 1px 2px rgb(0 0 0/0.16),
+    0 2px 6px rgb(0 0 0/0.08);
+  --z-on-accent: #fff;
+  --z-scrim: rgb(0 0 0/0.32);
+}
+:root:is([data-kb-theme="dark"], .dark) {
+  --z-accent: var(--syka-accent, #8b7cf6);
+  --z-wash-045: rgb(234.6 234.6 234.6/0.045);
+  --z-wash-06: rgb(234.6 234.6 234.6/0.06);
+  --z-wash-10: rgb(234.6 234.6 234.6/0.1);
+  --z-hover-wash: rgb(234.6 234.6 234.6/0.11);
+  --z-floating-tint: rgb(8 8 8/0.15);
+  --z-switch-off: rgb(234.6 234.6 234.6/0.16);
+  --z-switch-off-hover: rgb(234.6 234.6 234.6/0.22);
+  --z-range-track: rgb(234.6 234.6 234.6/0.14);
+  --z-thumb-shadow:
+    0 0 0 0.5px rgb(0 0 0/0.2), 0 1px 2px rgb(0 0 0/0.4),
+    0 2px 6px rgb(0 0 0/0.2);
+  --z-on-accent: #0b0b0c;
+  --z-scrim: rgb(0 0 0/0.6);
+}
+:root[data-syka-settings-open]:is(
+    [data-syka-theme-preview-id="default"],
+    [data-syka-theme-id="default"]:not([data-syka-theme-preview-id]),
+    :not([data-syka-theme-id]):not([data-syka-theme-preview-id])
+  ) {
+  --background: #fff;
+  --sidebar: #f3f3f5;
+  --card: #fff;
+  --popover: #fff;
+  --foreground: #303035;
+  --muted-foreground: #62626a;
+  --border: rgb(0 0 0/0.1);
+  --secondary: rgb(25.5 25.5 25.5/0.06);
+  --secondary-foreground: #303035;
+  --sidebar-foreground: #303035;
+  --sidebar-accent: rgb(25.5 25.5 25.5/0.06);
+  --sidebar-accent-foreground: #303035;
+  --primary-foreground: #fff;
+  --z-solid: oklch(0.205 0 0);
+  --z-on-solid: oklch(0.985 0 0);
+}
+:root:is([data-kb-theme="dark"], .dark)[data-syka-settings-open]:is(
+    [data-syka-theme-preview-id="default"],
+    [data-syka-theme-id="default"]:not([data-syka-theme-preview-id]),
+    :not([data-syka-theme-id]):not([data-syka-theme-preview-id])
+  ) {
+  --background: #060606;
+  --sidebar: #0d0d0d;
+  --card: #0e0e0e;
+  --popover: #161616;
+  --foreground: #e8e8ea;
+  --muted-foreground: #a9a9ae;
+  --border: rgb(255 255 255/0.08);
+  --secondary: rgb(234.6 234.6 234.6/0.06);
+  --secondary-foreground: #e8e8ea;
+  --sidebar-foreground: #e8e8ea;
+  --sidebar-accent: rgb(234.6 234.6 234.6/0.11);
+  --sidebar-accent-foreground: #e8e8ea;
+  --z-solid: #e8e8ea;
+  --z-on-solid: #0e0e0e;
+}
+.syka-settings-page {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  max-width: none;
+  color: var(--z-text);
+  font-family: var(--font-sans);
+  font-size: calc(13px * var(--syka-ui-scale, 1));
+  line-height: 1.4;
+}
+.syka-settings-page > h1 {
+  margin: 0 16px 20px;
+  font-size: calc(20px * var(--syka-ui-scale, 1));
+  line-height: 26px;
+  font-weight: 500;
+  letter-spacing: normal;
+}
+.syka-settings-group {
+  margin: 0 0 28px;
+  min-width: 0;
+}
+.syka-settings-group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 16px 8px;
+}
+.syka-settings-group-heading h2 {
+  font-size: calc(13px * var(--syka-ui-scale, 1));
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--z-muted);
+}
+.syka-settings-description {
+  margin: 4px 0 0;
+  color: var(--z-muted);
+  font-size: calc(12px * var(--syka-ui-scale, 1));
+  line-height: 17px;
+  font-weight: 400;
+}
+.syka-settings-group-action {
+  flex: 0 0 auto;
+  align-self: flex-start;
+}
+.syka-settings-card-body {
+  padding-block: 16px;
+}
+.syka-settings-card-body:has(
+  > :is(.syka-settings-row, .syka-settings-row-list)
+),
+.syka-settings-card-body:has(> .space-y-5 > .syka-settings-row) {
+  padding-block: 0;
+}
+.syka-settings-card-body > .space-y-5 > .syka-settings-row {
+  margin-block: 0;
+}
+.syka-settings-content-row {
+  font-size: calc(13px * var(--syka-ui-scale, 1));
+  flex-wrap: nowrap;
+}
+.syka-settings-row-list {
+  min-width: 0;
+}
+.syka-settings-badge {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  border-radius: 4px;
+  padding: 2px 5px;
+  background: var(--z-wash-06);
+  color: var(--z-muted);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 14px;
+}
+.syka-settings-label .syka-settings-badge {
+  margin-inline-start: 8px;
+}
+.syka-settings-message {
+  min-width: 0;
+  padding-block: 12px;
+  color: var(--z-muted);
+  font-size: calc(12px * var(--syka-ui-scale, 1));
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+.syka-settings-message[data-kind="error"] {
+  color: var(--destructive-text, #e56868);
+}
+.syka-settings-input {
+  min-width: 0;
+  min-height: 32px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding-inline: 10px;
+  background: var(--z-wash-06);
+  color: var(--z-text);
+  font-size: calc(12.5px * var(--syka-ui-scale, 1));
+  box-shadow: none;
+  transition:
+    background var(--z-hover) var(--z-hover-ease),
+    border-color var(--z-hover) var(--z-hover-ease);
+}
+.syka-settings-input:hover:not(:disabled) {
+  background: var(--z-wash-10);
+}
+.syka-settings-input:focus-visible {
+  outline: 2px solid var(--z-accent);
+  outline-offset: 2px;
+  border-color: var(--z-accent);
+  box-shadow: none;
+}
+.syka-settings-input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.syka-settings-input[aria-invalid="true"] {
+  border-color: var(--destructive-text, #e56868);
+}
+.syka-settings-dialog textarea.syka-settings-input {
+  min-height: 192px;
+  height: auto;
+  padding: 10px;
+  line-height: 18px;
+  resize: vertical;
+}
+.syka-settings-banner {
+  margin-bottom: 12px;
+}
+.syka-browser-bridge {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--z-text);
+}
+.syka-browser-setup-steps {
+  padding-inline-start: 20px;
+  list-style: decimal;
+  color: var(--z-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+.syka-browser-setup-steps > li + li {
+  margin-top: 12px;
+}
+.syka-browser-tabs-heading {
+  padding-block: 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.syka-browser-tab {
+  display: block;
+}
+.syka-settings-page-description {
+  margin: -12px 16px 24px;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--z-muted);
+}
+.syka-settings-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.syka-settings-resource-link {
+  border-radius: 4px;
+  color: var(--z-text);
+  text-align: start;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  cursor: pointer;
+}
+.syka-settings-resource-link:hover {
+  color: var(--z-accent);
+}
+.syka-settings-resource-link:focus-visible {
+  outline: 2px solid var(--z-accent);
+  outline-offset: 3px;
+}
+.syka-settings-plugin-row {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+.syka-settings-plugin-row .syka-settings-control {
+  padding-top: 3px;
+}
+.syka-settings-plugin-byline {
+  margin-block: 3px;
+  color: var(--z-muted);
+  font-size: 11px;
+}
+.syka-settings-plugin-toolbar {
+  margin-bottom: 20px;
+}
+.syka-settings-plugin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 16px 8px 24px;
+}
+.syka-settings-detail-title {
+  min-width: 0;
+  font-size: calc(20px * var(--syka-ui-scale, 1));
+  line-height: 26px;
+  font-weight: 500;
+  color: var(--z-text);
+}
+.syka-settings-detail-page > :first-child {
+  margin-bottom: 24px;
+}
+.syka-profile-photo-row {
+  gap: 16px;
+}
+.syka-profile-name-label {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+}
+.syka-profile-name-input {
+  width: min(240px, 100%);
+}
+.syka-settings-keyboard-row {
+  gap: 16px;
+}
+.syka-settings-voice-menu {
+  padding: 16px;
+}
+.syka-settings-notification-device {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 12px;
+  line-height: 18px;
+}
+.syka-settings-machine-content {
+  padding-block: 0;
+}
+.syka-settings-marketplace-row {
+  align-items: flex-start;
+}
+.syka-settings-choice-row {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--z-text);
+  font-size: 13px;
+  line-height: 18px;
+  text-align: start;
+  transition:
+    background var(--z-hover) var(--z-hover-ease),
+    border-color var(--z-hover) var(--z-hover-ease);
+}
+.syka-settings-choice-row:hover:not(:disabled) {
+  background: var(--z-wash-06);
+}
+.syka-settings-choice-row:focus-visible {
+  outline: 2px solid var(--z-accent);
+  outline-offset: 2px;
+}
+.syka-settings-choice-tile {
+  align-items: center;
+  padding: 10px 12px;
+  border-color: var(--z-border);
+  background: var(--z-wash-06);
+}
+.syka-settings-choice-selected {
+  border-color: var(--z-accent);
+  background: var(--z-wash-10);
+}
+.syka-settings-extension-toolbar {
+  flex-direction: column;
+}
+.syka-settings-voice-models {
+  min-width: 0;
+}
+.syka-settings-voice-model {
+  padding-block: 12px;
+}
+.syka-settings-card {
+  padding: 4px 16px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--z-wash-045);
+  min-width: 0;
+  overflow: hidden;
+}
+.syka-settings-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 56px;
+  padding: 12px 0;
+}
+.syka-settings-leading {
+  display: flex;
+  flex-shrink: 0;
+}
+.syka-settings-leading + .syka-settings-label {
+  margin-inline-start: -4px;
+}
+.syka-settings-label {
+  min-width: 0;
+  flex: 1;
+}
+.syka-settings-label > :is(span, label) {
+  display: block;
+  font-size: calc(13px * var(--syka-ui-scale, 1));
+  font-weight: 500;
+  line-height: 18px;
+}
+.syka-settings-label p {
+  font-size: calc(12px * var(--syka-ui-scale, 1));
+  line-height: 16px;
+  color: var(--z-muted);
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+}
+.syka-settings-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: 65%;
+  min-width: 0;
+  flex-shrink: 0;
+}
+.syka-settings-row-below {
+  gap: 12px;
+}
+.syka-settings-row-below .syka-settings-label {
+  flex-basis: 100%;
+}
+.syka-settings-row-below .syka-settings-control {
+  width: 100%;
+  max-width: 100%;
+}
+.syka-settings-row-below
+  .syka-settings-control
+  > :is(.syka-tile-grid, .syka-footer-list) {
+  flex: 1;
+  min-width: 0;
+}
+.syka-settings-select,
+.syka-settings-action {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
+  height: 32px;
+  min-height: 32px;
+  max-width: 100%;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font: 400 calc(12.5px * var(--syka-ui-scale, 1))/18px var(--font-sans);
+  color: var(--z-text);
+  background: var(--z-wash-06);
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    background-color var(--z-hover) var(--z-hover-ease),
+    color var(--z-hover) var(--z-hover-ease),
+    opacity var(--z-hover) var(--z-hover-ease);
+}
+.syka-settings-select {
+  min-width: 128px;
+  padding: 0 8px 0 10px;
+  text-align: left;
+  justify-content: space-between;
+}
+.syka-settings-action {
+  gap: 6px;
+  padding: 5px 10px;
+}
+.syka-settings-select:hover,
+.syka-settings-select[data-state="open"],
+.syka-settings-action[data-zeron-tone="filled"]:hover {
+  background: var(--z-wash-10);
+}
+.syka-settings-action[data-zeron-tone="quiet"] {
+  background: transparent;
+  color: var(--z-muted);
+}
+.syka-settings-action[data-zeron-tone="quiet"]:hover {
+  background: var(--z-hover-wash);
+  color: var(--z-text);
+}
+.syka-settings-action[data-zeron-tone="solid"] {
+  background: var(--z-solid);
+  color: var(--z-on-solid);
+  font-weight: 500;
+}
+.syka-settings-action[data-zeron-tone="solid"]:hover,
+.syka-settings-action[data-zeron-tone="danger"]:hover {
+  opacity: 0.9;
+}
+.syka-settings-action[data-zeron-tone="danger"] {
+  background: var(--destructive);
+  color: #fff;
+}
+.syka-settings-select:disabled,
+.syka-settings-action:disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.syka-settings-page :is(button, input):not(.syka-settings-select):focus-visible,
+.syka-settings-dialog :is(button, input):focus-visible {
+  outline: 2px solid var(--z-accent);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+.syka-settings-select:focus-visible {
+  outline: 2px solid var(--z-accent);
+  outline-offset: 2px;
+}
+/* El selector de color de BeUI trae sus propios campos. */
+.syka-settings-page
+  input:not([type="file"]):not([type="range"]):not([type="checkbox"]):not([data-color-picker] *) {
+  height: 32px;
+  border-radius: 10px;
+  padding: 5px 10px;
+  background: var(--z-wash-06);
+  border: 1px solid transparent;
+  color: var(--z-text);
+  font-size: 12.5px;
+}
+.syka-settings-switch,
+:is(.syka-settings-page, .syka-settings-dialog)
+  button[role="switch"]:not(.syka-settings-switch) {
+  --z-switch-w: 36px;
+  --z-switch-h: 22px;
+  --z-thumb-size: 18px;
+  --z-thumb-w: var(--z-thumb-size);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: var(--z-switch-w);
+  min-width: var(--z-switch-w);
+  height: var(--z-switch-h);
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--z-switch-off);
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    background-color var(--z-switch-duration) var(--z-switch-ease),
+    opacity var(--z-hover) var(--z-hover-ease);
+}
+.syka-settings-switch:hover:not(:disabled):not([data-state="checked"]),
+:is(.syka-settings-page, .syka-settings-dialog)
+  button[role="switch"]:not(.syka-settings-switch):hover:not(:disabled):not(
+    [data-state="checked"]
+  ) {
+  background: var(--z-switch-off-hover);
+}
+.syka-settings-switch[data-state="checked"],
+:is(.syka-settings-page, .syka-settings-dialog)
+  button[role="switch"]:not(.syka-settings-switch)[data-state="checked"] {
+  background: var(--z-track-on);
+}
+.syka-settings-switch:active:not(:disabled),
+:is(.syka-settings-page, .syka-settings-dialog)
+  button[role="switch"]:not(.syka-settings-switch):active:not(:disabled) {
+  --z-thumb-w: calc(var(--z-thumb-size) + 4px);
+}
+.syka-settings-switch:disabled,
+:is(.syka-settings-page, .syka-settings-dialog)
+  button[role="switch"]:not(.syka-settings-switch):disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.syka-settings-page .syka-settings-switch:focus-visible,
+:is(.syka-settings-page, .syka-settings-dialog)
+  button[role="switch"]:not(.syka-settings-switch):focus-visible {
+  outline: 2px solid var(--z-accent);
+  outline-offset: 2px;
+}
+.z-switch-thumb,
+:is(.syka-settings-page, .syka-settings-dialog)
+  button[role="switch"]:not(.syka-settings-switch)
+  > span {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: var(--z-thumb-w);
+  height: var(--z-thumb-size);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--z-thumb-shadow);
+  translate: none;
+  transform: translateX(0);
+  transition:
+    transform var(--z-switch-duration) var(--z-switch-ease),
+    width var(--z-switch-duration) var(--z-switch-ease);
+}
+.syka-settings-switch[data-state="checked"] .z-switch-thumb,
+:is(.syka-settings-page, .syka-settings-dialog)
+  button[role="switch"]:not(.syka-settings-switch)[data-state="checked"]
+  > span {
+  transform: translateX(calc(var(--z-switch-w) - var(--z-thumb-w) - 4px));
+}
+.syka-settings-switch:disabled .z-switch-thumb {
+  box-shadow: 0 0 0 0.5px rgb(0 0 0/0.12);
+}
+.syka-settings-menu {
+  isolation: isolate;
+  min-width: 160px;
+  /* Una lista larga (las caras del perfil) no se sale de la ventana: se desplaza dentro. */
+  max-height: min(360px, var(--radix-dropdown-menu-content-available-height, 360px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+  border: 1px solid var(--z-border);
+  border-radius: 12px;
+  background: var(--z-shell);
+  color: var(--z-text);
+  font-family: var(--font-sans);
+  box-shadow:
+    0 10px 15px -3px #0002,
+    0 4px 6px -4px #0002;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  animation: none;
+}
+html[data-syka-surface="glass"] .syka-settings-menu {
+  background: var(--z-floating-tint);
+  backdrop-filter: blur(16px);
+  box-shadow: none;
+}
+.syka-settings-menu[data-state="open"] {
+  animation: z-menu-in var(--z-menu-in) var(--z-ease) both;
+}
+.syka-settings-menu[data-state="closed"] {
+  animation: z-menu-out var(--z-menu-out) var(--z-ease) both;
+}
+.syka-settings-menu
+  :is([role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 30px;
+  padding: 6px 8px;
+  border-radius: 7px;
+  font-size: calc(13px * var(--syka-ui-scale, 1));
+  font-weight: 400;
+  color: color-mix(in srgb, var(--z-text) 90%, transparent);
+  transition:
+    background-color var(--z-hover) var(--z-hover-ease),
+    color var(--z-hover) var(--z-hover-ease);
+}
+.syka-settings-menu
+  :is([role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]):is(
+    [data-highlighted],
+    [data-selected="true"]
+  ) {
+  background: var(--z-wash-10);
+  color: var(--z-text);
+}
+.z-select-check {
+  width: 18px;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: flex-end;
+  margin-left: auto;
+  color: var(--z-accent);
+}
+.syka-settings-dialog {
+  isolation: isolate;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  border: 1px solid var(--z-border);
+  border-radius: 20px;
+  padding: 24px;
+  background: var(--z-shell);
+  font-family: var(--font-sans);
+  color: var(--z-text);
+}
+/* Forms stay on a near-solid surface: a translucent dialog smeared the list
+   behind it into a blur right under the fields. */
+html[data-syka-surface="glass"] .syka-settings-dialog {
+  background: color-mix(in srgb, var(--z-shell) 96%, transparent);
+  backdrop-filter: blur(24px);
+  box-shadow: none;
+}
+.syka-settings-dialog[role="dialog"][data-state] {
+  border-radius: 20px;
+}
+.syka-settings-dialog .syka-settings-select {
+  width: 100%;
+}
+.syka-settings-error {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border: 1px solid color-mix(in srgb, var(--destructive) 20%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--destructive) 6%, transparent);
+  font-size: 12.5px;
+  color: var(--destructive);
+}
+.syka-tile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.syka-settings-page button.syka-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--z-text);
+  text-align: start;
+  cursor: pointer;
+}
+.syka-settings-page button.syka-tile:focus-visible {
+  outline: 0;
+}
+.syka-tile-preview {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  isolation: isolate;
+  aspect-ratio: 16 / 10;
+  border-radius: 12px;
+  background: var(--z-wash-06);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition:
+    outline-color var(--z-hover) var(--z-hover-ease),
+    transform 220ms var(--z-switch-ease);
+}
+.syka-tile-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--z-border);
+  pointer-events: none;
+  transition: opacity var(--z-hover) var(--z-hover-ease);
+}
+.syka-tile[aria-checked="true"] .syka-tile-preview::after {
+  opacity: 0;
+}
+.syka-tile:hover:not(:disabled) .syka-tile-preview {
+  outline-color: color-mix(in srgb, var(--z-text) 16%, transparent);
+}
+.syka-tile[aria-checked="true"] .syka-tile-preview {
+  outline-color: var(--z-accent);
+}
+.syka-tile:active:not(:disabled) .syka-tile-preview {
+  transform: scale(0.985);
+}
+.syka-tile:focus-visible .syka-tile-preview {
+  outline-color: var(--z-accent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--z-accent) 22%, transparent);
+}
+.syka-tile-check {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--z-accent);
+  color: var(--z-on-accent);
+  box-shadow: 0 1px 3px rgb(0 0 0/0.24);
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 160ms var(--z-hover-ease),
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.syka-tile-check svg {
+  stroke-width: 3px;
+}
+.syka-tile[aria-checked="true"] .syka-tile-check {
+  opacity: 1;
+  transform: scale(1);
+}
+.syka-tile-label {
+  overflow: hidden;
+  padding-inline: 2px;
+  color: var(--z-text);
+  font-size: calc(12.5px * var(--syka-ui-scale, 1));
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.syka-tile:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.syka-scheme-grid {
+  padding-bottom: 4px;
+}
+.syka-scheme-preview {
+  aspect-ratio: 2 / 1;
+}
+.syka-scheme-window {
+  --mini-chrome: #f3f3f5;
+  --mini-content: #fff;
+  --mini-edge: rgb(0 0 0/0.07);
+  --mini-ink: rgb(48 48 53/0.26);
+  --mini-ink-soft: rgb(48 48 53/0.13);
+  --mini-selected: rgb(25.5 25.5 25.5/0.07);
+  --mini-composer: #fff;
+  --mini-composer-edge: rgb(0 0 0/0.1);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 0;
+  padding: 7px 7px 7px 0;
+  background: var(--mini-chrome);
+}
+.syka-scheme-window[data-mode="dark"] {
+  --mini-chrome: #0d0d0d;
+  --mini-content: #060606;
+  --mini-edge: rgb(255 255 255/0.06);
+  --mini-ink: rgb(232 232 234/0.3);
+  --mini-ink-soft: rgb(232 232 234/0.14);
+  --mini-selected: rgb(234.6 234.6 234.6/0.1);
+  --mini-composer: #161616;
+  --mini-composer-edge: rgb(255 255 255/0.1);
+}
+.syka-scheme-preview[data-scheme="system"]
+  > .syka-scheme-window
+  + .syka-scheme-window {
+  z-index: 1;
+  clip-path: polygon(58% 0, 100% 0, 100% 100%, 42% 100%);
+}
+.syka-scheme-window-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 30%;
+  flex-shrink: 0;
+  padding: 9px 7px 0 8px;
+}
+.syka-scheme-window-sidebar i {
+  display: block;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--mini-ink-soft);
+}
+.syka-scheme-window-sidebar i:first-child {
+  position: relative;
+  height: 10px;
+  margin: -3px -3px -1px;
+  border-radius: 4px;
+  background: var(--mini-selected);
+}
+.syka-scheme-window-sidebar i:first-child::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 64%;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--mini-ink);
+}
+.syka-scheme-window-sidebar i:nth-child(2) {
+  width: 78%;
+}
+.syka-scheme-window-sidebar i:nth-child(3) {
+  width: 62%;
+}
+.syka-scheme-window-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  border-radius: 7px;
+  background: var(--mini-content);
+  box-shadow: inset 0 0 0 1px var(--mini-edge);
+}
+.syka-scheme-window-content > i {
+  display: block;
+  width: 38%;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--mini-ink);
+}
+.syka-scheme-window-composer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 72%;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: var(--mini-composer);
+  box-shadow:
+    inset 0 0 0 1px var(--mini-composer-edge),
+    0 1px 2px rgb(0 0 0/0.06);
+}
+.syka-scheme-window-composer b {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--z-accent);
+}
+.syka-accent-colors {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.syka-settings-page button.syka-accent-color {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition:
+    outline-color var(--z-hover) var(--z-hover-ease),
+    transform 220ms var(--z-switch-ease);
+}
+.syka-accent-color i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0/0.12);
+}
+.syka-accent-color[data-theme-accent] i {
+  background: conic-gradient(
+    from 210deg,
+    #8b7cf6,
+    #60a5fa,
+    #22d3ee,
+    #4ade80,
+    #fbbf24,
+    #fb923c,
+    #f472b6,
+    #8b7cf6
+  );
+}
+.syka-settings-page button.syka-accent-color:hover {
+  transform: scale(1.08);
+}
+.syka-settings-page button.syka-accent-color[aria-pressed="true"] {
+  outline-color: var(--swatch, var(--z-text));
+}
+.syka-settings-page
+  button.syka-accent-color[data-theme-accent][aria-pressed="true"] {
+  outline-color: color-mix(in srgb, var(--z-text) 55%, transparent);
+}
+.syka-settings-page button.syka-accent-color:focus-visible {
+  outline-color: var(--z-accent);
+}
+.syka-settings-page .syka-range-control {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 12px;
+  width: var(--syka-control-w, 208px);
+  max-width: 100%;
+  min-width: 0;
+}
+.syka-settings-page .syka-range-control input[type="range"] {
+  --syka-range-thumb: 16px;
+  flex: 1;
+  width: auto;
+  min-width: 60px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.syka-settings-page .syka-range-control input[type="range"]:focus-visible {
+  outline: 0;
+}
+.syka-range-control input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--z-accent) 0
+      calc(
+        var(--syka-range-thumb) / 2 + (100% - var(--syka-range-thumb)) *
+          var(--syka-range-progress, 0)
+      ),
+    var(--z-range-track) 0
+  );
+}
+.syka-range-control input[type="range"]::-webkit-slider-thumb {
+  width: var(--syka-range-thumb);
+  height: var(--syka-range-thumb);
+  margin-top: calc((4px - var(--syka-range-thumb)) / 2);
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--z-thumb-shadow);
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    transform 180ms var(--z-switch-ease),
+    box-shadow var(--z-hover) var(--z-hover-ease);
+}
+.syka-range-control input[type="range"]:hover::-webkit-slider-thumb {
+  transform: scale(1.08);
+}
+.syka-range-control input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.14);
+}
+.syka-range-control input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--z-accent) 30%, transparent),
+    var(--z-thumb-shadow);
+}
+.syka-range-control input[type="range"]::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--z-range-track);
+}
+.syka-range-control input[type="range"]::-moz-range-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--z-accent);
+}
+.syka-range-control input[type="range"]::-moz-range-thumb {
+  width: var(--syka-range-thumb);
+  height: var(--syka-range-thumb);
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--z-thumb-shadow);
+}
+.syka-range-control input[type="range"]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.syka-settings-page .syka-range-control output {
+  flex-shrink: 0;
+  min-width: 44px;
+  color: var(--z-muted);
+  font-size: calc(12px * var(--syka-ui-scale, 1));
+  line-height: 16px;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+.syka-settings-dialog .syka-appearance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+}
+.syka-settings-dialog input[type="range"] {
+  accent-color: var(--z-accent);
+}
+.syka-settings-page
+  .syka-settings-control
+  > .syka-settings-select:has(+ .syka-settings-select) {
+  min-width: 180px;
+}
+.syka-settings-page
+  .syka-settings-control
+  > .syka-settings-select
+  + .syka-settings-select {
+  min-width: 90px;
+}
+.syka-appearance-page {
+  --syka-control-w: 208px;
+  container: syka-appearance / inline-size;
+}
+@container syka-appearance (max-width: 560px) {
+  .syka-settings-group {
+    --syka-control-w: 172px;
+  }
+  .syka-settings-page .syka-photo-filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.syka-appearance-page
+  .syka-settings-control
+  > :is(.syka-settings-select, div > button[aria-haspopup="menu"]),
+.syka-appearance-page [data-control-placement] button[aria-haspopup="menu"] {
+  width: var(--syka-control-w);
+  min-width: 0;
+  max-width: 100%;
+}
+.syka-appearance-page
+  .syka-settings-control
+  > .syka-settings-select:has(+ .syka-settings-select) {
+  width: var(--syka-control-w);
+}
+.syka-appearance-page
+  .syka-settings-control
+  > .syka-settings-select
+  + .syka-settings-select {
+  width: 84px;
+  min-width: 0;
+}
+.syka-appearance-page [data-control-placement] button[aria-haspopup="menu"] {
+  display: inline-flex;
+  justify-content: space-between;
+  gap: 12px;
+  height: 32px;
+  padding: 0 8px 0 10px;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  color: var(--z-text);
+}
+.syka-appearance-page
+  [data-control-placement]
+  button[aria-haspopup="menu"]
+  svg {
+  color: currentColor;
+}
+.syka-footer-list {
+  display: grid;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--z-wash-045);
+}
+.syka-footer-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 4px 6px 4px 4px;
+  border-radius: 9px;
+  font-size: calc(13px * var(--syka-ui-scale, 1));
+  background: transparent;
+  transition: background-color var(--z-hover) var(--z-hover-ease);
+}
+.syka-footer-item:hover {
+  background: var(--z-wash-045);
+}
+.syka-footer-item [data-icon-root] {
+  color: var(--z-muted);
+}
+.syka-settings-page .syka-settings-action.syka-footer-handle {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: grab;
+}
+.syka-settings-page .syka-settings-action.syka-footer-handle:active {
+  cursor: grabbing;
+}
+.syka-disclosure-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 8px 0 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--z-muted);
+  font: 400 calc(12.5px * var(--syka-ui-scale, 1)) / 18px var(--font-sans);
+  cursor: pointer;
+  transition:
+    background-color var(--z-hover) var(--z-hover-ease),
+    color var(--z-hover) var(--z-hover-ease);
+}
+.syka-disclosure-trigger:hover,
+.syka-disclosure-trigger[aria-expanded="true"] {
+  background: var(--z-wash-06);
+  color: var(--z-text);
+}
+.syka-disclosure-trigger svg {
+  transition: transform 260ms var(--z-switch-ease);
+}
+.syka-disclosure-trigger[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+.syka-disclosure {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 300ms var(--z-switch-ease),
+    opacity 200ms var(--z-hover-ease);
+}
+.syka-disclosure[data-open="true"] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.syka-disclosure > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.syka-segmented {
+  position: relative;
+  display: inline-grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  padding: 2px;
+  border-radius: 10px;
+  background: var(--z-wash-06);
+  isolation: isolate;
+}
+.syka-segmented-thumb {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  z-index: -1;
+  width: calc(50% - 2px);
+  border-radius: 8px;
+  background: var(--z-segment-thumb, #fff);
+  box-shadow:
+    0 0 0 0.5px rgb(0 0 0/0.06),
+    0 1px 2px rgb(0 0 0/0.1);
+  transition: transform 300ms var(--z-switch-ease);
+}
+:root:is([data-kb-theme="dark"], .dark) .syka-segmented-thumb {
+  background: rgb(234.6 234.6 234.6/0.12);
+  box-shadow: none;
+}
+.syka-segmented[data-value="conversation"] .syka-segmented-thumb {
+  transform: translateX(100%);
+}
+.syka-settings-page .syka-segmented > button {
+  min-width: 0;
+  height: 28px;
+  min-height: 0;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--z-muted);
+  font: 400 calc(12.5px * var(--syka-ui-scale, 1)) / 18px var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--z-hover) var(--z-hover-ease);
+}
+.syka-settings-page .syka-segmented > button:hover,
+.syka-settings-page .syka-segmented > button[aria-pressed="true"] {
+  color: var(--z-text);
+}
+.syka-settings-page .syka-segmented > button[aria-pressed="true"] {
+  font-weight: 500;
+}
+.syka-theme-css-preview {
+  max-height: 150px;
+  overflow: auto;
+  border-radius: 8px;
+  background: var(--z-wash-06);
+  padding: 12px;
+  font: 11px/1.4 var(--font-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+html[data-syka-settings-open] [data-testid="settings-sidebar-body"] {
+  font-family: var(--font-sans);
+  color: var(--z-text);
+}
+html[data-syka-settings-open] .syka-settings-brand {
+  display: none;
+}
+html[data-syka-settings-open] .syka-settings-nav a {
+  min-height: 32px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 400;
+  transition:
+    background-color var(--z-hover) var(--z-hover-ease),
+    color var(--z-hover) var(--z-hover-ease);
+}
+html[data-syka-settings-open] .syka-settings-nav a[aria-current="page"] {
+  background: var(--z-hover-wash);
+  color: var(--z-text);
+  font-weight: 500;
+}
+html[data-syka-settings-open] [data-syka-settings] .syka-workspace-frame {
+  --syka-frame-chrome: var(--z-shell);
+}
+html:is(
+    [data-syka-window-material="acrylic"],
+    [data-syka-window-material="mica"]
+  )[data-syka-settings-open]
+  [data-syka-settings]
+  .syka-workspace-frame {
+  --syka-frame-chrome: color-mix(
+    in srgb,
+    var(--z-shell) var(--syka-sidebar-opacity, 80%),
+    transparent
+  );
+}
+html:is(
+    [data-syka-window-material="acrylic"],
+    [data-syka-window-material="mica"]
+  )[data-syka-settings-open]
+  [data-sidebar="panel"] {
+  background: color-mix(
+    in srgb,
+    var(--z-shell) var(--syka-sidebar-opacity, 80%),
+    transparent
+  );
+}
+html:is(
+    [data-syka-window-material="acrylic"],
+    [data-syka-window-material="mica"]
+  )[data-syka-settings-open]
+  [data-syka-settings]
+  .syka-workspace {
+  background: color-mix(in srgb, var(--z-bg) 40%, transparent);
+}
+html[data-syka-settings-open] :is(.syka-chat-tabs, .syka-status-bar) {
+  background: transparent;
+  backdrop-filter: none;
+}
+@keyframes z-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes z-menu-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes z-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 700px) {
+  .syka-settings-control {
+    max-width: 60%;
+    flex-wrap: wrap;
+  }
+  .syka-settings-row {
+    gap: 12px;
+  }
+  .syka-tile-grid {
+    gap: 10px;
+  }
+  .syka-appearance-page {
+    --syka-control-w: 168px;
+  }
+  .syka-settings-page
+    .syka-settings-control
+    > .syka-settings-select:has(+ .syka-settings-select) {
+    min-width: 125px;
+  }
+}
+html[data-syka-motion="reduce"]
+  :is(
+    .syka-settings-switch,
+    .syka-settings-switch *,
+    .syka-settings-page button[role="switch"],
+    .syka-settings-page button[role="switch"] *,
+    .syka-settings-menu,
+    .syka-settings-dialog,
+    .syka-settings-select,
+    .syka-settings-action,
+    .syka-settings-input,
+    .syka-settings-choice-row,
+    .syka-tile-preview,
+    .syka-tile-check,
+    .syka-accent-color,
+    .syka-segmented-thumb,
+    .syka-disclosure,
+    .syka-disclosure-trigger svg,
+    .syka-footer-item
+  ),
+html[data-syka-motion="reduce"]
+  .syka-range-control
+  input[type="range"]::-webkit-slider-thumb {
+  transition: none !important;
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-syka-motion="full"])
+    :is(
+      .syka-settings-switch,
+      .syka-settings-switch *,
+      .syka-settings-page button[role="switch"],
+      .syka-settings-page button[role="switch"] *,
+      .syka-settings-menu,
+      .syka-settings-dialog,
+      .syka-settings-select,
+      .syka-settings-action,
+      .syka-settings-input,
+      .syka-settings-choice-row,
+      .syka-tile-preview,
+      .syka-tile-check,
+      .syka-accent-color,
+      .syka-segmented-thumb,
+      .syka-disclosure,
+      .syka-disclosure-trigger svg,
+      .syka-footer-item
+    ),
+  html:not([data-syka-motion="full"])
+    .syka-range-control
+    input[type="range"]::-webkit-slider-thumb {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html[data-syka-surface="glass"]
+    :is(.syka-settings-menu, .syka-settings-dialog) {
+    background: var(--z-shell);
+    backdrop-filter: none;
+  }
+}
+
+html[data-syka-settings-open]
+  .syka-settings-shell
+  [data-page-scroll-viewport]
+  > div {
+  padding-top: 16px;
+}
+html[data-syka-settings-open] [data-syka-settings] > header {
+  height: 38px;
+  min-height: 38px;
+  flex-basis: 38px;
+  background: transparent;
+}
+html[data-syka-settings-open] .syka-settings-nav a [data-icon-root] {
+  width: 16px;
+  height: 16px;
+}
+html[data-syka-settings-open] .syka-status-bar {
+  flex-basis: 24px;
+  min-height: 24px;
+}
+
+html[data-syka-settings-open]
+  :is(.syka-settings-nav, .syka-settings-page, .syka-settings-menu)
+  [data-icon-root] {
+  stroke-width: 1.9px;
+}
+html[data-syka-settings-open]
+  :is(.syka-settings-nav, .syka-settings-page, .syka-settings-menu)
+  [data-icon-root]
+  :is(path, circle, rect, ellipse, line, polyline, polygon)[stroke] {
+  stroke-width: 1.9px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.syka-settings-control
+  button:not(.syka-settings-switch):not(.syka-settings-select):not(
+    .syka-settings-action,
+    .syka-settings-input,
+    .syka-settings-choice-row
+  ):not(.syka-accent-color):not(.syka-settings-resource-link):not(
+    [role="switch"],
+    [role="radio"],
+    [data-syka-plain],
+    [data-color-picker] *
+  ) {
+  min-height: 32px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--z-wash-06);
+  color: var(--z-text);
+  font-size: 12.5px;
+  box-shadow: none;
+}
+.syka-settings-control
+  button:not(.syka-settings-switch):not(.syka-settings-select):not(
+    .syka-settings-action,
+    .syka-settings-input,
+    .syka-settings-choice-row
+  ):not(.syka-accent-color):not(.syka-settings-resource-link):not(
+    [role="switch"],
+    [role="radio"],
+    [data-syka-plain],
+    [data-color-picker] *
+  ):hover {
+  background: var(--z-wash-10);
+}
+
+.syka-settings-card
+  button:not(.syka-settings-switch):not(.syka-settings-select):not(
+    .syka-settings-action,
+    .syka-settings-input,
+    .syka-settings-choice-row
+  ):not(.syka-accent-color):not(.syka-settings-resource-link):not(
+    [role="switch"],
+    [role="radio"],
+    [data-syka-plain],
+    [data-color-picker] *
+  ) {
+  min-height: 32px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--z-wash-06);
+  color: var(--z-text);
+  font-size: 12.5px;
+  box-shadow: none;
+}
+.syka-settings-card
+  button:not(.syka-settings-switch):not(.syka-settings-select):not(
+    .syka-settings-action,
+    .syka-settings-input,
+    .syka-settings-choice-row
+  ):not(.syka-accent-color):not(.syka-settings-resource-link):not(
+    [role="switch"],
+    [role="radio"],
+    [data-syka-plain],
+    [data-color-picker] *
+  ):hover {
+  background: var(--z-wash-10);
+}
+.syka-settings-card > [data-settings-anchor]:not(.syka-settings-row) {
+  padding: 12px 0;
+  min-height: 56px;
+}
+.syka-settings-card [data-control-placement] > div:first-child > div > p {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.syka-settings-card [data-control-placement] > div:first-child > p {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-muted);
+  margin-top: 1px;
+}
+.syka-settings-card > .syka-theme-import-notice {
+  justify-content: space-between;
+  margin: -4px 0 12px;
+  padding: 8px 8px 8px 12px;
+  border-radius: 12px;
+  background: var(--z-wash-045);
+  color: var(--z-muted);
+  font-size: calc(12px * var(--syka-ui-scale, 1));
+  line-height: 16px;
+}
+
+/*
+  Cristal en Ajustes (`syka-settings-material.css` de Syka 2.0). Con superficie
+  «Cristal» nada de Ajustes va opaco: el panel y la barra son un tinte oscuro y lo
+  que se ve detrás es el material de Windows (acrílico = el escritorio desenfocado;
+  Mica = solo el color del fondo de pantalla) o la foto del espacio, desenfocada.
+*/
+/* El tinte va en todo el panel (también la franja de la barra de arriba), no solo en la página. */
+html[data-syka-surface="glass"][data-syka-settings-open] main {
+  background: color-mix(in srgb, var(--background) var(--syka-glass-darkness, 72%), transparent);
+}
+html[data-translucent][data-syka-surface="glass"][data-syka-settings-open] {
+  --at-bg-sidebar: color-mix(in srgb, var(--sidebar) var(--syka-glass-darkness, 72%), transparent);
+}
+html[data-syka-surface="glass"] .syka-settings-shell {
+  background: transparent;
+}
+html[data-syka-surface="glass"] .syka-settings-shell .syka-settings-card {
+  background: color-mix(in srgb, var(--foreground) 4.5%, transparent);
+}
+/*
+  «Foto detrás del cristal»: como el composer de la vista previa, la foto
+  desenfocada detrás de toda la ventana y encima un solo tinte oscuro
+  («Oscuridad del cristal»). La barra, la franja de título y el panel quedan
+  transparentes para que el tinte sea parejo.
+*/
+html[data-syka-surface="glass"][data-syka-settings-photo][data-syka-settings-open] {
+  --at-bg-sidebar: transparent;
+}
+html[data-syka-surface="glass"][data-syka-settings-photo][data-syka-settings-open] main {
+  background: transparent;
+}
+html[data-syka-surface="glass"] .syka-settings-backdrop img {
+  filter: blur(var(--syka-glass-blur, 48px)) saturate(1.25);
+  transform: scale(1.15);
+}
+/* Sin la viñeta ni el velo de las conversaciones: el único tinte es el de abajo. */
+.syka-settings-backdrop > div {
+  display: none;
+}
+html[data-syka-surface="glass"] .syka-settings-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--background) var(--syka-glass-darkness, 72%), transparent);
+}
+html:not([data-syka-surface="glass"]) .syka-settings-backdrop {
+  display: none;
+}
+/* Los modales de Ajustes, cristal como los menús: tinte oscuro y lo de detrás desenfocado. */
+html[data-syka-surface="glass"][data-syka-settings-open] [role="dialog"].bg-raised-opaque {
+  background: color-mix(in srgb, var(--popover) 80%, transparent);
+  backdrop-filter: blur(24px) saturate(1.4);
+}
+@media (prefers-reduced-transparency: reduce) {
+  html[data-syka-surface="glass"][data-syka-settings-open] main {
+    background: var(--background);
+  }
+  html[data-syka-surface="glass"][data-syka-settings-open] [role="dialog"].bg-raised-opaque {
+    background: var(--popover);
+    backdrop-filter: none;
+  }
+}
+
+/* «Gris grafito» también en Ajustes, que tiene su propia paleta más oscura. */
+:root:root:root.dark[data-syka-palette="graphite"][data-syka-settings-open] {
+  --background: #171717;
+  --sidebar: #1d1d1d;
+  --card: #1d1d1d;
+  --popover: #222222;
+  --border: rgb(255 255 255 / 0.1);
+}
+
+/* Voz → Transcripción no es una tarjeta (son las opciones sueltas): sin el fondo del cristal. */
+html[data-syka-surface="glass"] .syka-settings-shell .syka-settings-card.syka-voice-settings-body {
+  background: transparent;
+}

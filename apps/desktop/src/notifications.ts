@@ -29,7 +29,26 @@ let deliveryTimer: ReturnType<typeof setTimeout> | undefined;
 let showPending = false;
 const submitting = new Set<string>();
 const resolvedWhileSubmitting = new Set<string>();
-const snapshot = (): NoticeSnapshot => ({ notices: store.visible(), accent, sound: true,
+/**
+ * Settings › Notificaciones, written by the renderer as the desktop preference
+ * `dspro.ui.notifications.v1`: on/off, only while Syka is behind another
+ * window, which kinds, and the sound.
+ */
+type NoticePreferences = { enabled: boolean; onlyWhenAway: boolean; sound: boolean; kinds: Partial<Record<StudioNotice['kind'], boolean>> };
+let preferences: NoticePreferences = { enabled: true, onlyWhenAway: false, sound: true, kinds: {} };
+export function setNoticePreferences(value: string | null): void {
+  try {
+    const parsed = JSON.parse(value ?? '{}') ?? {};
+    preferences = { enabled: parsed.enabled !== false, onlyWhenAway: parsed.onlyWhenAway === true, sound: parsed.sound !== false,
+      kinds: parsed.kinds && typeof parsed.kinds === 'object' ? parsed.kinds : {} };
+  } catch { /* Unreadable preferences keep the previous ones. */ }
+}
+function wanted(kind: StudioNotice['kind']): boolean {
+  if (!preferences.enabled || preferences.kinds[kind] === false) return false;
+  const host = editor?.();
+  return !(preferences.onlyWhenAway && host && !host.isDestroyed() && host.isVisible() && host.isFocused());
+}
+const snapshot = (): NoticeSnapshot => ({ notices: store.visible(), accent, sound: preferences.sound,
   desktop: overlay && !overlay.isDestroyed() ? { visible: overlay.isVisible(), alwaysOnTop: overlay.isAlwaysOnTop(),
     backgroundThrottling: overlay.webContents.getBackgroundThrottling(), nativeRegions, regionRectangles } : undefined,
 });
@@ -131,6 +150,7 @@ async function insert(notice: StudioNotice) {
   // Transcription is an intermediate operation; only failures or the final
   // assistant reply should interrupt the user. Also covers older renderers.
   if (notice.kind === 'transcription') return;
+  if (!wanted(notice.kind)) return;
   if (notice.artifact) {
     const info = await stat(notice.artifact);
     if (!info.isFile() || !info.size) throw Error('El resultado todavía no está disponible.');

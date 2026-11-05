@@ -6,18 +6,20 @@ import { isPackagedBuild } from './app-mode';
 import { loadNativeWindowStyle } from './native-window-style';
 import { app, BrowserWindow, dialog, ipcMain, nativeImage, session, shell } from "electron";
 import { UiPreferences } from './ui-preferences';
+import { attachCloseToTray, closeToTrayFrom, markQuitting, setCloseToTray } from './tray';
+import { UI_SCALE_KEY, applyUiScale, parseUiScale, stepUiScale } from './ui-scale';
 import { basename, dirname, isAbsolute, join, resolve } from "node:path";
 import { existsSync, mkdirSync } from "node:fs";
-import { mkdir, open, unlink } from "node:fs/promises";
+import { mkdir, open, readFile, unlink, writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import type { FileHandle } from "node:fs/promises";
 import { pathToFileURL } from 'node:url';
 import { tempPathFor, replaceFileAtomic } from "./atomic";
 import { DapiServer } from "./dapi/server";
 import { projectSourceRevision } from './dapi/source-revision';
-import { agentChatEndpoint, deleteProjectChats, startAgentChat, stopAgentChat, isAgentChatBusy } from "./agent-chat";
+import { agentChatEndpoint, deleteProjectChats, startAgentChat, stopAgentChat, isAgentChatBusy, pushAgentProviders, setAgentProviders } from "./agent-chat";
 import { deleteProjectWithCleanup } from './project-delete';
-import { agentNotice, allowedNoticeCommand, isNoticeWindow, registerNotifications, stopNotifications, trustedNoticeUrl } from './notifications';
+import { agentNotice, allowedNoticeCommand, isNoticeWindow, registerNotifications, setNoticePreferences, stopNotifications, trustedNoticeUrl } from './notifications';
 import { cliStatus, installCli, uninstallCli } from "./cli-install";
 import { applyMcp, mcpStatus } from "./mcp-install";
 import { enableHeadless } from "./headless";
@@ -27,12 +29,20 @@ import { handleSquirrelEvent } from "./squirrel";
 import { mainBridge } from "./main-manager";
 import { MAIN_CHANNELS } from "./main-channels";
 import { registerSykaAgentSettings } from "./syka-agent-settings";
+import { registerProviders } from './providers';
 import { registerSykaDependencies, ensurePackagedTools, dependenciesBusy } from "./syka-dependencies";
 import { applyLaunchRoots, runtimeDirectory } from "./runtime-paths";
 import { registerSykaResources } from "./syka-resources";
 import { registerDiagnostics } from "./diagnostics";
 import { registerSykaFonts } from "./syka-fonts";
 import { isGroqTranscribing, registerSykaGroq } from "./syka-groq";
+import { registerCodexTranscription } from "./codex-transcribe";
+import { createLocalVoice } from "./local-voice/local-voice";
+import { registerLocalVoice } from "./local-voice/register";
+import { Parakeet } from "./local-voice/parakeet";
+import { WhisperAsr, type LocalWhisper } from "./local-voice/whisper-asr";
+import { LOCAL_VOICE_MODELS, type LocalVoiceModel } from "./local-voice/assets";
+import { ChosenDirs, ExternalModels, knownModelDirs } from "./local-voice/external";
 import { hasActiveScreenCaptures, registerScreenCapture } from './screen-capture';
 import { registerPublication } from "./publication/register";
 import { registerStudioSettings } from "./studio-settings";
@@ -43,6 +53,8 @@ import { registerStorage } from './storage/register';
 import { registerBackgroundRemoval } from './background-removal';
 import { registerPostExport } from "./post-export";
 import { registerUpdates } from './updates';
+import { instanceIdentity, sykaInstance } from './instance';
+import { chooseDataFolder, shouldAskForData } from './data-location';
 import { PermissionStore, permissionAllowed, trustedPermissionOrigin } from './syka-permissions';
 import {
   compileProject,
@@ -98,12 +110,30 @@ const squirrelLaunch = handleSquirrelEvent();
 
 const oldProductData = join(app.getPath('appData'), 'Syka Clips');
 const legacyUserData = existsSync(oldProductData) ? oldProductData : app.getPath("userData");
-if (isPackagedBuild()) applyLaunchRoots(join(app.getPath('appData'), 'Syka Studio', 'launch-roots.json'), process.env);
-app.setName("Syka Studio");
-app.setAppUserModelId("syka.studio.editor");
+const launchRootsFile = join(app.getPath('appData'), 'Syka Studio', 'launch-roots.json');
+// Decided before applyLaunchRoots fills SYKA_RUNTIME_ROOT from that file.
+const askForData = shouldAskForData({ packaged: isPackagedBuild(), firstRun: process.argv.includes('--squirrel-firstrun'), pointer: launchRootsFile, envRoot: process.env.SYKA_RUNTIME_ROOT });
+if (isPackagedBuild()) applyLaunchRoots(launchRootsFile, process.env);
+// The daily Syka or the «Pruebas» build beside it: name, taskbar group and window title.
+const identity = instanceIdentity(sykaInstance());
+app.setName(identity.name);
+app.setAppUserModelId(identity.appId);
 const runtimeRoot = runtimeDirectory({ packaged: isPackagedBuild(), appPath: app.getAppPath(), userData: legacyUserData, override: process.env.SYKA_RUNTIME_ROOT });
 process.env.SYKA_RUNTIME_ROOT = runtimeRoot;
 let uiPreferences: UiPreferences | undefined;
+/** Ctrl + / Ctrl − / Ctrl 0 from the View menu: step the saved interface scale. */
+export function stepInterfaceScale(direction: -1 | 0 | 1): void {
+  try {
+    uiPreferences ??= new UiPreferences(join(runtimeRoot, 'ui-preferences.json'));
+    const next = stepUiScale(parseUiScale(uiPreferences.get(UI_SCALE_KEY)), direction);
+    uiPreferences.set(UI_SCALE_KEY, String(next));
+    applyUiScale(mainWindow, next);
+  } catch { /* An unreadable preference keeps the current zoom. */ }
+}
+/** The renderer's general settings (apps/web/src/lib/general-prefs.ts); main reads «Cerrar a la bandeja» from it. */
+const GENERAL_PREFS_KEY = 'dspro.ui.general.v1';
+/** Settings › Notificaciones (apps/web/src/lib/notice-prefs.ts). */
+const NOTICE_PREFS_KEY = 'dspro.ui.notifications.v1';
 ipcMain.on('syka:ui-preferences', (event, request) => {
   try {
     const owner = BrowserWindow.fromWebContents(event.sender);
@@ -113,7 +143,13 @@ ipcMain.on('syka:ui-preferences', (event, request) => {
     if ((!mainWindow || event.sender !== mainWindow.webContents) && !sameEditor && !notice || event.senderFrame !== event.sender.mainFrame) throw Error('Ventana no autorizada.');
     uiPreferences ??= new UiPreferences(join(runtimeRoot, 'ui-preferences.json'));
     if (request?.action === 'get') event.returnValue = { ok: true, value: uiPreferences.get(request.key) };
-    else if (request?.action === 'set') { uiPreferences.set(request.key, request.value); event.returnValue = { ok: true }; }
+    else if (request?.action === 'set') {
+      uiPreferences.set(request.key, request.value);
+      if (request.key === GENERAL_PREFS_KEY) setCloseToTray(closeToTrayFrom(request.value));
+      if (request.key === UI_SCALE_KEY) applyUiScale(mainWindow, parseUiScale(request.value));
+      if (request.key === NOTICE_PREFS_KEY) setNoticePreferences(request.value);
+      event.returnValue = { ok: true };
+    }
     else throw Error('Acción desconocida.');
   } catch { event.returnValue = { ok: false, error: 'No se pudieron guardar o recuperar las preferencias de Syka. Se conservaron los datos existentes.' }; }
 });
@@ -192,12 +228,41 @@ mainBridge.setRequestGuard((event, request) => {
   catch { return false; }
 });
 registerNotifications(() => mainWindow);
-registerSykaGroq(mainBridge);
+// Transcription on this computer: whisper.cpp and its models in userData/voice.
+// Models other apps already downloaded (Whispera, Syka Code) or a folder picked in Settings, used in place.
+const chosenModelDirs = new ChosenDirs(join(app.getPath("userData"), "voice", "model-folders.json"));
+const externalModels = new ExternalModels({ cacheFile: join(app.getPath("userData"), "voice", "external-models.json"), dirs: () => [...chosenModelDirs.list, ...knownModelDirs()] });
+const asrRoots = () => [process.env.SYKA_ASR_DIR ?? "", join(process.resourcesPath ?? "", "syka-asr"), resolve(app.getAppPath(), "../../.runtime/syka-asr-target/release")].filter(Boolean);
+// Whisper: whisper.cpp's server on Windows (it times every word); syka-asr elsewhere, where no server build exists.
+// SYKA_WHISPER_ENGINE=asr tries the second one on Windows too.
+const voiceDir = join(app.getPath("userData"), "voice");
+const localVoice: LocalWhisper = process.platform === "win32" && process.env.SYKA_WHISPER_ENGINE !== "asr"
+  ? createLocalVoice(voiceDir, undefined, externalModels)
+  : new WhisperAsr({ dir: voiceDir, roots: asrRoots, external: externalModels, settings: {
+    load: async () => { try { const saved = JSON.parse(await readFile(join(voiceDir, "whisper-gguf.json"), "utf8")) as { preferred?: string }; return (LOCAL_VOICE_MODELS as readonly string[]).includes(saved.preferred ?? "") ? saved.preferred as LocalVoiceModel : null; } catch { return null; } },
+    save: async model => { await mkdir(voiceDir, { recursive: true }); await writeFile(join(voiceDir, "whisper-gguf.json"), JSON.stringify({ preferred: model })); },
+  } });
+// Parakeet v3 runs in syka-asr: bundled with the app, or the build folder in development.
+const parakeet = new Parakeet({
+  dir: join(app.getPath("userData"), "voice", "parakeet"),
+  roots: asrRoots,
+  external: externalModels,
+});
+registerSykaGroq(mainBridge, localVoice, parakeet);
+registerLocalVoice(mainBridge, localVoice, parakeet, async () => {
+  const options: Electron.OpenDialogOptions = { title: "Carpeta con modelos de voz", properties: ["openDirectory"] };
+  const result = await dialog.showOpenDialog(options);
+  const dir = result.canceled ? null : result.filePaths[0] ?? null;
+  if (dir) await chosenModelDirs.add(dir);
+  return dir;
+}, chosenModelDirs.load());
+registerCodexTranscription(mainBridge);
 registerScreenCapture(mainBridge);
 registerPublication(mainBridge);
 registerStudioSettings(mainBridge);
 registerSykaOnboarding(mainBridge);
 registerSykaAgentSettings(mainBridge);
+setAgentProviders(registerProviders(mainBridge, runtimeRoot, pushAgentProviders));
 registerSykaDependencies(mainBridge, async () => openWrites.size > 0 || rendererExporting || dapi.isBusy() || hasActiveScreenCaptures() || isGroqTranscribing() || hasActiveVideoImports() || await isAgentChatBusy());
 mainBridge.handle(MAIN_CHANNELS.SYKA_ACTIVITY, request => { rendererExporting = request?.exporting === true; });
 registerSykaResources(mainBridge);
@@ -342,7 +407,7 @@ function createWindow(show = true) {
     show: false,
     width: 1200,
     height: 800,
-    title: "Syka Studio",
+    title: identity.title,
     webPreferences: {
       preload: join(app.getAppPath(), "dist", "preload.js"),
       backgroundThrottling: false,
@@ -368,6 +433,16 @@ function createWindow(show = true) {
   }
 
   mainWindow = new BrowserWindow(options);
+  // «Pruebas» keeps its own title in the taskbar and Alt+Tab, whatever the page calls itself.
+  if (sykaInstance() === "pruebas") mainWindow.on("page-title-updated", event => event.preventDefault());
+  try {
+    uiPreferences ??= new UiPreferences(join(runtimeRoot, 'ui-preferences.json'));
+    setCloseToTray(closeToTrayFrom(uiPreferences.get(GENERAL_PREFS_KEY)));
+    setNoticePreferences(uiPreferences.get(NOTICE_PREFS_KEY));
+  } catch { /* Unreadable preferences keep the default: closing quits. */ }
+  attachCloseToTray(mainWindow);
+  const scaled = mainWindow;
+  scaled.webContents.on('did-finish-load', () => applyUiScale(scaled, parseUiScale(uiPreferences?.get(UI_SCALE_KEY) ?? null)));
   mainBridge.handle(MAIN_CHANNELS.APP_OPEN_CHAT_WINDOW, async ({ url }) => {
     const target = new URL(url), current = new URL(mainWindow!.webContents.getURL());
     const params = new URLSearchParams(target.hash.split('?')[1] ?? '');
@@ -436,9 +511,9 @@ function createWindow(show = true) {
   });
 
   if (!isPackagedBuild()) {
-    mainWindow.loadURL(DEV_URL);
+    mainWindow.loadURL(sykaInstance() === "pruebas" ? `${DEV_URL}?instance=pruebas` : DEV_URL);
   } else {
-    mainWindow.loadFile(join(app.getAppPath(), "web", "index.html"));
+    mainWindow.loadFile(join(app.getAppPath(), "web", "index.html"), sykaInstance() === "pruebas" ? { query: { instance: "pruebas" } } : {});
   }
 }
 
@@ -612,13 +687,28 @@ if (squirrelLaunch) {
     }
   });
 
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
+    // The installer has no screens: the first launch asks where the data goes, then starts there.
+    if (askForData) {
+      const chosen = await chooseDataFolder({ pointer: launchRootsFile, defaultFolder: runtimeRoot, dialog: {
+        ask: async defaultFolder => {
+          const { response } = await dialog.showMessageBox({ type: "question", title: "Syka Studio", message: "¿Dónde guardo tus datos de Syka?",
+            detail: `Chats, cuentas, modelos de voz y configuración. Pueden ocupar varios GB.
+
+Carpeta recomendada: ${defaultFolder}`,
+            buttons: ["Usar la carpeta recomendada", "Elegir otra carpeta…"], defaultId: 0, cancelId: 0, noLink: true });
+          return response === 1 ? "choose" : "default";
+        },
+        pick: async () => { const result = await dialog.showOpenDialog({ title: "Carpeta para los datos de Syka", properties: ["openDirectory", "createDirectory"] }); return result.canceled ? null : result.filePaths[0] ?? null; },
+      } }).catch(() => null);
+      if (chosen) { app.relaunch(); app.exit(0); return; }
+    }
     if (!isPackagedBuild() && process.platform === "darwin") {
       const devIcon = nativeImage.createFromPath(join(app.getAppPath(), "assets", "icon-dev.png"));
       if (!devIcon.isEmpty()) app.dock?.setIcon(devIcon);
     }
 
-    setupAppMenu();
+    setupAppMenu(stepInterfaceScale);
     void permissionStore.load().catch(() => { /* Preserve invalid files and keep restrictive defaults. */ });
     const trustedPermissionWindow = (wc: Electron.WebContents | null, requestingUrl?: string) => {
       if (isNoticeWindow(wc)) return trustedNoticeUrl(wc!.getURL()) && (!requestingUrl || requestingUrl === 'file://' || trustedNoticeUrl(requestingUrl));
@@ -659,6 +749,9 @@ if (squirrelLaunch) {
   });
 
   app.on("before-quit", () => {
+    localVoice.dispose();
+    parakeet.stop();
+    markQuitting();
     stopUpdates();
     stopNotifications();
     unwatchAll();

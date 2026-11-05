@@ -11,12 +11,13 @@ import { ClaudeCliHarness } from "./claude-cli";
 import { resolveBinary, resolveClaudeExecutable, type HostEnv } from './env';
 import type { OpenOptions } from './harness';
 import { installedAcpHarness } from './installed-agents';
+import { PiHarness } from './pi';
 import { AntigravityCliHarness } from './antigravity-cli';
 import { openCodeHarness } from './opencode';
 import { browserAcpHarness } from './browser-acp';
 import { geminiWebHarness } from './gemini-web';
 
-export const EXTERNAL_HARNESS_IDS = ["antigravity", "claude", "hermes", "cursor", "grok", "opencode"] as const;
+export const EXTERNAL_HARNESS_IDS = ["antigravity", "claude", "hermes", "cursor", "grok", "opencode", "deepseek", "pi"] as const;
 // Accept retired entries when reading existing configuration; never load them.
 const IDS = [...EXTERNAL_HARNESS_IDS, 'muse'] as const;
 /** Config contains paths only. Login credentials remain owned by each official CLI. */
@@ -111,11 +112,12 @@ async function loadOfficialHarnesses(configFile: string, profilesRoot: string): 
     entries = value;
   } catch (error) {
     const missing = (error as NodeJS.ErrnoException).code === "ENOENT";
-    return EXTERNAL_HARNESS_IDS.map(id => missing && id === 'opencode' ? openCodeHarness(profilesRoot) : missing && id === 'claude' ? discoverClaude(profilesRoot) : missing && (id === 'hermes' || id === 'antigravity') ? installedAcpHarness(id, profilesRoot) : missing && (id === 'grok' || id === 'cursor') ? browserAcpHarness(id, profilesRoot) : unavailable(id, 'La configuración local requiere revisión; Codex sigue disponible.'));
+    return EXTERNAL_HARNESS_IDS.map(id => id === 'pi' ? new PiHarness() : missing && id === 'opencode' ? openCodeHarness(profilesRoot) : missing && id === 'claude' ? discoverClaude(profilesRoot) : missing && (id === 'hermes' || id === 'antigravity' || id === 'deepseek') ? installedAcpHarness(id, profilesRoot) : missing && (id === 'grok' || id === 'cursor') ? browserAcpHarness(id, profilesRoot) : unavailable(id, 'La configuración local requiere revisión; Codex sigue disponible.'));
   }
   return Promise.all(EXTERNAL_HARNESS_IDS.map(async id => {
     const entry = entries.find(e => e.id === id);
-    if (!entry) return id === 'opencode' ? openCodeHarness(profilesRoot) : id === 'claude' ? discoverClaude(profilesRoot) : id === 'hermes' || id === 'antigravity' ? installedAcpHarness(id, profilesRoot) : browserAcpHarness(id, profilesRoot);
+    if (id === 'pi') return new PiHarness();
+    if (!entry) return id === 'opencode' ? openCodeHarness(profilesRoot) : id === 'claude' ? discoverClaude(profilesRoot) : id === 'hermes' || id === 'antigravity' || id === 'deepseek' ? installedAcpHarness(id, profilesRoot) : browserAcpHarness(id, profilesRoot);
     try {
       const command = await validateExecutable(entry);
       const profileDir = join(profilesRoot, entry.id);

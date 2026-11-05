@@ -1,0 +1,43 @@
+/* Syka Studio's side of Kevin's card: the tokens whats-new.css expects, taken
+   from the app theme, the dimmed backdrop and the pop the Syka dialog had. The
+   card's own CSS stays untouched in whats-new.css. */
+.syka-studio-wn-root {
+  --syka-accent: var(--primary);
+  --font-mono: ui-monospace, "Cascadia Mono", monospace;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  color: var(--foreground);
+}
+.syka-studio-wn-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 55%);
+  animation: syka-studio-wn-dim 200ms ease-out both;
+}
+.syka-studio-wn-root .at-animate-pop {
+  animation: syka-studio-wn-pop 320ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+/* The new-version card: Kevin's card with one page. The version chip sits on
+   the hero over the Syka mark, like Syka Code's corner card. */
+.syka-studio-wn-update .syka-wn-update-chip {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  z-index: 2;
+}
+.syka-studio-wn-update .syka-wn-update-progress {
+  margin-top: 16px;
+}
+
+@keyframes syka-studio-wn-dim {
+  from { opacity: 0; }
+}
+@keyframes syka-studio-wn-pop {
+  from { opacity: 0; scale: 0.96; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .syka-studio-wn-overlay,
+  .syka-studio-wn-root .at-animate-pop { animation: none; }
+}

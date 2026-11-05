@@ -26,7 +26,7 @@ import { chatState, ensureConnected, modelLabel, refreshHarnesses, authenticateH
 
 /** The icons `lib/agents.ts` used, by harness. */
 export const harnessIcon = (harness: HarnessId | null | undefined): string =>
-  ({ claude: 'provider.claude', codex: 'codex', antigravity: 'agent.google-antigravity', cursor: 'agent.cursor', grok: 'provider.grok', muse: 'provider.muse', hermes: 'provider.hermes', opencode: 'agent.opencode', 'gemini-web': 'provider.gemini' }[harness ?? 'hermes']);
+  ({ claude: 'provider.claude', codex: 'codex', antigravity: 'agent.google-antigravity', cursor: 'agent.cursor', grok: 'provider.grok', muse: 'provider.muse', hermes: 'provider.hermes', deepseek: 'provider.deepseek', pi: 'provider.pi', opencode: 'agent.opencode', 'gemini-web': 'provider.gemini' }[harness ?? 'hermes']);
 
 function unavailableLabel(harness: HarnessInfo): string {
   switch (harness.status) {

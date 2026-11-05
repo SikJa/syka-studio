@@ -110,10 +110,10 @@ export class AntigravityCliHarness implements Harness {
       const version = (await runOutput(this.config, ['--version'], env, signal)).trim();
       if (!/^\d+\.\d+\.\d+$/.test(version)) return {...base,status:'error',detail:'El ejecutable no se identifica como Antigravity CLI.'};
       this.models = parseAgyModels(await runOutput(this.config, ['models'], env, signal));
-      // The native CLI can initiate a first login, but changing a connected
-      // account requires purging the shared OS keyring via /logout. Do not
-      // advertise a second-account method that would affect other projects.
-      return this.models.length ? {...base, status:'ready', authMethods:[], version, models:this.models, defaultModel:this.models[0]?.id, detail:'Conectado mediante la CLI oficial y tu sesión existente. Los modelos provienen de agy models.'}
+      // The native CLI keeps one Google account in the OS keyring for the whole
+      // computer: there is no second account beside it. Switching means /logout
+      // and a new login in its own terminal, offered as exactly that.
+      return this.models.length ? {...base, status:'ready', authMethods:[{id:'google-switch',label:'Cambiar de cuenta de Google'}], version, models:this.models, defaultModel:this.models[0]?.id, detail:'Conectado mediante la CLI oficial y tu sesión existente. Los modelos provienen de agy models.'}
         : {...base,status:'signed-out',authMethods:[{id:'google-browser',label:'Iniciar sesión con Google'}],detail:'Conectá tu cuenta de Google desde Syka.'};
     } catch (error) {
       const signedOut = error instanceof Error && /necesita iniciar sesión/.test(error.message);
@@ -121,7 +121,7 @@ export class AntigravityCliHarness implements Harness {
     }
   }
   async authenticate(env: HostEnv, methodId: string, signal: AbortSignal, hooks?: import('./harness').AuthHooks): Promise<void> {
-    if (methodId !== 'google-browser') throw Error('Método de conexión no soportado.');
+    if (methodId !== 'google-browser' && methodId !== 'google-switch') throw Error('Método de conexión no soportado.');
     // The official interactive CLI owns browser authorization and the OS keyring.
     // Headless mode cannot initiate login; do not send a model prompt here.
     await runCliLogin({ provider: 'antigravity', command: this.config.command, args: this.config.args ?? [], cwd: this.config.profileDir, env: env.env, signal, hooks, terminal: true, verify: async () => {

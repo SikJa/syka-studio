@@ -139,6 +139,18 @@ function transcriptWords(segments: unknown): Word[] {
   return words;
 }
 
+/** The glossary's spellings as a word list for models that take one (Parakeet's vocabulary). */
+export function glossaryTerms(glossary: SykaGlossary): string[] {
+  return glossary.entries.filter(entry => entry.enabled).map(entry => entry.term).slice(0, 100);
+}
+
+/** The same corrections on plain dictated text: words are only ordered, they carry no real times. */
+export function applyGlossaryToText(text: string, glossary: SykaGlossary): string {
+  const words = text.split(/\s+/).filter(Boolean).map((word, index) => ({ text: word, start: index, end: index }));
+  if (!words.length) return text.trim();
+  return applyGlossaryToTranscript([{ text, words }], glossary).map(segment => segment.text).join(" ");
+}
+
 export function applyGlossaryToTranscript(segments: unknown, glossary: SykaGlossary): SykaTranscriptSegment[] {
   const words = transcriptWords(segments);
   const firstParts = new Map<string, Pattern[]>();

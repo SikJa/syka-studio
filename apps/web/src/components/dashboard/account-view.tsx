@@ -9,6 +9,7 @@ import { TextField, TextFieldInput, TextFieldLabel } from '@/components/ui/text-
 import { useAuth } from '@/context/auth';
 import { DashboardScrollView, DashboardSurfaceSection } from './shared';
 import { AVATAR_FILE_TYPES, avatarDataUrl, cropAndResizeAvatar } from './utils';
+import { DitherAvatarPicker, ProfileAvatar } from '@/components/profile/dither-avatar-picker';
 
 export function DashboardAccountView() {
   const auth = useAuth();
@@ -32,8 +33,8 @@ export function DashboardAccountView() {
       setFailedAvatar(undefined);
       setAvatar(next);
     } catch (error) {
-      if (!disposed) toast.error('Could not load profile photo', {
-        description: error instanceof Error ? error.message : 'Choose another image.',
+      if (!disposed) toast.error('No se pudo cargar la foto', {
+        description: error instanceof Error ? error.message : 'Elegí otra imagen.',
       });
     } finally {
       if (!disposed) setProcessing(false);
@@ -46,37 +47,33 @@ export function DashboardAccountView() {
       setDisplayName(auth.localProfile().displayName);
       toast.success('Perfil guardado');
     } catch (error) {
-      toast.error('Failed to save profile', {
-        description: error instanceof Error ? error.message : 'Local storage is unavailable.',
+      toast.error('No se pudo guardar el perfil', {
+        description: error instanceof Error ? error.message : 'El almacenamiento local no está disponible.',
       });
     }
   };
 
   return (
     <DashboardScrollView>
-      <DashboardSurfaceSection title="Local profile">
+      <DashboardSurfaceSection title="Perfil local">
         <p class="text-xs text-muted-foreground">
-          Syka works on this computer without a Diffusion account. Your projects and media stay local.
+          Syka funciona en esta computadora sin una cuenta de Diffusion. Tus proyectos y medios se quedan acá.
         </p>
         <div class="flex items-center gap-4">
-          <Show when={preview()} fallback={
-            <div class="grid size-16 shrink-0 place-items-center rounded-md bg-input text-lg text-foreground">
-              {(displayName().trim() || 'Syka').charAt(0).toUpperCase()}
-            </div>
-          }>
-            {(url) => <img src={url()} alt="Profile photo preview" class="size-16 shrink-0 rounded-md object-cover" onError={() => setFailedAvatar(url())} />}
+          <Show when={preview()} fallback={<ProfileAvatar name={displayName().trim() || 'Syka'} size={64} />}>
+            {(url) => <img src={url()} alt="Vista previa de la foto de perfil" class="size-16 shrink-0 rounded-full object-cover" onError={() => setFailedAvatar(url())} />}
           </Show>
           <div class="flex flex-col gap-2">
             <div class="flex items-center gap-2">
-              <input ref={fileInput} type="file" accept={AVATAR_FILE_TYPES.join(',')} class="hidden" aria-label="Choose profile photo" disabled={processing()} onChange={changePhoto} />
+              <input ref={fileInput} type="file" accept={AVATAR_FILE_TYPES.join(',')} class="hidden" aria-label="Elegir foto de perfil" disabled={processing()} onChange={changePhoto} />
               <Button variant="secondary" disabled={processing()} onClick={() => fileInput?.click()}>
-                {processing() ? 'Processing…' : avatar() ? 'Change photo' : 'Add photo'}
+                {processing() ? 'Procesando…' : avatar() ? 'Cambiar foto' : 'Agregar foto'}
               </Button>
               <Show when={avatar()}>
-                <Button variant="ghost" disabled={processing()} onClick={() => { setAvatar(undefined); setFailedAvatar(undefined); }}>Remove photo</Button>
+                <Button variant="ghost" disabled={processing()} onClick={() => { setAvatar(undefined); setFailedAvatar(undefined); }}>Quitar foto</Button>
               </Show>
             </div>
-            <p class="text-xxs text-muted-foreground">PNG, JPEG or WebP · up to 5 MB. Saved locally when you save changes.</p>
+            <p class="text-xxs text-muted-foreground">PNG, JPEG o WebP · hasta 5 MB. Se guarda en este equipo al guardar los cambios.</p>
           </div>
         </div>
         <TextField>
@@ -92,9 +89,13 @@ export function DashboardAccountView() {
         </TextField>
         <Button variant="secondary" class="self-start" disabled={processing()} onClick={save}>Guardar cambios</Button>
       </DashboardSurfaceSection>
-      <DashboardSurfaceSection title="Agent connection">
+      <DitherAvatarPicker userName={displayName().trim() || 'Syka'} hasPhoto={!!preview()} onUse={() => {
+        setAvatar(undefined); setFailedAvatar(undefined);
+        try { auth.updateLocalProfile({ displayName: displayName(), avatarDataUrl: undefined }); } catch { toast.error('No se pudo guardar el perfil'); }
+      }} />
+      <DashboardSurfaceSection title="Conexión de los agentes">
         <p class="text-xs text-muted-foreground">
-          Codex uses your own local Codex login. This profile is only a display preference and does not authenticate with any provider.
+          Cada asistente usa su propio inicio de sesión en este equipo. Este perfil es solo cómo te ves en Syka y no se conecta con ningún proveedor.
         </p>
       </DashboardSurfaceSection>
     </DashboardScrollView>

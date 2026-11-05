@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
+import { sykaInstance } from './instance';
 import { app, autoUpdater, dialog, shell } from 'electron';
 import type { BrowserWindow } from 'electron';
 import { existsSync, readFileSync } from 'node:fs';
@@ -11,6 +12,8 @@ import { mainBridge } from './main-manager';
 import { UpdateController, UpdateSourceError, validUpdateRepo } from './update-controller';
 import { isAgentChatBusy } from './agent-chat';
 import { createUpdateDemo } from './update-demo';
+import { installerDownloader, launchInstaller } from './update-installer';
+import { markQuitting } from './tray';
 import type { UpdateState } from './update-types';
 import { isPackagedBuild } from './app-mode';
 
@@ -20,7 +23,8 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
     const config = JSON.parse(readFileSync(join(app.getAppPath(), 'release.config.json'), 'utf8'));
     if (typeof config.repository === 'string' && validUpdateRepo(config.repository)) repo = config.repository;
   } catch { /* An unconfigured build never queries upstream Diffusion. */ }
-  const enabled = isPackagedBuild() && process.platform === 'win32' && !!repo;
+  // «Pruebas» is rebuilt from source: it never downloads an installer over itself.
+  const enabled = isPackagedBuild() && process.platform === 'win32' && !!repo && sykaInstance() !== 'pruebas';
   const nativeUpdater = enabled && existsSync(resolve(process.execPath, '..', '..', 'Update.exe'));
   const demoOptions = { packaged: isPackagedBuild(), defaultApp: !!process.defaultApp, appPath: app.getAppPath(), version: app.getVersion(), env: process.env,
     restart: () => { app.relaunch(); app.quit(); } };
@@ -29,6 +33,7 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
   const makeController = () => new UpdateController({
     version: demo?.currentVersion ?? app.getVersion(), repo, enabled: enabled || !!demo, driver: demo?.driver ?? autoUpdater,
     externalInstaller: !nativeUpdater && !demo,
+    installer: { download: (feed, onProgress) => installerDownloader(app.getPath('temp'))(feed, onProgress), launch: launchInstaller, quit: () => app.quit() },
     changed: state => mainBridge.emit(window(), MAIN_CHANNELS.SYKA_UPDATES_CHANGED, decorate(state)),
     loadRelease: async () => {
       if (demo) return demo.loadRelease();
@@ -72,15 +77,7 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
       return decorate(await controller.check());
     }
     if (request.action === 'check') return decorate(await controller.check());
-    if (request.action === 'download') {
-      const state = controller.snapshot();
-      if (state.installation === 'installer') {
-        if (!['available', 'error'].includes(state.phase) || !state.availableVersion || !state.releaseUrl) throw Error('Primero buscá una actualización disponible.');
-        await shell.openExternal(state.releaseUrl);
-        return decorate(state);
-      }
-      return decorate(controller.download());
-    }
+    if (request.action === 'download') return decorate(controller.download());
     if (request.action === 'notes') {
       const url = controller.snapshot().releaseUrl;
       if (url && !demo) await shell.openExternal(url);
@@ -102,6 +99,8 @@ export function registerUpdates(window: () => BrowserWindow | null, filesBusy: (
       const answer = target ? await dialog.showMessageBox(target, options) : await dialog.showMessageBox(options);
       if (answer.response === 0) {
         if (filesBusy() || await isAgentChatBusy()) throw Error('Empezó una tarea. Esperá a que termine antes de reiniciar.');
+        // Squirrel closes the windows before quitting: they must not hide in the tray.
+        markQuitting();
         controller.install();
       }
     }

@@ -1,7 +1,6 @@
 /** @jsxImportSource react */
-import {mainBridge} from "@/lib/ipc";
-import {MAIN_CHANNELS} from "@desktop/main-channels";
-import {requireGroqTranscription,transcribeWithGroq} from "@/lib/syka-transcription";
+import {dictationEngine,transcribeDictation} from "@/lib/syka-transcription";
+import {microphoneConstraint,onVoicePrefsChange} from "@/lib/voice-prefs";
 import { createPortal } from "react-dom";
 import { DictationWaveform } from "./dictation-waveform.js";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -26,9 +25,12 @@ export function DictationControl({ onText, disabled = false }: { onText: (text: 
   const storageKey = `syka:dictation:v1:${user}`;
   useEffect(() => {
     let disposed = false;
-    void mainBridge.call(MAIN_CHANNELS.SYKA_GROQ_STATUS,undefined).then(data=>{
-      if(!disposed){setUser('local');setEnabled(data.configured);}
-    }).catch(()=>{});    return () => { disposed = true; generation.current++; abort.current?.abort(); if (recorder.current) recorder.current.onstop = null; if (recorder.current?.state !== "inactive") recorder.current?.stop(); stream.current?.getTracks().forEach(track => track.stop()); };
+    const refresh=()=>void dictationEngine().then(engine=>{
+      if(!disposed){setUser('local');setEnabled(engine!==null);}
+    }).catch(()=>{});
+    refresh();
+    const stopListening=onVoicePrefsChange(refresh);
+    window.addEventListener('focus',refresh);    return () => { disposed = true; stopListening(); window.removeEventListener('focus',refresh); generation.current++; abort.current?.abort(); if (recorder.current) recorder.current.onstop = null; if (recorder.current?.state !== "inactive") recorder.current?.stop(); stream.current?.getTracks().forEach(track => track.stop()); };
   }, []);
   useEffect(() => {
     if (!user) return;
@@ -39,9 +41,8 @@ export function DictationControl({ onText, disabled = false }: { onText: (text: 
     const current = ++generation.current; setStatus("transcribing"); setError("");
     const controller = new AbortController(); abort.current = controller;
     try {
-      const segments=await transcribeWithGroq(blob,controller.signal);
+      const text=await transcribeDictation(blob,controller.signal);
       if(current!==generation.current)return;
-      const text=segments.map(segment=>segment.text).join(' ').trim();
       if(!text)throw new Error('No se detectó voz. Podés volver a intentar.');      saveHistory([{ id: crypto.randomUUID(), text, at: new Date().toISOString() }, ...history].slice(0, 30));
       onTextRef.current(text); audio.current = null; chunks.current = []; setStatus("idle"); setOpen(false);
     } catch (reason) { if (current === generation.current) { setStatus("retry"); setError(reason instanceof Error ? reason.message : "No se pudo transcribir."); } }
@@ -52,9 +53,9 @@ export function DictationControl({ onText, disabled = false }: { onText: (text: 
     if (disabled || !enabled || starting.current) return;
     starting.current = true; setOpen(false); setError(""); const current = ++generation.current;
     try {
-      await requireGroqTranscription();
+      if (!await dictationEngine()) throw new Error("Elegí quién transcribe el dictado en Configuración › Voz.");
       if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") throw new Error("Este navegador no permite grabar. Habilitá el micrófono de Syka.");
-      const media = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const media = await navigator.mediaDevices.getUserMedia({ audio: microphoneConstraint() });
       if (current !== generation.current) { media.getTracks().forEach(track => track.stop()); return; }
       stream.current = media;
       const mimeType = ["audio/webm;codecs=opus", "audio/mp4", "audio/ogg;codecs=opus"].find(type => MediaRecorder.isTypeSupported(type));
@@ -85,7 +86,7 @@ export function DictationControl({ onText, disabled = false }: { onText: (text: 
     return () => window.removeEventListener('keydown', handler, true);
   }, [shortcut, enabled, disabled, capturingKey]);
   return <div className="dictation-control" ref={root} onKeyDown={event => { if (event.key === "Escape" && open) { event.preventDefault(); event.stopPropagation(); setOpen(false); root.current?.querySelector<HTMLButtonElement>(".dictation-settings-trigger")?.focus(); } }}>
-    <button type="button" data-tour-target="dictation" className="agent-composer-icon-button agent-composer-voice" aria-label="Dictar mensaje" title={enabled ? `Dictar · ${shortcut}` : "Dictado sin conexión"} disabled={disabled || !enabled} aria-pressed={status !== "idle"} onClick={() => toggleRef.current()}><Mic size={18}/></button>
+    <button type="button" data-tour-target="dictation" className="agent-composer-icon-button agent-composer-voice" aria-label="Dictar mensaje" title={enabled ? `Dictar · ${shortcut}` : "Elegí quién transcribe en Configuración › Voz"} disabled={disabled || !enabled} aria-pressed={status !== "idle"} onClick={() => toggleRef.current()}><Mic size={18}/></button>
     {slot && (status !== "idle" || error) ? createPortal(<div className="dictation-inline" aria-label="Grabación de voz">
       <button type="button" aria-label="Cancelar dictado" title="Cancelar" onClick={cancel}><X size={17}/></button>
       <div className="dictation-wave-area">{status === "recording" || status === "paused" ? <DictationWaveform stream={stream.current} active={status === "recording"}/> : <span role="status">{status === "transcribing" ? <><LoaderCircle size={15}/>Transcribiendo…</> : error}</span>}</div>

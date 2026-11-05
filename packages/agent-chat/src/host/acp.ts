@@ -132,7 +132,7 @@ async function connect(config: AcpHarnessConfig, env: HostEnv, cwd: string, sign
   try {
     const initialized = await process.request("initialize", { protocolVersion: 1, clientCapabilities: {}, clientInfo: { name: "syka-clips", version: "0.1.0" } });
     if (initialized.protocolVersion !== 1) throw Error("Versión ACP no compatible; se requiere v1.");
-    const expected = { antigravity: /antigravity/i, hermes: /hermes/i, cursor: /cursor/i, grok: /grok/i, muse: /muse/i, opencode: /opencode/i, 'gemini-web': /opencode/i }[config.id];
+    const expected = { antigravity: /antigravity/i, hermes: /hermes/i, cursor: /cursor/i, grok: /grok/i, muse: /muse/i, opencode: /opencode/i, 'gemini-web': /opencode/i, deepseek: /deepseek|dsh/i, pi: /pi/i }[config.id] ?? /./;
     // ACP v1 makes agentInfo optional; the official Cursor CLI omits it.
     // The selected executable already establishes the route. If metadata is
     // supplied, still reject a different provider or malformed identity.

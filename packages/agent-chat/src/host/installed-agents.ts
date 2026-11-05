@@ -47,7 +47,7 @@ export async function installedHermesHome(env: Record<string, string>, userHome:
 }
 
 /** Paths are resolved at probe time so a newly installed agent is discovered. */
-export async function discoverInstalledAcp(id: 'hermes' | 'antigravity', profilesRoot: string, env: HostEnv): Promise<AcpHarness | undefined> {
+export async function discoverInstalledAcp(id: 'hermes' | 'antigravity' | 'deepseek', profilesRoot: string, env: HostEnv): Promise<AcpHarness | undefined> {
   const userHome = env.env.USERPROFILE ?? env.env.HOME ?? homedir();
   const installedSession: NonNullable<AcpHarnessConfig['installedSession']> = { userHome, appData: env.env.APPDATA, localAppData: env.env.LOCALAPPDATA };
   let command: string | null | undefined;
@@ -70,6 +70,11 @@ export async function discoverInstalledAcp(id: 'hermes' | 'antigravity', profile
       if (standalone && !/\.(cmd|bat|ps1)$/i.test(standalone)) command = standalone;
       else { command = binary; args = ['acp']; }
     }
+  } else if (id === 'deepseek') {
+    // DeepSeek's agent harness speaks ACP with `dsh acp` (Syka Code's ACP spec). Its key
+    // comes from the person's own environment (DEEPSEEK_API_KEY); Syka never reads it.
+    command = env.env.SYKA_DEEPSEEK_EXECUTABLE ?? which('dsh', { ...env, extraDirs: [...env.extraDirs, join(userHome, '.local', 'bin'), join(env.env.APPDATA ?? join(userHome, 'AppData', 'Roaming'), 'npm')] });
+    args = ['acp'];
   } else {
     const prepared = join(profilesRoot, '..', 'providers', 'antigravity', process.platform === 'win32' ? 'agy_acp_server.exe' : 'agy_acp_server.par');
     command = await file(prepared) ? prepared : which('agy_acp_server', env);
@@ -80,7 +85,7 @@ export async function discoverInstalledAcp(id: 'hermes' | 'antigravity', profile
   return new AcpHarness({ id, command: await realpath(command), args, sharedRuntime, profileDir: join(profilesRoot, id, identity), installedSession });
 }
 
-export function installedAcpHarness(id: 'hermes' | 'antigravity', profilesRoot: string): Harness {
+export function installedAcpHarness(id: 'hermes' | 'antigravity' | 'deepseek', profilesRoot: string): Harness {
   let delegate: Harness | undefined;
   return { id,
     async probe(env, signal) {
@@ -93,7 +98,7 @@ export function installedAcpHarness(id: 'hermes' | 'antigravity', profilesRoot: 
       }
       catch { return { id, label: HARNESS_LABELS[id], status: 'error', models: [], detail: 'Encontramos la instalación, pero su perfil necesita revisión. No se modificó tu cuenta.' }; }
       if (delegate) return delegate.probe(env, signal);
-      return { id, label: HARNESS_LABELS[id], status: 'not-installed', models: [], detail: id === 'hermes' ? 'No encontramos Hermes con un perfil configurado en este equipo.' : 'Falta el componente de conexión oficial de Antigravity. Instalar la aplicación visual no prepara esta conexión.' };
+      return { id, label: HARNESS_LABELS[id], status: 'not-installed', models: [], detail: id === 'hermes' ? 'No encontramos Hermes con un perfil configurado en este equipo.' : id === 'deepseek' ? 'No encontramos DeepSeek Harness (dsh). Instalalo desde api-docs.deepseek.com/quick_start/agent_integrations y configurá DEEPSEEK_API_KEY.' : 'Falta el componente de conexión oficial de Antigravity. Instalar la aplicación visual no prepara esta conexión.' };
     },
     async authenticate(env, methodId, signal, hooks) {
       if (!delegate) throw Error('Comprobá la instalación antes de conectar.');

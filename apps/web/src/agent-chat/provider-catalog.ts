@@ -8,9 +8,11 @@ import grok from '@/assets/icons/provider.grok.svg?raw';
 import muse from '@/assets/icons/provider.muse.svg?raw';
 import hermes from '@/assets/icons/provider.hermes.svg?raw';
 import opencode from '@/assets/icons/agent.opencode.svg?raw';
+import deepseek from '@/assets/icons/provider.deepseek.svg?raw';
+import pi from '@/assets/icons/provider.pi.svg?raw';
 
 /** Trusted bundled SVGs. Claude, Gemini, Nous Research and MetaAI: LobeHub. */
-export const PROVIDER_LOGOS: Record<HarnessId, string> = { codex, claude, antigravity, cursor, grok, muse, hermes, opencode, 'gemini-web': gemini };
+export const PROVIDER_LOGOS: Record<HarnessId, string> = { codex, claude, antigravity, cursor, grok, muse, hermes, opencode, 'gemini-web': gemini, deepseek, pi };
 const svgBody=(svg:string)=>svg.replace(/^\s*<svg\b[^>]*>/,'').replace(/<\/svg>\s*$/,'').replace(/<title>.*?<\/title>/g,'');
 function routedLogo(family:string){
   return `<svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" data-route="antigravity"><g transform="translate(-2 -2) scale(1.25)">${svgBody(antigravity)}</g><circle cx="21" cy="21" r="7" fill="var(--surface-2,#202022)"/><g transform="translate(16 16) scale(.42)">${svgBody(family)}</g></svg>`;
@@ -23,7 +25,7 @@ export function modelRouteDescription(harness:HarnessId,model:string):string{
   if(harness!=='antigravity')return PROVIDER_NAMES[harness];
   return `${model.startsWith('claude-')?'Claude':model.startsWith('gpt-')?'OpenAI':'Gemini'} · vía Antigravity`;
 }
-export const PROVIDER_NAMES: Record<HarnessId, string> = { codex: 'Codex', claude: 'Claude', antigravity: 'Antigravity', hermes: 'Hermes', cursor: 'Cursor', grok: 'Grok', muse: 'Muse', opencode: 'OpenCode', 'gemini-web': 'Gemini Web · Experimental' };
+export const PROVIDER_NAMES: Record<HarnessId, string> = { codex: 'Codex', claude: 'Claude', antigravity: 'Antigravity', hermes: 'Hermes', cursor: 'Cursor', grok: 'Grok', muse: 'Muse', opencode: 'OpenCode', 'gemini-web': 'Gemini Web · Experimental', deepseek: 'DeepSeek', pi: 'Pi' };
 export const PROVIDER_NOTES: Record<HarnessId, string> = {
   'gemini-web': 'Usá la pestaña de Gemini que vinculaste con la extensión de Syka. Conector experimental: puede fallar cuando cambia la web.',
   codex: 'Editá con los modelos incluidos en tu cuenta de ChatGPT.',
@@ -33,11 +35,15 @@ export const PROVIDER_NOTES: Record<HarnessId, string> = {
   cursor: 'Usá el agente de Cursor con tu cuenta y sus modelos disponibles.',
   grok: 'Grok Build con tu cuenta de xAI.',
   muse: 'Proveedor retirado. Solo se conserva el historial anterior.',
+  deepseek: 'El arnés de agente de DeepSeek (dsh), con tu clave de DeepSeek en DEEPSEEK_API_KEY.',
+  pi: 'El agente Pi con los proveedores que conectes en Pi (/login) o las claves de Configuración › Proveedores.',
   opencode: 'Usá la cuenta y los modelos que ya configuraste en OpenCode. Los modelos gratuitos no requieren Go; Go es una suscripción y Zen puede cobrar por uso.',
 };
 type ProviderGuide = { url: string; linkLabel: string; steps: string[]; limitation?: string };
 export const PROVIDER_GUIDES: Record<HarnessId, ProviderGuide> = {
   'gemini-web': { url: 'https://gemini.google.com/', linkLabel: 'Gemini Web', steps: ['Iniciá el puente local desde Conectar Gemini Web.', 'En tu pestaña de Gemini, abrí la extensión Syka y pulsá «Conectar esta pestaña». Se reutiliza la sesión de ese perfil.', 'Volvé a Syka y comprobá la conexión. Mantené abierta la pestaña vinculada mientras editás.'], limitation: 'Experimental. La identidad interna del modelo no está certificada. Por ahora utiliza OpenCode como componente de ejecución; no necesita que vuelvas a iniciar sesión si la pestaña ya está conectada a tu cuenta.' },
+  pi: { url: 'https://www.npmjs.com/package/@earendil-works/pi-coding-agent', linkLabel: 'Pi · paquete oficial', steps: ['Instalá Pi con «npm install -g @earendil-works/pi-coding-agent».', 'Abrí «pi» en una terminal e iniciá sesión con /login, o guardá una clave de OpenRouter, DeepSeek u OpenAI en Configuración › Proveedores.', 'Syka detecta sus modelos y abre un proceso de Pi por chat.'], limitation: 'Los diálogos de las extensiones de Pi todavía no se muestran: se cancelan para que el turno no quede trabado.' },
+  deepseek: { url: 'https://api-docs.deepseek.com/quick_start/agent_integrations', linkLabel: 'DeepSeek Harness · guía oficial', steps: ['Instalá DeepSeek Harness (dsh) con la guía oficial.', 'Configurá tu clave en la variable DEEPSEEK_API_KEY.', 'Volvé a comprobar la conexión: Syka lo detecta y lo abre con «dsh acp».'] },
   opencode: { url: 'https://opencode.ai/docs/providers/', linkLabel: 'Cuentas de OpenCode · guía oficial', steps: ['Conectar OpenCode detecta o prepara el componente oficial y recupera sus modelos gratuitos.', 'Para sumar una cuenta, usá Conectar otra cuenta y elegí uno de los métodos de navegador que anuncia OpenCode.', 'Autorizá la cuenta en el enlace oficial. Si el proveedor entrega un código, completalo en Syka.'], limitation: 'Detectar el catálogo no confirma cuota. La app visual y la terminal pueden usar perfiles distintos; se comprueba el perfil de la CLI oficial.' },
   codex: { url: 'https://learn.chatgpt.com/docs/auth', linkLabel: 'Autenticación de Codex · guía oficial', steps: ['Conectar Codex detecta o prepara el componente oficial y comprueba tu sesión existente.', 'Si falta una sesión, se abre el login de ChatGPT. También podés elegir la vinculación con código si tu cuenta la permite.', 'Elegí uno de los modelos comprobados. Para cambiar la cuenta, usá Conectar otra cuenta.'] },
   claude: { url: 'https://code.claude.com/docs/en/authentication', linkLabel: 'Autenticación de Claude · guía oficial', steps: ['Conectar Claude detecta o prepara Claude Code y comprueba la sesión.', 'Si falta una sesión, autorizá tu cuenta en el navegador. Si aparece un código de autorización, pegalo en Syka.', 'Elegí un modelo. Conectar otra cuenta inicia un login nuevo solamente cuando lo pedís.'] },

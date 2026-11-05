@@ -17,6 +17,7 @@ import { randomBytes } from "node:crypto";
 import { join, resolve } from "node:path";
 import { randomUUID } from 'node:crypto';
 import type { AgentNoticeEvent } from '../../../packages/agent-chat/src/notifications';
+import type { HostProvider } from '../../../packages/agent-chat/src/host/providers';
 
 import type { UtilityProcess } from "electron";
 
@@ -36,6 +37,10 @@ let token = "";
 let restarts = 0;
 let restartTimer: ReturnType<typeof setTimeout> | null = null;
 let stopped = false;
+/** Settings › Proveedores, in memory: sent at every start and whenever they change. */
+let providers: () => HostProvider[] = () => [];
+export function setAgentProviders(source: () => HostProvider[]): void { providers = source; }
+export function pushAgentProviders(list: HostProvider[]): void { try { child?.postMessage({ type: 'providers', providers: list }); } catch { /* Sent again at the next start. */ } }
 
 function spawn(): void {
   if (!options || stopped) return;
@@ -59,6 +64,7 @@ function spawn(): void {
         allowedOrigins: isPackagedBuild() ? ["file://", "null"] : ["file://", "null", DEV_ORIGIN],
       },
     });
+    proc.postMessage({ type: 'providers', providers: providers() });
   });
 
   proc.on("message", (message: { type?: string; url?: string; message?: string; event?: AgentNoticeEvent; id?: string; error?: string; busy?: boolean }) => {

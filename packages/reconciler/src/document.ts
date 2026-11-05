@@ -1853,6 +1853,14 @@ export class RuntimeDocument implements ProjectDocument<SceneNode> {
  * classes, attributes and explicit HTML/text content. Pointer and media event
  * handlers are ignored because the subtree is rasterized into the canvas.
  */
+/**
+ * What each DOM node was last given, per prop. A composition hands its HTML
+ * paint the same style object on every frame; writing it again made the
+ * browser recompute that whole subtree's styles each time (measured at 84% of
+ * playback in a real project). Only changes reach the element now.
+ */
+const writtenStyles = new WeakMap<Element, Map<string, unknown>>();
+
 function setDomProperty(element: Element | null, name: string, value: unknown): void {
 	if (
 		typeof value === 'function'
@@ -1864,19 +1872,31 @@ function setDomProperty(element: Element | null, name: string, value: unknown): 
 
 	if (name === 'style') {
 		const style = (element as HTMLElement | SVGElement).style;
+		let written = writtenStyles.get(element);
+		if (!written) { written = new Map(); writtenStyles.set(element, written); }
 		if (typeof value === 'string') {
+			if (written.get('\u0000css') === value) return;
 			style.cssText = value;
+			written.clear();
+			written.set('\u0000css', value);
 		} else if (typeof value === 'object' && value !== null) {
-			Object.assign(style, value);
+			written.delete('\u0000css');
+			// Same behavior as Object.assign: keys left out keep their last value.
+			for (const [key, next] of Object.entries(value)) {
+				if (written.get(key) === next) continue;
+				(style as unknown as Record<string, unknown>)[key] = next;
+				written.set(key, next);
+			}
 		} else {
 			style.cssText = '';
+			written.clear();
 		}
 		return;
 	}
 
 	if (name === 'class' || name === 'className') {
-		if (value === undefined || value === null || value === false) element.removeAttribute('class');
-		else element.setAttribute('class', String(value));
+		if (value === undefined || value === null || value === false) { if (element.hasAttribute('class')) element.removeAttribute('class'); }
+		else if (element.getAttribute('class') !== String(value)) element.setAttribute('class', String(value));
 		return;
 	}
 
@@ -1900,9 +1920,10 @@ function setDomProperty(element: Element | null, name: string, value: unknown): 
 	}
 
 	if (value === undefined || value === null || value === false) {
-		element.removeAttribute(name);
+		if (element.hasAttribute(name)) element.removeAttribute(name);
 	} else {
-		element.setAttribute(name, value === true ? '' : String(value));
+		const next = value === true ? '' : String(value);
+		if (element.getAttribute(name) !== next) element.setAttribute(name, next);
 	}
 }
 

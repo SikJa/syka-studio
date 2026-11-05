@@ -17,6 +17,25 @@ describe('Syka update lifecycle', () => {
     expect(()=>controller.download()).toThrow('instalador oficial');
     expect(driver.checkForUpdates).not.toHaveBeenCalled();controller.stop();
   });
+  it('downloads the official Setup without Squirrel, reports progress and starts it on install',async()=>{
+    const {driver,changed}=setup();
+    let progress:(fraction:number)=>void=()=>{};let finish:(path:string)=>void=()=>{};
+    const download=vi.fn((_feed:string,onProgress:(fraction:number)=>void)=>{progress=onProgress;return new Promise<string>(resolve=>{finish=resolve;});});
+    const launch=vi.fn(),quit=vi.fn();
+    const controller=new UpdateController({version:'1.0.0',repo:'SikJa/syka-studio',enabled:true,externalInstaller:true,driver,changed,
+      installer:{download,launch,quit},loadRelease:async()=>({tag_name:'v1.1.0',assets:[{name:'Syka-Studio-x64-Setup.exe'}]})});
+    await controller.check();
+    expect(controller.download()).toMatchObject({phase:'downloading',progress:0});
+    expect(download).toHaveBeenCalledWith('https://github.com/SikJa/syka-studio/releases/download/v1.1.0',expect.any(Function));
+    controller.download();expect(download).toHaveBeenCalledTimes(1);
+    progress(0.426);expect(controller.snapshot().progress).toBe(0.42);
+    expect(()=>controller.install()).toThrow();
+    finish('C:/tmp/syka-studio-update/Syka-Studio-x64-Setup.exe');await Promise.resolve();await Promise.resolve();
+    expect(controller.snapshot()).toMatchObject({phase:'ready'});
+    controller.install();
+    expect(launch).toHaveBeenCalledWith('C:/tmp/syka-studio-update/Syka-Studio-x64-Setup.exe');expect(quit).toHaveBeenCalledTimes(1);
+    expect(driver.quitAndInstall).not.toHaveBeenCalled();controller.stop();
+  });
   it('checks metadata without downloading, downloads once on request and only installs when ready', async () => {
     const { controller, driver } = setup();
     expect(() => controller.install()).toThrow();

@@ -3,6 +3,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 import type { UpdateState } from './update-types';
+import type { InstallerDownload } from './update-installer';
 
 /** A configuration problem the user must see, never reported as "up to date". */
 export class UpdateSourceError extends Error {}
@@ -35,12 +36,15 @@ export class UpdateController {
   private inFlight: Promise<UpdateState> | null = null;
   private lastCheck = 0;
   private feedUrl: string | null = null;
+  private installerPath: string | null = null;
   private stopped = false;
   private timeout: ReturnType<typeof setTimeout> | undefined;
   private readonly listeners: [string, (...args: unknown[]) => void][] = [];
   private readonly options: {
     version: string; repo: string; enabled: boolean; disabledReason?: string;
     externalInstaller?: boolean;
+    /** Downloads and starts the official Setup when there is no Squirrel to update through. */
+    installer?: { download: InstallerDownload; launch(path: string): void; quit(): void };
     driver: UpdateDriver; loadRelease(): Promise<Release | null>;
     changed(state: UpdateState): void; now?: () => number;
   };
@@ -111,9 +115,9 @@ export class UpdateController {
 
   download(): UpdateState {
     if (this.stopped) return this.snapshot();
-    if (this.options.externalInstaller) throw Error('Esta instalación utiliza el instalador oficial para actualizar.');
     if (this.state.phase === 'downloading' || this.state.phase === 'ready') return this.snapshot();
     if (!this.feedUrl || !['available', 'error'].includes(this.state.phase)) throw Error('Primero buscá una actualización disponible.');
+    if (this.options.externalInstaller) return this.downloadInstaller(this.feedUrl);
     this.change({ phase: 'downloading', message: undefined });
     try {
       this.options.driver.setFeedURL({ url: this.feedUrl });
@@ -128,8 +132,32 @@ export class UpdateController {
     return this.snapshot();
   }
 
+  private downloadInstaller(feedUrl: string): UpdateState {
+    const installer = this.options.installer;
+    if (!installer) throw Error('Esta instalación utiliza el instalador oficial para actualizar.');
+    this.change({ phase: 'downloading', progress: 0, message: undefined });
+    let shown = 0;
+    void installer.download(feedUrl, fraction => {
+      // Report whole percents only: the card redraws on every change.
+      const percent = Math.floor(fraction * 100);
+      if (percent > shown) { shown = percent; this.change({ progress: percent / 100 }); }
+    }).then(path => {
+      this.installerPath = path;
+      this.change({ phase: 'ready', progress: undefined, message: undefined });
+    }, (error: unknown) => {
+      this.change({ phase: 'error', progress: undefined, message: error instanceof Error ? error.message : 'No se pudo descargar el instalador. Podés volver a intentarlo.' });
+    });
+    return this.snapshot();
+  }
+
   install(): void {
     if (this.stopped || this.state.phase !== 'ready') throw Error('La actualización todavía no está lista para instalar.');
+    if (this.options.externalInstaller) {
+      if (!this.installerPath || !this.options.installer) throw Error('El instalador todavía no está descargado.');
+      this.options.installer.launch(this.installerPath);
+      this.options.installer.quit();
+      return;
+    }
     this.options.driver.quitAndInstall();
   }
   stop(): void {

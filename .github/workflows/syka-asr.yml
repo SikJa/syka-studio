@@ -1,0 +1,53 @@
+name: syka-asr (Parakeet engine) on every platform
+
+# Builds and smoke-tests the local transcription engine on Windows, macOS and
+# Linux, so a change never ships for one system only. It checks that the
+# engine starts and answers on each one; transcription quality is measured
+# with scripts/benchmark-transcription.mjs.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ["native/syka-asr/**", "apps/desktop/scripts/stage-asr.mjs", ".github/workflows/syka-asr.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest   # x64, Vulkan + CPU variants
+          - os: macos-14         # Apple silicon, Metal
+          - os: ubuntu-24.04     # x64, Vulkan + CPU variants
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Vulkan SDK (Windows)
+        if: runner.os == 'Windows'
+        uses: ./.github/actions/vulkan-sdk
+      - name: Vulkan headers and shader compiler (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libvulkan-dev glslc cmake
+      - name: Build and stage syka-asr
+        env:
+          SYKA_REQUIRE_ASR: "1"
+        run: node apps/desktop/scripts/stage-asr.mjs
+      - name: The engine starts and answers a request
+        shell: bash
+        run: |
+          exe=apps/desktop/syka-asr/syka-asr; [ "$RUNNER_OS" = Windows ] && exe="$exe.exe"
+          answer=$(printf '{"id":1,"cmd":"transcribe","wav":"none.wav"}\n{"id":2,"cmd":"quit"}\n' | "$exe")
+          echo "$answer"
+          echo "$answer" | grep -q '"ok":false'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: syka-asr-${{ runner.os }}-${{ runner.arch }}
+          path: apps/desktop/syka-asr

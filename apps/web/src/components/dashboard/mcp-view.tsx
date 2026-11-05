@@ -7,7 +7,7 @@ import { toast } from "somoto";
 
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { Switch as Toggle, SwitchControl, SwitchInput, SwitchThumb } from "@/components/ui/switch";
+import { SettingsSwitch } from "@/components/settings/kit";
 import {
   AGENT_ICONS,
   applyMcp,
@@ -48,17 +48,12 @@ function AgentRow(props: AgentRowProps) {
       title={props.agent.label}
       leading={<Icon name={AGENT_ICONS[props.agent.id]} class="text-foreground" />}
       action={
-        <Toggle
+        <SettingsSwitch
           checked={checked()}
           disabled={props.pending !== undefined || (!checked() && !!props.agent.unavailable)}
           onChange={props.onChange}
-          class="flex shrink-0 items-center"
-        >
-          <SwitchInput aria-label={`Conectar ${props.agent.label}`} />
-          <SwitchControl variant="compact">
-            <SwitchThumb variant="compact" />
-          </SwitchControl>
-        </Toggle>
+          label={`Conectar ${props.agent.label}`}
+        />
       }
     />
   );

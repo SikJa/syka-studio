@@ -1,0 +1,120 @@
+/* Settings as a full page, like Syka Code: the app blurred behind, a sidebar
+   with back, search and the grouped sections, and a 760 px column. The rows
+   and cards come from syka-code-settings.css. */
+/* Syka Studio has no --syka-accent: switches, ranges and menus take its primary colour. */
+.syka-settings-shell, .syka-settings-menu { --z-accent: var(--primary); --z-track-on: var(--primary); }
+/* Switches and ranges keep the accent's hue with a floor on lightness: a very
+   dark accent (#5d0303, say) on the dark page made a switch that barely showed. */
+@supports (color: oklch(from red l c h)) {
+  .syka-settings-shell, .syka-settings-menu, :root { --z-track-on: oklch(from var(--primary) max(l, 0.6) max(c, 0.06) h); }
+  :root:is([data-kb-theme="light"]) .syka-settings-shell { --z-track-on: oklch(from var(--primary) min(max(l, 0.45), 0.7) c h); }
+}
+.syka-settings-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  color: var(--z-text);
+  /* A lighter blur than Syka Code: the whole editor repaints under it while the page opens. */
+  background: color-mix(in oklab, var(--z-bg) 84%, transparent);
+  backdrop-filter: blur(20px);
+  animation: syka-settings-in 120ms ease-out both;
+  /* The app's own drag strip (40 px across the top) sits under this page and
+     would swallow clicks on «Volver a la aplicación» and the search. */
+  -webkit-app-region: no-drag;
+}
+.syka-settings-drag {
+  position: absolute;
+  top: 0;
+  left: 236px;
+  right: var(--titlebar-controls-width, 140px);
+  height: 28px;
+  -webkit-app-region: drag;
+}
+@media (max-width: 760px) { .syka-settings-drag { left: 196px; } }
+.syka-settings-sidenav {
+  display: flex;
+  flex-direction: column;
+  width: 236px;
+  flex-shrink: 0;
+  min-height: 0;
+  padding: 10px 8px 12px;
+  background: color-mix(in oklab, var(--z-shell) 70%, transparent);
+  border-right: 1px solid var(--z-border);
+}
+.syka-settings-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  color: var(--z-text);
+  font-size: 13px;
+}
+.syka-settings-back:hover, .syka-settings-navrow:hover { background: var(--z-hover-wash); }
+.syka-settings-back svg { color: var(--z-muted); }
+.syka-settings-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  margin: 6px 0 4px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--z-wash-06);
+  color: var(--z-muted);
+}
+.syka-settings-search:focus-within { outline: 2px solid var(--ring); }
+.syka-settings-search input { min-width: 0; flex: 1; background: transparent; color: var(--z-text); font-size: 13px; outline: none; }
+.syka-settings-search input::placeholder { color: var(--z-muted); }
+.syka-settings-sidenav-list { min-height: 0; flex: 1; overflow-y: auto; padding-bottom: 8px; }
+.syka-settings-sidenav-list section { display: flex; flex-direction: column; gap: 1px; padding-top: 14px; }
+.syka-settings-sidenav-list h2 { padding: 0 10px 4px; color: var(--z-muted); font-size: 12px; font-weight: 400; }
+.syka-settings-navrow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  color: var(--z-text);
+  font-size: 13px;
+  text-align: left;
+}
+.syka-settings-navrow[aria-current="page"] { background: var(--z-wash-10); font-weight: 500; }
+.syka-settings-navrow:focus-visible, .syka-settings-back:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+.syka-settings-navrow-icon { display: grid; width: 18px; height: 18px; flex-shrink: 0; place-items: center; color: var(--z-muted); }
+.syka-settings-navrow-icon svg { width: 16px; height: 16px; }
+.syka-settings-sidenav-empty { padding: 12px 10px; color: var(--z-muted); font-size: 12px; }
+.syka-settings-sidenav-version { padding: 8px 10px 0; color: var(--z-muted); font-size: 10px; opacity: .75; }
+.syka-settings-scroll { min-width: 0; min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; }
+.syka-settings-column { width: 100%; max-width: 760px; margin: 0 auto; padding: 40px 40px 56px; }
+.syka-settings-column [data-slot="dashboard-scroll"] { padding: 0; overflow: visible; }
+.syka-settings-column [data-slot="dashboard-scroll"] > div { max-width: none; gap: 18px; }
+@keyframes syka-settings-in { from { opacity: 0; } }
+[data-syka-motion="reduced"] .syka-settings-shell { animation: none; }
+@media (prefers-reduced-motion: reduce) { .syka-settings-shell { animation: none; } }
+@media (max-width: 760px) { .syka-settings-sidenav { width: 196px; } .syka-settings-column { padding: 28px 20px 40px; } }
+/* Settings › Perfil › Avatar, the pieces of Syka Code's DitherAvatarPicker. */
+.syka-avatar-segmented { display: flex; height: 32px; align-items: center; gap: 2px; padding: 2px; border-radius: 10px; background: var(--z-wash-06); }
+.syka-avatar-segmented button { height: 28px; padding: 0 10px; border-radius: 8px; color: var(--z-muted); font-size: 12px; transition: color 150ms, background-color 150ms; }
+.syka-avatar-segmented button:hover { color: var(--z-text); }
+.syka-avatar-segmented button[aria-checked="true"] { background: var(--z-wash-10); color: var(--z-text); }
+.syka-avatar-swatch { width: 24px; height: 24px; border-radius: 9999px; }
+.syka-avatar-swatch:hover { box-shadow: 0 0 0 1px color-mix(in oklab, var(--z-text) 30%, transparent); }
+.syka-avatar-swatch[aria-checked="true"] { box-shadow: 0 0 0 2px var(--z-bg), 0 0 0 4px color-mix(in oklab, var(--z-text) 70%, transparent); }
+.syka-avatar-face { padding: 4px; border-radius: 9999px; opacity: .6; transition: opacity 150ms, background-color 150ms; }
+.syka-avatar-face:hover, .syka-avatar-face[aria-checked="true"] { opacity: 1; }
+.syka-avatar-face[aria-checked="true"] { background: var(--z-wash-10); }
+.syka-avatar-rainbow { display: grid; place-items: center; }
+.syka-avatar-rainbow i { width: 12px; height: 12px; border-radius: 9999px; box-shadow: 0 0 0 2px var(--z-bg); }
+.syka-avatar-segmented button:focus-visible, .syka-avatar-swatch:focus-visible, .syka-avatar-face:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+/* Settings › Proveedores: the model catalog to pick from. */
+.syka-provider-catalog { display: flex; max-height: 260px; flex-direction: column; overflow-y: auto; border-radius: 10px; background: var(--z-wash-045); }
+.syka-provider-catalog label { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 10px; padding: 7px 12px; font-size: 12.5px; }
+.syka-provider-catalog label:hover { background: var(--z-hover-wash); }
+.syka-provider-catalog small { grid-column: 2; color: var(--z-muted); font-size: 11px; }
+/* A row with its control below needs to wrap for the label to take the full width. */
+.syka-settings-row.syka-settings-row-below { flex-wrap: wrap; }
+.syka-settings-row-below > .syka-settings-control > * { flex: 1; min-width: 0; }

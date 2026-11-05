@@ -124,10 +124,16 @@ jobs:
             Copy-Item -LiteralPath 'apps/web/.env.example' -Destination 'apps/web/.env'
           }
 
+      - name: Vulkan SDK for Parakeet (syka-asr)
+        uses: ./.github/actions/vulkan-sdk
+
       - name: Windows x64 native screen recorder
         run: npm run build:native --workspace=@diffusionstudio/desktop
 
       - name: Build and verify the signed Windows beta
+        env:
+          # A release without the Parakeet engine fails instead of shipping without it.
+          SYKA_REQUIRE_ASR: "1"
         run: npm run build:installer
 
       - name: Upload the verified Windows release bundle

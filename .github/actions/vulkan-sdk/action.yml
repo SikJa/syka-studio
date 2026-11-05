@@ -1,0 +1,24 @@
+name: Vulkan SDK
+description: Headers, glslc and vulkan-1.lib for syka-asr, the local transcription engine (transcribe-cpp with Vulkan). Taken from Whispera.
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@v4
+      id: cache
+      with:
+        path: C:\VulkanSDK\1.4.363.0
+        key: vulkan-sdk-1.4.363.0-windows-x64
+    - name: Instalar Vulkan SDK
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: pwsh
+      run: |
+        $version = '1.4.363.0'
+        $installer = Join-Path $env:RUNNER_TEMP "vulkansdk-$version.exe"
+        Invoke-WebRequest "https://sdk.lunarg.com/sdk/download/$version/windows/vulkansdk-windows-X64-$version.exe" -OutFile $installer
+        & $installer --root "C:\VulkanSDK\$version" --accept-licenses --default-answer --confirm-command install | Out-Host
+        if (-not (Test-Path "C:\VulkanSDK\$version\Lib\vulkan-1.lib")) { throw 'Vulkan SDK incompleto' }
+    - name: Exportar Vulkan SDK
+      shell: pwsh
+      run: |
+        "VULKAN_SDK=C:\VulkanSDK\1.4.363.0" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "C:\VulkanSDK\1.4.363.0\Bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8

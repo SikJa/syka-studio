@@ -7,7 +7,7 @@
 // a project lives. The host owns all state; the UI is a view over a snapshot
 // (`chats.open`) plus the events that follow it.
 
-export type HarnessId = "claude" | "codex" | "antigravity" | "hermes" | "cursor" | "grok" | "muse" | "opencode" | "gemini-web";
+export type HarnessId = "claude" | "codex" | "antigravity" | "hermes" | "cursor" | "grok" | "muse" | "opencode" | "gemini-web" | "deepseek" | "pi";
 export type HarnessPathConfig = { id: Exclude<HarnessId, "codex" | "gemini-web">; command: string; args?: string[] };
 export type HarnessSettings = { configFile: string; profilesRoot: string; entries: HarnessPathConfig[] };
 
@@ -212,6 +212,8 @@ export type MethodMap = {
       text: string;
       attachments?: string[];
       model: ModelRef;
+      /** Settings › General › Generación de títulos: false keeps the chat's name. */
+      autoTitle?: boolean;
     };
     result: { chatId: string };
   };
@@ -265,6 +267,8 @@ export const HARNESS_LABELS: Record<HarnessId, string> = {
   codex: "Codex",
   antigravity: "Gemini · Antigravity",
   hermes: "Hermes",
+  deepseek: "DeepSeek Harness",
+  pi: "Pi",
   cursor: "Cursor",
   grok: "Grok Build",
   muse: "Muse Code",
@@ -273,7 +277,8 @@ export const HARNESS_LABELS: Record<HarnessId, string> = {
 };
 
 // Only configured adapters are exposed by the host. Historical IDs remain readable.
-export const HARNESS_IDS: readonly HarnessId[] = ["codex", "antigravity", "claude", "hermes", "cursor", "grok", "muse", "opencode", "gemini-web"];
+// deepseek was missing here: its chats failed validation and Settings › Cuentas never listed it.
+export const HARNESS_IDS: readonly HarnessId[] = ["codex", "antigravity", "claude", "hermes", "cursor", "grok", "muse", "opencode", "gemini-web", "deepseek", "pi"];
 
 export function isHarnessId(value: unknown): value is HarnessId {
   return typeof value === "string" && HARNESS_IDS.includes(value as HarnessId);
