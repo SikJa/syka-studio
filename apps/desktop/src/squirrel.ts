@@ -29,6 +29,27 @@ export function squirrelEvent(argv: string[] = process.argv, platform: string = 
   return flag && EVENTS.has(flag) ? flag : null;
 }
 
+/** How long the install hook waits for the CLI shims before quitting anyway. */
+export const SHIM_BUDGET_MS = 3000;
+
+/** Settles when `work` does or after `ms`, whichever comes first. */
+export function within(work: Promise<unknown>, ms: number): Promise<void> {
+  return new Promise((done) => {
+    const timer = setTimeout(done, ms);
+    void work.finally(() => { clearTimeout(timer); done(); });
+  });
+}
+
+/** Starts Update.exe on its own and returns at once; it outlives this launch. */
+function startUpdateExe(args: string[]): void {
+  const exe = resolve(process.execPath, "..", "..", "Update.exe");
+  try {
+    const child = spawn(exe, args, { detached: true, stdio: "ignore", windowsHide: true });
+    child.on("error", () => { });
+    child.unref();
+  } catch { /* No Update.exe (not a Squirrel install): nothing to create. */ }
+}
+
 /** Runs Update.exe with `args` and quits once it is done. Quits at once if it cannot be started. */
 function updateExe(args: string[]): void {
   const exe = resolve(process.execPath, "..", "..", "Update.exe");
@@ -56,9 +77,12 @@ export function handleSquirrelEvent(): boolean {
   switch (event) {
     case "--squirrel-install":
     case "--squirrel-updated":
-      writeShim()
-        .catch(() => { })
-        .then(() => updateExe(["--createShortcut", target]));
+      // Squirrel gives this launch about 15 s in all and starting the app takes
+      // most of them: the shortcut goes first and is not waited for, and the
+      // shims get what is left. Waiting for both cancelled the hook (0.212.1),
+      // leaving the install without a Start Menu shortcut.
+      startUpdateExe(["--createShortcut", target]);
+      void within(writeShim().catch(() => { }), SHIM_BUDGET_MS).then(() => app.quit());
       break;
     case "--squirrel-uninstall":
       try {

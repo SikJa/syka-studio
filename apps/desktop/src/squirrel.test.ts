@@ -32,3 +32,19 @@ describe("squirrelEvent", () => {
     expect(squirrelEvent(["/Applications/Diffusion Studio.app/Contents/MacOS/Diffusion Studio", "--squirrel-install"], "darwin")).toBeNull();
   });
 });
+
+describe("within", () => {
+  it("settles when the work does, or at the deadline", async () => {
+    const { within } = await import("./squirrel");
+    vi.useFakeTimers();
+    let late = false;
+    const slow = within(new Promise(() => { }), 3000).then(() => { late = true; });
+    await vi.advanceTimersByTimeAsync(2999);
+    expect(late).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+    await slow;
+    expect(late).toBe(true);
+    vi.useRealTimers();
+    await within(Promise.resolve(), 60_000);
+  });
+});
