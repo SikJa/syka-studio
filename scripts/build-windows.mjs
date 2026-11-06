@@ -206,11 +206,32 @@ function requireFresh(path, startedAt) {
   if (startedAt && statSync(path).mtimeMs < startedAt - 2000) throw Error(`The build did not refresh ${basename(path)}; an older output will not be released.`);
 }
 
+/**
+ * Paths under `dir` whose names are not printable ASCII. Squirrel's NuGet zip
+ * reader turns them into «?», finds duplicate entries and refuses the package:
+ * the install succeeds but no shortcut is made and updates cannot be applied.
+ */
+export function nonAsciiPaths(dir, limit = 20) {
+  const found = [];
+  const walk = current => {
+    for (const entry of readdirSync(current, { withFileTypes: true })) {
+      const path = join(current, entry.name);
+      if (/[^\x20-\x7e]/.test(entry.name)) { found.push(relative(dir, path)); if (found.length >= limit) return; }
+      if (entry.isDirectory()) walk(path);
+      if (found.length >= limit) return;
+    }
+  };
+  walk(dir);
+  return found;
+}
+
 async function verifyPackagedBuild(root, version, startedAt, stageAssets) {
   const desktop = join(root, 'apps/desktop');
   const packaged = join(desktop, 'out/Syka Studio-win32-x64');
   if (!inside(root, packaged)) throw Error('The packaged app was redirected outside the workspace.');
   x64Executable(file(packaged, 'Syka Studio.exe'));
+  const unsafe = nonAsciiPaths(packaged);
+  if (unsafe.length) throw Error('Squirrel cannot package non-ASCII file names; rename them:\n' + unsafe.map(path => `- ${path}`).join('\n'));
   const appDir = join(packaged, 'resources/app');
   if (readJson(join(appDir, 'package.json')).version !== version) throw Error('The packaged app has the wrong version.');
   if (readJson(join(appDir, 'release.config.json')).repository !== REPOSITORY) throw Error('The packaged updater has the wrong repository.');

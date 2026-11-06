@@ -4,7 +4,7 @@ Referencia MIT; conservar LICENSE y SOURCES.md del paquete. El código upstream 
 
 <a id="02-机制"></a>
 
-来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/02-机制.md
+来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/02-mechanics.md
 
 # 02 · 机制：「艺术史速通」为什么好看
 

@@ -4,7 +4,7 @@ Referencia MIT; conservar LICENSE y SOURCES.md del paquete. El código upstream 
 
 <a id="色板"></a>
 
-来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/色板.md
+来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/palettes.md
 
 # 色板：一支片一套色
 

@@ -7036,7 +7036,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/01-拆解.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/01-breakdown.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7047,7 +7047,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "8204efe7681bfa69e0c83bbef821efc44ddfcbc1b8fc8b3f9c8b561c1f89f187"
+      "bundledTextSha256": "837ea7f0171a686c81ff4af1145d7c1c2be87fe4f25e44dc430cd993d254d2c9"
     },
     {
       "id": "huashu-art-motion-02-机制",
@@ -7073,7 +7073,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/02-机制.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/02-mechanics.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7084,7 +7084,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "b29cbd1dedfe991cf43a5a1e7ab6774745b31a1f7184f3fa93047afd6ccf1acd"
+      "bundledTextSha256": "d3dfedad3a198579f563616cc459dbd295840591268a8233802f8a64a980d2db"
     },
     {
       "id": "huashu-art-motion-03-一帧先行四条路线",
@@ -7110,7 +7110,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/03-一帧先行四条路线.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/03-first-frame-four-routes.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7121,7 +7121,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "67eeed36375bf70e0524f4a2dfa635f41468556138662823b33060568a7b7b5d"
+      "bundledTextSha256": "1a2f60e31af268bab426b83f2303e0f54458ba8499ab2717edd76e0b07c608e2"
     },
     {
       "id": "huashu-art-motion-04-纯代码绘制",
@@ -7147,7 +7147,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/04-纯代码绘制.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/04-pure-code-drawing.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7158,7 +7158,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "8b6986e235aba247ccf68b41f4226648319e48954033e931cbf671f76019b4b4"
+      "bundledTextSha256": "fcc03961801b8e146aaf1abfe4c9476005c3aa4da3425528e538edc69f4db7ef"
     },
     {
       "id": "huashu-art-motion-05-节奏与配乐",
@@ -7184,7 +7184,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/05-节奏与配乐.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/05-rhythm-and-music.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7195,7 +7195,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "8d0e31383bdcddc139515b94ec300e0286f5513adb825b3f7f1f30813d61be03"
+      "bundledTextSha256": "156db0159eb481c24ede9aa77fc052ed20fd9e0347c1854b08fe5ed76cbd51ae"
     },
     {
       "id": "huashu-art-motion-06-口播驱动的艺术短片",
@@ -7221,7 +7221,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/06-口播驱动的艺术短片.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/06-voiceover-art-shorts.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7232,7 +7232,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "fe58253225ba786012e08d2539a57542187aca670245f6f199ae607f56bbbf51"
+      "bundledTextSha256": "143a43c2dee6a87d89845c7e6082f9459b072bac91ba81b720e134b2b43dac96"
     },
     {
       "id": "huashu-art-motion-08-风格作者规范",
@@ -7258,7 +7258,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/08-风格作者规范.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/08-style-author-rules.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7269,7 +7269,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "01ece284acc1718b4a1e7b63be489f40ec6fe827764c896a82aec6b6ea5d92c8"
+      "bundledTextSha256": "7ad648c90d451ca996ac29d25ea4c6f44854dde82948fb1c37b2fe5d29267b15"
     },
     {
       "id": "huashu-art-motion-10-角色",
@@ -7295,7 +7295,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/10-角色.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/10-characters.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7306,7 +7306,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "3b353cfd280287fec70da586c50b478aa54f8ce5f0cb691ec17e9491c9eab717"
+      "bundledTextSha256": "7b752aa0018b8e3df41d998d4e0cf88a6014ca66a943ef8afffe7045d0334153"
     },
     {
       "id": "huashu-art-motion-色板",
@@ -7332,7 +7332,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/色板.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/palettes.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7343,7 +7343,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "940a9e314233cbb20b3f7fdaa14294e875a7dc0859ee01160e6200cab7e3edb1"
+      "bundledTextSha256": "60b01eb0edd786cb244a95e238d784a3a80cea5421d8ebc9bf9ad0070acb712c"
     },
     {
       "id": "huashu-art-motion-角色精细度",
@@ -7369,7 +7369,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/角色精细度.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/character-detail.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7380,7 +7380,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "59aca115c8c2450ead3b5ab1e853f92d4dd16dfde9fc91848d5f3d078a57f0b1"
+      "bundledTextSha256": "6361e5c4e9641693ded82c571a29472b6a62ab8d8f4e5fcc3d06456022764dac"
     },
     {
       "id": "huashu-art-motion-镜头表模板",
@@ -7406,7 +7406,7 @@
       "sourceRole": "licensed_reference_code",
       "reviewed": false,
       "ownAnalysis": null,
-      "bundledTextPath": "references/vendor/huashu-art-motion/镜头表模板.md",
+      "bundledTextPath": "references/vendor/huashu-art-motion/shot-list-template.md",
       "bundledTextSource": "OpenDesign open-design-v0.25.0; see bundled vendor SOURCES.md",
       "bundledTextLicense": "MIT",
       "rights": {
@@ -7417,7 +7417,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "2db6d6f51d68325065ffb2aa0d5a07994e8624a1cc5b03acc91192a6ff4ccb31"
+      "bundledTextSha256": "6ae48f258027eb17d9ee167e2b0f054c1cd7f7b961594b79149f78958a2821b8"
     },
     {
       "id": "huashu-art-motion-t1_3b1b",
@@ -7565,7 +7565,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "8a745691b18f5e6d404c3a4f7f4cf453c90a01035b3f8ba397fc54681ff5e59c"
+      "bundledTextSha256": "9204e0218b6a88951e9de68a57a9949847549294f34e7a8ad9b1cb657e00c98b"
     },
     {
       "id": "huashu-art-motion-y2_vox",
@@ -7676,7 +7676,7 @@
       },
       "media": [],
       "textPath": null,
-      "bundledTextSha256": "05634e6562b1233c05a3a3bec6877e2f5a53b6eac6fcbf70a9ae957237dd8169"
+      "bundledTextSha256": "ee241c321da925430cd0d1905d3334b2f2530dfffa525a69f833021d5ab6c58a"
     },
     {
       "id": "huashu-art-motion-y5_kinetic_type",

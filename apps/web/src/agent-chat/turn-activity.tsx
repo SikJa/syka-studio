@@ -1,7 +1,8 @@
 import { createEffect, createMemo, createSignal, on, onCleanup, Show } from 'solid-js';
 import type { Item } from '@diffusionstudio/agent-chat';
 import { currentActivity } from './transcript-visibility';
-import { MirelToolMark } from './mirel-messages';
+import { MirelThinking, MirelToolMark } from './mirel-messages';
+import { isThinkingItem } from './thinking-entries';
 import { resolveToolBrand } from '@/mirel-chat/features/agents/thinking-logos/catalog';
 
 /** One transient surface for the whole turn, with no response actions or raw trace. */
@@ -18,6 +19,8 @@ export function TurnActivity(props: { items: Item[]; waiting: boolean; respondin
     return props.responding && !props.waiting
     ? {label:'Escribiendo la respuesta',text:''} : currentActivity(props.items, props.waiting);
   });
+  // The turn's steps, live in the Thinking + Reasoning block (from Syka Code).
+  const thinkingItems = createMemo(() => props.items.filter(isThinkingItem));
   const [label, setLabel] = createSignal(activity().label);
   const [phase, setPhase] = createSignal('');
   let timer: ReturnType<typeof setTimeout> | undefined;
@@ -40,7 +43,11 @@ export function TurnActivity(props: { items: Item[]; waiting: boolean; respondin
     <Show when={tool()} fallback={<span class="syka-orb-anchor" data-chat-orb-anchor="activity" aria-hidden="true" />}>
       {item=><MirelToolMark item={item()} size={48}/>}
     </Show>
-    <span class={'syka-turn-label t-text-swap ' + phase()} data-text={label()} role="status">{label()}</span>
-    <Show when={activity().text}><p class="syka-turn-summary">{activity().text}</p></Show>
+    <Show when={!props.waiting && thinkingItems().length} fallback={<>
+      <span class={'syka-turn-label t-text-swap ' + phase()} data-text={label()} role="status">{label()}</span>
+      <Show when={activity().text}><p class="syka-turn-summary">{activity().text}</p></Show>
+    </>}>
+      <MirelThinking items={thinkingItems()} thinking={!props.responding} />
+    </Show>
   </section>;
 }

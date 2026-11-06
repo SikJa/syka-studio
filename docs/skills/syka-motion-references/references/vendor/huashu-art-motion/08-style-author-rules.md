@@ -4,7 +4,7 @@ Referencia MIT; conservar LICENSE y SOURCES.md del paquete. El código upstream 
 
 <a id="08-风格作者规范"></a>
 
-来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/08-风格作者规范.md
+来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/08-style-author-rules.md
 
 # 08 · 风格作者规范（通用版，给写 scene 的人和派出去的 agent）
 
@@ -25,7 +25,7 @@ SCENES['<id>'] = { draw(c, lt, t) { /* 画满 1920×1080 */ }, init(IMG) { /* �
 
 ## 先读（按顺序）
 
-1. `references/02-机制.md`（五层机制，速通/穿越类片子才用）、`04-纯代码绘制.md`（管线、渲染器速查、坑）、`07-正面经验.md`。
+1. `references/02-mechanics.md`（五层机制，速通/穿越类片子才用）、`04-pure-code-drawing.md`（管线、渲染器速查、坑）、`07-正面经验.md`。
 2. `references/风格配方/INDEX.md`：找最接近的风格当起点，读那张卡。
 3. 标杆实现 `scripts/engine/scenes/09_postimp.js`；最接近风格的 scene 源码。
 4. `lib/`：`paint.js`（噪声/纹理/渲染器/色板/编舞）、`rig.js`（角色骨架、visibleLines）、`kit.js` 等工具库。**先找库里有没有，再自己写。**

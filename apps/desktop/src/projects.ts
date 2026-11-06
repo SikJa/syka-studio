@@ -7,10 +7,10 @@ import { copyProjectTrial } from './project-trial';
 import { app, dialog, shell, type BrowserWindow } from "electron";
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import { realpathSync, watch, type FSWatcher } from "node:fs";
+import { existsSync, realpathSync, watch, type FSWatcher } from "node:fs";
 import { cp, mkdir, readdir, readFile, realpath, rename, rm, stat } from "node:fs/promises";
 import { createRequire } from "node:module";
-import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { basename, dirname, isAbsolute, join, parse, relative, resolve, sep } from "node:path";
 import { nanoid } from "nanoid";
 import { MCP_URL } from "@diffusionstudio/dapi";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
@@ -764,6 +764,11 @@ export async function initProject(window: BrowserWindow | null, dir: string): Pr
  * inside it is the project.
  */
 export async function createProject(root: string, displayName: string): Promise<ProjectInfo> {
+  // A remembered folder on a drive that is gone (an unplugged disk, another PC)
+  // would fail deep inside mkdir with «ENOENT … mkdir '\\?'».
+  if (!existsSync(parse(resolve(root)).root)) {
+    throw new Error(`La carpeta de proyectos (${root}) está en una unidad que no existe. Elegí otra en Configuración → Proyectos.`);
+  }
   const dir = join(root, await freeFolder(root, folderName(displayName)));
   await mkdir(dir, { recursive: true });
   await scaffold(dir, displayName);

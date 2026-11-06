@@ -14,6 +14,8 @@ import { ChatItem } from "./items";
 import { TurnActivity } from "./turn-activity";
 import { createStickToBottom } from "./stick-to-bottom";
 import { transcriptPresentation } from './transcript-visibility';
+import { turnTraces } from './thinking-entries';
+import { MirelThinking } from './mirel-messages';
 
 type TranscriptProps = {
   items: Item[];
@@ -35,6 +37,8 @@ export function Transcript(props: TranscriptProps) {
   const stick = createStickToBottom(scrollEl, { initial: "instant" });
   const byId=createMemo(()=>new Map(props.items.map(item=>[item.id,item])));
   const presentation = createMemo(() => transcriptPresentation(props.items, props.running || props.waiting));
+  // Each finished turn keeps its steps folded before its answer, as in Syka Code.
+  const traces = createMemo(() => turnTraces(props.items, new Set(presentation().messages.map(item => item.id)), props.running || props.waiting));
   // A long chat opens with its latest messages only: each message is its own
   // React root with Markdown, and mounting hundreds at once stalls the panel.
   const [shown, setShown] = createSignal(PAGE);
@@ -74,7 +78,10 @@ export function Transcript(props: TranscriptProps) {
           </button>
         </Show>
         <For each={visibleIds()}>
-          {(id) => <ChatItem item={byId().get(id)!} />}
+          {(id) => <>
+            <Show when={traces().get(id)}>{trace => <MirelThinking items={trace()} thinking={false} />}</Show>
+            <ChatItem item={byId().get(id)!} />
+          </>}
         </For>
         <Show when={props.waiting || (props.running && !responding())}>
           <TurnActivity items={presentation().activity} waiting={props.waiting} responding={responding()} />

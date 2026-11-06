@@ -4,7 +4,7 @@ Referencia MIT; conservar LICENSE y SOURCES.md del paquete. El código upstream 
 
 <a id="镜头表模板"></a>
 
-来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/镜头表模板.md
+来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/shot-list-template.md
 
 # 镜头表模板：先镜头表，再动手
 
@@ -18,7 +18,7 @@ Referencia MIT; conservar LICENSE y SOURCES.md del paquete. El código upstream 
 
 ```markdown
 画风：（一句话：一张风格卡或一种画法，全片只用这一种）
-色板：（references/色板.md 里的名字，或 3–6 个 #色值）
+色板：（references/palettes.md 里的名字，或 3–6 个 #色值）
 角色：（无／只出手和背影／帧库 <路径>）
 
 | 时间段 | 画面里的物 | 它在做什么 | 镜头 | 屏上字 | 做法 |
@@ -39,8 +39,8 @@ Referencia MIT; conservar LICENSE y SOURCES.md del paquete. El código upstream 
 表前三行（画风锁）：
 
 - **画风**：一句话写清全片用哪一种画法，例如「暖木色纸本插画，平涂加细铅笔线，厨房午后侧光」。换场景可以，换画风不行：卡通人、暗色代码屏、星空图标、白底柱状图、纸张、网页截图轮流出现，每一镜单看都不错，整片就是拼贴。
-- **色板**：`references/色板.md` 里的一套，或 3–6 个色值。所有片段 spec 写同一个 `"theme"`，scenes 也只用这几个色。不用蓝紫渐变、深紫星空、霓虹青紫。用户点名要蓝紫（赛博朋克紫、梵高星月夜）才加一行「允许蓝紫：理由」。
-- **角色**：画面里要出现人或拟人角色，先读 `references/角色精细度.md`。有生图能力就 AI 生帧，写「帧库 <路径>」；没有就写「只出手和背影」或「无」，用手、背影、剪影、物件讲故事。代码画的 Q 版小人、白壳机器人、长了脸的金币和小球已经停用。
+- **色板**：`references/palettes.md` 里的一套，或 3–6 个色值。所有片段 spec 写同一个 `"theme"`，scenes 也只用这几个色。不用蓝紫渐变、深紫星空、霓虹青紫。用户点名要蓝紫（赛博朋克紫、梵高星月夜）才加一行「允许蓝紫：理由」。
+- **角色**：画面里要出现人或拟人角色，先读 `references/character-detail.md`。有生图能力就 AI 生帧，写「帧库 <路径>」；没有就写「只出手和背影」或「无」，用手、背影、剪影、物件讲故事。代码画的 Q 版小人、白壳机器人、长了脸的金币和小球已经停用。
 
 五条要求，写完逐条对：
 

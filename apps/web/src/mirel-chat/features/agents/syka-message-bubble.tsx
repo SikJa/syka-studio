@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import SelectionActions from '../../components/selection-actions';
 import {useEffect,useRef,useState} from 'react';
-import {Check,Copy,ThumbsUp,ThumbsDown,MessageSquare,GitBranch,X,LoaderCircle,FileText} from 'lucide-react';
+import {Check,MessageSquare,X,LoaderCircle,FileText} from 'lucide-react';
 import type {AgentThreadMessage,AgentFeedbackVerdict} from './syka-contracts';
 import type {MirelAgentProfile} from './agent-catalog';
 import {AgentResponseOrb} from './agent-identity-orb';
@@ -10,12 +10,14 @@ import {AgentRichText} from './agent-rich-text';
 import {AgentTextDocumentButton} from './agent-local-artifact';
 import {AgentAttachmentCoverFlow} from './agent-attachment-cover-flow';
 import './agent-workspace.css';
+import { MessageActions, type Vote } from './message-actions/MessageActions';
+import { useReadAloud } from './message-actions/read-aloud';
 const copyText=(text:string)=>navigator.clipboard.writeText(text);
 const formatTime=(value:string)=>new Date(value).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
 const formatFileSize=(bytes:number)=>`${Math.round(bytes/1024)} KB`;
 const attachmentStateLabel=(state:string|undefined)=>state??'available';
 const AttachmentIcon=(_: {mimeType:string})=><FileText size={18}/>;
-export function MessageBubble({ sectionId, agent, message, renderBody, sending, reducedMotion, onCommand, onFeedback, onBranch, hideIdentityOrb = false }: {
+export function MessageBubble({ sectionId, agent, message, renderBody, sending, reducedMotion, onCommand, onFeedback, onBranch, onReply, hideIdentityOrb = false }: {
   sectionId: string;
   agent: MirelAgentProfile;
   message: AgentThreadMessage;
@@ -27,8 +29,12 @@ export function MessageBubble({ sectionId, agent, message, renderBody, sending, 
   onCommand: (command: string) => void;
   onFeedback?: (messageId:string,verdict:AgentFeedbackVerdict|null,comment:string|null)=>Promise<void>;
   onBranch?: (body: string) => void | Promise<void>;
+  /** «Responder»: quotes this answer in the composer. */
+  onReply?: (body: string) => void;
 }) {
   const assistant = message.role === "assistant";
+  const aloud = useReadAloud(renderBody ?? message.content);
+  const sentAt = message.createdAt && Number.isFinite(Date.parse(message.createdAt)) ? new Date(message.createdAt) : undefined;
   const skillReview = null;
   const responseBody = renderBody ?? message.content;
   const [feedbackOpen, setFeedbackOpen] = useState(false);
@@ -36,11 +42,8 @@ export function MessageBubble({ sectionId, agent, message, renderBody, sending, 
   const [feedbackVerdict, setFeedbackVerdict] = useState<AgentFeedbackVerdict>(message.feedback?.verdict ?? "useful");
   const [savingFeedback, setSavingFeedback] = useState(false);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
   const feedbackTextareaRef = useRef<HTMLTextAreaElement>(null);
-  const copyResetRef = useRef<number | null>(null);
   const feedbackTitleId = `${sectionId}-feedback-title`;
-  const negativeFeedback = message.feedback?.verdict === "needs_correction" || message.feedback?.verdict === "missing_context";
   const imageAttachments = message.attachments?.filter((attachment) => attachment.mimeType.startsWith("image/")) ?? [];
   const fileAttachments = message.attachments?.filter((attachment) => !attachment.mimeType.startsWith("image/")) ?? [];
 
@@ -53,24 +56,6 @@ export function MessageBubble({ sectionId, agent, message, renderBody, sending, 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [feedbackOpen]);
-
-  useEffect(() => () => {
-    if (copyResetRef.current !== null) window.clearTimeout(copyResetRef.current);
-  }, []);
-
-  const saveQuickFeedback = async (verdict: "useful" | "needs_correction") => {
-    if (!onFeedback || savingFeedback) return;
-    const active = verdict === "useful" ? message.feedback?.verdict === "useful" : negativeFeedback;
-    setSavingFeedback(true);
-    setFeedbackError(null);
-    try {
-      await onFeedback(message.id, active ? null : verdict, null);
-    } catch {
-      setFeedbackError("No pudimos guardar el feedback. Probá de nuevo.");
-    } finally {
-      setSavingFeedback(false);
-    }
-  };
 
   const openFeedback = () => {
     setComment(message.feedback?.comment ?? "");
@@ -93,13 +78,6 @@ export function MessageBubble({ sectionId, agent, message, renderBody, sending, 
     }
   };
 
-  const copyResponse = async () => {
-    await copyText(responseBody);
-    setCopied(true);
-    if (copyResetRef.current !== null) window.clearTimeout(copyResetRef.current);
-    copyResetRef.current = window.setTimeout(() => setCopied(false), 1_800);
-  };
-
   return (
     <SelectionActions onDescribe={context=>onCommand('Explicá este texto: '+context.text)} onChange={context=>onCommand((context.instruction??'Mejorá el texto seleccionado')+'\n\n'+context.text)}><article id={sectionId} className={`agent-chat-message ${assistant ? "assistant" : "user"}`}>
       <header className="agent-message-header">
@@ -110,13 +88,17 @@ export function MessageBubble({ sectionId, agent, message, renderBody, sending, 
       {!sending && responseBody.length > 600 ? <AgentTextDocumentButton body={responseBody}/> : null}
       {imageAttachments.length ? <AgentAttachmentCoverFlow images={imageAttachments}/> : null}
       {fileAttachments.length ? <div className="agent-message-attachments">{fileAttachments.map((attachment) => <a key={attachment.assetRef} href={attachment.contentUrl} target="_blank" rel="noreferrer"><AttachmentIcon mimeType={attachment.mimeType} /><span>{attachment.name}<small>{formatFileSize(attachment.size)} · {attachmentStateLabel(attachment.processingState)}</small></span></a>)}</div> : null}
-      {assistant && !sending && !skillReview ? <footer className="agent-message-actions" aria-label="Acciones de la respuesta">
-        <button type="button" onClick={() => void copyResponse()} data-copied={copied} aria-label={copied ? "Respuesta copiada" : "Copiar respuesta"} title={copied ? "Copiada" : "Copiar respuesta"}>{copied ? <Check size={14}/> : <Copy size={14}/>}</button>
-        {onFeedback ? <button type="button" className={message.feedback?.verdict === "useful" ? "active" : ""} disabled={savingFeedback} aria-pressed={message.feedback?.verdict === "useful"} aria-label="Marcar respuesta como útil" title="Útil" onClick={() => void saveQuickFeedback("useful")}><ThumbsUp size={14}/></button> : null}
-        {onFeedback ? <button type="button" className={negativeFeedback ? "active" : ""} disabled={savingFeedback} aria-pressed={negativeFeedback} aria-label="Marcar respuesta como no útil" title="No fue útil" onClick={() => void saveQuickFeedback("needs_correction")}><ThumbsDown size={14}/></button> : null}
-        {onFeedback ? <button type="button" className={message.feedback?.comment ? "active" : ""} disabled={savingFeedback} aria-pressed={Boolean(message.feedback?.comment)} aria-label="Escribir feedback sobre esta respuesta" title="Dar feedback" onClick={openFeedback}><MessageSquare size={14}/></button> : null}
-        {onBranch ? <button type="button" aria-label="Continuar desde esta respuesta en un chat nuevo" title="Continuar en un chat nuevo" onClick={() => void onBranch(responseBody)}><GitBranch size={14}/></button> : null}
-      </footer> : null}
+      {assistant && !sending && !skillReview ? <div className="agent-message-actions-row"><MessageActions
+        text={responseBody}
+        {...(sentAt ? { sentAt } : {})}
+        reading={aloud.reading}
+        onCopy={(text) => void copyText(text)}
+        {...(onFeedback ? { onVote: (vote: Vote) => void onFeedback(message.id, vote === 'up' ? 'useful' : vote === 'down' ? 'needs_correction' : null, null) } : {})}
+        {...(onReply ? { onReply: () => onReply(responseBody) } : {})}
+        {...(aloud.toggle ? { onReadAloud: aloud.toggle } : {})}
+        {...(onBranch ? { onFork: () => void onBranch(responseBody) } : {})}
+        {...(onFeedback ? { onReport: openFeedback } : {})}
+      /></div> : null}
       {feedbackError && !feedbackOpen ? <p className="agent-message-feedback-error" role="alert">{feedbackError}</p> : null}
       {feedbackOpen ? <div className="agent-feedback-modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setFeedbackOpen(false); }}>
         <section className="agent-feedback-modal" role="dialog" aria-modal="true" aria-labelledby={feedbackTitleId}>

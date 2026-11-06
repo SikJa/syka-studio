@@ -4,7 +4,7 @@ Referencia MIT; conservar LICENSE y SOURCES.md del paquete. El código upstream 
 
 <a id="03-一帧先行四条路线"></a>
 
-来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/03-一帧先行四条路线.md
+来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/03-first-frame-four-routes.md
 
 # 03 · 一帧先行，再让它动：四条路线
 
@@ -44,7 +44,7 @@ Seedance 2.5/2.0 支持 frames2video。首帧和尾帧给同一张设定稿 → 
 
 ## 路线 A 的关键
 
-见 `04-纯代码绘制.md`。一句话（速通/穿越类）：同一场景骨架 × 共享编舞 × 每个风格一个渲染器 × 角色单独一层后画 × 最后补线。其它题材把前两项换成按题材设计的构图和动作。
+见 `04-pure-code-drawing.md`。一句话（速通/穿越类）：同一场景骨架 × 共享编舞 × 每个风格一个渲染器 × 角色单独一层后画 × 最后补线。其它题材把前两项换成按题材设计的构图和动作。
 
 ---
 

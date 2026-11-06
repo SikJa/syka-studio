@@ -4,7 +4,7 @@ Referencia MIT; conservar LICENSE y SOURCES.md del paquete. El código upstream 
 
 <a id="角色精细度"></a>
 
-来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/角色精细度.md
+来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/character-detail.md
 
 # 角色精细度：要么画到位，要么不出脸
 
@@ -21,7 +21,7 @@ Referencia MIT; conservar LICENSE y SOURCES.md del paquete. El código upstream 
 
 | 角色行写 | 什么时候走 | 怎么做 |
 |---|---|---|
-| `帧库 <路径>` | 有生图能力（当前会话有生图工具，或用户给了角色图） | 按 `references/10-角色.md` 的 B／C 法做 AI 生帧帧库，过下面的「交付线」 |
+| `帧库 <路径>` | 有生图能力（当前会话有生图工具，或用户给了角色图） | 按 `references/10-characters.md` 的 B／C 法做 AI 生帧帧库，过下面的「交付线」 |
 | `只出手和背影` | 没有生图能力，但故事需要一个人 | 只画手（握着物、指着物、把物放进口袋）、背影、剪影、过肩；脸不出画 |
 | `无` | 故事可以只靠物讲 | 物本身做主角：一块电池、一袋面包、一本书，靠形状、颜色、动作讲，不给它加脸 |
 

@@ -12,6 +12,8 @@ import {createContext,useContext} from 'solid-js';
 import { SYKA_ORB_STATE } from '@/lib/syka-brand';
 import {AgentUserText} from '@/mirel-chat/features/agents/agent-rich-text';
 import {withoutDuplicateImageLinks} from './image-message-presentation';
+import {ThinkingReasoning} from '@/mirel-chat/features/agents/thinking/ThinkingReasoning';
+import {thinkingEntries,thinkingSeconds} from './thinking-entries';
 
 let messageView = MessageBubble;
 const messageUpdates: Set<(view: typeof MessageBubble) => void> | undefined = import.meta.hot
@@ -41,7 +43,7 @@ export function MirelMessage(props:{item:Extract<Item,{kind:'assistant'}>}){
  onMount(()=>{root=createRoot(el);createEffect(()=>{
    const message:AgentThreadMessage={id:props.item.id,role:'assistant',content:props.item.text,createdAt:props.item.createdAt?new Date(props.item.createdAt).toISOString():'',feedback:feedback()};
    root.render(createElement(view(),{sectionId:'syka-message-'+props.item.id,agent,message,renderBody:withoutDuplicateImageLinks(props.item.text,actions?.imageDownloadPaths?.(props.item.id)??[]),previousMessage:undefined,hideIdentityOrb:true,sending:!!actions?.running()&&actions.lastAssistantId()===props.item.id&&actions.isActiveItem(props.item.id),reducedMotion:window.matchMedia('(prefers-reduced-motion: reduce)').matches,onCommand:(text:string)=>actions?.onDraft(text),
-   onBranch:()=>actions?.onBranch(props.item.id),onFeedback:async(_:string,verdict:AgentFeedbackVerdict|null,comment:string|null)=>{const next=verdict?{verdict,comment}:undefined;localStorage.setItem(storageKey(),JSON.stringify(next??null));setFeedback(next);}}));
+   onBranch:()=>actions?.onBranch(props.item.id),onReply:(body:string)=>actions?.onDraft(body.split('\n').map(line=>'> '+line).join('\n')+'\n\n'),onFeedback:async(_:string,verdict:AgentFeedbackVerdict|null,comment:string|null)=>{const next=verdict?{verdict,comment}:undefined;localStorage.setItem(storageKey(),JSON.stringify(next??null));setFeedback(next);}}));
  });});onCleanup(()=>root?.unmount());
  return <div ref={el} class="syka-mirel-visuals" data-chat-message="assistant"/>;
 }
@@ -60,4 +62,15 @@ export function SykaChatOrb(props:{working:boolean;variant?:'header'|'hero';paus
   // between the compact header, question and editor destinations.
   onMount(()=>{root=createRoot(element);createEffect(()=>root.render(createElement(SykaOrganicMascot,{activity:props.activity??(props.working?'thinking':'idle'),size:96,finish:'accent',paused:props.paused,interactive:false})));});
  onCleanup(()=>root?.unmount());return <span class="syka-header-orb" ref={element}/>;
+}
+
+/** Thinking + Reasoning (AICSS, via Syka Code): live while the turn thinks, folded once it is done. */
+export function MirelThinking(props:{items:Item[];thinking:boolean}) {
+ let el!:HTMLDivElement;let root:ReturnType<typeof createRoot>;
+ onMount(()=>{root=createRoot(el);createEffect(()=>{
+   const items=props.items;
+   root.render(createElement(ThinkingReasoning,{entries:thinkingEntries(items),thinking:props.thinking,elapsedS:thinkingSeconds(items,Date.now())}));
+ });});
+ onCleanup(()=>root?.unmount());
+ return <div ref={el} class="syka-mirel-visuals syka-thinking" data-chat-thinking/>;
 }

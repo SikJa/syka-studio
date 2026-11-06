@@ -308,3 +308,6 @@
 .syka-recipe-offer-primary:disabled {opacity:.5;cursor:default;}
 .syka-recipe-offer-secondary {border:1px solid var(--color-border);background:transparent;color:var(--color-muted-foreground);}
 .syka-recipe-offer-secondary:hover {color:var(--color-foreground);}
+
+/* Message Actions (AICSS, via Syka Code): the row under each answer. */
+.syka-mirel-visuals .agent-message-actions-row { display:flex; margin-top:4px; margin-left:-6px; }

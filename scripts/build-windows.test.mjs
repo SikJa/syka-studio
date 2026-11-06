@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { releaseAssetName, SETUP_ASSET, verifyAssetBundle } from './build-windows.mjs';
+import { nonAsciiPaths, releaseAssetName, SETUP_ASSET, verifyAssetBundle } from './build-windows.mjs';
 
 const VERSION = '0.208.0';
 const ZIP_ASSET = `Syka-Studio-win32-x64-${VERSION}.zip`;
@@ -65,3 +65,16 @@ for (const zipName of [`Syka Studio-win32-x64-${VERSION}.zip`, `Syka.Studio-win3
     finally { f.clean(); }
   });
 }
+
+test('flags packaged file names Squirrel cannot read', () => {
+  mkdirSync(FIXTURES, { recursive: true });
+  const directory = mkdtempSync(join(FIXTURES, 'windows-ascii-fixture-'));
+  try {
+    mkdirSync(join(directory, 'docs', 'vendor'), { recursive: true });
+    writeFileSync(join(directory, 'docs', 'vendor', 'palettes.md'), 'ok');
+    writeFileSync(join(directory, 'docs', 'vendor', '色板.md'), 'no');
+    assert.deepEqual(nonAsciiPaths(directory), [join('docs', 'vendor', '色板.md')]);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});

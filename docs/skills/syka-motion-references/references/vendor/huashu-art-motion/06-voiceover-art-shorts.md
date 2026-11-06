@@ -4,7 +4,7 @@ Referencia MIT; conservar LICENSE y SOURCES.md del paquete. El código upstream 
 
 <a id="06-口播驱动的艺术短片"></a>
 
-来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/06-口播驱动的艺术短片.md
+来源：https://github.com/alchaincyf/huashu-art-motion/blob/d861767d180008d27675819932070a670a3ae43f/references/06-voiceover-art-shorts.md
 
 # 06 · 口播驱动的艺术短片（方法草案，待第一支实片验证）
 
